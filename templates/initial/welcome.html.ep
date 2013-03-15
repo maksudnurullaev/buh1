@@ -1,0 +1,18 @@
+% layout 'default';
+<h2><%= ml 'About us' %></h2>
+<div>
+    <p>
+<%= mlm 'rus', 'About as block' => begin %>
+Данная программа разработана для бухгалтеров!<br />
+И мы думаем что он будет иметь феноменальный успех!!!
+<% end %>
+    </p>
+    <p>
+        <%= ml 'Test ML' %>
+    </p>
+    <p>
+        <%= mlm  'eng', 'Test BLOCK' => begin %>
+            Test MLM
+        <% end %>
+    </p>
+</div>

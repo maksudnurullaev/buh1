@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>buh1 v0.0.1a</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</script>
+</head>
+
+<body>
+  <div id="headerSection">
+    <a href="http://www.apache.org/"><img src="asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
+    <div class="topBanner" id="ad_banner">
+      <%=languages_bar %>
+      <br /><br />
+      <span><small><u>Divide et impera!</u></small></span>
+    </div>
+  </div>
+  <div id="bodySection">
+    <table border="0" cellspacing="0">
+      <tbody>
+        <tr>
+          <td class="navleft" valign="top" width="20%">
+            <ul id="leftnav">
+              <li><%= ml 'Cabinet' %>
+                <ul>
+                  <li><a href="#"><%= ml 'Log in' %></a></li>
+                </ul>
+              </li>
+              <li><%= ml 'Home' %>
+                <ul>
+                  <li><a href="#"><%= ml 'About us' %></a></li>
+                  <li><a href="#"><%= ml 'Help' %></a></li>
+                </ul>
+              </li>
+            </ul>
+          </td>
+          <td class="body" valign="top" width="80%">
+            <%= content %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="footerSection">
+    <p>Copyright 2013, The NMK Foundation</p>
+    <p>Generated: <%= localtime %></p>
+  </div>
+</body>
+</html>
