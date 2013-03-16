@@ -13,8 +13,16 @@ use strict;
 use warnings;
 use utf8;
 use Cwd;
+use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
+
+sub get_uuid{
+    my $ug = new Data::UUID;
+    my $uuid = $ug->create;
+    my @result = split('-',$ug->to_string($uuid));
+    return($result[0]);
+};
 
 sub get_root_path{
     my $path = shift;

@@ -6,11 +6,18 @@ use utf8;
 
 use_ok('ML');
 require_ok('ML');
-$ML::FILE_NAME = 'MLTest.INI';
-my $ml_file_path = Utils::get_root_path($ML::DIR_NAME, $ML::FILE_NAME );
-if( -e $ml_file_path ){
-    unlink( $ml_file_path );
-}
+my $ml_file_path;
+
+BEGIN { 
+    $ML::FILE_NAME = 'MLTest.INI';
+    $ml_file_path = Utils::get_root_path($ML::DIR_NAME, $ML::FILE_NAME );
+    if( -e $ml_file_path ){
+        unlink( $ml_file_path );
+    }
+}    
+
+END { unlink( $ml_file_path ); }
+
 ok($ml_file_path =~ $ML::FILE_NAME, "Test for file name.");
 ok($ML::DIR_NAME =~ /ML$/, "Root catalog for ML's files.");
 ok($ML::DEFAULT_LANG ~~ @ML::DEFAULT_LANGS, "Existance of default languge in languages array.");
