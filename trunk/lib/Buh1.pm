@@ -1,6 +1,7 @@
 package Buh1;
 use Mojo::Base 'Mojolicious';
 use ML;
+use Cwd;
 
 # This method will run once at server start
 sub startup {
@@ -16,6 +17,7 @@ sub startup {
   # Normal route to controller
   $r->get('/')->to('initial#welcome');
   $r->get("/lang/:lang")->to(controller => 'initial', action => 'locale');
+
 }
 
 1;

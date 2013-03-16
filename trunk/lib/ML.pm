@@ -26,16 +26,17 @@ use 5.012000;
 use strict;
 use warnings;
 use utf8;
-use Cwd;
-use File::Spec;
-use File::Path qw(make_path);
+use Utils;
+#use Cwd;
+#use File::Spec;
+#use File::Path qw(make_path);
 use base 'Mojolicious::Plugin';
 
 our $VERSION        = 'v0.0.1b';
 our $DEFAULT_LANG   = 'rus';
 our @DEFAULT_LANGS  = ('eng', 'rus', 'uzb');
 our $FILE_NAME      = 'ML.INI';
-our $ML_DIR            = File::Spec->catdir(cwd(), "ML");
+our $ML_DIR_NAME    = 'ML';
 our $DEFAULT_FORMAT = '<a href="/lang/%s">%s</a>'; 
 
 sub process_string;
@@ -95,8 +96,9 @@ sub process_block {
 };
 
 sub make_my_dir{
-    until( -d $ML_DIR ){
-        make_path ( $ML_DIR ) || die "Could not create $ML_DIR directory";
+    my $dir = Utils::get_root_path($ML_DIR_NAME);
+    until( -d $dir ){
+        make_path ( $dir ) || die "Could not create $dir directory";
     }
     return(1);
 };
@@ -139,11 +141,6 @@ sub gentle_add{
     
 };
 
-sub get_file_path{
-    my $file_name = shift || $FILE_NAME;
-    return(File::Spec->catfile($ML_DIR, $file_name));
-};
-
 sub save_to_file{
     make_my_dir();
     my $values = shift;
@@ -151,8 +148,8 @@ sub save_to_file{
         #Nothing to save!
         return("");
     }
-    my $file_name = $FILE_NAME;
-    my $file_path = get_file_path($file_name);
+    my $file_name = shift || $FILE_NAME;
+    my $file_path = Utils::get_root_path($ML_DIR_NAME, $file_name);
     my ($f);
     open($f, ">:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to write: $!");
     while(my ($key1, $v) = each %{$values} ){
@@ -168,7 +165,8 @@ sub load_from_file{
     make_my_dir();
     my $values = {};
     my $file_name = shift || $FILE_NAME;
-    my $file_path = get_file_path($file_name);
+    my $file_path = Utils::get_root_path($ML_DIR_NAME, $file_name);
+    my ($f);
     if( -e $file_path ){
         open(my($f), "<:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to read: $!");
         my ($key1, $key2, $value, $line_order);

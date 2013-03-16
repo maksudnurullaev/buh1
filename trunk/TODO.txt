@@ -1,3 +1,9 @@
 1. Create login page
 1.1 Create tests for db.
 1.1.1 Create links to sqlite database.
+
+
+=== Useful SQLs ===
+CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
+CREATE INDEX i_objects ON objects (name, id, field);
+
