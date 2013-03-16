@@ -27,16 +27,13 @@ use strict;
 use warnings;
 use utf8;
 use Utils;
-#use Cwd;
-#use File::Spec;
-#use File::Path qw(make_path);
 use base 'Mojolicious::Plugin';
 
 our $VERSION        = 'v0.0.1b';
 our $DEFAULT_LANG   = 'rus';
 our @DEFAULT_LANGS  = ('eng', 'rus', 'uzb');
 our $FILE_NAME      = 'ML.INI';
-our $ML_DIR_NAME    = 'ML';
+our $DIR_NAME    = 'ML';
 our $DEFAULT_FORMAT = '<a href="/lang/%s">%s</a>'; 
 
 sub process_string;
@@ -78,7 +75,7 @@ sub process_string {
 sub process_block {
     my ($self, $base_language, $key, $block) = @_ ;
     if( !$base_language || !$key || !$block ){
-        return(Mojo::ByteStream->new("<font color=red>ERROR:MLM: Invalid MLM block!</font>"));
+        return(Mojo::ByteStream->new("<font color='red'>ERROR:MLM: Invalid MLM block!</font>"));
     }
     my $value = $block->();
     my $current_language = get_current_language($self);
@@ -96,7 +93,7 @@ sub process_block {
 };
 
 sub make_my_dir{
-    my $dir = Utils::get_root_path($ML_DIR_NAME);
+    my $dir = Utils::get_root_path($DIR_NAME);
     until( -d $dir ){
         make_path ( $dir ) || die "Could not create $dir directory";
     }
@@ -149,7 +146,7 @@ sub save_to_file{
         return("");
     }
     my $file_name = shift || $FILE_NAME;
-    my $file_path = Utils::get_root_path($ML_DIR_NAME, $file_name);
+    my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
     my ($f);
     open($f, ">:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to write: $!");
     while(my ($key1, $v) = each %{$values} ){
@@ -165,7 +162,7 @@ sub load_from_file{
     make_my_dir();
     my $values = {};
     my $file_name = shift || $FILE_NAME;
-    my $file_path = Utils::get_root_path($ML_DIR_NAME, $file_name);
+    my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
     my ($f);
     if( -e $file_path ){
         open(my($f), "<:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to read: $!");
@@ -185,8 +182,6 @@ sub load_from_file{
             gentle_add($key1, $key2, $value, $values);
         }
         close($f);
-    } else {
-        warn("File $file_path not found!");
     }
     return($values);
 };

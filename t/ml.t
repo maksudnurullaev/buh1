@@ -7,17 +7,18 @@ use utf8;
 use_ok('ML');
 require_ok('ML');
 $ML::FILE_NAME = 'MLTest.INI';
-if( -e ML::get_file_path() ){
-    unlink(ML::get_file_path());
+my $ml_file_path = Utils::get_root_path($ML::DIR_NAME, $ML::FILE_NAME );
+if( -e $ml_file_path ){
+    unlink( $ml_file_path );
 }
-ok(ML::get_file_path() =~ $ML::FILE_NAME, "Test for file name.");
-ok($ML::DIR =~ /ML$/, "Root catalog for ML's files.");
+ok($ml_file_path =~ $ML::FILE_NAME, "Test for file name.");
+ok($ML::DIR_NAME =~ /ML$/, "Root catalog for ML's files.");
 ok($ML::DEFAULT_LANG ~~ @ML::DEFAULT_LANGS, "Existance of default languge in languages array.");
 ML::save_to_file(); # make empty file 
 
 ### -= VALUES as single string =-
-ok(ML::get_value() =~ /^ERROR/, "Get invalid result 1");
-ok(ML::get_value('key1') =~ /^ERROR/, "Get invalid result 2");
+ok(ML::get_value() =~ /ERROR/, "Get invalid result 1");
+ok(ML::get_value('key1') =~ /ERROR/, "Get invalid result 2");
 ok(ML::get_value('key1', 'key2') =~ /^\[-/, "Get not filled value");
 ok(ML::set_value('key1', 'key2', 'салом') eq 'салом', "Save value");
 ok(ML::get_value('key1', 'key2') eq 'салом', "Get for exist value");
