@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use utf8;
 use Cwd;
+use Time::Piece;
 use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
@@ -22,6 +23,11 @@ sub get_uuid{
     my $uuid = $ug->create;
     my @result = split('-',$ug->to_string($uuid));
     return($result[0]);
+};
+
+sub get_date_uuid{
+    my $result= Time::Piece->new->strftime('%Y.%m.%d %T ');
+    return($result . get_uuid());
 };
 
 sub get_root_path{
