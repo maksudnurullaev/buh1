@@ -18,6 +18,6 @@ sub startup {
   $r->get('/')->to('initial#welcome');
   $r->get("/lang/:lang")->to(controller => 'initial', action => 'locale');
 
-}
+};
 
 1;
