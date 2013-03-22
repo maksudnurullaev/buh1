@@ -16,7 +16,7 @@ use Utils;
 use DBI;
 use DBD::SQLite;
 
-my $DB_SQLite_TYPE  = 1;
+my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
 my $DB_CURRENT_TYPE = $DB_SQLite_TYPE;
 
@@ -77,8 +77,20 @@ sub select_object{
     my $dbh = get_db_connection();
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare("SELECT name,id,field,value FROM objects WHERE id = ?");
-    $sth->execute($id);
-    return($sth->fetchall_hashref('id'));
+    my($name,$field,$value,$id_current,$result);
+    if($sth->execute($id)){
+        $sth->bind_columns(\($name,$id,$field,$value));
+        $id_current = '__NOTHING___';
+        while ($sth->fetch) {
+            if($id_current ne $id){
+                $result->{$id} = { name => $name }; 
+                $id_current = $id;
+            }
+            $result->{$id}{$field} = $value;
+        }
+    } else { warn $DBI::errstr; }
+
+    return($result);
 };
 
 };

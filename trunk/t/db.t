@@ -1,6 +1,7 @@
 use Test::More;
 use Test::Mojo;
 use DBD::SQLite;
+use Data::Dumper;
 use Db;
 use DBI;
 
@@ -17,18 +18,20 @@ ok(!defined(Db::insert_object({object_name => "user"})));
 # -= check for single insertrion =-
 my $id_1 = Db::insert_object({
     object_name => "test object",
-    field1 => "value1",
-    field2 => "value2"});
+    field1      => "value1",
+    field2      => "value2"});
 ok($id_1);
 
 # -= check for single select =-
 my $hash_ref = Db::select_object($id_1);
 my @ids = keys %{$hash_ref};
 ok($id_1 eq $ids[0]);
+ok("value1" eq $hash_ref->{$id_1}{field1}, "Check for value #1");
+ok("value2" eq $hash_ref->{$id_1}{field2}, "Check for value #2");
 
 ### -=FINISH=-
 END{
-    my $dbh = Db::get_db_connection();
-    $dbh->do("DELETE FROM objects WHERE name = 'test object'");
+#    my $dbh = Db::get_db_connection();
+#    $dbh->do("DELETE FROM objects WHERE name = 'test object'");
 };
 done_testing();
