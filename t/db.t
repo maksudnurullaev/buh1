@@ -29,9 +29,22 @@ ok($id_1 eq $ids[0]);
 ok("value1" eq $hash_ref->{$id_1}{field1}, "Check for value #1");
 ok("value2" eq $hash_ref->{$id_1}{field2}, "Check for value #2");
 
-### -=FINISH=-
+# -= check for single with many fields =-
+my $many_fields_data = { object_name => "test object" };
+for(my $i=1;$i<=100;$i++){
+    $many_fields_data->{ "field$i" } = ("value" x $i); 
+}
+my $id_2 = Db::insert_object($many_fields_data);
+ok($id_2, "Check for valid id!");
+
+my $data = Db::select_object($id_2);
+for(my $i=1;$i<=100;$i++){
+    ok(length($data->{$id_2}{"field$i"}) == (5*$i), "Test for values!");
+}
+
+### -= FINISH =-
 END{
-#    my $dbh = Db::get_db_connection();
-#    $dbh->do("DELETE FROM objects WHERE name = 'test object'");
+    my $dbh = Db::get_db_connection();
+    $dbh->do("DELETE FROM objects WHERE name = 'test object'");
 };
 done_testing();

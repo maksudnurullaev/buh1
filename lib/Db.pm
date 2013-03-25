@@ -80,7 +80,7 @@ sub select_object{
     my($name,$field,$value,$id_current,$result);
     if($sth->execute($id)){
         $sth->bind_columns(\($name,$id,$field,$value));
-        $id_current = '__NOTHING___';
+        $id_current = '__UNKNOWN___';
         while ($sth->fetch) {
             if($id_current ne $id){
                 $result->{$id} = { name => $name }; 
