@@ -81,11 +81,11 @@ sub select_object{
         return(undef);
     }
     my $dbh = get_db_connection();
-    $dbh->{FetchHashKeyName} = 'NAME_lc';
     if(!defined($dbh)){
         warn "Error:Db:Insert Could not connect to db!";
         return(undef);
     }
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare("SELECT name,id,field,value FROM objects WHERE id = ?");
     my($name,$field,$value,$id_current,$result) = (undef,undef,undef,undef,{});
     if($sth->execute($id)){
