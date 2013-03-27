@@ -18,6 +18,15 @@ use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
 
+sub trim{
+    my $string = $_[0];
+    if($string){
+        $string =~ s/^\s+|\s+$//g;
+        return($string);
+    }
+    return(undef);
+};
+
 sub get_uuid{
     my $ug = new Data::UUID;
     my $uuid = $ug->create;
