@@ -77,7 +77,7 @@ sub insert_object{
 sub select_object{
     my $id = shift;
     if(!defined($id)){
-        warn "Error:Db:Select: No id!";
+        warn "Error:Db:Select: No ID defined for search!";
         return(undef);
     }
     my $dbh = get_db_connection();
