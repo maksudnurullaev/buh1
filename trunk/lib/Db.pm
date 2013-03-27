@@ -46,10 +46,12 @@ sub get_db_connection{
 sub insert_object{
     my $hashref = shift;
     my $object_name;
-    if(defined($hashref) && defined($hashref->{object_name})){
-        $object_name = $hashref->{object_name};
+    if(defined($hashref) 
+            && defined($hashref->{object_name})
+            && defined(Utils::trim($hashref->{object_name}))){
+        $object_name = Utils::trim($hashref->{object_name});
     } else {
-        warn "Error:Db:Insert: No object name!";
+        warn "Error:Db:Insert: No object or object name!";
         return(undef);
     }
     if(scalar( keys %{$hashref}) == 1){
@@ -58,6 +60,10 @@ sub insert_object{
     }
     my $id = Utils::get_date_uuid();
     my $dbh = get_db_connection();
+    if(!defined($dbh)){
+        warn "Error:Db:Insert Could not connect to db!";
+        return(undef);
+    }
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
     for my $field (keys %{$hashref}){
@@ -76,11 +82,14 @@ sub select_object{
     }
     my $dbh = get_db_connection();
     $dbh->{FetchHashKeyName} = 'NAME_lc';
+    if(!defined($dbh)){
+        warn "Error:Db:Insert Could not connect to db!";
+        return(undef);
+    }
     my $sth = $dbh->prepare("SELECT name,id,field,value FROM objects WHERE id = ?");
-    my($name,$field,$value,$id_current,$result);
+    my($name,$field,$value,$id_current,$result) = (undef,undef,undef,undef,{});
     if($sth->execute($id)){
         $sth->bind_columns(\($name,$id,$field,$value));
-        $id_current = '__UNKNOWN___';
         while ($sth->fetch) {
             if($id_current ne $id){
                 $result->{$id} = { name => $name }; 
@@ -89,7 +98,6 @@ sub select_object{
             $result->{$id}{$field} = $value;
         }
     } else { warn $DBI::errstr; }
-
     return($result);
 };
 
