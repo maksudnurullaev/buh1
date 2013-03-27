@@ -87,7 +87,7 @@ sub select_object{
     }
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare("SELECT name,id,field,value FROM objects WHERE id = ?");
-    my($name,$field,$value,$id_current,$result) = (undef,undef,undef,undef,{});
+    my($name,$field,$value,$id_current,$result) = (undef,undef,undef,"NONE",{});
     if($sth->execute($id)){
         $sth->bind_columns(\($name,$id,$field,$value));
         while ($sth->fetch) {
