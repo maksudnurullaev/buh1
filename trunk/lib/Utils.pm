@@ -12,6 +12,7 @@ use 5.012000;
 use strict;
 use warnings;
 use utf8;
+use Crypt::SaltedHash;
 use Cwd;
 use Time::Piece;
 use Data::UUID;
@@ -20,7 +21,7 @@ use File::Path qw(make_path);
 
 sub trim{
     my $string = $_[0];
-    if($string){
+    if(defined($string) && $string){
         $string =~ s/^\s+|\s+$//g;
         return($string);
     }
@@ -51,6 +52,20 @@ sub get_root_path{
     } else {
         return(cwd());
     }
+};
+
+sub salted_password{
+    my $password = trim(shift); # password - generates salted password
+    my $salt     = trim(shift); # salt     - just validate password and salt
+    if(defined($password)){
+        if(defined($salt)){
+            return(scalar(Crypt::SaltedHash->validate($salt, $password)));
+        }
+        my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-512');
+        $csh->add($password);
+        return($csh->generate);
+    }
+    return(undef);
 };
 
 };
