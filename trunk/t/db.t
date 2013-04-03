@@ -5,8 +5,11 @@ use Data::Dumper;
 use Db;
 use DBI;
 
-use_ok('Db');
-require_ok('Db');
+BEGIN {
+    use_ok('Db');
+    require_ok('Db');
+    ok(Db::initialize(), "Test for initialize script!");
+};
 
 ok(Db::get_sqlite_file() =~ /\.db$/, "Test for db file");
 ok(Db::get_db_connection(), "Get proper db connection (SQLITE)!");

@@ -68,6 +68,34 @@ sub salted_password{
     return(undef);
 };
 
+sub get_admin_password_file_path{
+    return(get_root_path('config','admin.login'));
+};
+
+sub set_admin_password{
+    my $password = shift;
+    if(defined($password) && $password){
+        my ($file,$f) = (get_admin_password_file_path(), undef);
+        my $salted_password = salted_password($password);
+        open($f, ">", $file) || die("Can't open $file to write: $!");
+        print $f $salted_password;
+        close($f);
+        return($salted_password);
+    }
+    return(undef);
+};
+
+sub get_admin_password{
+    my $file = get_admin_password_file_path();
+    if(! -e $file){ return(set_admin_password('admin')); }
+    my ($f,$salted_password) = (undef,undef);
+    open($f, "<", $file) || die("Can't open $file to read: $!");
+    $salted_password = <$f>; # get just first line
+    close($f);
+    return($salted_password);
+};
+
+# END OF PACKAGE
 };
 
 1;
