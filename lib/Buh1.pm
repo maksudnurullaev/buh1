@@ -1,7 +1,16 @@
 package Buh1;
 use Mojo::Base 'Mojolicious';
 use ML;
+use Db;
 use Cwd;
+
+BEGIN {
+  # Set up password for administrator
+  Utils::get_admin_password() || die("Could not set up password for administrator!");
+  # Initialize database
+  Db::initialize() || die("Could not set initialize database!");
+};
+
 
 # This method will run once at server start
 sub startup {

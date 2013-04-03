@@ -2,8 +2,8 @@
 1.1 Create tests for db.
 1.1.1 Create links to sqlite database.
 2.1 Auto-recovery for db
-2.2 Auto-recovery for admin.login
-2.2.1 Create password hashing module
+2.2 (DONE) Auto-recovery for admin.login
+2.2.1 (DONE) Create password hashing module
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);

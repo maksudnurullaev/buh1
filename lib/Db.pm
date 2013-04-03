@@ -43,6 +43,27 @@ sub get_db_connection{
     }
 };
 
+sub initialize{
+    return(1) if(-e $SQLITE_FILE);
+    if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
+        my $connection = get_db_connection || die "Could not connect to SQLite database";
+        if(defined($connection)){
+            my @SQLITE_INIT_SQLs = (
+                    "CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);'",
+                    "CREATE INDEX i_objects ON objects (name, id, field);",
+                );
+            for my $sql (@SQLITE_INIT_SQLs){
+                my $stmt = $connection->prepare($sql);
+                $stmt->execute || die "Error:Db: Could not init database with: $sql";
+            }   
+            return(1);   
+        } 
+    } else {
+        warn "Error:DB: Unknown db type!";
+        return(undef);
+    }
+};
+
 sub insert_object{
     my $hashref = shift;
     my $object_name;
