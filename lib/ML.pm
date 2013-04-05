@@ -34,7 +34,7 @@ our $DEFAULT_LANG   = 'rus';
 our @DEFAULT_LANGS  = ('eng', 'rus', 'uzb');
 our $FILE_NAME      = 'ML.INI';
 our $DIR_NAME    = 'ML';
-our $DEFAULT_FORMAT = '<a href="/lang/%s">%s</a>'; 
+our $DEFAULT_FORMAT = '<a href="/initial/lang/%s">%s</a>'; 
 
 sub process_string;
 sub register {
@@ -148,7 +148,7 @@ sub save_to_file{
     my $file_name = shift || $FILE_NAME;
     my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
     my ($f);
-    open($f, ">:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to write: $!");
+    open($f, ">:encoding(UTF-8)", $file_path) || die("Can't open $file_path to write: $!");
     while(my ($key1, $v) = each %{$values} ){
         while(my ($key2,$value) = each %{$v}){
             print $f "$key1:$key2:$value\n"; 
@@ -165,7 +165,7 @@ sub load_from_file{
     my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
     my ($f);
     if( -e $file_path ){
-        open(my($f), "<:encoding(UTF-8)", "$file_path") || die("Can't open $file_path to read: $!");
+        open(my($f), "<:encoding(UTF-8)", $file_path) || die("Can't open $file_path to read: $!");
         my ($key1, $key2, $value, $line_order);
         while( <$f> ){
             if(/(^[[:print:]]+):([[:print:]]+):(.*)/){
