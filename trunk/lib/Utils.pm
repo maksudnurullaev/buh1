@@ -95,6 +95,16 @@ sub get_admin_password{
     return($salted_password);
 };
 
+sub login{
+    my($name,$password) = @_;
+    # 1. Is administrator
+    if( $name =~ /^admin$/i ){
+        return(salted_password($password,get_admin_password));
+    }
+    warn "$name,$password";
+    return(0);
+};
+
 # END OF PACKAGE
 };
 

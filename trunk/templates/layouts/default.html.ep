@@ -5,13 +5,13 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>buh1 v0.0.1a</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="/style.css" />
 </script>
 </head>
 
 <body>
   <div id="headerSection">
-    <a href="http://www.apache.org/"><img src="asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
+    <a href="http://www.apache.org/"><img src="/asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
     <div class="topBanner" id="ad_banner">
       <%=languages_bar %>
       <br /><br />
@@ -26,13 +26,12 @@
             <ul id="leftnav">
               <li><%= ml 'Cabinet' %>
                 <ul>
-                  <li><a href="#"><%= ml 'Log in' %></a></li>
+                  <li><a href="/initial/login"><%= ml 'Login' %></a></li>
                 </ul>
               </li>
               <li><%= ml 'Home' %>
                 <ul>
                   <li><a href="#"><%= ml 'About us' %></a></li>
-                  <li><a href="#"><%= ml 'Help' %></a></li>
                 </ul>
               </li>
             </ul>

@@ -20,13 +20,11 @@ sub startup {
   $self->plugin('PODRenderer');
   $self->plugin('ML');
   $self->app->secret('Nkjlkj344!!!#4jkj;l');
-  # Router
+
   my $r = $self->routes;
-
-  # Normal route to controller
-  $r->get('/')->to('initial#welcome');
-  $r->get("/lang/:lang")->to(controller => 'initial', action => 'locale');
-
+  # General route
+  $r->route('/:controller/:action/*id')->via('GET','POST')
+    ->to(controller => 'initial', action => 'welcome', id => undef);
 };
 
 1;
