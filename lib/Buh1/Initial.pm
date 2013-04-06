@@ -24,7 +24,7 @@ sub login{
         my $password = Utils::trim $self->param('password');
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
-            if ( Utils::login($name, $password) ){ 
+            if ( Auth::login($name, $password) ){ 
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }
