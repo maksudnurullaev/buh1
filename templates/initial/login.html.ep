@@ -1,0 +1,34 @@
+% layout 'default';
+<h2><%= ml 'Cabinet' %></h2>
+% if( defined stash( 'error' ) && length stash( 'error' ) ) { 
+<div class='error'>
+%= ml 'Error!' 
+</div>
+% } 
+<div>
+ %= form_for '/initial/login' => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Name' 
+   </td>
+   <td> 
+    %= text_field 'name', class => stash 'name_class'  
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Password'
+   </td>
+   <td>
+    %= password_field 'password', class => stash 'password_class'
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Login')
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
