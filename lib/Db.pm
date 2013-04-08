@@ -22,6 +22,14 @@ my $DB_CURRENT_TYPE = $DB_SQLite_TYPE;
 
 my $SQLITE_FILE = Utils::get_root_path("db", "main.db");
 
+my $_production_mode = 1;
+sub set_production_mode{ $_production_mode = shift; };
+sub get_production_mode{ $_production_mode; };
+
+sub warn_if{
+    warn shift if get_production_mode ;
+};
+
 sub get_sqlite_file{
     return($SQLITE_FILE);
 };
@@ -30,15 +38,15 @@ sub get_db_connection{
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $dbh = DBI->connect("dbi:SQLite:dbname=" . Db::get_sqlite_file(),"","");
         if(!defined($dbh)){
-            warn $DBI::errstr;
+            warn_if $DBI::errstr;
             return(undef);
         }
         return($dbh);
     } elsif ($DB_CURRENT_TYPE == $DB_Pg_TYPE) {
-        warn "Error:Pg: Not implemeted yet!";
+        warn_if "Error:Pg: Not implemeted yet!";
         return(undef);
     } else {
-        warn "Error:DB: Unknown db type!";
+        warn_if "Error:DB: Unknown db type!";
         return(undef);
     }
 };
@@ -59,7 +67,7 @@ sub initialize{
             return(1);   
         } 
     } else {
-        warn "Error:DB: Unknown db type!";
+        warn_if "Error:DB: Unknown db type!";
         return(undef);
     }
 };
@@ -72,17 +80,17 @@ sub insert_object{
             && defined(Utils::trim($hashref->{object_name}))){
         $object_name = Utils::trim($hashref->{object_name});
     } else {
-        warn "Error:Db:Insert: No object or object name!";
+        warn_if "Error:Db:Insert: No object or object name!";
         return(undef);
     }
     if(scalar( keys %{$hashref}) == 1){
-        warn "Error:Db:Insert: No data!";
+        warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
     my $id = Utils::get_date_uuid();
     my $dbh = get_db_connection();
     if(!defined($dbh)){
-        warn "Error:Db:Insert Could not connect to db!";
+        warn_if "Error:Db:Insert Could not connect to db!";
         return(undef);
     }
     my $sth = $dbh->prepare(
@@ -98,12 +106,12 @@ sub insert_object{
 sub select_object{
     my $id = shift;
     if(!defined($id)){
-        warn "Error:Db:Select: No ID defined for search!";
+        warn_if "Error:Db:Select: No ID defined for search!";
         return(undef);
     }
     my $dbh = get_db_connection();
     if(!defined($dbh)){
-        warn "Error:Db:Insert Could not connect to db!";
+        warn_if "Error:Db:Insert Could not connect to db!";
         return(undef);
     }
     $dbh->{FetchHashKeyName} = 'NAME_lc';
@@ -118,7 +126,7 @@ sub select_object{
             }
             $result->{$id}{$field} = $value;
         }
-    } else { warn $DBI::errstr; }
+    } else { warn_if $DBI::errstr; }
     return($result);
 };
 
