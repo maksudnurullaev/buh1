@@ -9,6 +9,7 @@ BEGIN {
     use_ok('Db');
     require_ok('Db');
     ok(Db::initialize(), "Test for initialize script!");
+    Db::set_production_mode(0);
 };
 
 ok(Db::get_sqlite_file() =~ /\.db$/, "Test for db file");
