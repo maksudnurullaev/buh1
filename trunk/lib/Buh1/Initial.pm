@@ -25,6 +25,8 @@ sub login{
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
             if ( Auth::login($name, $password) ){ 
+                $self->session->{'user'} = $name;
+                warn "Login: " . $self->session->{'user'};
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }
@@ -32,6 +34,12 @@ sub login{
     }
     $self->stash(error => 1) if $error_found ;
     $self->render();
+};
+
+sub logout{
+    my $self = shift;
+    delete $self->session->{'user'};
+    $self->redirect_to('/');
 };
 
 1;
