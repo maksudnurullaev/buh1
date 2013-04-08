@@ -1,5 +1,6 @@
 1. Create login page
 1.1 (DONE) Create tests for db.
+1.2 Create login bar
 2.1 (DONE) Auto-recovery for db
 2.2 (DONE) Auto-recovery for admin.login
 2.2.1 (DONE) Create password hashing module
