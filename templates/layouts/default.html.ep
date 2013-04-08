@@ -13,7 +13,7 @@
   <div id="headerSection">
     <a href="http://www.apache.org/"><img src="/asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
     <div class="topBanner" id="ad_banner">
-      <%=languages_bar %>
+      <%= languages_bar %>
       <br /><br />
       <span><small><u>Divide et impera!</u></small></span>
     </div>

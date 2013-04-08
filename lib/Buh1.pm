@@ -19,7 +19,7 @@ sub startup {
 
   # Documentation browser under "/perldoc"
   $self->plugin('PODRenderer');
-  $self->plugin('ML');
+  $self->plugin('HTMLTags');
   $self->app->secret('Nkjlkj344!!!#4jkj;l');
 
   my $r = $self->routes;

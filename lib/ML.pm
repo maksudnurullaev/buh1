@@ -26,49 +26,16 @@ use 5.012000;
 use strict;
 use warnings;
 use utf8;
-use Utils;
-use base 'Mojolicious::Plugin';
+use Utils::Languages;
 
 our $VERSION        = 'v0.0.1b';
-our $DEFAULT_LANG   = 'rus';
-our @DEFAULT_LANGS  = ('eng', 'rus', 'uzb');
 our $FILE_NAME      = 'ML.INI';
 our $DIR_NAME    = 'ML';
-our $DEFAULT_FORMAT = '<a href="/initial/lang/%s">%s</a>'; 
-
-sub process_string;
-sub register {
-    my ($self,$app) = @_;
-    $app->helper( ml => sub { process_string (@_); } ); 
-    $app->helper( mlm => sub { process_block (@_); } ); 
-    $app->helper( languages_bar => sub { languages_bar (@_); } ); 
-};
-
-sub languages_bar{
-    my $self = shift;
-    my $format = shift || $DEFAULT_FORMAT;
-    my $result;
-    my $current_lang = get_current_language($self);
-    foreach(@DEFAULT_LANGS){
-        if($_ eq $current_lang){
-            $result .= ($result ? " $_" : $_ );
-        } else {
-            $result .= ($result ? " " : "" ) . sprintf($format, $_, $_);
-        }
-    }
-    return (Mojo::ByteStream->new($result));
-};
-
-sub get_current_language{
-    my $self = shift;
-    my $current_lang = $self->session->{'lang'} || $DEFAULT_LANG;
-    return($current_lang);
-};
 
 sub process_string {
     my $self = shift;
     my $key = shift;
-    my $value = get_value($key, get_current_language($self));
+    my $value = get_value($key, Utils::Languages::current($self));
     return(Mojo::ByteStream->new($value));
 };
 
@@ -78,7 +45,7 @@ sub process_block {
         return(Mojo::ByteStream->new("<font color='red'>ERROR:MLM: Invalid MLM block!</font>"));
     }
     my $value = $block->();
-    my $current_language = get_current_language($self);
+    my $current_language = Utils::Languages::current($self);
     my $values = load_from_file();
     if($key ~~ $values && $current_language ~~ $values->{$key}){
         $value = $values->{$key}{$current_language};
