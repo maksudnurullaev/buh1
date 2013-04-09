@@ -1,4 +1,4 @@
-package Buh1::Initial;
+package Buh1::Initial; {
 use Mojo::Base 'Mojolicious::Controller';
 
 # This action will render a template
@@ -26,7 +26,6 @@ sub login{
         if (!$error_found){
             if ( Auth::login($name, $password) ){ 
                 $self->session->{'user'} = $name;
-                warn "Login: " . $self->session->{'user'};
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }
@@ -43,3 +42,5 @@ sub logout{
 };
 
 1;
+
+};

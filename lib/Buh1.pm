@@ -1,9 +1,7 @@
 package Buh1;
 use Mojo::Base 'Mojolicious';
-use ML;
 use Auth;
 use Db;
-use Cwd;
 
 BEGIN {
   # Set up password for administrator
@@ -17,8 +15,6 @@ BEGIN {
 sub startup {
   my $self = shift;
 
-  # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer');
   $self->plugin('HTMLTags');
   $self->app->secret('Nkjlkj344!!!#4jkj;l');
 
