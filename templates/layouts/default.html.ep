@@ -11,7 +11,7 @@
 
 <body>
   <div id="headerSection">
-    <a href="http://www.apache.org/"><img src="/asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
+    <a href="http://buh1.uz/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
     <div class="topBanner" id="ad_banner">
       <% my $user = check_for('user'); %>
       <%= ml 'You' %>: 

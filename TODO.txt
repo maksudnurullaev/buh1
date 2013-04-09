@@ -6,6 +6,8 @@
 2.1 (DONE) Auto-recovery for db
 2.2 (DONE) Auto-recovery for admin.login
 2.2.1 (DONE) Create password hashing module
+3.1 Create memo system for registered user comments
+4.1 Change main logo picture
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
