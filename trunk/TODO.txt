@@ -1,6 +1,8 @@
 1. Create login page
 1.1 (DONE) Create tests for db.
-1.2 Create login bar
+1.2 (DONE)Create login bar
+1.4 Move user login actions to lib/Buh1/User.pm module
+1.4 Add change password page
 2.1 (DONE) Auto-recovery for db
 2.2 (DONE) Auto-recovery for admin.login
 2.2.1 (DONE) Create password hashing module

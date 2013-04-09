@@ -13,8 +13,16 @@
   <div id="headerSection">
     <a href="http://www.apache.org/"><img src="/asf_logo_wide.gif" alt="The Apache Software Foundation" align="left" border="0" height="51" width="537" /></a>
     <div class="topBanner" id="ad_banner">
-      <%= user_bar %>
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      <% my $user = check_for('user'); %>
+      <%= ml 'You' %>: 
+      % if($user) {
+      <strong><%= $user %></strong>
+      <sup><a href="/initial/logout"><%= ml 'Logout' %></a></sup>
+      % } else {
+      <strong><%= ml 'Guest' %></strong>
+      <sup><a href="/initial/login"><%= ml 'Login' %></a></sup>
+      % }
+      &nbsp;&nbsp;|||&nbsp;&nbsp;
       <%= languages_bar %>
       <br /><br />
       <span><small><u>Divide et impera!</u></small></span>
@@ -26,14 +34,19 @@
         <tr>
           <td class="navleft" valign="top" width="20%">
             <ul id="leftnav">
-              <li><%= ml 'Cabinet' %>
-                <ul>
-                  <li><a href="/initial/login"><%= ml 'Login' %></a></li>
-                </ul>
-              </li>
               <li><%= ml 'Home' %>
                 <ul>
-                  <li><a href="#"><%= ml 'About us' %></a></li>
+                  <li><a href="/"><%= ml 'About us' %></a></li>
+                </ul>
+              </li>
+              <li><%= ml 'Cabinet' %>
+                <ul>
+                  % if($user) {
+                  <li><a href="/initial/logout"><%= ml 'Logout' %></a></li>
+                  <li><a href="/initial/password"><%= ml 'Password' %></a></li>
+                  % } else {
+                  <li><a href="/initial/login"><%= ml 'Login' %></a></li>
+                  % }
                 </ul>
               </li>
             </ul>

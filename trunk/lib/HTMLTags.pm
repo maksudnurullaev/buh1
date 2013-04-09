@@ -38,6 +38,7 @@ sub register {
     $app->helper( mlm => sub { ML::process_block (@_); } ); 
     $app->helper( languages_bar => sub { Utils::Languages::bar (@_); } ); 
     $app->helper( user_bar => sub { Utils::User::bar (@_); } ); 
+    $app->helper( check_for => sub { Utils::check_for (@_); } ); 
 };
 
 
