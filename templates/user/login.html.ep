@@ -6,7 +6,7 @@
 </div>
 % } 
 <div>
- %= form_for '/initial/login' => (method => 'POST') => begin
+ %= form_for '/user/login' => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
    <td class='tar'> 

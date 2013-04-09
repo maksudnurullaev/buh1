@@ -17,10 +17,10 @@
       <%= ml 'You' %>: 
       % if($user) {
       <strong><%= $user %></strong>
-      <sup><a href="/initial/logout"><%= ml 'Logout' %></a></sup>
+      <sup><a href="/user/logout"><%= ml 'Logout' %></a></sup>
       % } else {
       <strong><%= ml 'Guest' %></strong>
-      <sup><a href="/initial/login"><%= ml 'Login' %></a></sup>
+      <sup><a href="/user/login"><%= ml 'Login' %></a></sup>
       % }
       &nbsp;&nbsp;|||&nbsp;&nbsp;
       <%= languages_bar %>
@@ -42,10 +42,10 @@
               <li><%= ml 'Cabinet' %>
                 <ul>
                   % if($user) {
-                  <li><a href="/initial/logout"><%= ml 'Logout' %></a></li>
-                  <li><a href="/initial/password"><%= ml 'Password' %></a></li>
+                  <li><a href="/user/logout"><%= ml 'Logout' %></a></li>
+                  <li><a href="/user/password"><%= ml 'Password' %></a></li>
                   % } else {
-                  <li><a href="/initial/login"><%= ml 'Login' %></a></li>
+                  <li><a href="/user/login"><%= ml 'Login' %></a></li>
                   % }
                 </ul>
               </li>
