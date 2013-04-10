@@ -36,6 +36,7 @@ sub get_admin_password_file_path{
 
 sub set_admin_password{
     my $password = shift;
+    warn $password;
     if(defined($password) && $password){
         my ($file,$f) = (get_admin_password_file_path(), undef);
         my $salted_password = salted_password($password);
@@ -65,6 +66,15 @@ sub login{
     }
     warn "$name,$password";
     return(0);
+};
+
+sub set_password{
+    my ($name, $password) = @_;
+    # 1. Is administrator
+    if( $name =~ /^admin$/i ){
+        return(set_admin_password($password));
+    }
+    return;
 };
 
 # END OF PACKAGE

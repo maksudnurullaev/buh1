@@ -13,7 +13,7 @@
     %= ml 'Name' 
    </td>
    <td> 
-    %= text_field 'name', class => stash 'name_class'  
+    %= text_field 'user', class => stash 'user_class'  
    </td>
   </tr>
   <tr>
