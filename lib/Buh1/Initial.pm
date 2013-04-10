@@ -9,7 +9,7 @@ sub welcome {
 
 sub lang{
     my $self = shift;
-    my $lang = $self->param('id');
+    my $lang = $self->param('payload'); #choosed language
     $self->session->{'lang'} = $lang;
     $self->redirect_to('/');
 };
