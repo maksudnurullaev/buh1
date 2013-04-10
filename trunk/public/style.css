@@ -261,7 +261,14 @@ img {}
 }
 div.alert {
     padding: 5px 5px 5px 5px;
-    margin: 0px 0px 5px 0px;
+    margin: 5px 0px 5px 0px;
+}
+div.form{
+    padding: 1px 0px 1px 0px;
+}
+div.toolbar{
+    padding: 0px 0px 3px 0px;
+    border-bottom: 1px solid #ddd;
 }
 .error {
     background-color: red;

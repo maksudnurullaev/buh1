@@ -1,0 +1,37 @@
+% layout 'default';
+<h2><%= ml 'New company' %></h2>
+<div class="toolbar">
+ <a href='/companies/list'><%= ml 'Companies' %></a>
+</div>
+% if( ds_ss 'error' ) { 
+<div class='alert error'>
+ %= ml 'Error!' 
+</div>
+% } 
+<div class="form">
+ %= form_for '/companies/add' => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Name' 
+   </td>
+   <td> 
+    %= text_field 'name', class => stash 'name_class'  
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td> 
+    %= text_area 'description', class => stash 'description_class'  
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button 
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

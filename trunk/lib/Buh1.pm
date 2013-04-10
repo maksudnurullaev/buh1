@@ -20,8 +20,8 @@ sub startup {
 
   my $r = $self->routes;
   # General route
-  $r->route('/:controller/:action/*id')->via('GET','POST')
-    ->to(controller => 'initial', action => 'welcome', id => undef);
+  $r->route('/:controller/:action/*payload')->via('GET','POST')
+    ->to(controller => 'initial', action => 'welcome', payload => undef);
 };
 
 1;

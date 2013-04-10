@@ -1,0 +1,11 @@
+% layout 'default';
+<h2><%= ml 'Companies' %></h2>
+<div class="toolbar">
+ <a href='/companies/add'><%= ml 'Add' %></a>
+</div>
+% if ( ds_ss 'companies' ) {
+ HELLO!
+% } else {
+<br />
+ %= ml 'No data!'
+% }
