@@ -1,8 +1,5 @@
 % layout 'default';
 <h2><%= ml 'New company' %></h2>
-<div class="toolbar">
- <a href='/companies/list'><%= ml 'Companies' %></a>
-</div>
 % if( ds_ss 'error' ) { 
 <div class='alert error'>
  %= ml 'Error!' 
