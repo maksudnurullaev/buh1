@@ -1,6 +1,6 @@
 % layout 'default';
 <h2><%= ml 'New company' %></h2>
-% if( ds_ss 'error' ) { 
+% if( ds_ls 'error' ) { 
 <div class='alert error'>
  %= ml 'Error!' 
 </div>

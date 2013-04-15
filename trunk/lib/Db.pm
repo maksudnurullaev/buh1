@@ -36,7 +36,7 @@ sub get_sqlite_file{
 
 sub get_db_connection{
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbh = DBI->connect("dbi:SQLite:dbname=" . Db::get_sqlite_file(),"","");
+        my $dbh = DBI->connect("dbi:SQLite:dbname=" . Db::get_sqlite_file(),"","", {sqlite_unicode => 1});
         if(!defined($dbh)){
             warn_if $DBI::errstr;
             return(undef);
@@ -72,9 +72,8 @@ sub initialize{
     }
 };
 
-sub insert_object{
-    my $hashref = shift;
-    my $object_name;
+sub insert{
+    my ($hashref, $object_name) = (shift, undef);
     if(defined($hashref) 
             && defined($hashref->{object_name})
             && defined(Utils::trim($hashref->{object_name}))){
@@ -103,9 +102,9 @@ sub insert_object{
     return($id);
 };
 
-sub select_object{
+sub select{
     my $id = shift;
-    if(!defined($id)){
+    if(!defined($id) || !$id){
         warn_if "Error:Db:Select: No ID defined for search!";
         return(undef);
     }
@@ -115,7 +114,8 @@ sub select_object{
         return(undef);
     }
     $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $sth = $dbh->prepare("SELECT name,id,field,value FROM objects WHERE id = ?");
+    my $sth = $dbh->prepare(
+        "SELECT name,id,field,value FROM objects WHERE id = ? ORDER BY id;");
     my($name,$field,$value,$id_current,$result) = (undef,undef,undef,"NONE",{});
     if($sth->execute($id)){
         $sth->bind_columns(\($name,$id,$field,$value));
@@ -128,6 +128,36 @@ sub select_object{
         }
     } else { warn_if $DBI::errstr; }
     return($result);
+};
+
+sub select_distinct_many{
+    my $where_ = shift;
+    if(!defined($where_) || !$where_){
+        warn_if "Error:Db:Select Distinct: No Where part defined!";
+        return(undef);
+    }
+    my $dbh = get_db_connection();
+    if(!defined($dbh)){
+        warn_if "Error:Db:Insert Could not connect to db!";
+        return(undef);
+    }
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
+    my $sth_str = sprintf 
+        'SELECT DISTINCT name, id, field, value FROM objects %s ;', $where_;
+    my $sth = $dbh->prepare($sth_str);
+    my ($name,$field,$value,$id,$id_current,$result) = (undef,undef,undef,undef,"NONE",{});
+    if($sth->execute){
+        $sth->bind_columns(\($name,$id,$field,$value));
+        while ($sth->fetch) {
+            if($id_current ne $id){
+                $result->{$id} = { name => $name }; 
+                $id_current = $id;
+            }
+            $result->{$id}{$field} = $value;
+        }
+    } else { warn_if $DBI::errstr; }
+    return($result);
+
 };
 
 };

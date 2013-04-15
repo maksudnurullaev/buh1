@@ -3,8 +3,19 @@
 <div class="toolbar">
  <a href='/companies/add'><%= ml 'Add' %></a>
 </div>
-% if ( ds_ss 'companies' ) {
- HELLO!
+% if ( ds_ls 'companies' ) {
+ <ul>
+  % for my $id( reverse sort keys %{$companies} ) {
+   <li>    
+    <%= link_to "/companies/edit/$id" => begin%><%= $companies->{$id}{name} %><% end %>
+    % if($companies->{$id}{description}) {
+      <ul><li>
+       %= $companies->{$id}{description}
+      </li></ul>
+    % }
+   </li>
+  % }
+ </ul>
 % } else {
 <br />
  %= ml 'No data!'
