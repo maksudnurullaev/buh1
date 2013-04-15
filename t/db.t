@@ -16,18 +16,18 @@ ok(Db::get_sqlite_file() =~ /\.db$/, "Test for db file");
 ok(Db::get_db_connection(), "Get proper db connection (SQLITE)!");
 
 # -= check for invalid hash =-
-ok(!defined(Db::insert_object({})));
-ok(!defined(Db::insert_object({object_name => "user"})));
+ok(!defined(Db::insert({})));
+ok(!defined(Db::insert({object_name => "user"})));
 
 # -= check for single insertrion =-
-my $id_1 = Db::insert_object({
+my $id_1 = Db::insert({
     object_name => "test object",
     field1      => "value1",
     field2      => "value2"});
 ok($id_1);
 
 # -= check for single select =-
-my $hash_ref = Db::select_object($id_1);
+my $hash_ref = Db::select($id_1);
 my @ids = keys %{$hash_ref};
 ok($id_1 eq $ids[0]);
 ok("value1" eq $hash_ref->{$id_1}{field1}, "Check for value #1");
@@ -38,10 +38,10 @@ my $many_fields_data = { object_name => "test object" };
 for(my $i=1;$i<=100;$i++){
     $many_fields_data->{ "field$i" } = ("value" x $i); 
 }
-my $id_2 = Db::insert_object($many_fields_data);
+my $id_2 = Db::insert($many_fields_data);
 ok($id_2, "Check for valid id!");
 
-my $data = Db::select_object($id_2);
+my $data = Db::select($id_2);
 for(my $i=1;$i<=100;$i++){
     ok(length($data->{$id_2}{"field$i"}) == (5*$i), "Test for values!");
 }

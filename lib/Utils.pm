@@ -53,14 +53,12 @@ sub get_root_path{
     }
 };
 
-sub ds_ss{
-    my ($self,$key) = @_;
-    return(defined($self->stash($key)) && scalar($self->stash($key)));
-};
-
 sub ds_ls{
     my ($self,$key) = @_;
-    return(defined($self->stash($key)) && length($self->stash($key)));
+    return(undef) if !defined($self->stash($key));
+    return(scalar(@{$self->stash($key)})) if ref($self->stash($key)) eq "ARRAY";
+    return(scalar(keys(%{$self->stash($key)}))) if ref($self->stash($key)) eq "HASH"; 
+    return($self->stash($key));
 };
 
 sub check_for{

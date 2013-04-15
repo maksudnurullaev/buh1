@@ -2,8 +2,10 @@
 1.1 (DONE) Create tests for db.
 1.2 (DONE) Create login bar
 1.4 (DONE) Move user login actions to lib/Buh1/User.pm module
-1.4 Add change password page
+1.4 (DONE, just for admin awhile) Add change password page
 1.5 Add Companies functionality
+1.5.1 Add search bar
+1.5.2 Add edit|remove functionality
 2.1 (DONE) Auto-recovery for db
 2.2 (DONE) Auto-recovery for admin.login
 2.2.1 (DONE) Create password hashing module

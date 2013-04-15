@@ -45,8 +45,11 @@ sub password{
         if (!$password2) { $error_found = 1; $self->stash(password2_class => "error")};
 
         # stage 2 - check for password1 and password2 equality
-        if( $password1 ne $password2 ){
+        if( !$password1 
+            || !$password2 
+            || ($password1 ne $password2) ){
             $error_found = 1;
+            warn "ERRORmme";
             $self->stash(password1_class => "error");
             $self->stash(password2_class => "error");
         }
