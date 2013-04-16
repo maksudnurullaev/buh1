@@ -1,15 +1,11 @@
 % layout 'default';
-<h2><%= ml 'Companies' %></h2>
-<div class="toolbar">
- <a href='/companies/add'><%= ml 'Add' %></a>
- |
- <a href='/companies/deleted'><%= ml 'Deleted' %></a>
-</div>
+<h2><%= ml 'Deleted' %> <%= ml 'Companies' %></h2>
 % if ( if_defined 'companies' ) {
  <ul>
   % for my $id( reverse sort keys %{$companies} ) {
    <li>    
-    <%= link_to "/companies/edit/$id" => begin%><%= $companies->{$id}{name} %><% end %>
+    <%= link_to "/companies/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    <%= $companies->{$id}{name} %>
     % if($companies->{$id}{description}) {
       <ul><li>
        %= $companies->{$id}{description}

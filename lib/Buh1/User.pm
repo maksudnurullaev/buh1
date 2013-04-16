@@ -49,7 +49,6 @@ sub password{
             || !$password2 
             || ($password1 ne $password2) ){
             $error_found = 1;
-            warn "ERRORmme";
             $self->stash(password1_class => "error");
             $self->stash(password2_class => "error");
         }

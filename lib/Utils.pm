@@ -53,7 +53,7 @@ sub get_root_path{
     }
 };
 
-sub ds_ls{
+sub if_defined{
     my ($self,$key) = @_;
     return(undef) if !defined($self->stash($key));
     return(scalar(@{$self->stash($key)})) if ref($self->stash($key)) eq "ARRAY";
