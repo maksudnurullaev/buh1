@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml 'New company' %></h2>
+<h2><%= ml 'Company' %></h2>
 % if( if_defined 'success' ) { 
 <div class='alert success'> Ok  </div>
 % } 
