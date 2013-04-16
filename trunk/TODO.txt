@@ -16,3 +16,4 @@
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
 CREATE INDEX i_objects ON objects (name, id, field);
 
+=== Some tips ===
