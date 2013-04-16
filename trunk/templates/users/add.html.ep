@@ -1,0 +1,58 @@
+% layout 'default';
+<h2><%= ml 'New user' %></h2>
+% if( if_defined 'success' ) { 
+<div class='alert success'> Ok  </div>
+% } 
+% if( if_defined 'error' ) { 
+<div class='alert error'><%= ml 'Error!' %></div>
+% } 
+<div class="form">
+ % my $path = if_defined('edit_mode')?"/users/edit/$payload":'/users/add';
+ %= form_for $path => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'E-mail' 
+   </td>
+   <td> 
+    %= text_field email => (stash 'email') , class => stash 'email_class'  
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'New Password'
+   </td>
+   <td>
+    %= password_field 'password1', class => stash 'password1_class'
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'New Password(again)'
+   </td>
+   <td>
+    %= password_field 'password2', class => stash 'password2_class'
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td> 
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    % if( if_defined 'edit_mode') {
+     %= submit_button ml('Edit')
+     |  
+     <%= link_to "/users/del/$payload" => begin %><%= ml 'Delete' %><% end %>
+    % } else {
+     %= submit_button ml('Add')
+    % }
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

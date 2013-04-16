@@ -1,0 +1,20 @@
+% layout 'default';
+<h2><%= ml 'Deleted' %> <%= ml 'Users' %></h2>
+% if ( if_defined 'users' ) {
+ <ul>
+  % for my $id( reverse sort keys %{$users} ) {
+   <li>    
+    <%= link_to "/users/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    <%= $users->{$id}{email} %>
+    % if($users->{$id}{description}) {
+      <ul><li>
+       %= $users->{$id}{description}
+      </li></ul>
+    % }
+   </li>
+  % }
+ </ul>
+% } else {
+<br />
+ %= ml 'No data!'
+% }

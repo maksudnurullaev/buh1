@@ -16,7 +16,6 @@ sub deleted{
     my $self = shift;
     return if !$self->is_admin;
     my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ORDER BY id DESC ");
-    warn keys %{$companies};
     $self->stash(companies => $companies);
 };
 
@@ -36,7 +35,7 @@ sub validate{
     my $self = shift;
     my $data = { 
         object_name => $OBJECT_NAME,
-        user => Utils::User::current($self) };
+        creator => Utils::User::current($self) };
     $data->{name} = Utils::trim $self->param('name');
     if(!$data->{name}){ 
         $data->{error} = 1;
@@ -76,7 +75,7 @@ sub edit{
         $data = validate( $self );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
-            if( Db::insert($data) ){
+            if( Db::update($data) ){
                 $self->stash(success => 1);
             } else {
                 $self->stash(error => 1);

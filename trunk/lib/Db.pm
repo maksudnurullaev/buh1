@@ -90,27 +90,50 @@ sub del{
     return;
 };
 
-sub insert{
-    my ($hashref, $object_name) = (shift, undef);
+sub update{
+    my ($hashref, $object_name, $id) = (shift, undef, undef);
     if(defined($hashref) 
             && defined($hashref->{object_name})
-            && defined(Utils::trim($hashref->{object_name}))){
+            && defined($hashref->{id})){
         $object_name = Utils::trim($hashref->{object_name});
+        $id = $hashref->{id};
+        delete $hashref->{id}; 
+        delete $hashref->{object_name};
+    } else {
+        warn_if "Error:Db:Update: No object or object name or Id!";
+        return(undef);
+    }
+    if(scalar( keys %{$hashref}) == 0){
+        warn_if "Error:Db:Insert: No data!";
+        return(undef);
+    }
+    my $dbh = get_db_connection();
+    if(!defined($dbh)){
+        warn_if "Error:Db:Insert Could not connect to db!";
+        return(undef);
+    }
+    my $sth = $dbh->prepare(
+        qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; });
+    for my $field (keys %{$hashref}){
+        $sth->execute($hashref->{$field},$object_name,$id,$field);
+    }
+    return($id);
+};
+
+sub insert{
+    my ($hashref, $object_name) = (shift, undef);
+    if( defined($hashref) && defined($hashref->{object_name}) ){
+        $object_name = $hashref->{object_name};
+        delete $hashref->{object_name}; 
     } else {
         warn_if "Error:Db:Insert: No object or object name!";
         return(undef);
     }
-    if(scalar( keys %{$hashref}) == 1){
+    if(scalar( keys %{$hashref}) == 0){
         warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
-    my $id;
-    if( exists($hashref->{id}) ){
-        $id = $hashref->{id};
-        del($id);
-    } else {
-        $id = Utils::get_date_uuid();
-    }
+    my $id = Utils::get_date_uuid();
     my $dbh = get_db_connection();
     if(!defined($dbh)){
         warn_if "Error:Db:Insert Could not connect to db!";
@@ -119,10 +142,7 @@ sub insert{
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
     for my $field (keys %{$hashref}){
-        if( $field !~ /^object_name$/i ||
-            $field !~ /^id$/i ){
-            $sth->execute($object_name,$id,$field,$hashref->{$field});
-        }
+        $sth->execute($object_name,$id,$field,$hashref->{$field});
     }
     return($id);
 };
@@ -146,7 +166,7 @@ sub select{
         $sth->bind_columns(\($name,$id,$field,$value));
         while ($sth->fetch) {
             if($id_current ne $id){
-                $result->{$id} = { name => $name }; 
+                $result->{$id} = { object_name => $name }; 
                 $id_current = $id;
             }
             $result->{$id}{$field} = $value;
@@ -175,7 +195,7 @@ sub select_distinct_many{
         $sth->bind_columns(\($name,$id,$field,$value));
         while ($sth->fetch) {
             if($id_current ne $id){
-                $result->{$id} = { name => $name }; 
+                $result->{$id} = { object_name => $name }; 
                 $id_current = $id;
             }
             $result->{$id}{$field} = $value;
