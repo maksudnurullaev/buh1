@@ -1,0 +1,24 @@
+% layout 'default';
+<h2><%= ml 'Users' %></h2>
+<div class="toolbar">
+ <a href='/users/add'><%= ml 'Add' %></a>
+ |
+ <a href='/users/deleted'><%= ml 'Deleted' %></a>
+</div>
+% if ( if_defined 'users' ) {
+ <ul>
+  % for my $id( reverse sort keys %{$users} ) {
+   <li>    
+    <%= link_to "/users/edit/$id" => begin%><%= $users->{$id}{email} %><% end %>
+    % if($users->{$id}{description}) {
+      <ul><li>
+       %= $users->{$id}{description}
+      </li></ul>
+    % }
+   </li>
+  % }
+ </ul>
+% } else {
+<br />
+ %= ml 'No data!'
+% }

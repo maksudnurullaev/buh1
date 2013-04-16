@@ -13,10 +13,10 @@ BEGIN {
 };
 
 # -= check for single with many fields =-
-my ($rows_count, $objects_name) = ((), 10, 'db2.t test object');
+my ($rows_count, $objects_name) = ((), 3, 'db2.t test object');
 my @ids = ();
-my $many_data = { object_name => $objects_name };
 for(my $i=1;$i<=$rows_count;$i++){
+    $many_data->{ object_name } = $objects_name;
     $many_data->{ "field$i" } = ("value" x $i); 
     push @ids, Db::insert($many_data);
 }
@@ -25,7 +25,8 @@ ok(scalar(@ids) == $rows_count, 'Test for array size');
 my $hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field1' ORDER BY id DESC ");
 ok(scalar(keys(%{$hashref})) == $rows_count, 'Test disctinct selection size!');
 
-$hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field10' ORDER BY id DESC ");
+
+$hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field$rows_count' ORDER BY id DESC ");
 ok(scalar(keys(%{$hashref})) == 1, 'Test disctinct selection size!');
 
 ### -= FINISH =-

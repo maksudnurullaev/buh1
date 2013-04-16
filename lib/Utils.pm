@@ -105,6 +105,19 @@ sub is_user{
 
 1;
 
+sub validate_passwords{
+    my ($password1, $password2) = @_;
+    return(     $password1 
+            &&  $password2 
+            && ($password1 eq $password2) );
+};
+
+sub validate_email{
+    my $email = shift;
+    return($email =~ /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/) if $email;
+    return;
+};
+
 __END__
 
 =head1 AUTHOR

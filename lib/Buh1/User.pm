@@ -36,7 +36,7 @@ sub password{
     my $error_found = 0;
     if ( $method =~ /POST/ ){
         $self->stash(post => 1);
-        # stage 1 - check for valid values
+        # check for valid values
         my $password = Utils::trim $self->param('password');
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
         my $password1 = Utils::trim $self->param('password1');
@@ -44,20 +44,18 @@ sub password{
         my $password2 = Utils::trim $self->param('password2');
         if (!$password2) { $error_found = 1; $self->stash(password2_class => "error")};
 
-        # stage 2 - check for password1 and password2 equality
-        if( !$password1 
-            || !$password2 
-            || ($password1 ne $password2) ){
+        # check for password1 and password2 equality
+        if( !Utils::validate_passwords($password1, $password2) ){ 
             $error_found = 1;
             $self->stash(password1_class => "error");
             $self->stash(password2_class => "error");
         }
-        # stage 3 - check for user and password
+        # check for user and password
         if ( !Auth::login($user, $password) ){ 
             $error_found = 1; 
             $self->stash(password_class => "error")
         }
-        # stage 4 - final, change password
+        # change password
         if( !$error_found ){
             if(Auth::set_password($user,$password1)){
                 $self->stash(success => 1);
