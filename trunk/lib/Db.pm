@@ -72,6 +72,24 @@ sub initialize{
     }
 };
 
+sub change_name{
+    my ($new_name, $id) = @_;
+    if( $new_name && $id ){
+         my $dbh = Db::get_db_connection();
+         return $dbh->do("UPDATE objects SET name = '$new_name' WHERE id = '$id' ;");
+    }
+    return;
+};
+
+sub del{
+    my $id = shift;
+    if( $id ){
+        my $dbh = Db::get_db_connection();
+        return $dbh->do("DELETE FROM objects WHERE id = '$id' ;");
+    }
+    return;
+};
+
 sub insert{
     my ($hashref, $object_name) = (shift, undef);
     if(defined($hashref) 
@@ -86,7 +104,13 @@ sub insert{
         warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
-    my $id = Utils::get_date_uuid();
+    my $id;
+    if( exists($hashref->{id}) ){
+        $id = $hashref->{id};
+        del($id);
+    } else {
+        $id = Utils::get_date_uuid();
+    }
     my $dbh = get_db_connection();
     if(!defined($dbh)){
         warn_if "Error:Db:Insert Could not connect to db!";
@@ -95,7 +119,8 @@ sub insert{
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
     for my $field (keys %{$hashref}){
-        if( $field !~ /^object_name$/){
+        if( $field !~ /^object_name$/i ||
+            $field !~ /^id$/i ){
             $sth->execute($object_name,$id,$field,$hashref->{$field});
         }
     }

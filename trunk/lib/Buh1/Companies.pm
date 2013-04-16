@@ -2,6 +2,8 @@ package Buh1::Companies; {
 use Mojo::Base 'Mojolicious::Controller';
 
 my $OBJECT_NAME = 'company';
+my $DELETED_OBJECT_NAME = 'deleted company';
+
 sub list{
     my $self = shift;
     return if !$self->is_admin;
@@ -10,13 +12,31 @@ sub list{
     $self->render();
 };
 
-sub edit{
+sub deleted{
+    my $self = shift;
+    return if !$self->is_admin;
+    my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ORDER BY id DESC ");
+    warn keys %{$companies};
+    $self->stash(companies => $companies);
+};
 
+sub restore{
+    my $self = shift;
+    return if !$self->is_admin;
+    my $id = $self->param('payload');
+    if( $id ){
+        Db::change_name($OBJECT_NAME, $id);
+    } else {
+        warn "Companies:restore:error company id not defined!"; 
+    }
+    $self->redirect_to('companies/deleted');
 };
 
 sub validate{
     my $self = shift;
-    my $data = { object_name => $OBJECT_NAME };
+    my $data = { 
+        object_name => $OBJECT_NAME,
+        user => Utils::User::current($self) };
     $data->{name} = Utils::trim $self->param('name');
     if(!$data->{name}){ 
         $data->{error} = 1;
@@ -27,11 +47,60 @@ sub validate{
     return($data);
 };
 
+sub del{
+    my $self = shift;
+    return if !$self->is_admin;
+    my $id = $self->param('payload');
+    if( $id ){
+        Db::change_name($DELETED_OBJECT_NAME, $id);
+    } else {
+        warn "Companies:delete:error company id not defined!"; 
+    }
+    $self->redirect_to('companies/list');
+};
+
+sub edit{
+    my $self = shift;
+    return if !$self->is_admin;
+
+    $self->stash(edit_mode => 1);
+    my $method = $self->req->method;
+    my $data;
+    my $id = $self->param('payload');
+    if( !$id) { 
+        $self->redirect_to('companies/list'); 
+        warn "Companies:edit:error company id not defined!";
+        return; 
+    }
+    if ( $method =~ /POST/ ){
+        $data = validate( $self );
+        if( !exists($data->{error}) ){
+            $data->{id} = $id;
+            if( Db::insert($data) ){
+                $self->stash(success => 1);
+            } else {
+                $self->stash(error => 1);
+                warn 'Companies:edit:ERROR: could not update company!';
+            }
+        } else {
+            $self->stash(error => 1);
+        }
+    } 
+    $data = Db::select($id);
+    if( $data ){
+        for my $key (keys %{$data->{$id}} ){
+            $self->stash($key => $data->{$id}->{$key});
+        }
+    } else {
+        redirect_to('companies/list');
+    }
+    $self->render('companies/add');
+};
+
 sub add{
     my $self = shift;
     return if !$self->is_admin;
 
-    my $user = Utils::User::current($self);
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         # check values
@@ -53,4 +122,4 @@ sub add{
 
 1;
 
-};
+
