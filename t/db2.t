@@ -22,11 +22,11 @@ for(my $i=1;$i<=$rows_count;$i++){
 }
 ok(scalar(@ids) == $rows_count, 'Test for array size');
 
-my $hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field1' ORDER BY id DESC ");
+my $hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field1' ");
 ok(scalar(keys(%{$hashref})) == $rows_count, 'Test disctinct selection size!');
 
 
-$hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field$rows_count' ORDER BY id DESC ");
+$hashref = Db::select_distinct_many(" WHERE name='$objects_name' AND field='field$rows_count' ");
 ok(scalar(keys(%{$hashref})) == 1, 'Test disctinct selection size!');
 
 ### -= FINISH =-
