@@ -138,6 +138,25 @@ sub insert{
     return($id);
 };
 
+sub format_statement2hash_objects{
+    my $sth = shift;
+    return {} if !$sth;
+    my($name,$id,$field,$value,$result) = (undef,undef,undef,undef,{});
+    $sth->bind_columns(\($name,$id,$field,$value));
+    while ($sth->fetch) {
+        $result->{$id} = {} if !exists($result->{$id});
+        if( $name =~ /^_/ ){ # extended field name!!!
+            $result->{$id}->{$name} = {} if !exists($result->{$id}->{$name});
+            $result->{$id}->{$name}->{$value} = $field;
+        } else {
+            $result->{$id} = { object_name => $name } 
+                if !exists($result->{$id}->{object_name}); 
+            $result->{$id}{$field} = $value;
+        }
+    }
+    return($result);
+};
+
 sub get_object{
     my $id = shift;
     if(!defined($id) || !$id){
@@ -148,18 +167,10 @@ sub get_object{
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare(
         "SELECT name,id,field,value FROM objects WHERE id = ? ORDER BY id;");
-    my($name,$field,$value,$id_current,$result) = (undef,undef,undef,"NONE",{});
     if($sth->execute($id)){
-        $sth->bind_columns(\($name,$id,$field,$value));
-        while ($sth->fetch) {
-            if($id_current ne $id){
-                $result->{$id} = { object_name => $name }; 
-                $id_current = $id;
-            }
-            $result->{$id}{$field} = $value;
-        }
+        return(format_statement2hash_objects($sth));
     } else { warn_if $DBI::errstr; }
-    return($result);
+    return;
 };
 
 sub select_distinct_many{
@@ -174,16 +185,9 @@ sub select_distinct_many{
     my $sth = $dbh->prepare($sth_str);
     my ($name,$field,$value,$id,$id_current,$result) = (undef,undef,undef,undef,"NONE",{});
     if($sth->execute){
-        $sth->bind_columns(\($name,$id,$field,$value));
-        while ($sth->fetch) {
-            if($id_current ne $id){
-                $result->{$id} = { object_name => $name }; 
-                $id_current = $id;
-            }
-            $result->{$id}{$field} = $value;
-        }
+        return(format_statement2hash_objects($sth));
     } else { warn_if $DBI::errstr; }
-    return($result);
+    return;
 };
 
 # -= LINKS betweeen two objects =-

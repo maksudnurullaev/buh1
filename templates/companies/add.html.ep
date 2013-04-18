@@ -40,3 +40,13 @@
  </table>
  % end
 </div>
+%# USERS MANAGEMENT FORMS
+% if( if_defined 'edit_mode') {
+<h3><%= ml 'Users' %></h3>
+<div class="form">
+ %= form_for '/companies/delete_user/$payload' => (method => 'POST') => begin
+  %= select_field user => $users
+  %= submit_button ml('Add')
+ % end
+</div>
+% }

@@ -2,6 +2,7 @@ package Buh1::Companies; {
 use Mojo::Base 'Mojolicious::Controller';
 
 my $OBJECT_NAME = 'company';
+my $USER_OBJECT_NAME = 'user';
 my $DELETED_OBJECT_NAME = 'deleted company';
 
 sub list{
@@ -86,6 +87,14 @@ sub edit{
         }
     } 
     $data = Db::get_object($id);
+    my $user_objects = Db::select_distinct_many(" WHERE name='$USER_OBJECT_NAME' ");
+    if (scalar keys %{$user_objects}) {
+        my $users = [];
+        for my $user_id(keys %{$user_objects}){
+            push @{$users}, [$user_objects->{$user_id}->{email} => $user_id];
+        }
+        $self->stash(users => $users);
+    }
     if( $data ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
