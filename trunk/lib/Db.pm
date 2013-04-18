@@ -75,7 +75,7 @@ sub initialize{
 sub change_name{
     my ($new_name, $id) = @_;
     if( $new_name && $id ){
-         my $dbh = Db::get_db_connection();
+         my $dbh = Db::get_db_connection() || return;
          return $dbh->do("UPDATE objects SET name = '$new_name' WHERE id = '$id' ;");
     }
     return;
@@ -84,11 +84,7 @@ sub change_name{
 sub del{
     my $id = shift;
     return if !$id;
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:get_link Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     return $dbh->do("DELETE FROM objects WHERE id = '$id' ;");
 };
 
@@ -109,11 +105,7 @@ sub update{
         warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:Insert Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection()  || return;
     my $sth = $dbh->prepare(
         qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; });
     for my $field (keys %{$hashref}){
@@ -136,11 +128,7 @@ sub insert{
         return(undef);
     }
     my $id = Utils::get_date_uuid();
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:Insert Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
     for my $field (keys %{$hashref}){
@@ -155,11 +143,7 @@ sub select{
         warn_if "Error:Db:Select: No ID defined for search!";
         return(undef);
     }
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:Insert Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare(
         "SELECT name,id,field,value FROM objects WHERE id = ? ORDER BY id;");
@@ -183,11 +167,7 @@ sub select_distinct_many{
         warn_if "Error:Db:Select Distinct: No Where part defined!";
         return(undef);
     }
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:Insert Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = "SELECT DISTINCT name, id, field, value FROM objects $where ORDER BY id DESC ;";
     my $sth = $dbh->prepare($sth_str);
@@ -206,20 +186,22 @@ sub select_distinct_many{
 
 };
 
+# -= LINKS betweeen two objects =-
+# ==============================
+# | NAME | ID  | FIELD | VALUE |
+# ==============================
+# | link | id1 | name2 | id2   |
+# ------------------------------
 sub exists_link{
     my ($id1,$id2) = @_;
     return if( !$id1 || !$id2 );
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:get_link Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
-        'SELECT COUNT(*) FROM objects WHERE (name=? AND id=?) OR (name=? AND id=?) ;';
+        "SELECT COUNT(*) FROM objects WHERE name='link' AND id=? AND value=? ;";
     my $sth = $dbh->prepare($sth_str);
     my ($field,$value,$result) = (undef,undef,[]);
-    if($sth->execute($id1, $id2, $id1, $id2)){
+    if($sth->execute($id1, $id2)){
         my($count) = $sth->fetchrow_array;
         return $count; 
     } 
@@ -232,35 +214,27 @@ sub set_link{
     return(0) if( !$name1 || !$id2 || !$name2 || !$id2 );
     return(1) if exists_link($id1,$id2);
 
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:set_link Could not connect to db!";
-        return(undef);
-    }
+    my $dbh = get_db_connection() || return;
     my $sth = $dbh->prepare(
-        "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
-    return(0) if !$sth->execute($id2,$id1,$name2,'link');
-    return(0) if !$sth->execute($id1,$id2,$name1,'link');
+        'INSERT INTO objects (name,id,field,value) values(?,?,?,?);');
+    return(0) if !$sth->execute('link',$id1,$name2,$id2);
+    return(0) if !$sth->execute('link',$id2,$name1,$id1);
     return(1);
 };
 
 sub get_link{
-    my ($name,$id) = @_;
-    return if( !$name || !$id );
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:get_link Could not connect to db!";
-        return(undef);
-    }
+    my ($id1,$name2) = @_;
+    return if( !$name2 || !$id1 );
+    my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
-        'SELECT DISTINCT name, id, field, value FROM objects WHERE id=? AND field=? ORDER BY id DESC;';
+        "SELECT DISTINCT value FROM objects WHERE name='link' AND id=? AND field=? ;";
     my $sth = $dbh->prepare($sth_str);
-    my ($field,$value,$result) = (undef,undef,[]);
-    if($sth->execute($id, $name)){
-        $sth->bind_columns(\($name,$id,$field,$value));
-        while ($sth->fetch) {
-            push @$result, $name; 
+    my ($id2,$result) = (undef,{});
+    if($sth->execute($id1, $name2)){
+        $sth->bind_columns(\($id2));
+        while ($sth->fetch){
+            $result->{$id2} = undef; 
         }
     } else { warn_if $DBI::errstr; }
     return($result);
@@ -269,12 +243,9 @@ sub get_link{
 sub del_link{
     my $id = shift;
     return if( !$id );
-    my $dbh = get_db_connection();
-    if(!defined($dbh)){
-        warn_if "Error:Db:get_link Could not connect to db!";
-        return(undef);
-    }
-    return $dbh->do("DELETE FROM objects WHERE id = '$id' OR name='$id' ;");
+    my $dbh = get_db_connection() || return;
+    return $dbh->do(
+        "DELETE FROM objects WHERE name='link' AND (id = '$id' OR value = '$id') ;");
 };
 
 };
