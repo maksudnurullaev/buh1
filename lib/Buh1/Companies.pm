@@ -7,7 +7,7 @@ my $DELETED_OBJECT_NAME = 'deleted company';
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::select_distinct_many(" WHERE name='$OBJECT_NAME' ORDER BY id DESC ");
+    my $companies = Db::select_distinct_many(" WHERE name='$OBJECT_NAME' ");
     $self->stash(companies => $companies);
     $self->render();
 };
@@ -15,7 +15,7 @@ sub list{
 sub deleted{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ORDER BY id DESC ");
+    my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ");
     $self->stash(companies => $companies);
 };
 
