@@ -85,7 +85,7 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::select($id);
+    $data = Db::get_object($id);
     if( $data ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
