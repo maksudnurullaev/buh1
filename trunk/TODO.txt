@@ -4,6 +4,7 @@
 1.4 (DONE) Move user login actions to lib/Buh1/User.pm module
 1.4 (DONE, just for admin awhile) Add change password page
 1.5 Add Companies functionality
+1.5.1 Add to Company edit page subform for adding link to user 
 1.5.0.2 (DONE) Add restore page for deleted objects
 1.5.1 Add search bar
 2.1 (DONE) Auto-recovery for db
