@@ -49,6 +49,7 @@ ok(scalar(keys %{$result}) == 1, "Test for result count");
 ### -= FINISH =-
 END{
     my $dbh = Db::get_db_connection();
-    $dbh->do("DELETE FROM objects WHERE name= 'link' AND field LIKE 'test object%'");
+    $dbh->do("DELETE FROM objects WHERE name='_link_' AND field LIKE 'test%' ; ");
+    $dbh->do("DELETE FROM objects WHERE name LIKE 'test object%' ; ");
 };
 done_testing();

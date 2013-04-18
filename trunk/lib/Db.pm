@@ -21,6 +21,7 @@ my $DB_Pg_TYPE      = 2;
 my $DB_CURRENT_TYPE = $DB_SQLite_TYPE;
 
 my $SQLITE_FILE = Utils::get_root_path("db", "main.db");
+my $LINK_OBJECT_NAME = '_link_';
 
 my $_production_mode = 1;
 sub set_production_mode{ $_production_mode = shift; };
@@ -137,7 +138,7 @@ sub insert{
     return($id);
 };
 
-sub select{
+sub get_object{
     my $id = shift;
     if(!defined($id) || !$id){
         warn_if "Error:Db:Select: No ID defined for search!";
@@ -183,7 +184,6 @@ sub select_distinct_many{
         }
     } else { warn_if $DBI::errstr; }
     return($result);
-
 };
 
 # -= LINKS betweeen two objects =-
@@ -198,10 +198,10 @@ sub exists_link{
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
-        "SELECT COUNT(*) FROM objects WHERE name='link' AND id=? AND value=? ;";
+        "SELECT COUNT(*) FROM objects WHERE name=? AND id=? AND value=? ;";
     my $sth = $dbh->prepare($sth_str);
     my ($field,$value,$result) = (undef,undef,[]);
-    if($sth->execute($id1, $id2)){
+    if($sth->execute($LINK_OBJECT_NAME,$id1,$id2)){
         my($count) = $sth->fetchrow_array;
         return $count; 
     } 
@@ -217,8 +217,8 @@ sub set_link{
     my $dbh = get_db_connection() || return;
     my $sth = $dbh->prepare(
         'INSERT INTO objects (name,id,field,value) values(?,?,?,?);');
-    return(0) if !$sth->execute('link',$id1,$name2,$id2);
-    return(0) if !$sth->execute('link',$id2,$name1,$id1);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id1,$name2,$id2);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id2,$name1,$id1);
     return(1);
 };
 
@@ -228,13 +228,13 @@ sub get_link{
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
-        "SELECT DISTINCT value FROM objects WHERE name='link' AND id=? AND field=? ;";
+        "SELECT DISTINCT value FROM objects WHERE name=? AND id=? AND field=? ;";
     my $sth = $dbh->prepare($sth_str);
     my ($id2,$result) = (undef,{});
-    if($sth->execute($id1, $name2)){
+    if($sth->execute($LINK_OBJECT_NAME,$id1, $name2)){
         $sth->bind_columns(\($id2));
         while ($sth->fetch){
-            $result->{$id2} = undef; 
+            $result->{$id2} = get_object($id2)->{$id2}; 
         }
     } else { warn_if $DBI::errstr; }
     return($result);
@@ -245,7 +245,7 @@ sub del_link{
     return if( !$id );
     my $dbh = get_db_connection() || return;
     return $dbh->do(
-        "DELETE FROM objects WHERE name='link' AND (id = '$id' OR value = '$id') ;");
+        "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND (id = '$id' OR value = '$id') ;");
 };
 
 };
