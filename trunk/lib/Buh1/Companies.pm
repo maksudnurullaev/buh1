@@ -1,5 +1,6 @@
 package Buh1::Companies; {
 use Mojo::Base 'Mojolicious::Controller';
+use Data::Dumper;
 
 my $OBJECT_NAME = 'company';
 my $USER_OBJECT_NAME = 'user';
@@ -18,6 +19,7 @@ sub deleted{
     return if !$self->is_admin;
     my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ");
     $self->stash(companies => $companies);
+    $self->render();
 };
 
 sub restore{
@@ -86,16 +88,15 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::get_object($id);
+
     my $user_objects = Db::select_distinct_many(" WHERE name='$USER_OBJECT_NAME' ");
-    if (scalar keys %{$user_objects}) {
-        my $users = [];
-        for my $user_id(keys %{$user_objects}){
-            push @{$users}, [$user_objects->{$user_id}->{email} => $user_id];
-        }
-        $self->stash(users => $users);
+    my $users = [];
+    for my $user_id(keys %{$user_objects}){
+        push @{$users}, [$user_objects->{$user_id}->{email} => $user_id];
     }
-    if( $data ){
+    $self->stash(users => $users);
+
+    if( $data = Db::get_object($id) ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }

@@ -1,13 +1,13 @@
 % layout 'default';
 <h2><%= ml 'Company' %></h2>
-% if( if_defined 'success' ) { 
+% if( stash 'success' ) { 
 <div class='alert success'> Ok  </div>
 % } 
-% if( if_defined 'error' ) { 
+% if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
 <div class="form">
- % my $path = if_defined('edit_mode')?"/companies/edit/$payload":'/companies/add';
+ % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
  %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
@@ -28,7 +28,7 @@
   </tr>
   <tr><td>&nbsp;</td>
    <td>
-    % if( if_defined 'edit_mode') {
+    % if( stash 'edit_mode') {
      %= submit_button ml('Edit')
      |  
      <%= link_to "/companies/del/$payload" => begin %><%= ml 'Delete' %><% end %>
@@ -41,12 +41,14 @@
  % end
 </div>
 %# USERS MANAGEMENT FORMS
-% if( if_defined 'edit_mode') {
+% if( stash 'edit_mode') {
 <h3><%= ml 'Users' %></h3>
-<div class="form">
- %= form_for '/companies/delete_user/$payload' => (method => 'POST') => begin
-  %= select_field user => $users
-  %= submit_button ml('Add')
- % end
-</div>
+ % if( stash 'users' ) {
+  <div class="form">
+   %= form_for '/companies/delete_user/$payload' => (method => 'POST') => begin
+   %= select_field user => stash 'users' 
+   %= submit_button ml('Add')
+   % end
+  </div>
+ % }
 % }
