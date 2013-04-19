@@ -61,6 +61,26 @@ sub del{
     $self->redirect_to('companies/list');
 };
 
+sub remove_user{
+    my $self = shift;
+    return if !$self->is_admin;
+
+    my $id      = $self->param('payload');
+    my $user_id = $self->param('user');
+    Db::del_link($id,$user_id);
+    $self->redirect_to("companies/edit/$id");
+};
+
+sub add_user{
+    my $self = shift;
+    return if !$self->is_admin;
+
+    my $id      = $self->param('payload');
+    my $user_id = $self->param('user');
+    Db::set_link($OBJECT_NAME,$id,$USER_OBJECT_NAME,$user_id);
+    $self->redirect_to("companies/edit/$id");
+};
+
 sub edit{
     my $self = shift;
     return if !$self->is_admin;
@@ -89,12 +109,19 @@ sub edit{
         }
     } 
 
-    my $user_objects = Db::select_distinct_many(" WHERE name='$USER_OBJECT_NAME' ");
-    my $users = [];
-    for my $user_id(keys %{$user_objects}){
-        push @{$users}, [$user_objects->{$user_id}->{email} => $user_id];
+    my $all_users = Db::select_distinct_many(" WHERE name='$USER_OBJECT_NAME' ");
+    my $linked_users = Db::get_links($id, $USER_OBJECT_NAME);
+    my ($object_users,$users) = ([],[]);
+    for my $user_id( keys %{$linked_users}){
+        push @{$object_users}, [$linked_users->{$user_id}->{email} => $user_id]
+            if exists($all_users->{$user_id});
     }
-    $self->stash(users => $users);
+    for my $user_id(keys %{$all_users}){
+        push @{$users}, [$all_users->{$user_id}->{email} => $user_id]
+            if !exists($linked_users->{$user_id}) ;
+    }
+    $self->stash(users => $users) if @{$users};
+    $self->stash(object_users => $object_users) if @{$object_users};
 
     if( $data = Db::get_object($id) ){
         for my $key (keys %{$data->{$id}} ){

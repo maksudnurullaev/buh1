@@ -159,18 +159,27 @@ sub format_statement2hash_objects{
 };
 
 sub get_object{
-    my $id = shift;
+    my ($id,$name) = @_;
     if(!defined($id) || !$id){
         warn_if "Error:Db:Select: No ID defined for search!";
         return(undef);
     }
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $sth = $dbh->prepare(
-        "SELECT name,id,field,value FROM objects WHERE id = ? ORDER BY id;");
-    if($sth->execute($id)){
-        return(format_statement2hash_objects($sth));
-    } else { warn_if $DBI::errstr; }
+    my $sth;
+    if(!$name){
+        $sth= $dbh->prepare(
+            "SELECT name,id,field,value FROM objects WHERE id=? ORDER BY id;");
+        if($sth->execute($id)){
+            return(format_statement2hash_objects($sth));
+        } else { warn_if $DBI::errstr; }
+    } else {
+        $sth= $dbh->prepare(
+            "SELECT name,id,field,value FROM objects WHERE name=? AND id=? ORDER BY id;");
+        if($sth->execute($name,$id)){
+            return(format_statement2hash_objects($sth));
+        } else { warn_if $DBI::errstr; }
+    }
     return;
 };
 
@@ -227,7 +236,7 @@ sub set_link{
     return(1);
 };
 
-sub get_link{
+sub get_links{
     my ($id1,$name2) = @_;
     return if( !$name2 || !$id1 );
     my $dbh = get_db_connection() || return;
@@ -246,11 +255,13 @@ sub get_link{
 };
 
 sub del_link{
-    my $id = shift;
-    return if( !$id );
+    my ($id1,$id2) = @_;
+    return if( !$id1 || !$id2 );
     my $dbh = get_db_connection() || return;
+    $dbh->do(
+        "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id1' AND value = '$id2' ;");
     return $dbh->do(
-        "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND (id = '$id' OR value = '$id') ;");
+        "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id2' AND value = '$id1' ;");
 };
 
 };

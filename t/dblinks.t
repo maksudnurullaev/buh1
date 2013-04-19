@@ -34,17 +34,20 @@ ok(Db::set_link($name1, $id1, $name2, $id3), "Set link #13");
 ok(Db::exists_link($id1,$id3), "Test for link existance #13");
 
 # -= get links =-
-my $result = Db::get_link($id1,$name2);
+my $result = Db::get_links($id1,$name2);
 ok(exists($result->{$id2}), "Test for existance of #12");
 ok(exists($result->{$id3}), "Test for existance of #13");
 ok(scalar(keys %{$result}) == 2, "Test for result count");
 
 # -= delete link =-
-ok(Db::del_link($id2), "Delete link for #12");
-$result = Db::get_link($id1,$name2);
+ok(Db::del_link($id1,$id2), "Delete link for #12");
+$result = Db::get_links($id1,$name2);
 ok(!exists($result->{$id2}), "Test NOT for existance of #12");
 ok(exists($result->{$id3}), "Test for existance of #13");
 ok(scalar(keys %{$result}) == 1, "Test for result count");
+
+$result = Db::get_links($id2,$name1);
+ok(!exists($result->{$id1}), "Test NOT for existance of #1 for #12");
 
 ### -= FINISH =-
 END{

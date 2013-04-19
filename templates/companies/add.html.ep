@@ -40,14 +40,27 @@
  </table>
  % end
 </div>
-%# USERS MANAGEMENT FORMS
+%# COMPANY'S USERS MANAGEMENT FORMS
 % if( stash 'edit_mode') {
-<h3><%= ml 'Users' %></h3>
+ % if( stash 'object_users' ) {
+  <div class="form">
+   %= form_for "/companies/remove_user/$payload" => (method => 'POST') => begin
+    <fieldset name="userinfo">
+     <legend> <%= ml 'Users' %> (<%= stash 'name' %>)</legend>
+     %= submit_button ml('Delete')
+     %= select_field user => stash 'object_users' 
+    </fieldset>
+   % end
+  </div>
+ % }
  % if( stash 'users' ) {
   <div class="form">
-   %= form_for '/companies/delete_user/$payload' => (method => 'POST') => begin
-   %= select_field user => stash 'users' 
-   %= submit_button ml('Add')
+   %= form_for "/companies/add_user/$payload" => (method => 'POST') => begin
+    <fieldset name="userinfo">
+     <legend> <%= ml 'Users' %></legend>
+     %= submit_button ml('Add')
+     %= select_field user => stash 'users' 
+    </fieldset> 
    % end
   </div>
  % }
