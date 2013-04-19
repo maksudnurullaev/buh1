@@ -154,7 +154,8 @@ sub format_statement2hash_objects{
             $result->{$id}{$field} = $value;
         }
     }
-    return($result);
+    return($result) if scalar(keys%{$result});
+    return;
 };
 
 sub get_object{

@@ -5,7 +5,7 @@
  |
  <a href='/users/deleted'><%= ml 'Deleted' %></a>
 </div>
-% if ( if_defined 'users' ) {
+% if ( stash 'users' ) {
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li>    

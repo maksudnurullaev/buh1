@@ -1,6 +1,9 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Companies' %></h2>
-% if ( if_defined 'companies' ) {
+<div class="toolbar">
+ <a href='/companies/list'><%= ml 'Companies' %></a>
+</div>
+% if ( stash 'companies' ) {
  <ul>
   % for my $id( reverse sort keys %{$companies} ) {
    <li>    
