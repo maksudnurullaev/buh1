@@ -39,7 +39,8 @@ sub validate{
     my $data = { 
         object_name => $OBJECT_NAME,
         creator => Utils::User::current($self) };
-    $data->{name} = Utils::trim $self->param('name');
+    $data->{name}   = Utils::trim $self->param('name');
+    $data->{access} = $self->param('access');
     if(!$data->{name}){ 
         $data->{error} = 1;
         $self->stash(name_class => "error");
@@ -97,6 +98,7 @@ sub edit{
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
+            warn $data->{'access'};
             $data->{id} = $id;
             if( Db::update($data) ){
                 $self->stash(success => 1);
