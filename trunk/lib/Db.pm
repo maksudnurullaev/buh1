@@ -107,10 +107,17 @@ sub update{
         return(undef);
     }
     my $dbh = get_db_connection()  || return;
-    my $sth = $dbh->prepare(
+    my $data_old = get_object($id);
+    my $sth_insert = $dbh->prepare(
+        qq{ INSERT INTO objects (name,id,field,value) values(?,?,?,?);} );
+    my $sth_update = $dbh->prepare(
         qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; });
     for my $field (keys %{$hashref}){
-        $sth->execute($hashref->{$field},$object_name,$id,$field);
+        if( exists $data_old->{$id}->{$field} ) { # check if such field exits already!
+            $sth_update->execute($hashref->{$field},$object_name,$id,$field);
+        } else {
+            $sth_insert->execute($object_name,$id,$field,$hashref->{$field});
+        }
     }
     return($id);
 };

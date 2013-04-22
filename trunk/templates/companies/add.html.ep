@@ -20,6 +20,26 @@
   </tr>
   <tr>
    <td class='tar'> 
+    %= ml 'Default access' 
+   </td>
+   <td> 
+    % my @accesses = ('No access','Read','Write','Confirm');
+    % for my $access(@accesses) {
+     % if( stash('access') &&  (stash('access') eq $access) ) {
+       <%= radio_button access => $access, id => "id_$access", checked => "checked" %>
+     % } elsif ( !stash('access') && ($access eq $accesses[2]) ) {
+      <%= radio_button access => $access, id => "id_$access", checked => "checked" %>
+     % } else {
+      <%= radio_button access => $access, id => "id_$access" %>
+     % } 
+     <label for='<%= "id_$access" %>'>
+     <%= ml $access %> <br />
+     </label>
+    % }
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
     %= ml 'Description' 
    </td>
    <td> 
