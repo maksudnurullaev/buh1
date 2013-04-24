@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Company' %></h2>
 % if( stash 'success' ) { 
-<div class='alert success'> Ok  </div>
+<div class='alert success'>Ok</div>
 % } 
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>

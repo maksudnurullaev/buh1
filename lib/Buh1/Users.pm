@@ -8,7 +8,7 @@ my $DELETED_OBJECT_NAME = 'deleted user';
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $users = Db::select_distinct_many(" WHERE name='$OBJECT_NAME' ");
+    my $users = Db::get_objects({name=>[$OBJECT_NAME]});
     $self->stash(users => $users);
     $self->render();
 };
@@ -16,7 +16,7 @@ sub list{
 sub deleted{
     my $self = shift;
     return if !$self->is_admin;
-    my $users = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ");
+    my $users = Db::get_objects({name=>[$DELETED_OBJECT_NAME]});
     $self->stash(users => $users);
 };
 
@@ -128,7 +128,7 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::get_object($id);
+    $data = Db::get_objects({id=>[$id]});
     if( $data ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});

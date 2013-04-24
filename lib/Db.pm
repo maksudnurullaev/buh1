@@ -15,6 +15,7 @@ use utf8;
 use Utils;
 use DBI;
 use DBD::SQLite;
+use Data::Dumper; #for debug
 
 my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
@@ -107,7 +108,7 @@ sub update{
         return(undef);
     }
     my $dbh = get_db_connection()  || return;
-    my $data_old = get_object($id);
+    my $data_old = get_objects({id => [$id]});
     my $sth_insert = $dbh->prepare(
         qq{ INSERT INTO objects (name,id,field,value) values(?,?,?,?);} );
     my $sth_update = $dbh->prepare(
@@ -165,43 +166,63 @@ sub format_statement2hash_objects{
     return;
 };
 
-sub get_object{
-    my ($id,$name) = @_;
-    if(!defined($id) || !$id){
-        warn_if "Error:Db:Select: No ID defined for search!";
-        return(undef);
+sub format_sql_parameters{
+    my $parameters = shift;
+    if( !$parameters || scalar(keys %{$parameters}) == 0){
+        warn "No parameters!";
+        return;
     }
-    my $dbh = get_db_connection() || return;
-    $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $sth;
-    if(!$name){
-        $sth= $dbh->prepare(
-            "SELECT name,id,field,value FROM objects WHERE id=? ORDER BY id;");
-        if($sth->execute($id)){
-            return(format_statement2hash_objects($sth));
-        } else { warn_if $DBI::errstr; }
+    my $result;
+    if(exists $parameters->{distinct}){
+        $result = ' SELECT DISTINCT name,id,field,value FROM objects ';
     } else {
-        $sth= $dbh->prepare(
-            "SELECT name,id,field,value FROM objects WHERE name=? AND id=? ORDER BY id;");
-        if($sth->execute($name,$id)){
-            return(format_statement2hash_objects($sth));
-        } else { warn_if $DBI::errstr; }
+        $result = ' SELECT name,id,field,value FROM objects ';
     }
-    return;
+    my $where_part = format_sql_where_part($parameters);
+    $result .= " WHERE $where_part " if $where_part;
+    if( exists $parameters->{order} ){
+        $result .= " $parameters->{order} ";
+    } else {
+        $result .= " ORDER BY id DESC ";
+    }
+    if( exists $parameters->{limit} ){
+        $result .= " $parameters->{limit} ";
+    } 
+    return("$result ;");
 };
 
-sub select_distinct_many{
-    my $where = shift;
-    if(!defined($where) || !$where){
-        warn_if "Error:Db:Select Distinct: No Where part defined!";
-        return(undef);
+sub format_sql_where_part{
+    my $hashref = shift;
+    my $result = '';
+    my $dbh = get_db_connection() || return;
+    my @fields = qw(id name field);
+    for my $field(@fields){
+        if( exists $hashref->{$field} ){
+            $result .= " AND " if $result;
+            if( scalar(@{$hashref->{$field}}) == 1 ){
+                $result .= " $field = " . $dbh->quote($hashref->{$field}->[0]) . " ";
+            } else {
+                $result .= 
+                    " $field IN (" . join(",", map { $dbh->quote($_) } @{$hashref->{$field}}) 
+                    . ") ";
+            }
+        }
+    }
+    return($result);
+};
+
+sub get_objects{
+    my $parameters = shift;
+    if( ref($parameters) ne "HASH" ){
+        warn "Parameters should be hash!";
+        return;
     }
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $sth_str = "SELECT DISTINCT name, id, field, value FROM objects $where ORDER BY id DESC ;";
-    my $sth = $dbh->prepare($sth_str);
-    my ($name,$field,$value,$id,$id_current,$result) = (undef,undef,undef,undef,"NONE",{});
-    if($sth->execute){
+    my ($sth,$sql_string) = (undef, format_sql_parameters($parameters));
+#    warn $sql_string;
+    $sth = $dbh->prepare($sql_string);
+    if( $sth->execute ){
         return(format_statement2hash_objects($sth));
     } else { warn_if $DBI::errstr; }
     return;
@@ -231,20 +252,35 @@ sub exists_link{
 };
 
 sub set_link{
-    my ($name1,$id1,$name2,$id2) = @_;
-    return(0) if( !$name1 || !$id2 || !$name2 || !$id2 );
-    return(1) if exists_link($id1,$id2);
+    my ($name,$id,$link_name,$link_id) = @_;
+    return(0) if( !$name || !$id || !$link_name || !$link_id );
+    return(1) if exists_link($id,$link_id);
 
     my $dbh = get_db_connection() || return;
     my $sth = $dbh->prepare(
         'INSERT INTO objects (name,id,field,value) values(?,?,?,?);');
-    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id1,$name2,$id2);
-    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id2,$name1,$id1);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id,$link_name,$link_id);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$link_id,$name,$id);
     return(1);
 };
 
+sub attach_links{
+    my ($result,$links_name,$link_name,$fields) = @_;
+    for my $id (keys %{$result}){
+        my $links = Db::get_links($id,$link_name, $fields);
+        for my $link_id (keys %{$links}){
+            $result->{$id}->{$links_name} = {} 
+                if !exists($result->{$id}->{$links_name});
+            my $link_object = 
+                Db::get_objects({id=>[$link_id],name=>[$link_name],field=>$fields});
+            $result->{$id}->{$links_name}->{$link_id} = $link_object->{$link_id}
+                if $link_object;
+        } 
+    }
+};
+
 sub get_links{
-    my ($id1,$name2) = @_;
+    my ($id1,$name2,$fields) = @_;
     return if( !$name2 || !$id1 );
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
@@ -255,7 +291,11 @@ sub get_links{
     if($sth->execute($LINK_OBJECT_NAME,$id1, $name2)){
         $sth->bind_columns(\($id2));
         while ($sth->fetch){
-            $result->{$id2} = get_object($id2)->{$id2}; 
+            if( $fields ){
+                $result->{$id2} = get_objects({id=>[$id2],field=>$fields})->{$id2}; 
+            } else {
+                $result->{$id2} = get_objects({id=>[$id2]})->{$id2}; 
+            }
         }
     } else { warn_if $DBI::errstr; }
     return($result);
