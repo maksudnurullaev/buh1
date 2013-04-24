@@ -8,10 +8,10 @@
 % if ( stash 'users' ) {
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
-   <li>    
+   <li><%= ml 'User' %>:
     <%= link_to "/users/edit/$id" => begin%><%= $users->{$id}{email} %><% end %>
     % if($users->{$id}{description}) {
-      <ul><li>
+      <ul><li><%= ml 'Description' %>:
        %= $users->{$id}{description}
       </li></ul>
     % }
