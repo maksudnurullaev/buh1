@@ -9,7 +9,8 @@ my $DELETED_OBJECT_NAME = 'deleted company';
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::select_distinct_many(" WHERE name='$OBJECT_NAME' ");
+    my $companies = Db::get_objects({name=>['company'],field=>['name','description']});
+    Db::attach_links($companies,'users','user',['email']);
     $self->stash(companies => $companies);
     $self->render();
 };
@@ -17,7 +18,7 @@ sub list{
 sub deleted{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::select_distinct_many(" WHERE name='$DELETED_OBJECT_NAME' ");
+    my $companies = Db::get_objects({name=>[$DELETED_OBJECT_NAME]});
     $self->stash(companies => $companies);
     $self->render();
 };
@@ -111,7 +112,7 @@ sub edit{
         }
     } 
 
-    my $all_users = Db::select_distinct_many(" WHERE name='$USER_OBJECT_NAME' ");
+    my $all_users = Db::get_objects({name=>[$USER_OBJECT_NAME]});
     my $linked_users = Db::get_links($id, $USER_OBJECT_NAME);
     my ($object_users,$users) = ([],[]);
     for my $user_id( keys %{$linked_users}){
@@ -125,7 +126,7 @@ sub edit{
     $self->stash(users => $users) if @{$users};
     $self->stash(object_users => $object_users) if @{$object_users};
 
-    if( $data = Db::get_object($id) ){
+    if( $data = Db::get_objects({id=>[$id]}) ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
