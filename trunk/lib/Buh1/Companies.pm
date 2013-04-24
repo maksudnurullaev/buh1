@@ -114,9 +114,9 @@ sub edit{
 
     my $all_users = Db::get_objects({name=>[$USER_OBJECT_NAME]});
     my $linked_users = Db::get_links($id, $USER_OBJECT_NAME);
-    my ($object_users,$users) = ([],[]);
+    my ($company_users,$users) = ([],[]);
     for my $user_id( keys %{$linked_users}){
-        push @{$object_users}, [$linked_users->{$user_id}->{email} => $user_id]
+        push @{$company_users}, [$linked_users->{$user_id}->{email} => $user_id]
             if exists($all_users->{$user_id});
     }
     for my $user_id(keys %{$all_users}){
@@ -124,7 +124,7 @@ sub edit{
             if !exists($linked_users->{$user_id}) ;
     }
     $self->stash(users => $users) if @{$users};
-    $self->stash(object_users => $object_users) if @{$object_users};
+    $self->stash(company_users => $company_users) if @{$company_users};
 
     if( $data = Db::get_objects({id=>[$id]}) ){
         for my $key (keys %{$data->{$id}} ){

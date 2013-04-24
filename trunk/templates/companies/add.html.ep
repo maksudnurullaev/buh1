@@ -6,6 +6,11 @@
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
+% if ( stash('edit_mode') && stash('company_users') ) {
+<div class="toolbar">
+ <a href='/access/edit/$payload'><%= ml 'Access' %></a>
+</div>
+% }
 <div class="form">
  % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
  %= form_for $path => (method => 'POST') => begin
@@ -49,7 +54,7 @@
   <tr><td>&nbsp;</td>
    <td>
     % if( stash 'edit_mode') {
-     %= submit_button ml('Edit')
+     %= submit_button ml('Save')
      |  
      <%= link_to "/companies/del/$payload" => begin %><%= ml 'Delete' %><% end %>
     % } else {
@@ -62,13 +67,13 @@
 </div>
 %# COMPANY'S USERS MANAGEMENT FORMS
 % if( stash 'edit_mode') {
- % if( stash 'object_users' ) {
+ % if( stash 'company_users' ) {
   <div class="form">
    %= form_for "/companies/remove_user/$payload" => (method => 'POST') => begin
     <fieldset name="userinfo">
      <legend> <%= ml 'Users' %> (<%= stash 'name' %>)</legend>
      %= submit_button ml('Delete')
-     %= select_field user => stash 'object_users' 
+     %= select_field user => stash 'company_users' 
     </fieldset>
    % end
   </div>
