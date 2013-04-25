@@ -5,10 +5,42 @@ use Auth;
 my $OBJECT_NAME = 'user';
 my $DELETED_OBJECT_NAME = 'deleted user';
 
+sub nofilter{
+    my $self = shift;
+    return if !$self->is_admin;
+    my $path   = Utils::trim $self->param('path');
+    delete $self->session->{$path};
+    $self->redirect_to($path);
+};
+
+sub filter{
+    my $self = shift;
+    return if !$self->is_admin;
+    my $filter = Utils::trim $self->param('filter');
+    my $path   = Utils::trim $self->param('path');
+    if( $filter && $path ){
+        $self->session->{$path} = $filter;
+    }
+    $self->redirect_to($path);
+};
+
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $users = Db::get_objects({name=>[$OBJECT_NAME]});
+    my $users;
+    if( $self->session->{'/users/list'} ) {
+        my $filter = $self->session->{'/users/list'};
+        $self->stash(filter => $self->session->{'/users/list'});
+
+        $users = Db::get_objects({name=>[$OBJECT_NAME], 
+            add_where=>" field='email' AND value LIKE '%$filter%' "});
+        map { $users->{$_} = 
+            Db::get_objects({name=>[$OBJECT_NAME],field=>['email','description']})->{$_} }
+            keys %{$users};
+    } else {
+        $users = Db::get_objects({name=>[$OBJECT_NAME],field=>['email','description']}); 
+    }
+
     $self->stash(users => $users);
     $self->render();
 };

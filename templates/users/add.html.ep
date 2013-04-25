@@ -1,5 +1,9 @@
 % layout 'default';
-<h2><%= ml 'New user' %></h2>
+% if( stash 'edit_mode') {
+ <h2><%= ml 'User' %></h2>
+% } else {
+ <h2><%= ml 'New user' %></h2>
+% }
 % if( stash 'success' ) { 
 <div class='alert success'> Ok  </div>
 % } 
@@ -45,7 +49,7 @@
   <tr><td>&nbsp;</td>
    <td>
     % if( stash 'edit_mode') {
-     %= submit_button ml('Edit')
+     %= submit_button ml('Save')
      |  
      <%= link_to "/users/del/$payload" => begin %><%= ml 'Delete' %><% end %>
     % } else {

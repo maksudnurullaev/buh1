@@ -78,13 +78,13 @@
    % end
   </div>
  % }
- % if( stash 'users' ) {
+ % if( stash 'non_company_users' ) {
   <div class="form">
    %= form_for "/companies/add_user/$payload" => (method => 'POST') => begin
     <fieldset name="userinfo">
      <legend> <%= ml 'Users' %></legend>
      %= submit_button ml('Add')
-     %= select_field user => stash 'users' 
+     %= select_field user => stash 'non_company_users' 
     </fieldset> 
    % end
   </div>

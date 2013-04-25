@@ -6,7 +6,7 @@ use Data::Dumper;
 sub page {
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::get_objects({name=>['company'],field=>['name']});
+    my $companies = Db::get_objects({name=>['company'],field=>['name', 'access']});
     Db::attach_links($companies,'users','user',['email']);
     $self->stash(companies => $companies);
     $self->render();

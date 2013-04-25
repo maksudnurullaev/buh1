@@ -5,15 +5,32 @@
  |
  <a href='/users/deleted'><%= ml 'Deleted' %></a>
 </div>
+<div class="toolbar">
+ % my $path = '/users/list';
+ %= form_for '/users/filter' => ( method => 'POST') => begin
+  %= text_field filter => (stash 'filter')
+  %= hidden_field path => $path
+  %= submit_button ml 'Filter'
+  %= link_to ml("Clear") => "/users/nofilter?path=$path"
+ % end 
+</div>
 % if ( stash 'users' ) {
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li><%= ml 'User' %>:
     <%= link_to "/users/edit/$id" => begin%><%= $users->{$id}{email} %><% end %>
     % if($users->{$id}{description}) {
-      <ul><li><%= ml 'Description' %>:
-       %= $users->{$id}{description}
-      </li></ul>
+     <ul><li><%= ml 'Description' %>:
+      %= $users->{$id}{description}
+     </li></ul>
+    % }
+    % if($users->{$id}{companies}) {
+     <ul><li><%= ml 'Companies' %>:
+      % for my $company_id(keys %{$users->{$id}{companies}} ) {
+       <%= link_to "/companies/edit/$company_id" => begin %><%= $users->{$id}{companies}{$company_id}{name} %><% end %> 
+       &nbsp;
+      % }
+     </li></ul>
     % }
    </li>
   % }
@@ -21,4 +38,4 @@
 % } else {
 <br />
  %= ml 'No data!'
-% }
+    % }
