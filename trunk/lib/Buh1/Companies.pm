@@ -99,7 +99,6 @@ sub edit{
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
-            warn $data->{'access'};
             $data->{id} = $id;
             if( Db::update($data) ){
                 $self->stash(success => 1);
@@ -112,18 +111,9 @@ sub edit{
         }
     } 
 
-    my $all_users = Db::get_objects({name=>[$USER_OBJECT_NAME]});
-    my $linked_users = Db::get_links($id, $USER_OBJECT_NAME);
-    my ($company_users,$users) = ([],[]);
-    for my $user_id( keys %{$linked_users}){
-        push @{$company_users}, [$linked_users->{$user_id}->{email} => $user_id]
-            if exists($all_users->{$user_id});
-    }
-    for my $user_id(keys %{$all_users}){
-        push @{$users}, [$all_users->{$user_id}->{email} => $user_id]
-            if !exists($linked_users->{$user_id}) ;
-    }
-    $self->stash(users => $users) if @{$users};
+    my ($non_company_users,$company_users) = 
+        Db::get_difference($id,$USER_OBJECT_NAME,'email');
+    $self->stash(non_company_users => $non_company_users) if @{$non_company_users};
     $self->stash(company_users => $company_users) if @{$company_users};
 
     if( $data = Db::get_objects({id=>[$id]}) ){

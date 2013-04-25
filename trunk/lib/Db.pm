@@ -180,6 +180,13 @@ sub format_sql_parameters{
     }
     my $where_part = format_sql_where_part($parameters);
     $result .= " WHERE $where_part " if $where_part;
+    if( exists $parameters->{add_where} ){
+        if( $result =~ /WHERE/ ){
+            $result .= " AND $parameters->{add_where} "; 
+        } else {
+            $result .= " WHERE $parameters->{add_where} ";
+        }
+    }
     if( exists $parameters->{order} ){
         $result .= " $parameters->{order} ";
     } else {
@@ -197,7 +204,7 @@ sub format_sql_where_part{
     my $dbh = get_db_connection() || return;
     my @fields = qw(id name field);
     for my $field(@fields){
-        if( exists $hashref->{$field} ){
+        if( exists($hashref->{$field}) && $hashref->{$field} ){
             $result .= " AND " if $result;
             if( scalar(@{$hashref->{$field}}) == 1 ){
                 $result .= " $field = " . $dbh->quote($hashref->{$field}->[0]) . " ";
@@ -287,18 +294,35 @@ sub get_links{
     my $sth_str = 
         "SELECT DISTINCT value FROM objects WHERE name=? AND id=? AND field=? ;";
     my $sth = $dbh->prepare($sth_str);
-    my ($id2,$result) = (undef,{});
+    my ($link_id,$result) = (undef,{});
     if($sth->execute($LINK_OBJECT_NAME,$id1, $name2)){
-        $sth->bind_columns(\($id2));
+        $sth->bind_columns(\($link_id));
         while ($sth->fetch){
-            if( $fields ){
-                $result->{$id2} = get_objects({id=>[$id2],field=>$fields})->{$id2}; 
-            } else {
-                $result->{$id2} = get_objects({id=>[$id2]})->{$id2}; 
-            }
+            my $object;
+            $object = ($fields ?
+                get_objects({id=>[$link_id],field=>$fields})
+                : get_objects({id=>[$link_id]})->{$link_id});
+            $result->{$link_id} = $object->{$link_id} if $object;
         }
     } else { warn_if $DBI::errstr; }
     return($result);
+};
+
+sub get_difference{
+    my($id,$link_object_name,$field) = @_;
+    my ($all_,$links_) = (
+        Db::get_objects({name=>[$link_object_name], field=>[$field]}),
+        Db::get_links($id, $link_object_name, [$field]) );
+    my ($all,$links) = ([],[]);
+    for my $link_id( keys %{$links_}){
+        push @{$links}, [$links_->{$link_id}->{$field} => $link_id]
+            if exists($all_->{$link_id});
+    }
+    for my $all_id(keys %{$all_}){
+        push @{$all}, [$all_->{$all_id}->{$field} => $all_id]
+            if !exists($links_->{$all_id}) ;
+    }
+    return($all,$links);
 };
 
 sub del_link{
