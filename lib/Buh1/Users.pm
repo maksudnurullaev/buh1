@@ -1,25 +1,49 @@
 package Buh1::Users; {
 use Mojo::Base 'Mojolicious::Controller';
 use Auth;
+use Data::Dumper;
 
 my $OBJECT_NAME = 'user';
 my $DELETED_OBJECT_NAME = 'deleted user';
+my $FILTER_EMAIL = 'users/filter/email';
+my $FILTER_PAGE  = 'users/filter/page';
+my $FILTER_PAGESIZE = 'users/filter/pagesize';
+
+sub pagesize{
+    my $self = shift;
+
+    my $page = $self->param('payload');
+    if ( $page && $page =~/^\d+$/ ){
+        $self->session->{$FILTER_PAGESIZE} = $page;
+    }
+    $self->redirect_to('users/list')
+};
+
+sub page{
+    my $self = shift;
+
+    my $page = $self->param('payload');
+    if ( $page && $page =~/^\d+$/ ){
+        $self->session->{$FILTER_PAGE} = $page;
+    }
+    $self->redirect_to('users/list')
+};
 
 sub nofilter{
     my $self = shift;
-    return if !$self->is_admin;
+
     my $path   = Utils::trim $self->param('path');
-    delete $self->session->{$path};
+    delete $self->session->{$FILTER_EMAIL};
     $self->redirect_to($path);
 };
 
 sub filter{
     my $self = shift;
-    return if !$self->is_admin;
+
     my $filter = Utils::trim $self->param('filter');
     my $path   = Utils::trim $self->param('path');
     if( $filter && $path ){
-        $self->session->{$path} = $filter;
+        $self->session->{$FILTER_EMAIL} = $filter;
     }
     $self->redirect_to($path);
 };
@@ -28,18 +52,42 @@ sub list{
     my $self = shift;
     return if !$self->is_admin;
     my $users;
-    if( $self->session->{'/users/list'} ) {
-        my $filter = $self->session->{'/users/list'};
-        $self->stash(filter => $self->session->{'/users/list'});
 
-        $users = Db::get_objects({name=>[$OBJECT_NAME], 
-            add_where=>" field='email' AND value LIKE '%$filter%' "});
-        map { $users->{$_} = 
-            Db::get_objects({name=>[$OBJECT_NAME],field=>['email','description']})->{$_} }
-            keys %{$users};
+    # preliminary select with filter if neccessary
+    if( my $filter = $self->session->{$FILTER_EMAIL} ) {
+        $self->stash(filter => $filter);
+        $users = Db::get_counts({name=>[$OBJECT_NAME], 
+            add_where=>" field='email' AND value LIKE '%$filter%' ESCAPE '\\' "});
     } else {
-        $users = Db::get_objects({name=>[$OBJECT_NAME],field=>['email','description']}); 
+        $users = Db::get_counts({name=>[$OBJECT_NAME],field=>['email']}); 
     }
+    return if !$users; # count is 0
+    #paginator
+    my $paginator = 
+            Utils::get_paginator($self,'users', $users);
+    $self->stash(paginator => $paginator);        
+    my ($limit,$offset) = (" LIMIT $paginator->[2] ",
+            $paginator->[2] * ($paginator->[0] - 1));
+    $limit .= " OFFSET $offset " if $offset ; 
+    # find real records if exist
+    if( my $filter = $self->session->{$FILTER_EMAIL} ) {
+        $self->stash(filter => $filter);
+        $users = Db::get_objects({
+            name      => [$OBJECT_NAME], 
+            add_where => " field='email' AND value LIKE '%$filter%' ESCAPE '\\' ",
+            limit     => $limit});
+    } else {
+        $users = Db::get_objects({
+            name  => [$OBJECT_NAME],
+            field => ['email'],
+            limit => $limit}); 
+    }
+    # final
+    map { $users->{$_} = 
+        Db::get_objects({
+            name  => [$OBJECT_NAME],
+            field => ['email','description']})->{$_} }
+        keys %{$users};
 
     $self->stash(users => $users);
     $self->render();

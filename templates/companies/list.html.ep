@@ -5,26 +5,37 @@
  |
  <a href='/companies/deleted'><%= ml 'Deleted' %></a>
 </div>
+<div class="toolbar">
+ % my $path = '/companies/list';
+ %= form_for '/companies/filter' => ( method => 'POST') => begin
+  %= text_field filter => (stash 'filter')
+  %= hidden_field path => $path
+  %= submit_button ml 'Filter'
+  %= link_to ml("Reset") => "/companies/nofilter?path=$path"
+ % end 
+</div>
 % my $companies = stash 'companies';
 % if ( $companies ) {
  <ul>
   % for my $id( reverse sort keys %{$companies} ) {
-   <li><%= ml 'Company' %>:    
+   <li>
     <%= link_to "/companies/edit/$id" => begin%><%= $companies->{$id}{name} %><% end %>
-    % if($companies->{$id}{users}) {
-      % my $users = $companies->{$id}->{users};
-      <ul><li>
-      <%= ml 'Users' %>:
-      % for my $userid (keys %{$users}) {
-       % my $email = $users->{$userid}->{email};
-       %= link_to $email => "/users/edit/$userid" ;
-      % }
-      </li></ul>
-    % }
+    <ul><li><u><%= ml 'Access' %>:</u> <%= ml $companies->{$id}{access} %></li></ul>
     % if($companies->{$id}{description}) {
-      <ul><li><%= ml 'Description' %>:
-       %= $companies->{$id}{description}
+     <ul><li><u><%= ml 'Description' %>:</u>
+      %= $companies->{$id}{description}
+     </li></ul>
+    % }
+    % if($companies->{$id}{users}) {
+     % my $users = $companies->{$id}->{users};
+     <ul><li><u><%= ml 'Users' %>:</u>
+     % for my $userid (keys %{$users}) {
+      % my $email = $users->{$userid}->{email};
+      <ul><li>
+      %= link_to $email => "/users/edit/$userid" ;
       </li></ul>
+     % }
+     </li></ul>
     % }
    </li>
   % }

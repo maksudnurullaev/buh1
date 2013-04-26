@@ -9,7 +9,7 @@ my $DELETED_OBJECT_NAME = 'deleted company';
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::get_objects({name=>['company'],field=>['name','description']});
+    my $companies = Db::get_objects({name=>['company'],field=>['name','access','description']});
     Db::attach_links($companies,'users','user',['email']);
     $self->stash(companies => $companies);
     $self->render();
