@@ -180,13 +180,6 @@ sub format_sql_parameters{
     }
     my $where_part = format_sql_where_part($parameters);
     $result .= " WHERE $where_part " if $where_part;
-    if( exists $parameters->{add_where} ){
-        if( $result =~ /WHERE/ ){
-            $result .= " AND $parameters->{add_where} "; 
-        } else {
-            $result .= " WHERE $parameters->{add_where} ";
-        }
-    }
     if( exists $parameters->{order} ){
         $result .= " $parameters->{order} ";
     } else {
@@ -199,20 +192,27 @@ sub format_sql_parameters{
 };
 
 sub format_sql_where_part{
-    my $hashref = shift;
+    my $parameters = shift;
     my $result = '';
     my $dbh = get_db_connection() || return;
     my @fields = qw(id name field);
     for my $field(@fields){
-        if( exists($hashref->{$field}) && $hashref->{$field} ){
+        if( exists($parameters->{$field}) && $parameters->{$field} ){
             $result .= " AND " if $result;
-            if( scalar(@{$hashref->{$field}}) == 1 ){
-                $result .= " $field = " . $dbh->quote($hashref->{$field}->[0]) . " ";
+            if( scalar(@{$parameters->{$field}}) == 1 ){
+                $result .= " $field = " . $dbh->quote($parameters->{$field}->[0]) . " ";
             } else {
                 $result .= 
-                    " $field IN (" . join(",", map { $dbh->quote($_) } @{$hashref->{$field}}) 
+                    " $field IN (" . join(",", map { $dbh->quote($_) } @{$parameters->{$field}}) 
                     . ") ";
             }
+        }
+    }
+    if( exists $parameters->{add_where} ){
+        if( $result ){
+            $result .= " AND $parameters->{add_where} "; 
+        } else {
+            $result .= " WHERE $parameters->{add_where} ";
         }
     }
     return($result);
@@ -227,12 +227,25 @@ sub get_objects{
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my ($sth,$sql_string) = (undef, format_sql_parameters($parameters));
-#    warn $sql_string;
+    warn $sql_string;
     $sth = $dbh->prepare($sql_string);
     if( $sth->execute ){
         return(format_statement2hash_objects($sth));
     } else { warn_if $DBI::errstr; }
     return;
+};
+
+sub get_counts{
+    my $parameters = shift;
+    if( ref($parameters) ne "HASH" ){
+        warn "Parameters should be hash!";
+        return;
+    }
+    my $dbh = get_db_connection() || return;
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
+    my $where_part = format_sql_where_part($parameters);
+    my($count) = $dbh->selectrow_array(" SELECT COUNT(*) FROM objects WHERE $where_part ;");
+    return($count);
 };
 
 # -= LINKS betweeen two objects =-
