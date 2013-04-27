@@ -1,13 +1,18 @@
-<div>
  % my $paginator = stash 'paginator';
  % my @pagesizes = (2,10,20,40);
+ % my $path = stash 'path';
  % if( $paginator && scalar(@{$paginator}) ){
+<div>
   <%= ml 'Page size' %>:
   % for my $pagesize ( @pagesizes ) {
    % if ( $pagesize == $paginator->[2] ) {
      <strong><u><%= $pagesize %></u></strong>
    % } else {
-      %= link_to $pagesize => "/users/pagesize/$pagesize"
+    % if ( $path ) {
+      %= link_to $pagesize => "/$paginator4/pagesize/$pagesize?path=$path"
+    % } else {    
+      %= link_to $pagesize => "/$paginator4/pagesize/$pagesize"
+    % }
    % }
   % } 
   <br /><%= ml 'Pages' %>:
@@ -15,10 +20,12 @@
    % if ( $page == $paginator->[0] ) {
     <strong><u><%= $page %></u></strong>
    % } else {
-    %= link_to $page => "/users/page/$page"
+    % if ( $path ) {
+      %= link_to $page => "/$paginator4/page/$page?path=$path"
+    % } else {    
+      %= link_to $page => "/$paginator4/page/$page"
+    % }
    % } 
   % }
- % } 
 </div>
-
-
+ % } 

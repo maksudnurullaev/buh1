@@ -5,15 +5,8 @@
  |
  <a href='/companies/deleted'><%= ml 'Deleted' %></a>
 </div>
-<div class="toolbar">
- % my $path = '/companies/list';
- %= form_for '/companies/filter' => ( method => 'POST') => begin
-  %= text_field filter => (stash 'filter')
-  %= hidden_field path => $path
-  %= submit_button ml 'Filter'
-  %= link_to ml("Reset") => "/companies/nofilter?path=$path"
- % end 
-</div>
+%= include 'filter'   , filter4    => 'companies'
+%= include 'paginator', paginator4 => 'companies'
 % my $companies = stash 'companies';
 % if ( $companies ) {
  <ul>
@@ -43,3 +36,5 @@
 % } else {
  %= ml 'No data!'
 % }
+%= include 'filter'   , filter4    => 'companies'
+%= include 'paginator', paginator4 => 'companies'

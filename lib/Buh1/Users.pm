@@ -2,102 +2,72 @@ package Buh1::Users; {
 use Mojo::Base 'Mojolicious::Controller';
 use Auth;
 use Data::Dumper;
+use Utils::Filter;
 
-my $OBJECT_NAME = 'user';
+my $OBJECT_NAME         = 'user';
+my $OBJECT_NAMES        = 'users';
 my $DELETED_OBJECT_NAME = 'deleted user';
-my $FILTER_EMAIL = 'users/filter/email';
-my $FILTER_PAGE  = 'users/filter/page';
-my $FILTER_PAGESIZE = 'users/filter/pagesize';
+
+sub redirect2list_or_path{
+    my $self = shift;
+    if ( $self->param('path') ){
+        $self->redirect_to($self->param('path'));
+        return;
+    }
+    $self->redirect_to("$OBJECT_NAMES/list");
+};
 
 sub pagesize{
     my $self = shift;
-
-    my $page = $self->param('payload');
-    if ( $page && $page =~/^\d+$/ ){
-        $self->session->{$FILTER_PAGESIZE} = $page;
-    }
-    $self->redirect_to('users/list')
+    Utils::Filter::pagesize($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
 };
 
 sub page{
     my $self = shift;
-
-    my $page = $self->param('payload');
-    if ( $page && $page =~/^\d+$/ ){
-        $self->session->{$FILTER_PAGE} = $page;
-    }
-    $self->redirect_to('users/list')
+    Utils::Filter::page($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
 };
 
 sub nofilter{
     my $self = shift;
-
-    my $path   = Utils::trim $self->param('path');
-    delete $self->session->{$FILTER_EMAIL};
-    $self->redirect_to($path);
+    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
+    redirect2list_or_path($self);
 };
 
 sub filter{
     my $self = shift;
-
-    my $filter = Utils::trim $self->param('filter');
-    my $path   = Utils::trim $self->param('path');
-    if( $filter && $path ){
-        $self->session->{$FILTER_EMAIL} = $filter;
-    }
-    $self->redirect_to($path);
+    Utils::Filter::filter($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
 };
 
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $users;
-
-    # preliminary select with filter if neccessary
-    if( my $filter = $self->session->{$FILTER_EMAIL} ) {
-        $self->stash(filter => $filter);
-        $users = Db::get_counts({name=>[$OBJECT_NAME], 
-            add_where=>" field='email' AND value LIKE '%$filter%' ESCAPE '\\' "});
-    } else {
-        $users = Db::get_counts({name=>[$OBJECT_NAME],field=>['email']}); 
-    }
-    return if !$users; # count is 0
-    #paginator
-    my $paginator = 
-            Utils::get_paginator($self,'users', $users);
-    $self->stash(paginator => $paginator);        
-    my ($limit,$offset) = (" LIMIT $paginator->[2] ",
-            $paginator->[2] * ($paginator->[0] - 1));
-    $limit .= " OFFSET $offset " if $offset ; 
-    # find real records if exist
-    if( my $filter = $self->session->{$FILTER_EMAIL} ) {
-        $self->stash(filter => $filter);
-        $users = Db::get_objects({
-            name      => [$OBJECT_NAME], 
-            add_where => " field='email' AND value LIKE '%$filter%' ESCAPE '\\' ",
-            limit     => $limit});
-    } else {
-        $users = Db::get_objects({
-            name  => [$OBJECT_NAME],
-            field => ['email'],
-            limit => $limit}); 
-    }
-    # final
-    map { $users->{$_} = 
-        Db::get_objects({
-            name  => [$OBJECT_NAME],
-            field => ['email','description']})->{$_} }
-        keys %{$users};
-
-    $self->stash(users => $users);
-    $self->render();
+    select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
     return if !$self->is_admin;
-    my $users = Db::get_objects({name=>[$DELETED_OBJECT_NAME]});
-    $self->stash(users => $users);
+    select_objects($self,$DELETED_OBJECT_NAME,'/users/deleted');
+};
+
+sub select_objects{
+    my ($self,$name,$path) = @_;
+
+    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
+    my $objects = Utils::Filter::get_objects({
+            self          => $self,
+            name          => $name,
+            names         => $OBJECT_NAMES,
+            filter        => $filter,
+            filter_field  => 'email',
+            result_fields => ['email','description'],
+            path          => '/users/deleted'
+        });
+    $self->stash(path  => $path);
+    $self->stash(users => $objects) if $objects && scalar(keys %{$objects});
 };
 
 sub restore{

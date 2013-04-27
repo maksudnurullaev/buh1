@@ -6,11 +6,6 @@
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
-% if ( stash('edit_mode') && stash('company_users') ) {
-<div class="toolbar">
- <a href='/access/edit/$payload'><%= ml 'Access' %></a>
-</div>
-% }
 <div class="form">
  % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
  %= form_for $path => (method => 'POST') => begin

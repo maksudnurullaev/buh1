@@ -1,9 +1,9 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Users' %></h2>
-<div class="toolbar">
- <a href='/users/list'><%= ml 'Users' %></a>
-</div>
-% if ( stash 'users' ) {
+%= include 'filter'   , filter4    => 'users'
+%= include 'paginator', paginator4 => 'users'
+% my  $users = stash 'users';
+% if ( scalar(keys %{$users}) ) {
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li>    
@@ -18,6 +18,7 @@
   % }
  </ul>
 % } else {
-<br />
  %= ml 'No data!'
 % }
+%= include 'filter'   , filter4    => 'users'
+%= include 'paginator', paginator4 => 'users'
