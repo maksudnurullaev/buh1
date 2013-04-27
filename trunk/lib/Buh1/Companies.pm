@@ -1,26 +1,73 @@
 package Buh1::Companies; {
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
+use Utils::Filter;
 
-my $OBJECT_NAME = 'company';
-my $USER_OBJECT_NAME = 'user';
+my $OBJECT_NAME         = 'company';
+my $OBJECT_NAMES        = 'companies';
 my $DELETED_OBJECT_NAME = 'deleted company';
+
+sub redirect2list_or_path{
+    my $self = shift;
+    if ( $self->param('path') ){
+        $self->redirect_to($self->param('path'));
+        return;
+    }
+    $self->redirect_to("$OBJECT_NAMES/list");
+};
+
+sub pagesize{
+    my $self = shift;
+    Utils::Filter::pagesize($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
+
+sub page{
+    my $self = shift;
+    Utils::Filter::page($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
+
+sub nofilter{
+    my $self = shift;
+    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
+    redirect2list_or_path($self);
+};
+
+sub filter{
+    my $self = shift;
+    Utils::Filter::filter($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
 
 sub list{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::get_objects({name=>['company'],field=>['name','access','description']});
-    Db::attach_links($companies,'users','user',['email']);
-    $self->stash(companies => $companies);
-    $self->render();
+    select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
     return if !$self->is_admin;
-    my $companies = Db::get_objects({name=>[$DELETED_OBJECT_NAME]});
-    $self->stash(companies => $companies);
-    $self->render();
+    select_objects($self,$DELETED_OBJECT_NAME,'/companies/deleted');
+};
+
+sub select_objects{
+    my ($self,$name,$path) = @_;
+
+    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
+    my $objects = Utils::Filter::get_objects({
+            self          => $self,
+            name          => $name,
+            names         => $OBJECT_NAMES,
+            filter        => $filter,
+            filter_field  => 'name',
+            result_fields => ['name','access','description']      
+        });
+    $self->stash(path  => $path);
+    $self->stash(companies => $objects) if $objects && scalar(keys %{$objects});
+    Db::attach_links($objects,'users','user',['email']);
+    return($objects);
 };
 
 sub restore{
@@ -79,7 +126,7 @@ sub add_user{
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
-    Db::set_link($OBJECT_NAME,$id,$USER_OBJECT_NAME,$user_id);
+    Db::set_link($OBJECT_NAME,$id,'user',$user_id);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -112,7 +159,7 @@ sub edit{
     } 
 
     my ($non_company_users,$company_users) = 
-        Db::get_difference($id,$USER_OBJECT_NAME,'email');
+        Db::get_difference($id,'user','email');
     $self->stash(non_company_users => $non_company_users) if @{$non_company_users};
     $self->stash(company_users => $company_users) if @{$company_users};
 

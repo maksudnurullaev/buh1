@@ -5,9 +5,9 @@
  |
  <a href='/users/deleted'><%= ml 'Deleted' %></a>
 </div>
+%= include 'filter'   , filter4    => 'users'
+%= include 'paginator', paginator4 => 'users'
 % my  $users = stash 'users';
-%= include 'users/filter'
-%= include 'users/pages'
 % if ( scalar(keys %{$users}) ) {
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
@@ -32,5 +32,5 @@
 % } else {
  %= ml 'No data!'
 % }
-%= include 'users/pages'
-%= include 'users/filter'
+%= include 'paginator', paginator4 => 'users'
+%= include 'filter'   , filter4    => 'users'
