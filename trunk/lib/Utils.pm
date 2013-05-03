@@ -66,7 +66,7 @@ sub check_for{
     return if !defined($key);
     if( $key =~ /^user$/i ){
         return Utils::User::current($self);
-    } elsif ( $key =~ /^is_admin/i) {
+    } elsif ( $key =~ /^admin/i) {
         return Utils::User::is_admin($self);
     } elsif ( $key =~ /^mobile$/i ) { 
         return isMobileBrowser($self);

@@ -1,0 +1,33 @@
+% layout 'default';
+<h2><%= ml 'Feedbacks' %></h2>
+<div class="toolbar">
+ <a href='/feedbacks/add'><%= ml 'Add' %></a>
+ |
+ <a href='/feedbacks/deleted'><%= ml 'Deleted' %></a>
+</div>
+%= include 'filter'   , filter4    => 'feedbacks'
+%= include 'paginator', paginator4 => 'feedbacks'
+% my  $feedbacks = stash 'feedbacks';
+% if ( scalar(keys %{$feedbacks}) ) {
+ <ul>
+  % for my $id( reverse sort keys %{$feedbacks} ) {
+   <li><%= $feedbacks->{$id}{message} %><br />
+    <%= link_to "/feedbacks/del/$id" => begin%><%= ml 'Delete' %><% end %>
+    % if($feedbacks->{$id}{user}) {
+     <ul><li><%= ml 'User' %>:
+      %= $feedbacks->{$id}{user}
+     </li></ul>
+    % }
+    % if($feedbacks->{$id}{contact}) {
+     <ul><li><%= ml 'Contact' %>:
+      %= $feedbacks->{$id}{contact}
+     </li></ul>
+    % }
+   </li>
+  % }
+ </ul>
+% } else {
+ %= ml 'No data!'
+% }
+%= include 'paginator', paginator4 => 'feedbacks'
+%= include 'filter'   , filter4    => 'feedbacks'

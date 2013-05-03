@@ -1,0 +1,46 @@
+<div class="form">
+ % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
+ %= form_for $path => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'><u><%= ml 'Name' %></u></td>
+   <td><%= text_field name => (stash 'name') , class => stash 'name_class' %></td>
+  </tr>
+  <tr>
+   <td class='tar'><u><%= ml 'Default access' %></u></td>
+   <td>
+    % my @accesses = ('No access','Read','Write','Confirm','Administrator');
+    % my $temp = [];
+     % for my $access (@accesses){
+      % if ( stash('access') &&  (stash('access') eq $access) ) {
+       % push @{$temp}, [ml($access) => $access, selected => $access];
+      % } else {    
+       % push @{$temp}, [ml($access) => $access];
+      % } 
+     % }
+    %= select_field access => $temp, value => stash('access');
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td> 
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    % if( stash 'edit_mode') {
+     %= submit_button ml('Save')
+     |  
+     <%= link_to "/companies/del/$payload" => begin %><%= ml 'Delete' %><% end %>
+    % } else {
+     %= submit_button ml('Add')
+    % }
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+

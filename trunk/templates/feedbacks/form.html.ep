@@ -1,0 +1,24 @@
+<div>
+ %= form_for '/feedbacks/add' => (method => 'POST') => begin
+ <table class='colortable'>
+  % my $user = check_for('user');
+  % if( !$user ) {
+   <tr><td class='tar'><%= ml 'Your name' %></td>
+    <td><%= text_field 'user', class => stash 'user_class' %> </td>
+   </tr>
+   <tr><td class='tar'><%= ml 'Contact' %></td>
+    <td><%= text_field 'contact', class => stash 'contact_class' %> </td>
+   </tr>
+  % }
+  <tr><td class='tar'><u><%= ml 'Message' %></u></td>
+   <td><%= text_area message => (stash 'message'), class => (stash 'message_class') %></td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button 
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+

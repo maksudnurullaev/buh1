@@ -1,0 +1,22 @@
+<h3><%= ml 'Users' %></h3>
+% if( stash 'company_users' ) {
+ % my $company_users = stash 'company_users';   
+  % for my $id (@{$company_users}){
+   <%= $id->[0] %> - <%= $id->[1] %><br/>
+  % }
+ <hr />
+  %= form_for "/companies/remove_user/$payload" => (method => 'POST') => begin
+   %= submit_button ml('Delete')
+   %= select_field user => $company_users 
+  % end
+% } else {
+ %= ml 'No data!'   
+% }
+% if( stash 'non_company_users' ) {
+ <hr />
+ %= form_for "/companies/add_user/$payload" => (method => 'POST') => begin
+  %= submit_button ml('Add')
+  %= select_field user => stash 'non_company_users' 
+ % end
+% }
+
