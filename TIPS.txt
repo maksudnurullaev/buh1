@@ -1,0 +1,3 @@
+[find some text]
+find templates/ -type f -print | xargs grep "is_admin"
+

@@ -249,9 +249,60 @@ sub get_counts{
     return($count);
 };
 
-# -= LINKS betweeen two objects =-
+# -= access betweeen two objects =-
+#   sort when incoming order by less id inserted always in ID colomn
+#   whane greater id always inserted in FIELD column
+#   ALWAYS: ID < FIELD
 # ==============================
-# | NAME | ID  | FIELD | VALUE |
+# | name   | id  | field | value |
+# ==============================
+# | access | id1 | id2   | value |
+# ------------------------------
+sub get_linked_value{
+    my ($name,$id1,$id2) = @_;
+    return if(!$name || !$id1 || !$id2 || ($id1 eq $id2) );
+    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
+    my $dbh = get_db_connection() || return;
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
+    my $sth_str = 
+        "SELECT value FROM objects WHERE name=? AND id=? AND field=? ;";
+    my $sth = $dbh->prepare($sth_str);
+    if($sth->execute($name,$id1,$id2)){
+        my $value;
+        $sth->bind_columns(\($value));
+        if($sth->fetch){
+            return($value);
+        }
+        return;
+    } 
+    warn_if $DBI::errstr; 
+    return(-1); # some error happens
+};
+
+sub set_linked_value{
+    my ($name,$id1,$id2,$value) = @_;
+    return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );
+    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
+    my $dbh = get_db_connection() || return;
+    my $sth = $dbh->prepare(
+        "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
+    return(0) if !$sth->execute($name,$id1,$id2,$value);
+    return(1);
+};
+
+sub del_linked_value{
+    my ($name,$id1,$id2) = @_;
+    return if( !$name || !$id1 || !$id2 );
+    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
+    my $dbh = get_db_connection() || return;
+    return $dbh->do(
+        "DELETE FROM objects WHERE name=? AND id = ? AND value = ? ;",
+        undef,($name,$id1,$id2));
+};
+
+# -= links betweeen two objects =-
+# ==============================
+# | name | id  | field | value |
 # ==============================
 # | link | id1 | name2 | id2   |
 # ------------------------------
@@ -263,13 +314,12 @@ sub exists_link{
     my $sth_str = 
         "SELECT COUNT(*) FROM objects WHERE name=? AND id=? AND value=? ;";
     my $sth = $dbh->prepare($sth_str);
-    my ($field,$value,$result) = (undef,undef,[]);
     if($sth->execute($LINK_OBJECT_NAME,$id1,$id2)){
         my($count) = $sth->fetchrow_array;
         return $count; 
     } 
     warn_if $DBI::errstr; 
-    return(-1); # some error happens
+    return(undef); # some error happens
 };
 
 sub set_link{

@@ -15,28 +15,16 @@
  %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
-   <td class='tar'> 
-    %= ml 'E-mail' 
-   </td>
-   <td> 
-    %= text_field email => (stash 'email') , class => stash 'email_class'  
-   </td>
+   <td class='tar'><u><%= ml 'E-mail' %></u></td>
+   <td><%= text_field email => (stash 'email') , class => stash 'email_class' %></td>
   </tr>
   <tr>
-   <td class='tar'> 
-    %= ml 'New Password'
-   </td>
-   <td>
-    %= password_field 'password1', class => stash 'password1_class'
-   </td>
+   <td class='tar'><u><%= ml 'New Password' %></u></td>
+   <td><%= password_field 'password1', class => stash 'password1_class' %></td>
   </tr>
   <tr>
-   <td class='tar'> 
-    %= ml 'New Password(again)'
-   </td>
-   <td>
-    %= password_field 'password2', class => stash 'password2_class'
-   </td>
+   <td class='tar'><u><%= ml 'New Password(again)' %></u></td>
+   <td><%= password_field 'password2', class => stash 'password2_class' %></td>
   </tr>
   <tr>
    <td class='tar'> 
