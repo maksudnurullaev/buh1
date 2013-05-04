@@ -62,11 +62,19 @@ sub select_objects{
             names         => $OBJECT_NAMES,
             filter        => $filter,
             filter_field  => 'name',
-            result_fields => ['name','access','description']      
+            result_fields => ['name','description']      
         });
     $self->stash(path  => $path);
     $self->stash(companies => $objects) if $objects && scalar(keys %{$objects});
     Db::attach_links($objects,'users','user',['email']);
+    for my $cid (keys %{$objects}){
+        if ( exists $objects->{$cid}{users} ){
+            my $users = $objects->{$cid}{users};
+            for my $uid (keys %{$users}){
+                $users->{$uid}{access} = Db::get_linked_value('access',$cid,$uid);
+            }
+        }
+    }
     return($objects);
 };
 
@@ -117,6 +125,7 @@ sub remove_user{
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
     Db::del_link($id,$user_id);
+    Db::del_linked_value('access',$id,$user_id);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -127,6 +136,17 @@ sub add_user{
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
     Db::set_link($OBJECT_NAME,$id,'user',$user_id);
+    $self->redirect_to("companies/edit/$id");
+};
+
+sub change_access{
+    my $self = shift;
+    return if !$self->is_admin;
+
+    my $id          = $self->param('payload');
+    my $user_id     = $self->param('user_id');
+    my $user_access = $self->param('user_access');
+    Db::set_linked_value('access',$id,$user_id,$user_access);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -160,8 +180,18 @@ sub edit{
 
     my ($non_company_users,$company_users) = 
         Db::get_difference($id,'user','email');
-    $self->stash(non_company_users => $non_company_users) if @{$non_company_users};
-    $self->stash(company_users => $company_users) if @{$company_users};
+    my $company_users_hash = {};    
+    for my $user (@{$company_users}){
+        my ($user_id,$user_mail) = ($user->[1],$user->[0]);
+        my $user_access          = Db::get_linked_value('access',$id,$user_id);
+        $company_users_hash->{$user_mail} = {
+            id => $user_id,
+            access => $user_access,
+            };
+    }
+    $self->stash(non_company_users  => $non_company_users)  if @{$non_company_users};
+    $self->stash(company_users      => $company_users)      if @{$company_users};
+    $self->stash(company_users_hash => $company_users_hash) if scalar keys %{$company_users_hash};
 
     if( $data = Db::get_objects({id=>[$id]}) ){
         for my $key (keys %{$data->{$id}} ){

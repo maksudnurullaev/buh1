@@ -7,21 +7,6 @@
    <td><%= text_field name => (stash 'name') , class => stash 'name_class' %></td>
   </tr>
   <tr>
-   <td class='tar'><u><%= ml 'Default access' %></u></td>
-   <td>
-    % my @accesses = ('No access','Read','Write','Confirm','Administrator');
-    % my $temp = [];
-     % for my $access (@accesses){
-      % if ( stash('access') &&  (stash('access') eq $access) ) {
-       % push @{$temp}, [ml($access) => $access, selected => $access];
-      % } else {    
-       % push @{$temp}, [ml($access) => $access];
-      % } 
-     % }
-    %= select_field access => $temp, value => stash('access');
-   </td>
-  </tr>
-  <tr>
    <td class='tar'> 
     %= ml 'Description' 
    </td>

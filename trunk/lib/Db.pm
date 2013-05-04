@@ -273,10 +273,10 @@ sub get_linked_value{
         if($sth->fetch){
             return($value);
         }
-        return;
+        return(undef);
     } 
     warn_if $DBI::errstr; 
-    return(-1); # some error happens
+    return(undef); # some error happens
 };
 
 sub set_linked_value{
@@ -284,9 +284,15 @@ sub set_linked_value{
     return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );
     ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
     my $dbh = get_db_connection() || return;
-    my $sth = $dbh->prepare(
-        "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
-    return(0) if !$sth->execute($name,$id1,$id2,$value);
+    if ( get_linked_value($name,$id1,$id2) ) {
+        my $sth = $dbh->prepare(
+            "UPDATE objects SET value = ? WHERE name =? AND id = ? AND field =? ;");
+        return(0) if !$sth->execute($value,$name,$id1,$id2);
+    } else {
+        my $sth = $dbh->prepare(
+            "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
+        return(0) if !$sth->execute($name,$id1,$id2,$value);
+    }
     return(1);
 };
 
@@ -295,9 +301,8 @@ sub del_linked_value{
     return if( !$name || !$id1 || !$id2 );
     ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
     my $dbh = get_db_connection() || return;
-    return $dbh->do(
-        "DELETE FROM objects WHERE name=? AND id = ? AND value = ? ;",
-        undef,($name,$id1,$id2));
+    return 
+        $dbh->do("DELETE FROM objects WHERE name='$name' AND id='$id1' AND field='$id2';")
 };
 
 # -= links betweeen two objects =-
