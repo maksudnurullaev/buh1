@@ -1,9 +1,26 @@
 <h3><%= ml 'Users' %></h3>
 % if( stash 'company_users' ) {
- % my $company_users = stash 'company_users';   
-  % for my $id (@{$company_users}){
-   <%= $id->[0] %> - <%= $id->[1] %><br/>
-  % }
+ % my $company_users      = stash 'company_users';   
+ % my $company_users_hash = stash 'company_users_hash';   
+ % my @accesses           = ('No access','Read','Write','Confirm','Administrator');
+ % for my $user_mail (keys %{$company_users_hash}){
+  % my $user_access = $company_users_hash->{$user_mail}{access};
+  % my $user_id     = $company_users_hash->{$user_mail}{id};
+  %= form_for "/companies/change_access/$payload" => (method => 'POST') => begin
+   %= submit_button ml('Save') ;
+   % my $temp = [];
+   % for my $access (@accesses){
+    % if ( $user_access && $user_access eq $access ) {
+     % push @{$temp}, [ml($access) => $access, selected => $access];
+    % } else {    
+     % push @{$temp}, [ml($access) => $access];
+    % } 
+   % }
+   %= select_field user_access  => $temp, value => stash('access');
+   %= hidden_field user_id      => $user_id;
+   %= $user_mail ;
+  % end
+ % }
  <hr />
   %= form_for "/companies/remove_user/$payload" => (method => 'POST') => begin
    %= submit_button ml('Delete')
