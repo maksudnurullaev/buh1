@@ -14,6 +14,8 @@ use warnings;
 use utf8;
 use Crypt::SaltedHash;
 use Utils;
+use Db;
+use Data::Dumper;
 
 
 sub salted_password{
@@ -38,11 +40,11 @@ sub set_admin_password{
     my $password = shift;
     if(defined($password) && $password){
         my ($file,$f) = (get_admin_password_file_path(), undef);
-        my $salted_password = salted_password($password);
+        my $salt = salted_password($password);
         open($f, ">", $file) || die("Can't open $file to write: $!");
-        print $f $salted_password;
+        print $f $salt;
         close($f);
-        return($salted_password);
+        return($salt);
     }
     return(undef);
 };
@@ -50,30 +52,65 @@ sub set_admin_password{
 sub get_admin_password{
     my $file = get_admin_password_file_path();
     if(! -e $file){ return(set_admin_password('admin')); }
-    my ($f,$salted_password) = (undef,undef);
+    my ($f,$salt) = (undef,undef);
     open($f, "<", $file) || die("Can't open $file to read: $!");
-    $salted_password = <$f>; # get just first line
+    $salt = <$f>; # get just first line
     close($f);
-    return($salted_password);
+    return($salt);
+};
+
+sub get_user{
+    my $email = shift;
+    return(undef) if !$email;
+
+    my $users = Db::get_objects({
+        name  =>['user'],
+        add_where => " field='email' AND value='$email' "
+        });
+    my @ids = keys %{$users};
+    return(undef) if  scalar(@ids) != 1;
+    # 3. Is password coorect
+    my $user_id = $ids[0];
+    $users = Db::get_objects({
+        name  =>['user'],
+        field =>['email','password'], 
+        add_where => " name='user' AND id='$user_id' "
+        });
+    return(undef) if !$users ||
+        !exists($users->{$user_id}) ||
+        !exists($users->{$user_id}{password}) ;
+    $users->{$user_id}{id} = $user_id; # set id 
+    return($users->{$user_id});
 };
 
 sub login{
-    my($name,$password) = @_;
+    my($email,$password) = @_;
     # 1. Is administrator
-    if( $name =~ /^admin$/i ){
+    if( $email =~ /^admin$/i ){
         return(salted_password($password,get_admin_password));
     }
-    warn "$name,$password";
-    return(0);
+    # 2. Is user exists
+    my $user = get_user($email);
+    return(0) if !$user ;
+    my $salt = $user->{password};
+    return salted_password($password,$salt);
 };
 
 sub set_password{
-    my ($name, $password) = @_;
+    my ($email, $password) = @_;
     # 1. Is administrator
-    if( $name =~ /^admin$/i ){
+    if( $email =~ /^admin$/i ){
         return(set_admin_password($password));
     }
-    return;
+    my $user = get_user($email);
+    return(0) if !$user || 
+            !exists($user->{id});
+    my $id  = $user->{id}; 
+    my $dbh = Db::get_db_connection() || return;
+    my $sth = $dbh->prepare(
+            "UPDATE objects SET value=? WHERE name='user' AND id=? AND field='password' ;");
+    return(0) if !$sth->execute(salted_password($password),$id);
+    return(1) ;
 };
 
 # END OF PACKAGE

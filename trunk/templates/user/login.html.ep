@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml 'Cabinet' %></h2>
+<h2><%= ml 'Login' %></h2>
 % if( defined stash( 'error' ) && length stash( 'error' ) ) { 
 <div class='alert error'>
 %= ml 'Error!' 

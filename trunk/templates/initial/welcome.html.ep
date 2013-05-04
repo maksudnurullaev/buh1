@@ -7,12 +7,4 @@
 И мы думаем что он будет иметь феноменальный успех!!!
 <% end %>
     </p>
-    <p>
-        <%= ml 'Test ML' %>
-    </p>
-    <p>
-        <%= mlm  'eng', 'Test BLOCK' => begin %>
-            Test MLM
-        <% end %>
-    </p>
 </div>
