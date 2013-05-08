@@ -6,13 +6,13 @@ sub login{
     my $method = $self->req->method;
     my $error_found = 0;
     if ( $method =~ /POST/ ){
-        my $user = Utils::trim $self->param('user');
-        if (!$user) { $error_found = 1; $self->stash(user_class => "error")};
+        my $email = Utils::trim $self->param('email');
+        if (!$email) { $error_found = 1; $self->stash(email_class => "error")};
         my $password = Utils::trim $self->param('password');
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
-            if ( Auth::login($user, $password) ){ 
-                $self->session->{'user'} = $user;
+            if ( Auth::login($email, $password) ){ 
+                $self->session->{'email'} = $email;
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }
@@ -24,14 +24,14 @@ sub login{
 
 sub logout{
     my $self = shift;
-    delete $self->session->{'user'};
+    delete $self->session->{'email'};
     $self->redirect_to('/');
 };
 
 sub password{
     my $self = shift;
     return if !$self->is_user;
-    my $user = Utils::User::current($self);
+    my $email = Utils::User::current($self);
     my $method = $self->req->method;
     my $error_found = 0;
     if ( $method =~ /POST/ ){
@@ -50,14 +50,14 @@ sub password{
             $self->stash(password1_class => "error");
             $self->stash(password2_class => "error");
         }
-        # check for user and password
-        if ( !Auth::login($user, $password) ){ 
+        # check for email and password
+        if ( !Auth::login($email, $password) ){ 
             $error_found = 1; 
             $self->stash(password_class => "error")
         }
         # change password
         if( !$error_found ){
-            if(Auth::set_password($user,$password1)){
+            if(Auth::set_password($email,$password1)){
                 $self->stash(success => 1);
             } else {
                 $error_found = 1;

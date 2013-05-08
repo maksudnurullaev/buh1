@@ -18,7 +18,7 @@ use Utils::Languages;
 sub current{
     my $self = shift;
     if( $self ){
-        return($self->session->{'user'} );
+        return($self->session->{'email'} );
     }
     return;
 };

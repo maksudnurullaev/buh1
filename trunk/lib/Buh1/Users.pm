@@ -41,18 +41,6 @@ sub filter{
     redirect2list_or_path($self);
 };
 
-sub list{
-    my $self = shift;
-    return if !$self->is_admin;
-    select_objects($self,$OBJECT_NAME,'');
-};
-
-sub deleted{
-    my $self = shift;
-    return if !$self->is_admin;
-    select_objects($self,$DELETED_OBJECT_NAME,'/users/deleted');
-};
-
 sub select_objects{
     my ($self,$name,$path) = @_;
 
@@ -68,6 +56,28 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(users => $objects) if $objects && scalar(keys %{$objects});
+    Db::attach_links($objects,'companies','company',['name']);
+    for my $uid (keys %{$objects}){
+        if ( exists $objects->{$uid}{companies} ){
+            my $companies = $objects->{$uid}{companies};
+            for my $cid (keys %{$companies}){
+                $companies->{$cid}{access} = Db::get_linked_value('access',$cid,$uid);
+            }
+        }
+    }
+    return($objects);
+};
+
+sub list{
+    my $self = shift;
+    return if !$self->is_admin;
+    select_objects($self,$OBJECT_NAME,'');
+};
+
+sub deleted{
+    my $self = shift;
+    return if !$self->is_admin;
+    select_objects($self,$DELETED_OBJECT_NAME,'/users/deleted');
 };
 
 sub restore{

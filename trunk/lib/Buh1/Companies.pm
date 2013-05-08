@@ -52,6 +52,7 @@ sub deleted{
     select_objects($self,$DELETED_OBJECT_NAME,'/companies/deleted');
 };
 
+
 sub select_objects{
     my ($self,$name,$path) = @_;
 

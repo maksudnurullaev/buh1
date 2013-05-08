@@ -9,7 +9,7 @@
  %= form_for '/user/login' => (method => 'POST') => begin
  <table class='colortable'>
   <tr><td class='tar'><u><%= ml 'Name' %></u></td>
-   <td><%= text_field 'user', class => stash 'user_class' %></td>
+   <td><%= text_field 'email', class => stash 'email_class' %></td>
   </tr>
   <tr><td class='tar'><u><%= ml 'Password' %></u></td>
    <td><%= password_field 'password', class => stash 'password_class' %></td>

@@ -1,0 +1,17 @@
+% layout 'default';
+<h2><%= ml 'Companies' %></h2>
+<div>
+ % my $user      = stash 'user';
+ % my $companies = stash 'companies';
+ % for my $cid (keys %{$companies}) {
+   <ul>
+    %if ( $companies->{$cid}{access} ) { 
+     <li><%= link_to $companies->{$cid}{name} => "/desktop/select_company/$cid" %></li>
+     <ul><li><%= ml 'Access' %>: <%= ml $companies->{$cid}{access} %></li></ul>   
+    % } else {
+     <li><%= $companies->{$cid}{name} %></li>  
+     <ul><li><%= ml 'Access' %>: <%= ml 'No access' %></li></ul>   
+    % }
+   </ul>
+ % }    
+</div>
