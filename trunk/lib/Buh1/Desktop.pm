@@ -21,7 +21,6 @@ sub select_company{
                 access => Db::get_linked_value('access',$cid,$user->{id})
             };
     }
-    warn Dumper($companies);
     $self->stash(user => $user);
     $self->stash(companies => $companies);
 };
