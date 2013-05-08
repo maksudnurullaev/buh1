@@ -59,41 +59,21 @@ sub get_admin_password{
     return($salt);
 };
 
-sub get_user{
-    my $email = shift;
-    return(undef) if !$email;
-
-    my $users = Db::get_objects({
-        name  =>['user'],
-        add_where => " field='email' AND value='$email' "
-        });
-    my @ids = keys %{$users};
-    return(undef) if  scalar(@ids) != 1;
-    # 3. Is password coorect
-    my $user_id = $ids[0];
-    $users = Db::get_objects({
-        name  =>['user'],
-        field =>['email','password'], 
-        add_where => " name='user' AND id='$user_id' "
-        });
-    return(undef) if !$users ||
-        !exists($users->{$user_id}) ||
-        !exists($users->{$user_id}{password}) ;
-    $users->{$user_id}{id} = $user_id; # set id 
-    return($users->{$user_id});
-};
-
 sub login{
     my($email,$password) = @_;
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
-        return(salted_password($password,get_admin_password));
+        return(1) if salted_password($password,get_admin_password);
+        warn "Admin's password invalid!";
+        return(0);
     }
-    # 2. Is user exists
-    my $user = get_user($email);
+    # 2. Is email exists
+    my $user = Db::get_user($email);
     return(0) if !$user ;
     my $salt = $user->{password};
-    return salted_password($password,$salt);
+    return(1) if salted_password($password,$salt);
+    warn "User with mail '$email' exists but password is invalid!";
+    return(0);
 };
 
 sub set_password{
@@ -102,7 +82,7 @@ sub set_password{
     if( $email =~ /^admin$/i ){
         return(set_admin_password($password));
     }
-    my $user = get_user($email);
+    my $user = Db::get_user($email);
     return(0) if !$user || 
             !exists($user->{id});
     my $id  = $user->{id}; 

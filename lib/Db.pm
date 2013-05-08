@@ -279,6 +279,39 @@ sub get_linked_value{
     return(undef); # some error happens
 };
 
+sub get_user{
+    my $email = shift;
+    return(undef) if !$email;
+
+    my $users = get_objects({
+        name  =>['user'],
+        add_where => " field='email' AND value='$email' "
+        });
+    my @ids = keys %{$users};
+    my $count = scalar(@ids);
+    if( !$count ){
+        warn "User with email '$email' not exist";
+        return(undef);
+    }
+    if( scalar(@ids) != 1 ){
+        warn "User with email '$email' not unique: $count!";
+        return(undef);
+    }
+    # make map
+    my $user_id = $ids[0];
+    $users = Db::get_objects({
+        name  =>['user'],
+        field =>['email','password'], 
+        add_where => " name='user' AND id='$user_id' "
+        });
+    return(undef) if !$users ||
+        !exists($users->{$user_id}) ||
+        !exists($users->{$user_id}{password}) ;
+    $users->{$user_id}{id} = $user_id; # set id 
+    return($users->{$user_id});
+};
+
+
 sub set_linked_value{
     my ($name,$id1,$id2,$value) = @_;
     return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );

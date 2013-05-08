@@ -1,9 +1,8 @@
 1.      (DONE) Create login page
-1.1.    Test logins for ordinal users
+1.1.    (DONE) Test logins for ordinal users
 1.1     (DONE) Create tests for db.
 1.2     (DONE) Create login bar
 1.4     (DONE) Move user login actions to lib/Buh1/User.pm module
-1.4     (DONE, just for admin awhile) Add change password page
 1.5     (DENE) Add Companies functionality
 1.5.1   (DONE) Add to Company edit page subform for adding link to user 
 1.5.0.2 (DONE) Add restore page for deleted objects
@@ -12,9 +11,11 @@
 2.2     (DONE) Auto-recovery for admin.login
 2.2.1   (DONE) Create password hashing module
 3.1     (DONE) Create memo system for registered user comments
-3.1.1    Create captcha system 
 4.1     (DONE) Change main logo picture
 5.1     Create demo account for users!
+5.1.1   Setup initial page for users with choosing company page!
+5.1.2   Setup individual database for each company
+5.1.3   Setup auto-recovery for each companies's database
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);

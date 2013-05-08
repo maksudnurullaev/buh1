@@ -70,7 +70,9 @@ sub check_for{
         return Utils::User::is_admin($self);
     } elsif ( $key =~ /^mobile$/i ) { 
         return isMobileBrowser($self);
-    } 
+    } elsif ( $key =~ /^company\sname$/g ){
+        return $self->session->{'company name'};
+    }
     return ;
 };
 
