@@ -1,5 +1,6 @@
 package Buh1::Desktop; {
 use Mojo::Base 'Mojolicious::Controller';
+use Accounts;
 use Data::Dumper;
 
 sub select_company{
@@ -23,6 +24,24 @@ sub select_company{
     }
     $self->stash(user => $user);
     $self->stash(companies => $companies);
+};
+
+sub accounts{
+    my $self = shift;
+    return if !$self->is_user;
+
+    my $parts = Accounts::get_all_parts;
+    $self->stash( parts => $parts );
+
+    for my $part_id (keys %{$parts}){
+        my $sections = Accounts::get_sections($part_id);
+        $parts->{$part_id}{sections} = $sections;
+
+        for my $section_id (keys %{$sections}){
+            my $accounts = Accounts::get_accounts($section_id);
+            $sections->{$section_id}{accounts} = $accounts;
+        }
+    }
 };
 
 1;
