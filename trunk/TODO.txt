@@ -13,9 +13,9 @@
 3.1     (DONE) Create memo system for registered user comments
 4.1     (DONE) Change main logo picture
 5.1     Create demo account for users!
-5.1.1   Setup initial page for users with choosing company page!
 5.1.2   Setup individual database for each company
 5.1.3   Setup auto-recovery for each companies's database
+6.1.1   Export account including "забаланнсовые счета" 
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);

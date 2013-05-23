@@ -1,0 +1,482 @@
+CHART OF ACCOUNTS ПЛАН СЧЕТОВ
+№ of  account    Name of account    № счета и субсчета    Наименование счета и субсчета
+Part 1
+Long-term assets    ЧАСТЬ I
+ДОЛГОСРОЧНЫЕ АКТИВЫ
+Section 1.
+Fixed assets, Intangibles & Other Long-term Assets    РАЗДЕЛ 1.
+ОСНОВНЫЕ СРЕДСТВА, НЕМАТЕРИАЛЬНЫЕ  И ДРУГИЕ ДОЛГОСРОЧНЫЕ АКТИВЫ
+01    Fixed assets    01    ОСНОВНЫЕ СРЕДСТВА
+0110    Land    0110    Земля
+0111    Land Improvements    0111    Благоустройство земли
+0112    Leasehold Improvements    0112    Благоустройство основных средств, полученных по договору  лизинга
+0120    Buildings and facilities    0120    Здания ,сооружения и передаточные устройства
+0130    Machinery & Equipment    0130    Машины  и оборудование
+0140    Furniture & Fixtures    0140    Мебель и принадлежности
+0150    Computer Equipment    0150    Компьютерное оборудование
+0160    Vehicles    0160    Транспортные средства
+0170    Draft Animals    0170    Рабочий скот
+0171    Livestock    0171    Продуктивный скот
+0180    Perennial Plants    0180    Многолетние насаждения
+0190    Other fixed assets    0190    Прочие основные средства
+0199    Preserved fixed assets    0199    Законсервированные основные средства
+02    Depreciation of fixed assets    02    ИЗНОС ОСНОВНЫХ СРЕДСТВ
+0211    Depreciation of Land Improvements    0211    Износ благоустройства земли
+0212    Depreciation of Leasehold Improvements    0212     Износ благоустройства основных средств, полученных по договору  лизинга
+0220    Depreciation of Buildings and facilities    0220     Износ зданий, сооружений и передаточных устройств
+0230    Depreciation of Machinery & Equipment    0230    Износ машин  и оборудования
+0240    Depreciation of Furniture & Fixtures    0240     Износ мебели и принадлежностей
+0250    Depreciation of Computer Equipment    0250     Износ компьютерного оборудования
+0260    Depreciation of Vehicles    0260     Износ транспортных  средств
+0270    Depreciation of Draft Animals    0270     Износ рабочего  скота
+0280    Depreciation of Perennial Plants    0280     Износ многолетних насаждений
+0290    Depreciation of Other fixed assets    0290     Износ прочих основных средств
+0299    Depreciation of fixed assets received on  lease    0299    Износ основных средств, полученных по договору лизинга
+03    Fixed assets, received on  lease    03    ОСНОВНЫЕ СРЕДСТВА, ПОЛУЧЕННЫЕ ПО ДОГОВОРУ  ЛИЗИНГА
+0310    Fixed assets, received on  lease    0310    Основные средства, полученные по договору  лизинга
+04    Intangible assets    04    НЕМАТЕРИАЛЬНЫЕ АКТИВЫ
+0410    Patents, Licenses and know-how    0410    Патенты , лицензии и ноу-хау
+0420    Trademarks, trade signs & industrial samples    0420    Торговые марки , товарные  знаки и промышленные образцы
+0430    Software     0430    Программное обеспечение
+0440    Goodwill    0440    Гудвил
+0450    Organization Costs    0450    Организационные расходы
+0460    Franchise Fees    0460    Франшизы
+0470    Copyrights    0470    Авторские права
+0480    Rights to use land and natural resources    0480    Права пользования землей и природными ресурсами
+0490    Other     0490    Прочие нематериальные активы
+
+05    Amortization of intangible assets    05    ИЗНОС  НЕМАТЕРИАЛЬНЫХ АКТИВОВ
+0510    Accumulated Amortization - Patents & Licenses    0510    Износ патентов, лицензий и ноу-хау
+0520    Accumulated Amortization - Trademarks ,Trade Signs & industrial samples    0520     Износ торговых марок , товарных  знаков и промышленных образцов
+0530    Accumulated Amortization - Software    0530    Износ программного обеспечения
+0540    Accumulated Amortization - Goodwill    0540     Износ гудвила
+0550    Accumulated Amortization - Organization Costs    0550     Износ организационных  расходов
+0560    Accumulated Amortization - Franchise fees    0560     Износ франшиз
+0570    Accumulated Amortization - Copyrights    0570     Износ авторских прав
+0580    Accumulated Amortization – rights to use land and natural resources    0580     Износ прав пользования землей и природными ресурсами
+0590    Accumulated Amortization  - Other    0590    Износ прочих нематериальных активов
+
+06    Long – term investments    06    ДОЛГОСРОЧНЫЕ ИНВЕСТИЦИИ
+0610    Securities    0610    Ценные бумаги
+0620    Investments in Subsidiaries    0620    Инвестиции в дочерние предприятия
+0630    Investments in Joint Ventures    0630    Инвестиции в совместные предприятия
+0640    Investments in Associates    0640    Инвестиции в ассоциированные предприятия
+0650    Investments in Subordinates    0650    Инвестиции в зависимые общества
+0690    Other long-term Investments    0690    Прочие долгосрочные инвестиции
+
+07    Equipment to be installed    07    ОБОРУДОВАНИЕ К УСТАНОВКЕ
+0710    Equipment to be installed – local    0710    Оборудование к установке- отечественное
+0720    Equipment to be installed - imported    0720    Оборудование к установке- импортное
+
+08    Capital investments    08    КАПИТАЛОВЛОЖЕНИЯ
+0810    Work in progress    0810    Незавершенное строительство
+0820    Acquisition of fixed assets    0820    Приобретение основных средств
+0830    Acquisition of intangible assets    0830    Приобретение нематериальных активов
+0840    Formation of main herd    0840    Формирование основного стада
+0890    Other capital investments    0890    Прочие капиталовложения
+
+09    Long-term receivables & deferred charges    09    ДОЛГОСРОЧНАЯ ДЕБИТОРСКАЯ ЗАДОЛЖЕННОСТЬ И ОТСРОЧЕННЫЕ РАСХОДЫ
+0910    Notes Receivable     0910    Векселя полученные-долгосрочная часть 
+0920    Lease Payments Receivable     0920    Лизинг  к получению
+0930    Deferred Income Tax    0930    Отсроченный налог на доход (прибыль) по временным разницам
+0940    Deferred Expense - Other    0940    Прочие долгосрочные отсроченные расходы (расходы будущих периодов )
+0990    Other receivables- long-term    0990    Прочая долгосрочная дебиторская задолженность
+
+Part II. CURRENT ASSETS    ЧАСТЬ II
+ТЕКУЩИЕ АКТИВЫ
+Section 2.
+Inventory     РАЗДЕЛ 2
+ТОВАРНО-МАТЕРИАЛЬНЫЕ ЗАПАСЫ
+10    Raw materials inventory    10    МАТЕРИАЛЫ
+1010     Materials    1010    Сырье и материалы
+1020    Purchased Semi-finished Goods & Components    1020    Покупные полуфабрикаты и комплектующие изделия
+1030    Fuel    1030    Топливо
+1040    Spare Parts    1040    Запасные части
+1050    Construction Materials    1050    Строительные материалы
+1060    Feed    1060    Корма и подстилка
+1070    Packaging Materials    1070    Тара и тарные материалы
+1080    Materials for Outside Processing    1080    Материалы, переданные в переработку на сторону
+1090    Other Materials    1090    Прочие материалы
+
+11    Animals for Breeding    11    ЖИВОТНЫЕ НА ВЫРАЩИВАНИИ И ОТКОРМЕ
+1110    Animals for Breeding    1110    Животные на выращивании и откорме
+
+12    Low Value Inventory    12    МАЛОЦЕННЫЕ И БЫСТРОИЗНАШИВАЮЩИЕСЯ ПРЕДМЕТЫ
+1210    Low Value and short-life Items in warehouse    1210    Малоценные и быстроизнашивающиеся предметы на складе
+1220    Low Value and short-life Items in exploitation     1220    Малоценные и быстроизнашивающиеся предметы в эксплуатации
+1230    Temporary (none-title) constructions    1230    Временные (нетитульные) сооружения
+
+13    Depreciation of low value and short-life items    13    ИЗНОС МАЛОЦЕННЫХ И БЫСТРОИЗНАШИВАЮЩИХСЯ    ПРЕДМЕТОВ
+1310    Depreciation of low value and short-life items    1310    Износ малоценных и быстроизнашивающихся предметов
+
+14    14
+
+15    Purchase of materials    15    ЗАГОТОВЛЕНИЕ И ПРИОБРЕТЕНИЕ МАТЕРИАЛОВ
+    Purchase of materials    1510    Заготовление и приобретение материалов
+
+16    Deviation in the cost of materials    16    ОТКЛОНЕНИЯ    В СТОИМОСТИ МАТЕРИАЛОВ
+1610    Deviation in the cost of materials    1610    Отклонения в стоимости материалов
+
+17    17
+18    18
+19    19
+
+20    Main Production Work in Process     20    ОСНОВНОЕ ПРОИЗВОДСТВО
+2010    Main Production Work in Process     2010    Основное  производство
+
+21    Transfer of in process inventory     21    ПОЛУФАБРИКАТЫ СОБСТВЕННОГО ПРОИЗВОДСТВА
+2110    Transfer of in process inventory     2110    Полуфабрикаты  собственного  производства
+
+22    22
+
+23    Auxiliary & other Production in Process    23    ВСПОМОГАТЕЛЬНЫЕ И ПРОЧИЕ  ПРОИЗВОДСТВА
+2310    Auxiliary Production in Process    2310    Вспомогательное  производство
+2320    Other production in process    2320    Прочие производства
+
+24    24
+
+25    General production expenses    25    ОБЩЕПРОИЗВОДСТВЕННЫЕ РАСХОДЫ
+2510    General production expenses    2510    Общепроизводственные расходы
+
+26    Damage in production    26    БРАК В ПРОИЗВОДСТВЕ
+2610    Damage in production    2610    Брак в производстве
+27    Non-capital works    27    НЕКАПИТАЛЬНЫЕ РАБОТЫ
+2710    Temporary (title) constructions    2710    Возведение временных (титульных) сооружений
+2720    Temporary (none- title) constructions    2720    Возведение  временных ( нетитульных) сооружений
+2790    Other non-capital works    2790    Прочие некапитальные работы
+
+28    Finished Goods Inventory    28    ГОТОВАЯ ПРОДУКЦИЯ
+2810    Finished Goods    2810    Готовая продукция на складе
+2820    Finished goods in exhibition    2820    Готовая продукция на выставке
+
+29    Goods     29    ТОВАРЫ
+2910    Goods in warehouse    2910    Товары на складах
+2920    Goods in retail trade    2920    Товары в розничной торговле
+2930    Goods in exhibition    2930    Товары на выставке
+2940    Items for rent    2940    Предметы проката
+2950    Full & empty packaging    2950    Тара под товаром и порожняя
+2990    Other    2990    Прочие
+
+Section 3.
+Prepaid Expenses & current portion of deferred expenses    РАЗДЕЛ 3
+РАСХОДЫ БУДУЩИХ ПЕРИОДОВ И ТЕКУЩАЯ ЧАСТЬ ОТСРОЧЕННЫХ РАСХОДОВ
+30    30
+
+31    Prepaid Expenses &     31    РАСХОДЫ БУДУЩИХ ПЕРИОДОВ
+3110    Prepaid Lease     3110    Предоплаченная аренда
+3120    Prepaid services    3120    Предоплаченные услуги
+3190    Other prepayments    3190    Прочие авансированные расходы
+
+32    Current portion of deferred expenses    32    ТЕКУЩАЯ ЧАСТЬ ОТСРОЧЕННЫХ  РАСХОДОВ
+3210    Deferred income tax on temporary differences – current portion    3210    Отсроченный налог на доход (прибыль) по временным разницам – текущая часть
+3220    Deferred expenses – current portion    3290    Текущая часть прочих отсроченных расходов
+
+33    33
+34    34
+35    35
+36    36
+37    37
+38    38
+39    39
+
+Section 4.
+Receivables    РАЗДЕЛ 4
+СЧЕТА К ПОЛУЧЕНИЮ
+40    Accounts Receivable    40    СЧЕТА К ПОЛУЧЕНИЮ
+4010    Accounts Receivable from  Customers    4010    Счета к получению от покупателей и заказчиков
+4020    Notes Receivable     4020    Векселя  полученные - текущая часть
+
+41    Receivable from subdivisions    41    СЧЕТА К ПОЛУЧЕНИЮ ОТ ПОДРАЗДЕЛЕНИЙ
+4110    Receivable from subdivisions    4110    Счета к получению от подразделений, выделенных  на отдельный баланс
+
+42    Claims Receivable    42    СЧЕТА К ПОЛУЧЕНИЮ ПО ПРЕТЕНЗИЯМ
+4210    Claims Receivable    4210    Счета к получению по претензиям
+
+43    Advances given to suppliers & contractors    43    АВАНСЫ , ВЫДАННЫЕ ПОСТАВЩИКАМ И ПОДРЯДЧИКАМ
+4310    Advances given to suppliers & contractors for inventory    4310    Авансы, выданные поставщикам и подрядчикам под ТМЦ
+4320    Advances given to suppliers & contractors for long-term assets    4320    Авансы, выданные поставщикам и подрядчикам под долгосрочные активы
+
+44    Advances given to personnel    44    АВАНСЫ, ВЫДАННЫЕ ПЕРСОНАЛУ
+4410    Advances given for payroll    4410    Авансы, выданные по оплате труда
+4420    For business-trips    4420    Авансы, выданные на  служебные командировки
+4430    For general expenses    4430    Авансы, выданные на общехозяйственые расходы
+4490    Other    4490    Прочие авансы выданные персоналу
+
+45    Advances given on taxes & obligatory payments    45    АВАНСОВЫЕ ПЛАТЕЖИ ПО НАЛОГАМ И ОБЯЗАТЕЛЬНЫМ ПЛАТЕЖАМ
+4510    Advances given on taxes  ( by types of taxes )     4510     Авансовые платежи  по налогам
+4550    Advances given on obligatory payments( by types of obligatory payments)    4550    Авансовые платежи по обязательным платежам
+
+46    Receivables from personnel on other transactions    46    ЗАДОЛЖЕННОСТЬ ПЕРСОНАЛА ПО ПРОЧИМ ОПЕРАЦИЯМ
+4610    Receivables for goods on credit    4610    Задолженность персонала по товарам, реализованным в кредит
+4620    Receivables on loans    4620    Задолженность персонала по предоставленным займам
+4630    Receivables to cover material loss    4630    Задолженность персонала по возмещению материального ущерба 
+4690    Receivables on other transactions    4690    Прочая задолженность персонала 
+
+47    Receivable from Founders    47    ЗАДОЛЖЕННОСТЬ УЧРЕДИТЕЛЕЙ ПО ВЗНОСАМ В УСТАВНОЙ КАПИТАЛ (ФОНД)
+4710    Receivable from Founders    4710    Задолженность учредителей по взносам в уставный капитал (фонд)
+
+48    Other Receivables    48    ЗАДОЛЖЕННОСТЬ РАЗНЫХ ДЕБИТОРОВ
+4810    Lease Payments Receivable    4810    Текущие платежи к получению по   лизингу
+4820    Interest Receivable    4820    Проценты к получению
+4830    Dividends Receivable    4830    Дивиденды к получению
+4840    Receivable on royalty & benefits    4840    Счета к получению по роялти и гонорарам
+4890    Other    4890    Задолженность прочих лиц- текущая часть
+
+49    Allowance for Doubtful Accounts    49    РЕЗЕРВ ПО СОМНИТЕЛЬНЫМ ДОЛГАМ
+4910    Allowance for Doubtful Accounts    4910    Резерв по сомнительным долгам
+
+Section 5.
+Cash, Short-Term Investments & Other Non-Cash Current Assets    РАЗДЕЛ 5 
+ДЕНЕЖНЫЕ СРЕДСТВА, КРАТКОСРОЧНЫЕ ИНВЕСТИЦИИ И ПРОЧИЕ 
+ТЕКУЩИЕ АКТИВЫ
+50    Cash    50    КАССА
+5010    Cash in national currency    5010    Денежные средства в национальной валюте
+5020    Cash in foreign currency    5020    Денежные средства в иностранной валюте
+
+51    Cash on Settlement Account    51    РАСЧЕТНЫЙ СЧЕТ
+5110    Cash on Settlement Account    5110    Расчетный счет
+
+52    Cash in Foreign Currency Accounts    52    ВАЛЮТНЫЙ СЧЕТ
+5210    Foreign Currency Accounts Domestic    5210    Валютные счета внутри страны
+5220    Foreign Currency Accounts Abroad    5220    Валютные счета за рубежом
+
+53    53
+54    54
+
+55    Special Bank Accounts    55    СПЕЦИАЛЬНЫЕ СЧЕТА В БАНКЕ
+5510    Letters of Credit    5510    Аккредитивы
+5520    Cash in Checking Account    5520    Чековые книжки
+5530    Other Special Accounts    5530    Прочие специальные счета
+
+56    Cash equivalents & cash  In Transit    56    ДЕНЕЖНЫЕ ЭКВИВАЛЕНТЫ И ДЕНЕЖНЫЕ СРЕДСТВА В ПУТИ
+5610    By types of cash equivalents      5610    Денежные эквиваленты (по видам) 
+5620    By types of cash In Transit    5620    Денежные средства в пути (по видам)
+
+57    Transfers in Transit    57    ПЕРЕВОДЫ В ПУТИ
+5710    By types of Transfers in Transit    5710    Переводы в пути (по видам)
+
+58    Short – term investments    58    КРАТКОСРОЧНЫЕ  ИНВЕСТИЦИИ
+5810    Securities    5810    Ценные бумаги
+5830    Short-term loans receivable    5830    Краткосрочные займы выданные
+5890    Other current investments    5890    Прочие текущие инвестиции
+
+59    Other Current Assets    59    ПРОЧИЕ ТЕКУЩИЕ АКТИВЫ
+5910    Other Current Assets    5910    Прочие текущие активы 
+
+Part III.  LIABILITIES    ЧАСТЬ III
+ОБЯЗАТЕЛЬСТВА
+Section 6.
+Short -term Liabilities    РАЗДЕЛ 6
+ТЕКУЩИЕ ОБЯЗАТЕЛЬСТВА
+60    Accounts payable – trade - current portion    60    СЧЕТА К ОПЛАТЕ ПОСТАВЩИКАМ И ПОДРЯДЧИКАМ
+6010    Accounts payable – trade    6010    Счета к оплате поставщикам и подрядчикам 
+6020    Notes payable – current portion    6020    Векселя выданные
+
+61    Payable to subdivisions    61    СЧЕТА К ОПЛАТЕ  ПОДРАЗДЕЛЕНИЯМ
+6110    Payable to subdivisions    6110    Счета к оплате подразделениям, выделенным на отдельный баланс
+
+62    Unearned income    62    ТЕКУЩАЯ ЧАСТЬ ОТСРОЧЕННЫХ ОБЯЗАТЕЛЬСТВ
+6210    Unearned  income    6210    Отсроченный доход
+6220    Deferred liabilities on taxes & obligatory payments    6220    Отсроченные обязательства по налогам и обязательным платежам
+6230    Unearned  discounts     6230    Отсроченные дисконты (скидки)
+6240    Unearned  premiums    6240    Отсроченные премии (надбавки)
+6290    Other unearned income    6290    Прочие отсроченные обязательства
+
+63    Advances received    63    ТЕКУЩИЕ АВАНСЫ ПОЛУЧЕННЫЕ
+6310    Advances received from customers    6310    Авансы, полученные от покупателей и заказчиков
+6320    Advances received from subscribers to stock    6320    Авансы , полученные от подписчиков (физических лиц) на акции
+6390    Other advances received    6390    Прочие полученные авансы
+
+64    Debt on budget payments (on types of taxes)    64    ЗАДОЛЖЕННОСТЬ ПО ПЛАТЕЖАМ В БЮДЖЕТ (ПО ВИДАМ )
+6410    Debt on budget payments (on types of taxes)    6410    Задолженность по платежам в бюджет (по видам)
+
+65    Insurance debt & debt on payments to non-budgetary funds    65    ЗАДОЛЖЕННОСТЬ ПО СТРАХОВАНИЮ И ПО ПЛАТЕЖАМ ВО ВНЕБЮДЖЕТНЫЕ ФОНДЫ
+6510    Debt  on property & personal insurance     6510    Платежи по имущественному и личному страхованию
+6520    Debt  on social insurance    6520    Платежи по социальному страхованию
+6530    Debt  to non-budgetary funds    6530    Платежи во внебюджетные фонды
+
+66    Debt to founders    66    ЗАДОЛЖЕННОСТЬ УЧРЕДИТЕЛЯМ
+6610    Dividends payable    6610    Дивиденды к оплате
+6620    Debt  due to leaving founders     6620    Задолженность выбывающим учредителям по их доле
+
+67    Settlements with personnel     67    РАСЧЕТЫ С ПЕРСОНАЛОМ ПО ОПЛАТЕ ТРУДА
+6710    Settlements with personnel     6710    Расчеты с персоналом по оплате труда
+6720    Escrow  salary    6720    Депонированная оплата труда
+
+68    Other payables &  accrued liabilities    68    ЗАДОЛЖЕННОСТЬ РАЗНЫМ КРЕДИТОРАМ И ПРОЧИЕ НАЧИСЛЕННЫЕ ОБЯЗАТЕЛЬСТВА
+6810    Lease payable    6810    Лизинг к оплате
+6820    Accrued interest    6820    Начисленные проценты
+6830    Debt on royalty & fees    6830    Задолженность по роялти и гонорарам
+6840    Debt on guaranties    6840    Задолженность по гарантиям
+6850    Current portion of long-term debt    6850    Долгосрочные долговые обязательства к оплате – текущая часть
+6860    Payable on claims    6860    Счета к оплате по претензиям
+6870    Debt due to employees    6870    Задолженность подотчетным лицам 
+6890    Other    6890    Прочие обязательства
+
+69    Short-term bank loans & non-bank loans    69     КРАТКОСРОЧНЫЕ БАНКОВСКИЕ КРЕДИТЫ И ВНЕБАНКОВСКИЕ ЗАЙМЫ
+6910    Short-term bank loans    6910    Краткосрочные банковские кредиты
+6920    Bonds payable – non-bank    6920    Облигации к оплате – внебанковские
+6930    Notes payable – non-bank    6930    Векселя к оплате – внебанковские
+6940    Short –term loans    6940    Краткосрочные внебанковские займы
+6990    Other     6990    Прочие кредиты и займы 
+
+Section 7. 
+Long-term liabilities    РАЗДЕЛ 7
+ДОЛГОСРОЧНЫЕ ОБЯЗАТЕЛЬСТВА
+70    Accounts payable    70    СЧЕТА К ОПЛАТЕ   ПОСТАВЩИКАМ И ПОДРЯДЧИКАМ
+7010    Accounts payable    7010    Счета к оплате поставщикам и подрядчикам
+7020    Notes payable    7020    Векселя выданные
+
+71    Debt to subdivisions    71    ДОЛГОСРОЧНАЯ ЗАДОЛЖЕННОСТЬ  ПОДРАЗДЕЛЕНИЯМ
+7110    Debt to subdivisions    7110    Долгосрочная задолженность подразделениям, выделенным на отдельный баланс
+
+72    Deferred income    72    ОТСРОЧЕННЫЕ ДОЛГОСРОЧНЫЕ ОБЯЗАТЕЛЬСТВА
+
+74    Debt to others    74    ДОЛГОСРОЧНАЯ ЗАДОЛЖЕННОСТЬ ПРОЧИМ ЛИЦАМ
+7410    Debt to others    7410    Долгосрочная задолженность прочим лицам
+
+75    Long-Term Bank credits    75    ДОЛГОСРОЧНЫЕ БАНКОВСКИЕ КРЕДИТЫ
+7510    Long-term bank credits    7510    Долгосрочные банковские кредиты
+
+76    Long-term loans    76    ДОЛГОСРОЧНЫЕ  ЗАЙМЫ
+7610    Bonds Payable    7610    Облигации к оплате 
+7620    Notes Payable    7620    Векселя к оплате 
+7630    Lease payable – long-term portion    7630    Лизинг к оплате – долгосрочная часть
+7690    Other long-term Payables    7690    Прочие долгосрочные счета к оплате
+
+77    Purposeful financing and payments to be returned    77    ЦЕЛЕВОЕ ФИНАНСИРОВАНИЕ И ПОСТУПЛЕНИЯ, ПОДЛЕЖАЩИЕ ВОЗВРАТУ
+7710    Purposeful financing and payments to be returned    7710    Целевое финансирование и поступления, подлежащие возврату
+
+78    78
+79    79
+
+Part IV.
+OWNER’ EQUITY    ЧАСТЬ IV
+СОБСТВЕННЫЙ КАПИТАЛ
+Section 8.
+Owner' Equity    РАЗДЕЛ 8 
+КАПИТАЛ, ПРИБЫЛЬ И РЕЗЕРВЫ
+80    80
+81    81
+82    82
+83    83
+84    84
+
+8510    Charter Capital    8510    УСТАВНЫЙ КАПИТАЛ (ФОНД)
+8511    Common Stock    8511    Простые акции
+8512    Preferred Stock    8512    Привилегированные акции
+8513    Donated Capital    8513    Паи и вклады
+
+8520    Additional Capital    8520    ДОБАВЛЕННЫЙ КАПИТАЛ
+8521    Revenue from issuance    8521    Эмиссионный доход
+8522    Foreign Exchange translation adjustment    8522    Курсовая разница при формировании уставного капитала
+8523    Granted property    8523    Безвозмездно полученное имущество
+
+8530    Reserve Capital    8530    РЕЗЕРВНЫЙ КАПИТАЛ
+8531    Assets revaluation adjustment    8531    Корректировки по переоценке активов
+8532    Required Reserves    8532    Резервный капитал, установленный законодательством
+
+86    Treasury Stock    86    ВЫКУПЛЕННЫЕ СОБСТВЕННЫЕ АКЦИИ
+8610    Treasury Stock – common    8610    Выкупленные собственные акции - простые
+8620    Treasury Stock - preferred    8620    Выкупленные собственные акции - привилегированные
+
+87    Retained Earnings (Non-covered Loss)    87    НЕРАСПРЕДЕЛЕННАЯ ПРИБЫЛЬ (НЕПОКРЫТЫЙ УБЫТОК)
+8710    Retained Earnings Reporting period (Non-covered Loss)    8710    Нераспределенная прибыль (непокрытый убыток) отчетного периода 
+8720    Retained Earnings Prior periods (Non-covered Loss)    8720    Накопленная прибыль  (непокрытый убыток)
+
+88    Grants and subsidies    88    ГРАНТЫ И СУБСИДИИ (КАПИТАЛ)
+8810    Grants and subsidies    8810    Гранты и субсидии (капитал)
+
+89    Reserve of future expenses & payments    89    РЕЗЕРВЫ ПЕРДСТОЯЩИХ РАСХОДОВ И ПЛАТЕЖЕЙ
+8920    Reserve of future expenses & payments    8920    Резервы предстоящих расходов и платежей
+
+Part V.
+FORMATION & UTILIZATION OF FINANCIAL RESULTS     ЧАСТЬ V
+ФОРМИРОВАНИЕ И ИСПОЛЬЗОВАНИЕ ФИНАНСОВЫХ РЕЗУЛЬТАТОВ
+Section 9.
+Revenues & Expenses    РАЗДЕЛ 9
+ДОХОДЫ И РАСХОДЫ
+90    Revenues from Main Business    90    ДОХОДЫ ОТ ОСНОВНОЙ (ОПЕРАЦИОННОЙ) ДЕЯТЕЛЬНОСТИ
+9010    Revenues from Sale of Finished Goods    9010    Доходы от реализации готовой продукции
+9020    Revenues from Sale of Goods    9020    Доходы от реализации товаров
+9030    Revenue from Sales of Works and Services    9030    Доходы от выполнения работ и оказания услуг
+9035    Sales Return and Discounts    9035    Возврат проданных товаров и скидки
+91    Cost of Goods Sold    91    СЕБЕСТОИМОСТЬ РЕАЛИЗОВАННОЙ ПРОДУКЦИИ
+9110    Cost of Finished Goods Sold    9110    Себестоимость реализованной готовой продукции
+9120    Cost of Goods Sold    9120    Себестоимость реализованных товаров
+9130    Cost of Works and Services Sold    9130    Себестоимость реализованных работ и услуг
+9140    Acquisition/Purchase (reserved for training purposes)    9140    Приобретение/покупка (зарезервировано для учебных целей)
+9150    Inventory Adjustments (reserved for training purposes)    9150    Корректировки по ТМЗ(зарезервировано для учебных целей)
+
+92    Sale & other disposal of fixed & other assets    92    РЕАЛИЗАЦИЯ И ПРОЧЕЕ ВЫБЫТИЕ ОСНОВНЫХ СРЕДСТВ И ДРУГИХ АКТИВОВ
+9210    Sale & other disposal of fixed assets    9210    Реализация и прочее выбытие основных средств
+9220    Sale & other disposal of other assets    9220    Реализация и прочее выбытие других активов
+
+93    Other income     93    ПРОЧИЕ ДОХОДЫ ОТ ОСНОВНОЙ ДЕЯТЕЛЬНОСТИ
+9310    Gain from Fixed Assets Sales & other disposal    9310    Прибыль  от реализации и прочего выбытия основных средств
+9320    Gain from Intangible Assets Sales & other disposal    9320    Прибыль  от реализации и прочего выбытия других активов
+9330    Paid fines and penalties    9330    Взысканные пени, штрафы, неустойки
+9340    Income of previous years    9340    Прибыли прошлых лет
+9350    Income from rent and auxiliary services    9350    Рентный доход и доходы от вспомогательных служб
+9360    Income from writing off payables and depositor debt    9360    Доходы от списания кредиторской и депонентской задолженности
+9370    Increase in value of inventories    9370    Дооценка ТМЗ
+9380    Financial donations    9380    Безвозмездная финансовая помощь
+9390    Other operating income    9390    Прочие операционные доходы
+
+94    Period Expenses    94    РАСХОДЫ ПЕРИОДА
+
+9410    Selling Expenses    9410    РАСХОДЫ ПО РЕАЛИЗАЦИИ
+9411    Warehouse and Transport Expenses    9411    Расходы по хранению и транспортировке
+9412    Advertisement and Sales Assistance    9412    Расходы на рекламу и содействие продаже
+9413    Packaging, Resorting and Package Material    9413    Расходы на упаковку, пересортировку и тару
+9414    Payroll    9414    Расходы по оплате труда
+9415    Salary deductions    9415    Отчисления от фонда оплаты труда
+9419    Other Selling Expenses    9419    Прочие торговые издержки
+
+9420    Administrative   Expenses    9420    АДМИНИСТРАТИВНЫЕ РАСХОДЫ
+9421    Salary Expenses    9421    Расходы по оплате труда
+9422    Salary deductions    9422    Отчисления от фонда оплаты труда
+9423    Depreciation of Fixed Assets    9423    Расходы по амортизации  основных средств общеадминистративного назначения
+9424    Rent of Fixed Assets    9424    Расходы на аренду основных средств общеадминистративного назначения
+9425    Insurance of Fixed Assets    9425    Расходы на страхование основных средств общеадминистративного назначения
+9426    Amortization of Intangible Assets    9426    Расходы по амортизации нематериальных активов общеадминистративного назначения
+9427    General Office Expenses    9427    Расходы по содержанию вышестоящих организаций
+9429    Other  administrative expenses    9429    Прочие административные расходы
+
+9430    Other operational expenses    9430    ПРОЧИЕ ОПЕРАЦИОННЫЕ РАСХОДЫ
+9431    Losses  from sale & other disposal of fixed assets    9431    Убыток по реализации и прочему выбытию основных средств
+9432    Losses  from sale & other disposal of intangible assets    9432    Убыток  по реализации и прочему выбытию других активов
+9433    Expenses for shortages and damages    9433    Расходы по недостачам и порче ценностей
+9434    Bad Debt Expense    9434    Расходы по сомнительным долгам
+9439    Other expenses    9439    Прочие операционные расходы
+
+9440    Reporting period expenses excluded from taxable base in future (on types of expenses)    9440    РАСХОДЫ ОТЧЕТНОГО ПЕРИОДА, ИСКЛЮЧАЕМЫЕ ИЗ НАЛОГООБЛАГАЕМОЙ БАЗЫ В БУДУЩЕМ (ПО ВИДАМ РАСХОДОВ)
+
+9450    Servicing lines    9450    ОБСЛУЖИВАЮЩИЕ ХОЗЯЙСТВА
+
+95    Income  from Financial Activity    95    ДОХОДЫ ОТ ФИНАНСОВОЙ ДЕЯТЕЛЬНОСТИ
+9510    Income from royalty and capital transfer    9510    Доходы от роялти и трансферта капитала
+9520    Income from dividends    9520    Доходы в виде дивидендов
+9530    Interest income    9530    Доходы в виде процентов
+9540     Currency Exchange  (positive)    9540    Доходы от курсовых разниц (положительных)
+9550    Income from  lease    9550    Доходы от сдачи имущества по договору  лизинга
+9560    Income from revaluation of assets     9560    Доходы от переоценки средств, вложенных в ценные бумаги
+9590    Other income from financial activity    9590    Прочие доходы от финансовой деятельности
+
+96    Expenses from  financial activity    96    РАСХОДЫ ПО ФИНАНСОВОЙ ДЕЯТЕЛЬНОСТИ
+9610    Interest expenses    9610    Расходы в виде процентов
+9620    Exchange difference losses (negative)    9620    Убытки от курсовой разницы
+9630    Expenses on issue and distribution of securities    9630    Расходы по выпуску и распространению  ценных бумаг
+9690    Other expenses    9690    Прочие расходы по финансовой деятельности
+
+97    Extraordinary gain (loss)    97    ЧРЕЗВЫЧАЙНЫЕ  ПРИБЫЛИ (ЧРЕЗВЫЧАЙНЫЕ УБЫТКИ)
+9710    Extraordinary gain    9710    Чрезвычайные прибыли 
+9720    Extraordinary loss    9720    Чрезвычайные убытки
+
+98    Utilization of profit  for taxation & fees      98    ИСПОЛЬЗОВАНИЕ ПРИБЫЛИ ДЛЯ УПЛАТЫ НАЛОГОВ И СБОРОВ
+9810    Income tax    9810    Уплата  налога на доходы (прибыль)
+9820    Fees and other mandatory deductions    9820    Сборы и другие обязательные отчисления
+9890    Other deductions    9890    Прочие отчисления
+
+99    Income summary    99    КОНЕЧНЫЙ ФИНАНСОВЫЙ РЕЗУЛЬТАТ
+9900    Income summary    9900    Конечный  финансовый результат
