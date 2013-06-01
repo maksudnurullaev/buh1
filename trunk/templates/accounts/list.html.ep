@@ -1,0 +1,43 @@
+% layout 'default';
+<h2><%= ml 'Chart of Accounts' %></h2>
+<div class="toolbar">
+ <a href='/companies/add'><%= ml 'Add' %></a>
+</div>
+<div>
+ % my $parts = stash 'parts';
+ % for my $pid (sort keys %{$parts}) {
+   <ul>
+    <li><%= link_to $parts->{$pid}{rus} => "/accounts/edit/$pid" %></li>
+    % if (exists $parts->{$pid}{sections}) {
+      % my $sections = $parts->{$pid}{sections};
+      <ul>
+      % for my $sid(sort keys %{$sections}) {
+        <li>
+          %= link_to $sections->{$sid}{rus} => "/accounts/edit/$sid"
+        </li>
+          % if ( exists $sections->{$sid}{accounts} ) {
+            % my $accounts = $sections->{$sid}{accounts} ;
+            <ul>
+              % for my $aid (keys %{$accounts}) {
+                % my $account = $accounts->{$aid} ;
+		<li><%= ml "account type $account->{type}" %></li>
+                <li><%= link_to $account->{rus} => "/accounts/edit/$aid" %></li>
+                % if( exists $account->{subcontos} ) {
+                  % my $subcontos = $account->{subcontos};
+                  <ul>
+                    % for my $subconto_id ( keys %{$subcontos} ) {
+                    <li>
+                      %= link_to $subcontos->{$subconto_id}{rus} => "/accounts/edit/$subconto_id"
+                    </li>
+                    % }
+                  </ul>
+                % }
+              % }
+            </ul>
+          % }
+        % }
+        </ul>
+      % } 
+    </ul>
+% }    
+</div>

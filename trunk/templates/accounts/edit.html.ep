@@ -1,0 +1,66 @@
+% layout 'default';
+<h2><%= ml 'Edit' %></h2>
+<div class="toolbar">
+ <a href='/accounts/list'><%= ml 'Back' %></a>
+</div>
+% if( stash 'success' ) { 
+<div class='alert success'> Ok  </div>
+% } 
+% if( stash 'error' ) { 
+<div class='alert error'><%= ml 'Error!' %></div>
+% } 
+<div class="form">
+ % my $path = "/accounts/edit/$payload";
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field object_name => stash('object_name')
+ <table class='colortable'>
+  % my @languages = ('rus','eng','uzb');
+  % for my $language (@languages) {
+  <tr>
+   <td class='tar'><u><%= uc $language %></u></td>
+   <td><%= text_area $language => (stash $language) , class => stash ($language . 'class') %></td>
+  </tr>
+  % }
+% my $type = stash 'type';
+% my $types = stash 'types';
+% if ( stash 'type' ) {
+  <tr>
+   <td class='tar'><u><%= ml 'Type' %></u></td>
+    <td><%= select_field type => (stash 'types') %></td>
+  </tr>
+% }
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save')
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+%# parent account
+% my $PARENTS = stash 'PARENTS';
+% if ( $PARENTS ) {
+    <ul>
+    <li><strong><%= ml 'Parent account' %>:</strong></li>
+    % for my $pid (keys %{$PARENTS}) {
+        <li>
+        %= link_to $PARENTS->{$pid}{rus} => "/accounts/edit/$pid" 
+        </li>
+    % } 
+% }
+<ul><li><u><%= stash 'rus' %></u></li>
+		  
+ %# child accounts
+ % my $CHILDS = stash 'CHILDS';
+ % if ( $CHILDS ) {
+    <ul>
+    <li><strong><%= ml 'Child accounts' %>:</strong></li>
+    % for my $cid (keys %{$CHILDS}) {
+        <li><%= link_to $CHILDS->{$cid}{rus} => "/accounts/edit/$cid" %></li>
+    % }    
+    </ul>
+ % }
+</ul>
+%if ( $PARENTS ) {
+    </ul>
+% }
