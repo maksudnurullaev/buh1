@@ -20,6 +20,42 @@ use utf8;
 my ($ACCOUNT_PART,$ACCOUNT_SECTION,$ACCOUNT,$ACCOUNT_SUBCONTO, $TYPES)
         = ('account part','account section','account','account subconto', ['a','p','ca','cp','t']);
 
+sub get_part_name{
+    return($ACCOUNT_PART);
+};
+
+sub get_account_name{
+    return($ACCOUNT);
+};
+
+sub normalize_local{
+    my($hashref,$langs,$lang) = @_;
+    return(undef) if !$hashref || !$langs || !$lang ;
+    for my $key (keys %{$hashref}){
+        if( ref $hashref->{$key} eq 'HASH' ){
+            normalize_local($hashref->{$key},$langs,$lang);
+        }
+    }
+    my $found = 0;
+    if ( exists($hashref->{$lang}) && 
+         $hashref->{$lang} ){
+        $hashref->{name} = $hashref->{$lang}
+    }else{
+        my @result = ();
+        my @names = ("-$lang");
+        for my $name (@{$langs}){
+            if($name ne $lang && exists($hashref->{$name})){
+                push @names, "+$name"; 
+                push @result, $hashref->{$name};
+            }
+        }
+
+        $hashref->{name} = 
+            '[' . join('/',@names) . '] ' . join('/',@result)
+            if @result; 
+    }
+};
+
 sub get_types4select{
     my $self = shift;
     my $selected_value = shift;
@@ -32,6 +68,15 @@ sub get_types4select{
         }
     }
     return($result);
+};
+
+sub get_child_name_by_id{
+    my $id = shift;
+    if( $id ){
+        my $objects = Db::get_objects({id=>[$id]});
+        return get_child_name($objects->{$id}{object_name}) if $objects;
+    }
+    return(undef);
 };
 
 sub get_child_name{

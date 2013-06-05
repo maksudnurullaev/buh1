@@ -1,0 +1,31 @@
+% layout 'default';
+<h2><%= ml 'Business operation' %></h2>
+<div class="toolbar">
+ <a href="/$controller/list"><%= ml 'Back' %></a>
+</div>
+% if( stash 'success' ) { 
+<div class='alert success'> Ok  </div>
+% } 
+% if( stash 'error' ) { 
+<div class='alert error'><%= ml 'Error!' %></div>
+% } 
+<div class="form">
+ % my $path = "/$controller/edit/$payload";
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field object_name => stash('object_name')
+ <table class='colortable'>
+  % my @fields = ('rus','eng','uzb','credit','debet');
+  % for my $field (@fields) {
+  <tr>
+   <td class='tar'><u><%= uc $field %></u></td>
+   <td><%= text_area $field => (stash $field) , class => stash ($field . 'class') %></td>
+  </tr>
+  % }
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save')
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
