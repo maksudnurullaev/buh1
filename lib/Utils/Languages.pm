@@ -15,7 +15,10 @@ use utf8;
 
 our $DEFAULT_FORMAT = '<a href="/initial/lang/%s">%s</a>'; 
 our $DEFAULT_LANG   = 'rus';
-our @DEFAULT_LANGS  = ('eng', 'rus', 'uzb');
+
+sub get{
+    ['eng', 'rus', 'uzb'];
+};
 
 sub current{
     my $self = shift;
@@ -28,7 +31,7 @@ sub bar{
     my $format = shift || $DEFAULT_FORMAT;
     my $result;
     my $current_lang = current($self);
-    foreach(@DEFAULT_LANGS){
+    foreach(@{get()}){
         if($_ eq $current_lang){
             $result .= ($result ? " $_" : $_ );
         } else {

@@ -1,0 +1,23 @@
+% layout 'default';
+<h2><%= ml 'Business transactions' %></h2>
+<div class="toolbar">
+ <a href='/operations/add'><%= ml 'Add' %></a>
+ |
+ <a href='/operations/deleted'><%= ml 'Deleted' %></a>
+</div>
+%= include 'filter'   , filter4    => 'operations'
+%= include 'paginator', paginator4 => 'operations'
+% my $operations = stash $controller;
+% if ( scalar(keys %{$operations}) ) {
+ <ul>
+  % for my $id( reverse sort keys %{$operations} ) {
+   <li>
+    %= $id ;
+   </li>
+  % }
+ </ul>
+% } else {
+ %= ml 'No data!'
+% }
+%= include 'paginator', paginator4 => 'operations'
+%= include 'filter'   , filter4    => 'operations'

@@ -18,12 +18,10 @@
   % for my $language (@languages) {
   <tr>
    <td class='tar'><u><%= uc $language %></u></td>
-   <td><%= text_area $language => (stash $language) , class => stash ($language . 'class') %></td>
+   <td><%= text_area $language => (stash $language) , class => stash ($language . '_class') %></td>
   </tr>
   % }
-% my $type = stash 'type';
-% my $types = stash 'types';
-% if ( stash 'type' ) {
+% if ( stash 'types' ) {
   <tr>
    <td class='tar'><u><%= ml 'Type' %></u></td>
     <td><%= select_field type => (stash 'types') %></td>
@@ -38,29 +36,28 @@
  % end
 </div>
 %# parent account
-% my $PARENTS = stash 'PARENTS';
-% if ( $PARENTS ) {
+% my $parents = stash 'PARENTS';
+% if ( $parents ) {
     <ul>
     <li><strong><%= ml 'Parent account' %>:</strong></li>
-    % for my $pid (keys %{$PARENTS}) {
+    % for my $pid (keys %{$parents}) {
         <li>
-        %= link_to $PARENTS->{$pid}{rus} => "/accounts/edit/$pid" 
+        %= link_to $parents->{$pid}{name} => "/accounts/edit/$pid" 
         </li>
     % } 
 % }
-<ul><li><u><%= stash 'rus' %></u></li>
-		  
+<ul><li><u><%= stash 'name' %></u></li>
  %# child accounts
  % my $CHILDS = stash 'CHILDS';
- % if ( $CHILDS ) {
+ % if ( $object_name ne 'account subconto' ) {
     <ul>
-    <li><strong><%= ml 'Child accounts' %>:</strong></li>
-    % for my $cid (keys %{$CHILDS}) {
-        <li><%= link_to $CHILDS->{$cid}{rus} => "/accounts/edit/$cid" %></li>
+    <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+    % for my $cid (sort keys %{$CHILDS}) {
+        <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
     % }    
     </ul>
  % }
 </ul>
-%if ( $PARENTS ) {
-    </ul>
+%if ( $parents ) {
+</ul>
 % }

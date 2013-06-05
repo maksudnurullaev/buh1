@@ -136,7 +136,7 @@ sub insert{
         warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
-    my $id = Utils::get_date_uuid();
+    my $id = $hashref->{id} || Utils::get_date_uuid();
     my $dbh = get_db_connection() || return;
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
@@ -362,6 +362,7 @@ sub exists_link{
 
 sub set_link{
     my ($name,$id,$link_name,$link_id) = @_;
+    warn "$name,$id,$link_name,$link_id";
     return(0) if( !$name || !$id || !$link_name || !$link_id );
     return(1) if exists_link($id,$link_id);
 
@@ -381,9 +382,9 @@ sub attach_links{
             $result->{$id}->{$links_name} = {} 
                 if !exists($result->{$id}->{$links_name});
             my $link_object = 
-                Db::get_objects({id=>[$link_id],name=>[$link_name],field=>$fields});
-            $result->{$id}->{$links_name}->{$link_id} = $link_object->{$link_id}
-                if $link_object;
+                get_objects({id=>[$link_id],name=>[$link_name],field=>$fields});
+            $result->{$id}{$links_name}{$link_id} = $link_object->{$link_id}
+                if $link_object;   
         } 
     }
 };

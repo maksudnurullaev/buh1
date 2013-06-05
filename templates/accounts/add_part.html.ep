@@ -1,0 +1,60 @@
+% layout 'default';
+<h2><%= ml 'Add' %></h2>
+<div class="toolbar">
+ <a href='/accounts/list'><%= ml 'Back' %></a>
+</div>
+% if( stash 'success' ) { 
+<div class='alert success'> Ok  </div>
+% } 
+% if( stash 'error' ) { 
+<div class='alert error'><%= ml 'Error!' %></div>
+% } 
+%# parent account if exist
+% my $parents = stash 'PARENTS';
+% my $parent_id;
+% if ( $parents ) {
+<div>
+    <strong><%= ml 'Parent account' %>:</strong><br />
+    <ul>
+    % for my $pid (keys %{$parents}) {
+        % $parent_id = $pid;
+        <li><u>Object name:</u> <%= uc $parents->{$pid}{object_name} %></li>
+        <li><u>ID:</u> <%= $pid %></li>
+        <li><u>Name:</u> <%= link_to $parents->{$pid}{name} => "/accounts/edit/$pid" %></li>
+    % } 
+    </ul>
+</div>
+<hr />
+% }
+<div class="form">
+ % my $path = $parent_id ? "/accounts/add_part/$parent_id" : "/accounts/add_part";
+ %= form_for $path => (method => 'POST') => begin
+ <table class='colortable'>
+  %= hidden_field 'object_name' => stash('object_name');
+  <tr>
+   <td><u>ID</u>:</td>
+   <td>
+    %= text_field 'id' => '00', class => stash('id_class');
+   </td>
+  </tr>
+  % my @fields = ('rus','eng','uzb');
+  % for my $field (@fields) {
+  <tr>
+   <td class='tar'><u><%= uc $field %></u></td>
+   <td><%= text_area $field => (stash $field), class => stash ($field . '_class') %></td>
+  </tr>
+  % }
+% if ( stash 'types' ) {
+  <tr>
+   <td class='tar'><u><%= ml 'Type' %></u></td>
+    <td><%= select_field type => (stash 'types') %></td>
+  </tr>
+% }
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save')
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
