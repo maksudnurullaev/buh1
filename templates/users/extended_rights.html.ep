@@ -1,0 +1,13 @@
+<hr />
+ % my $extended_values = ['No rights','Editor'];
+ % my $extended_rights = [];
+ % my $extended_right  = stash 'extended_right';
+ % for my $right (@{$extended_values}){
+ %  if ( $extended_right && $extended_right eq $right ){ 
+ %    push @{$extended_rights}, [ml($right) => $right, selected => 'true'] ;
+ %  } else {  push @{$extended_rights}, [ml($right) => $right] ; }
+ % }
+<tr>
+ <td class='tar'><u><%= ml 'Extended rights' %></u></td>
+ <td><%= select_field extended_right => $extended_rights %></td>
+</tr>
