@@ -311,7 +311,6 @@ sub get_user{
     return($users->{$user_id});
 };
 
-
 sub set_linked_value{
     my ($name,$id1,$id2,$value) = @_;
     return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );

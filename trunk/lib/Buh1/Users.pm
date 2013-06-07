@@ -106,27 +106,11 @@ sub validate_passwords{
     }
 };
 
-sub validate4update{
-    my $self = shift;
-    my $edit_mode = shift;
-    my $data = { 
-        object_name => $OBJECT_NAME,
-        updater => Utils::User::current($self) };
-    $data->{email} = Utils::trim $self->param('email');
-    $data->{password1} = Utils::trim $self->param('password1');
-    $data->{password2} = Utils::trim $self->param('password2');
-    $data->{description} = Utils::trim $self->param('description')
-        if Utils::trim $self->param('description');
-
-    if(    !$data->{email}
-        || !Utils::validate_email($data->{email}) ){ 
-        $data->{error} = 1;
-        $self->stash(email_class => "error");
-    }
-
-    return($data) if( !$data->{password1} && !$data->{password2} );
-    validate_passwords($self,$data);
-    return($data);
+sub validate_email{
+    my $email = shift;
+    return(0) if ( !$email || !Utils::validate_email($email) );
+    return(0) if ( Db::get_user($email) );
+    return(1);
 };
 
 sub validate{
@@ -134,17 +118,25 @@ sub validate{
     my $edit_mode = shift;
     my $data = { 
         object_name => $OBJECT_NAME,
-        creator => Utils::User::current($self) };
-    $data->{email} = Utils::trim $self->param('email');
+        creator => Utils::User::current($self),
+        extended_right => $self->param('extended_right'),
+    };
+    if( !$edit_mode ) {
+        $data->{email} = Utils::trim $self->param('email');
+        if( !validate_email($data->{email}) ){
+            $data->{error} = 1;
+            $self->stash(email_class => "error");
+        }
+    }
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
     $data->{password1} = Utils::trim $self->param('password1');
     $data->{password2} = Utils::trim $self->param('password2');
-    if(    !$data->{email}
-        || !Utils::validate_email($data->{email}) ){ 
-        $data->{error} = 1;
-        $self->stash(email_class => "error");
-    }
+    if( $edit_mode && !$data->{password1} && !$data->{password2} ){
+        delete $data->{password1};
+        delete $data->{password2};
+        return($data);
+    } 
     validate_passwords($self, $data);
     return($data);
 };
@@ -161,6 +153,17 @@ sub del{
     $self->redirect_to('users/list');
 };
 
+sub remove_company{
+    my $self = shift;
+    return if !$self->is_admin;
+
+    my $user_id      = $self->param('payload');
+    my $id = $self->param('company');
+    Db::del_link($id,$user_id);
+    Db::del_linked_value('access',$id,$user_id);
+    $self->redirect_to("/users/edit/$user_id");
+};
+
 sub edit{
     my $self = shift;
     return if !$self->is_admin;
@@ -175,7 +178,7 @@ sub edit{
         return; 
     }
     if ( $method =~ /POST/ ){
-        $data = validate4update( $self );
+        $data = validate( $self, 1 );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
             if( Db::update($data) ){
@@ -189,7 +192,9 @@ sub edit{
         }
     } 
     $data = Db::get_objects({id=>[$id]});
+    warn Dumper $data;
     if( $data ){
+        Db::attach_links($data,'companies','company',['name']);
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
@@ -206,7 +211,7 @@ sub add{
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         # check values
-        my $data = validate( $self );
+        my $data = validate( $self, 0 );
         # add
         if( !exists($data->{error}) ){
             if( Db::insert($data) ){

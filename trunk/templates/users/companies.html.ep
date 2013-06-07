@@ -1,0 +1,12 @@
+% my $companies = stash 'companies';
+% if ( $companies ) {
+  <h3><%= ml('Companies') %></h3>
+  <ul>
+   % for my $company_id(keys %{$companies} ) {
+    <li>
+     %= link_to ml('Delete') => "/users/remove_company/$payload?company=$company_id" ;
+     %= link_to $companies->{$company_id}{name} => "/companies/edit/$company_id" ; 
+    </li>
+   % }
+  </ul>
+ % }

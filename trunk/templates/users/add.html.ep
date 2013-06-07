@@ -1,5 +1,6 @@
 % layout 'default';
-% if( stash 'edit_mode') {
+% my $edit_mode = stash 'edit_mode';
+% if( $edit_mode ) {
  <h2><%= ml 'User' %></h2>
 % } else {
  <h2><%= ml 'New user' %></h2>
@@ -11,12 +12,16 @@
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
 <div class="form">
- % my $path = stash('edit_mode')?"/users/edit/$payload":'/users/add';
+ % my $path = $edit_mode ? "/users/edit/$payload" : '/users/add';
  %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
    <td class='tar'><u><%= ml 'E-mail' %></u></td>
+% if( !$edit_mode ) {
    <td><%= text_field email => (stash 'email') , class => stash 'email_class' %></td>
+% } else {
+   <td><strong><%= stash 'email' %></strong></td>
+% }
   </tr>
   <tr>
    <td class='tar'><u><%= ml 'New Password' %></u></td>
@@ -34,9 +39,12 @@
     %= text_area description => (stash 'description'), class => (stash 'description_class') 
    </td>
   </tr>
+% if( $edit_mode ) {
+ %= include 'users/extended_rights';
+% }
   <tr><td>&nbsp;</td>
    <td>
-    % if( stash 'edit_mode') {
+    % if( $edit_mode ) {
      %= submit_button ml('Save')
      |  
      <%= link_to "/users/del/$payload" => begin %><%= ml 'Delete' %><% end %>
@@ -48,3 +56,6 @@
  </table>
  % end
 </div>
+% if( $edit_mode ) {
+ %= include 'users/companies';
+% }
