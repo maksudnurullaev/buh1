@@ -192,7 +192,6 @@ sub edit{
         }
     } 
     $data = Db::get_objects({id=>[$id]});
-    warn Dumper $data;
     if( $data ){
         Db::attach_links($data,'companies','company',['name']);
         for my $key (keys %{$data->{$id}} ){
