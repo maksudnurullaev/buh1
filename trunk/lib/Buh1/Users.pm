@@ -119,7 +119,7 @@ sub validate{
     my $data = { 
         object_name => $OBJECT_NAME,
         creator => Utils::User::current($self),
-        extended_right => $self->param('extended_right'),
+        extended_right => $self->param('extended_right')
     };
     if( !$edit_mode ) {
         $data->{email} = Utils::trim $self->param('email');
