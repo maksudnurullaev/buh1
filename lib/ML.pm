@@ -47,7 +47,7 @@ sub process_block {
     my $value = $block->();
     my $current_language = Utils::Languages::current($self);
     my $values = load_from_file();
-    if($key ~~ $values && $current_language ~~ $values->{$key}){
+    if( exists($values->{$key}) && exists($values->{$key}{$current_language}) ){
         $value = $values->{$key}{$current_language};
     } else {
         if( $base_language eq $current_language ){
@@ -74,7 +74,7 @@ sub get_value{
     }
     my $value;
     my $values = load_from_file();
-    if($key ~~ $values && $language ~~ $values->{$key}){
+    if( exists($values->{$key}) && exists($values->{$key}{$language}) ){
         $value = $values->{$key}{$language};
     } else {
         $value = set_value($key, $language, "[-]");
@@ -97,7 +97,7 @@ sub set_value{
 
 sub gentle_add{
     my ($key1, $key2, $value, $values) = @_;
-    if($key1 ~~ $values){
+    if( exists $values->{$key1} ){
         $values->{$key1}{$key2} = $value;
     } else {
         $values->{$key1} = {$key2 => $value};
