@@ -301,7 +301,7 @@ sub get_user{
     my $user_id = $ids[0];
     $users = Db::get_objects({
         name  =>['user'],
-        field =>['email','password'], 
+        field =>['email','password','extended_right'], 
         add_where => " name='user' AND id='$user_id' "
         });
     return(undef) if !$users ||
