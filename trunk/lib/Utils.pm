@@ -91,7 +91,6 @@ sub isMobileBrowser {
 sub is_admin{
     my $self = shift;
     return 1 if Utils::User::is_admin($self);
-    warn "is_admin";
     $self->redirect_to('/user/login');
     return;
 };
@@ -99,8 +98,13 @@ sub is_admin{
 sub is_user{
     my $self = shift;
     return 1 if Utils::User::current($self);
-    warn "is_user";
     $self->redirect_to('/user/login');
+    return;
+};
+
+sub is_editor{
+    my $self = shift;
+    return 1 if Utils::User::is_editor($self);
     return;
 };
 

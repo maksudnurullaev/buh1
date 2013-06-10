@@ -15,7 +15,7 @@ my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    return if !$self->is_admin;
+    return if !$self->is_editor;
     $self->stash(path => '');
     my $controller = $self->stash('controller');
 };

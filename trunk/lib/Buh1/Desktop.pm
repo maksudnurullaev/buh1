@@ -35,7 +35,7 @@ sub select_company{
             };
     }
     $self->stash(user => $user);
-    $self->stash(companies => $companies);
+    $self->stash(companies => $companies) if scalar keys %{$companies};
 };
 
 

@@ -49,7 +49,7 @@
 <ul><li><u><%= stash 'name' %></u></li>
  %# child accounts
  % my $CHILDS = stash 'CHILDS';
- % if ( $object_name ne 'account subconto' ) {
+ % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {
     <ul>
     <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
     % for my $cid (sort keys %{$CHILDS}) {

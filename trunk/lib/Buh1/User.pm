@@ -24,7 +24,7 @@ sub login{
 
 sub logout{
     my $self = shift;
-    delete $self->session->{'email'};
+    $self->session(expires => 1);
     $self->redirect_to('/');
 };
 

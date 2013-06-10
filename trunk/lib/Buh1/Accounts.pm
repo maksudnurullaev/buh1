@@ -14,7 +14,10 @@ use Data::Dumper;
 
 sub add_part{
     my $self = shift;
-    return if !$self->is_admin;
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
 
     my $method = $self->req->method;
     my ($data,$id);
@@ -75,7 +78,10 @@ sub add_part{
 
 sub list{
     my $self = shift;
-    return if !$self->is_admin;
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
 
     my $data = Utils::Accounts::get_all_parts();
     $self->stash( parts => $data );
@@ -144,7 +150,10 @@ sub validate{
 
 sub edit{
     my $self = shift;
-    return if !$self->is_admin;
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
 
     my $method = $self->req->method;
     my $data;
