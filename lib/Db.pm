@@ -407,7 +407,8 @@ sub get_links{
             $result->{$link_id} = $object->{$link_id} if $object;
         }
     } else { warn_if $DBI::errstr; }
-    return($result);
+    return($result) if scalar keys %{$result};
+    return(undef);
 };
 
 sub get_difference{

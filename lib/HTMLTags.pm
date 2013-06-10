@@ -40,7 +40,7 @@ sub register {
     $app->helper( check_for => sub { Utils::check_for (@_); } ); 
     $app->helper( is_admin  => sub { Utils::is_admin  (@_); } );
     $app->helper( is_user   => sub { Utils::is_user   (@_); } );
-    $app->helper( is_editor => sub { Utils::User::is_editor (@_); } );
+    $app->helper( is_editor => sub { Utils::is_editor (@_); } );
 };
 
 };

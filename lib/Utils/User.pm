@@ -35,21 +35,17 @@ sub is_admin{
 
 sub is_editor{
     my $self = shift;
-
+    # is editor
     my $email = current($self);
-    warn $email;
     if( $email ){
         my $user = Db::get_user($email);
-        warn Dumper $user;
-        warn $user->{extended_right} if 
-		exists($user->{extended_right})
-             && $user->{extended_right} =~ /editor/i ;	
         return(1) if $user 
              && exists($user->{extended_right})
              && $user->{extended_right} =~ /editor/i ;
     }
-
+    # is admin
     return(1) if is_admin($self);
+    # not role
     return(0);
 };
 
