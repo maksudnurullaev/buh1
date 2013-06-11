@@ -17,8 +17,8 @@ use Db;
 use Utils;
 use utf8;
 
-my ($ACCOUNT_PART,$ACCOUNT_SECTION,$ACCOUNT,$ACCOUNT_SUBCONTO, $TYPES)
-        = ('account part','account section','account','account subconto', ['a','p','ca','cp','t']);
+my ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $TYPES )
+ = ( 'account part','account section','account','account subconto', ['a','p','ca','cp','t'] );
 
 sub get_part_name{
     return($ACCOUNT_PART);

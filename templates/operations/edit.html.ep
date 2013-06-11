@@ -1,21 +1,21 @@
 % layout 'default';
 <h2><%= ml 'Business operation' %></h2>
-% my $account = stash 'account';
-% if( $account ) {
- % for my $account_id (keys %{$account}){   
- <ul>
-  <li><%= $account->{$account_id}{name} %></li>
- </ul>
- % }
+% my $parent = stash 'parent';
+% if( $parent ) {
+%= include 'operations/paccount', account => $parent;
 % }
 <div class="toolbar">
  %= link_to ml('Back') => "/operations/account/$payload"
 </div>
+% if( stash 'success' ) { 
+ <div class='alert success'>Ok</div>
+% } 
 % if( stash 'error' ) { 
-<div class='alert error'><%= ml 'Error!' %></div>
+ <div class='alert error'><%= ml 'Error!' %></div>
 % } 
 <div class="form">
- %= form_for "/operations/add/$payload" => (method => 'POST') => begin
+ % my $bt = param 'bt';
+ %= form_for "/operations/edit/$payload?bt=$bt" => (method => 'POST') => begin
  %= hidden_field object_name => 'business transaction'
  %= hidden_field account     => $payload
  <table class='colortable'>
@@ -38,3 +38,6 @@
  </table>
  % end
 </div>
+% if ( exists($parent->{$payload}) && exists($parent->{$payload}{bts}) ){ 
+%= include 'operations/bts', bts => $parent->{$payload}{bts};
+% }
