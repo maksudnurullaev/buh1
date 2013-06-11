@@ -110,7 +110,7 @@ sub update{
     my $dbh = get_db_connection()  || return;
     my $data_old = get_objects({id => [$id]});
     my $sth_insert = $dbh->prepare(
-        qq{ INSERT INTO objects (name,id,field,value) values(?,?,?,?);} );
+        qq{ INSERT INTO objects (name,id,field,value) values(?,?,?,?); } );
     my $sth_update = $dbh->prepare(
         qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; });
     for my $field (keys %{$hashref}){
@@ -154,8 +154,13 @@ sub format_statement2hash_objects{
     while ($sth->fetch) {
         $result->{$id} = {} if !exists($result->{$id});
         if( $name =~ /^_/ ){ # extended field name!!!
-            $result->{$id}->{$name} = {} if !exists($result->{$id}->{$name});
-            $result->{$id}->{$name}->{$value} = $field;
+            $result->{$id}{$name} = {} if !exists($result->{$id}->{$name});
+            $result->{$id}{$name}{$value} = $field;
+            if( exists $result->{$id}{$name}{$field} ) {
+                $result->{$id}{$name}{$field}++; 
+            }else{
+                $result->{$id}{$name}{$field} = 1;
+            }
         } else {
             $result->{$id} = { object_name => $name } 
                 if !exists($result->{$id}->{object_name}); 

@@ -1,0 +1,5 @@
+ % for my $account_id (keys %{$account}){   
+ <ul>
+  <li><%= link_to $account->{$account_id}{name} => "/accounts/edit/$account_id" %></li>
+ </ul>
+ % }

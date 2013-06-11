@@ -1,0 +1,16 @@
+% layout 'default';
+<h2><%= ml 'Business transactions' %></h2>
+% my $account = stash 'account';
+% if( $account ) {
+%= include 'operations/paccount', account => $account;
+% }
+<div class="toolbar">
+ <a href="/operations/list"><%= ml 'Back' %></a>
+ | 
+ %= link_to ml('Add') => "/operations/add/$payload";
+</div>
+% my $account = stash 'account';
+% if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
+%= include 'operations/bts', bts => $account->{$payload}{bts};
+% }
+

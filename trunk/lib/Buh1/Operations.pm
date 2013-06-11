@@ -10,14 +10,35 @@ package Buh1::Operations; {
 
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
+use Utils::Accounts;
 
 my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    return if !$self->is_editor;
-    $self->stash(path => '');
-    my $controller = $self->stash('controller');
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
+
+    my $data = Utils::Accounts::get_all_parts();
+    $self->stash( parts => $data );
+
+    for my $part_id (keys %{$data}){
+        my $sections = Utils::Accounts::get_sections($part_id);
+        $data->{$part_id}{sections} = $sections;
+
+        for my $section_id (keys %{$sections}){
+            my $accounts = Utils::Accounts::get_accounts($section_id);
+            $sections->{$section_id}{accounts} = $accounts;
+            warn Dumper $sections->{$section_id}{accounts}{'account 0100'} 
+                if exists $sections->{$section_id}{accounts}{'account 0100'};
+        }
+    }
+    Utils::Accounts::normalize_local(
+        $data,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
 };
 
 sub validate{
@@ -25,8 +46,9 @@ sub validate{
     my $edit_mode = shift;
     my $data = { 
         object_name => $OBJECT_NAME,
+        account => $self->param('account'),
         updater => Utils::User::current($self) };
-    my @fields4rule1 = ('rus','credit','debet');
+    my @fields4rule1 = ('number','rus','credit','debet');
     for my $field (@fields4rule1){
         $data->{$field} = Utils::trim $self->param($field);
         if ( !$data->{$field} ){
@@ -51,8 +73,16 @@ sub validate{
 
 sub add{
     my $self = shift;
-    return if !$self->is_admin;
-    my $controller = $self->stash('controller');
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
+
+    my $account_id = $self->param("payload");
+    if( !$account_id ){
+        $self->redirect_to('/operations/list');
+        return;
+    }
 
     my $method = $self->req->method;
     my ($data,$id);
@@ -60,21 +90,99 @@ sub add{
         $data = validate( $self );
         if( !exists($data->{error}) ){
             if( $id = Db::insert($data) ){
-                $self->stash(success => 1);
+                Db::set_link(
+                    $OBJECT_NAME,
+                    $id,
+                    Utils::Accounts::get_account_name(),
+                    $account_id);
+                $self->redirect_to("/operations/account/$account_id");
+                return;
             } else {
                $self->stash(error => 1);
-               warn "$controller:edit:ERROR: could not update!";
+               warn "Operations:add:ERROR: could not insert!";
             }
         } else {
             $self->stash(error => 1);
         }
     } 
-    if( $id ){
-        $data = Db::get_objects({id=>[$id]});
-        for my $key (keys %{$data->{$id}} ){
-            $self->stash($key => $data->{$id}->{$key});
-        }
+
+    my $account = Db::get_objects({id => [$account_id]});
+    $self->stash( account => $account );
+    Utils::Accounts::normalize_local(
+        $account,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
+};
+
+sub edit{
+    my $self = shift;
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
     }
+
+    my ($account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
+    if( !$account_id || !$bt_id ){
+        $self->redirect_to('/operations/list');
+        return;
+    }
+
+    my ($method,$data) = ($self->req->method,undef);
+    if ( $method =~ /POST/ ){
+        $data = validate( $self );
+        if( !exists($data->{error}) ){
+            $data->{id} = $bt_id;
+            if( Db::update($data) ){
+               $self->stash(success => 1);
+            } else {
+               $self->stash(error => 1);
+               warn "Operations:edit:ERROR: could not update!";
+            }
+        } else {
+            $self->stash(error => 1);
+        }
+    } 
+
+    my $parent = Db::get_objects({
+        id    => [$account_id], 
+        field => Utils::Languages::get()});
+    Db::attach_links($parent,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    Utils::Accounts::normalize_local(
+        $parent,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
+    $self->stash( parent => $parent );
+
+    my $bt = Db::get_objects({id => [$bt_id]});
+    Utils::Accounts::normalize_local(
+        $bt,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
+    for my $key (keys %{$bt->{$bt_id}}){
+        $self->stash( $key => $bt->{$bt_id}{$key} );
+    }
+};
+
+sub account{
+    my $self = shift;
+    if ( !$self->is_editor ){
+        $self->redirect_to('/user/login');
+        return;
+    }
+
+    my $account_id = $self->param("payload");
+    if( !$account_id ){
+        $self->redirect_to('/operations/list');
+        return;
+    }
+
+    my $account = Db::get_objects({id => [$account_id]});
+    $self->stash( account => $account );
+    Db::attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    Utils::Accounts::normalize_local(
+        $account,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
 };
 
 # END OF PACKAGE
