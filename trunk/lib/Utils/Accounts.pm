@@ -110,8 +110,7 @@ sub get_sections{
 sub get_accounts{
     my $section_id = shift;
     return(undef) if !$section_id;
-
-    return(Db::get_links($section_id,$ACCOUNT,['type','rus','eng','uzb']));
+    return(Db::get_links($section_id,$ACCOUNT));
 };
 
 sub get_subcontos{
