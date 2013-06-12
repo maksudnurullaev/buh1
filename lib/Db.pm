@@ -415,7 +415,6 @@ sub get_links{
             $object = ($fields ?
                 get_objects({id=>[$link_id],field=>$fields})
                 : get_objects({id=>[$link_id]}));
-            warn Dumper $object if $link_id eq 'account 0100';
             $result->{$link_id} = $object->{$link_id} if $object;
         }
     } else { warn_if $DBI::errstr; }
