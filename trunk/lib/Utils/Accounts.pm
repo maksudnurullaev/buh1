@@ -121,6 +121,20 @@ sub get_subcontos{
     }
 };
 
+sub get_account_by_numeric_id{
+    my $parameter_string = shift;
+    return(undef) if( !$parameter_string );
+    my $id_selection;
+    if( $parameter_string =~ /,/ ){
+        $id_selection = [map { "account subconto $_" } split /,/,$parameter_string];
+    }elsif ( $parameter_string =~ /-/ ) {
+        $id_selection = ['between', map { "account subconto $_" } split( /-/, $parameter_string)];
+    } else {
+        $id_selection = ["account subconto $parameter_string"];
+    }
+    return Db::get_objects({ id => $id_selection });
+};
+
 sub get_type{
     my $type_local = shift;
     return(undef) if !$type_local;

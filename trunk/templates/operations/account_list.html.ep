@@ -1,0 +1,15 @@
+%# account list
+ % my $title = $parameters->{title};
+ % my $bts   = $parameters->{data};
+ <ul>
+  <li><strong><%= $title %></strong></li>
+  <ul>
+  % my $bt = param 'bt';
+  % for my $id ( sort keys %{$bts} ){
+   % my $name   = $bts->{$id}{name};   
+   <li>
+    <%= link_to $name => "/accounts/edit/$id"  %>
+   </li>
+  % }
+ </ul>
+</ul> 

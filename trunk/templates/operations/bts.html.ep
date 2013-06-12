@@ -1,11 +1,18 @@
 %# bts = business transactions
  <ul>
-  % for my $bt ( sort { $bts->{$a}{number} cmp $bts->{$b}{number} } keys %{$bts} ){
-   % my $name   = $bts->{$bt}{name};   
-   % my $number = $bts->{$bt}{number};   
-   % my $debet  = $bts->{$bt}{debet};   
-   % my $credit = $bts->{$bt}{credit};   
-   <li><%= $number %>. <%= link_to $name => "/operations/edit/$payload?bt=$bt"  %></li>   
+  % my $bt = param 'bt';
+  % for my $id ( sort { $bts->{$a}{number} cmp $bts->{$b}{number} } keys %{$bts} ){
+   % my $name   = $bts->{$id}{name};   
+   % my $number = $bts->{$id}{number};   
+   % my $debet  = $bts->{$id}{debet};   
+   % my $credit = $bts->{$id}{credit};   
+   <li>
+    % if ( $bt eq $id ){
+     %= "$number. $name" 
+    % } else {
+     <%= $number %>. <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
+    % }
+   </li>
    <ul><li><u>DEBET:</u> <%= $debet %>, <u>CREDIT:</u> <%= $credit %></li></ul>
   % }
  </ul>
