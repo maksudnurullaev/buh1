@@ -200,15 +200,21 @@ sub format_sql_where_part{
     my $parameters = shift;
     my $result = '';
     my $dbh = get_db_connection() || return;
-    my @fields = qw(id name field);
+    my @fields = qw(id name field value);
     for my $field(@fields){
         if( exists($parameters->{$field}) && $parameters->{$field} ){
             $result .= " AND " if $result;
-            if( scalar(@{$parameters->{$field}}) == 1 ){
-                $result .= " $field = " . $dbh->quote($parameters->{$field}->[0]) . " ";
+            my $values = $parameters->{$field};
+            my $count = scalar(@{$values}); # count of parameters
+            if( $count == 1 ){
+                $result .= " $field = " . $dbh->quote($values->[0]) . " ";
+            } elsif( $count == 3 && $values->[0] =~ /^between$/i ) {
+                $result = " ($field BETWEEN " 
+                    . $dbh->quote($values->[1]) . " AND "
+                    . $dbh->quote($values->[2]) . ") ";
             } else {
                 $result .= 
-                    " $field IN (" . join(",", map { $dbh->quote($_) } @{$parameters->{$field}}) 
+                    " $field IN (" . join(",", map { $dbh->quote($_) } @{$values}) 
                     . ") ";
             }
         }

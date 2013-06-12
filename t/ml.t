@@ -21,7 +21,7 @@ END { unlink( $ml_file_path ); }
 
 ok($ml_file_path =~ $ML::FILE_NAME, "Test for file name.");
 ok($ML::DIR_NAME =~ /ML$/, "Root catalog for ML's files.");
-ok($Utils::Languages::DEFAULT_LANG ~~ @Utils::Languages::DEFAULT_LANGS, "Existance of default languge in languages array.");
+ok($Utils::Languages::DEFAULT_LANG ~~ @{Utils::Languages::get()}, "Existance of default language in languages array.");
 ML::save_to_file(); # make empty file 
 
 ### -= VALUES as single string =-

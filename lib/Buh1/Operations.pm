@@ -35,11 +35,7 @@ sub list{
                 if exists $sections->{$section_id}{accounts}{'account 0100'};
         }
     }
-    Utils::Accounts::normalize_local(
-        $data,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
-};
+    ml($self, $data);};
 
 sub validate{
     my $self = shift;
@@ -108,10 +104,7 @@ sub add{
 
     my $account = Db::get_objects({id => [$account_id]});
     $self->stash( account => $account );
-    Utils::Accounts::normalize_local(
-        $account,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
+    ml($self, $account);
 };
 
 sub edit{
@@ -121,9 +114,16 @@ sub edit{
         return;
     }
 
-    my ($account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
-    if( !$account_id || !$bt_id ){
+    my ($parent_account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
+    if( !$parent_account_id || !$bt_id ){
         $self->redirect_to('/operations/list');
+        return;
+    }
+    my $bt = Db::get_objects({id => [$bt_id]});
+    my $parent_account = Db::get_objects({id => [$parent_account_id]});
+    if ( !$bt || !$parent_account ){
+        $self->redirect_to('/operations/list');
+        warn "Operations:edit:error some objects are not exists!";
         return;
     }
 
@@ -143,24 +143,34 @@ sub edit{
         }
     } 
 
-    my $parent = Db::get_objects({
-        id    => [$account_id], 
+    my $parent_account = Db::get_objects({
+        id    => [$parent_account_id], 
         field => Utils::Languages::get()});
-    Db::attach_links($parent,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
-    Utils::Accounts::normalize_local(
-        $parent,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
-    $self->stash( parent => $parent );
+    Db::attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    ml($self, $parent_account);
+    $self->stash( parent_account => $parent_account );
 
     my $bt = Db::get_objects({id => [$bt_id]});
-    Utils::Accounts::normalize_local(
-        $bt,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
+    ml($self,$bt);
     for my $key (keys %{$bt->{$bt_id}}){
         $self->stash( $key => $bt->{$bt_id}{$key} );
     }
+    my ($debets,$credits) = (
+        Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{debet}),
+        Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{credit})
+        );
+    ml($self,$debets);
+    $self->stash( debets  => $debets );
+    ml($self,$credits);
+    $self->stash( credits => $credits );
+};
+
+sub ml{
+    my ($self,$hash) = @_;
+    Utils::Accounts::normalize_local(
+        $hash,
+        Utils::Languages::get(),
+        Utils::Languages::current($self));
 };
 
 sub account{
