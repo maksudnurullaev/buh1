@@ -1,12 +1,8 @@
 % layout 'default';
 <h2><%= ml 'Business operation' %></h2>
-% my $account = stash 'account';
-% if( $account ) {
- % for my $account_id (keys %{$account}){   
- <ul>
-  <li><%= $account->{$account_id}{name} %></li>
- </ul>
- % }
+% my $parent_account = stash 'account';
+% if( $parent_account ) {
+%= include 'operations/paccount', account => $parent_account;
 % }
 <div class="toolbar">
  %= link_to ml('Back') => "/operations/account/$payload"
@@ -38,3 +34,7 @@
  </table>
  % end
 </div>
+<hr />
+% if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
+%= include 'operations/bts', bts => $parent_account->{$payload}{bts};
+% }
