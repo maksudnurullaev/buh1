@@ -6,6 +6,8 @@
 % }
 <div class="toolbar">
  %= link_to ml('Back') => "/operations/account/$payload"
+ | 
+ %= link_to ml('Add') => "/operations/add/$payload";
 </div>
 % if( stash 'success' ) { 
  <div class='alert success'>Ok</div>
@@ -42,6 +44,7 @@
 %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $credits
 % end
 </div>
+<hr />
 % if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
 %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
 % }

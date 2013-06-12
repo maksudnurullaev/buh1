@@ -103,6 +103,7 @@ sub add{
     } 
 
     my $account = Db::get_objects({id => [$account_id]});
+    Db::attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     $self->stash( account => $account );
     ml($self, $account);
 };
