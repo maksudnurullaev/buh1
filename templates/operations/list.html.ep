@@ -18,7 +18,11 @@
        % for my $aid (sort keys %{$accounts}) {
         % my $account = $accounts->{$aid} ;
          <li><%= ml "account type $account->{type}" %></li>
-         <li><%= link_to $account->{name} => "/operations/account/$aid" %></li>
+         % my $count = 0;
+         % if ( exists $account->{_link_}{'business transaction'} ) {
+             % $count = $account->{_link_}{'business transaction'};
+         % }
+         <li><%= link_to $account->{name} => "/operations/account/$aid" %> (<%= $count %>)</li>
        % }
       </ul>
      % }

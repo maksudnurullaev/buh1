@@ -31,8 +31,6 @@ sub list{
         for my $section_id (keys %{$sections}){
             my $accounts = Utils::Accounts::get_accounts($section_id);
             $sections->{$section_id}{accounts} = $accounts;
-            warn Dumper $sections->{$section_id}{accounts}{'account 0100'} 
-                if exists $sections->{$section_id}{accounts}{'account 0100'};
         }
     }
     ml($self, $data);};
