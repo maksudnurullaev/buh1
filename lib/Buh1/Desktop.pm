@@ -14,6 +14,7 @@ use warnings;
 use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
+use DbClient;
 
 sub select_company{
     my $self = shift;
@@ -34,10 +35,12 @@ sub select_company{
                 access => Db::get_linked_value('access',$cid,$user->{id})
             };
     }
-    $self->stash(user => $user);
-    $self->stash(companies => $companies) if scalar keys %{$companies};
-};
+    $self->stash( user => $user );
+    $self->stash( companies => $companies ) if scalar keys %{$companies};
 
+    DbClient::set_sqlite_file($self->session('company id'));
+    $self->stash( debug_info => DbClient::get_sqlite_file() );
+};
 
 1;
 

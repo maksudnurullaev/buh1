@@ -238,7 +238,6 @@ sub get_objects{
     my $dbh = get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my ($sth,$sql_string) = (undef, format_sql_parameters($parameters));
-#    warn $sql_string;
     $sth = $dbh->prepare($sql_string);
     if( $sth->execute ){
         return(format_statement2hash_objects($sth));
@@ -256,7 +255,6 @@ sub get_counts{
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $where_part = format_sql_where_part($parameters);
     my($count) = $dbh->selectrow_array(" SELECT COUNT(*) FROM objects WHERE $where_part ;");
-#    warn " SELECT COUNT(*) FROM objects WHERE $where_part ;";
     return($count);
 };
 
@@ -459,4 +457,4 @@ __END__
 
     M.Nurullaev <maksud.nurullaev@gmail.com>
 
-=cut
+

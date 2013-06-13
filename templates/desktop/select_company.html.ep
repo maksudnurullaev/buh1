@@ -19,3 +19,4 @@
 % } else {
  <h3><%= ml 'No data!' %></h3>
 % }
+%= dumper stash 'debug_info' if stash 'debug_info';
