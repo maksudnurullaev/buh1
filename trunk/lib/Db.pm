@@ -38,7 +38,7 @@ sub get_sqlite_file{
 
 sub get_db_connection{
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbh = DBI->connect("dbi:SQLite:dbname=" . Db::get_sqlite_file(),"","", {sqlite_unicode => 1});
+        my $dbh = DBI->connect("dbi:SQLite:dbname=" . get_sqlite_file(),"","", {sqlite_unicode => 1});
         if(!defined($dbh)){
             warn_if $DBI::errstr;
             return(undef);
@@ -54,7 +54,7 @@ sub get_db_connection{
 };
 
 sub initialize{
-    return(1) if(-e $SQLITE_FILE);
+    return(1) if( -e get_sqlite_file() );
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $connection = get_db_connection || die "Could not connect to SQLite database";
         if(defined($connection)){

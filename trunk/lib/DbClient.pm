@@ -21,46 +21,49 @@ my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
 my $DB_CURRENT_TYPE = $DB_SQLite_TYPE;
 
-my $SQLITE_FILE;
-
-my $_production_mode = 1;
-sub set_production_mode{ $_production_mode = shift; };
-sub get_production_mode{ $_production_mode; };
-
-sub warn_if{
-    warn shift if get_production_mode ;
-};
-
-sub set_sqlite_file{
+sub new {
+    my $class = shift;
     my $file = shift;
-    $SQLITE_FILE = Utils::get_root_path('db/client', "$file.db");
+    my $self = { file => $file };
+    bless $self, $class;
+    return($self);
 };
 
-sub get_sqlite_file{
-    return($SQLITE_FILE);
+sub get_db_path{
+    my $self = shift;
+    Utils::get_root_path('db/clients', "$self->{file}.db");
+};
+
+sub is_valid{
+    my $self = shift;
+    if( ! -e $self->get_db_path ){
+        return( $self->initialize );
+    }
+    return (0);
 };
 
 sub get_db_connection{
+    my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbh = DBI->connect("dbi:SQLite:dbname=" . Db::get_sqlite_file(),"","", {sqlite_unicode => 1});
+        my $dbh = DBI->connect("dbi:SQLite:dbname=" . $self->get_db_path,"","", {sqlite_unicode => 1});
         if(!defined($dbh)){
-            warn_if $DBI::errstr;
+            warn $DBI::errstr;
             return(undef);
         }
        return($dbh);
     } elsif ($DB_CURRENT_TYPE == $DB_Pg_TYPE) {
-        warn_if "Error:Pg: Not implemeted yet!";
+        warn "Error:Pg: Not implemeted yet!";
         return(undef);
     } else {
-        warn_if "Error:DB: Unknown db type!";
+        warn "Error:DB: Unknown db type!";
         return(undef);
     }
 };
 
 sub initialize{
-    return(1) if(-e $SQLITE_FILE);
+    my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $connection = get_db_connection || die "Could not connect to SQLite database";
+        my $connection = $self->get_db_connection || die "Could not connect to SQLite database";
         if(defined($connection)){
             my @SQLITE_INIT_SQLs = (
                     "CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);'",
@@ -73,7 +76,7 @@ sub initialize{
             return(1);   
         } 
     } else {
-        warn_if "Error:DB: Unknown db type!";
+        warn "Error:DB: Unknown db type!";
         return(undef);
     }
 };

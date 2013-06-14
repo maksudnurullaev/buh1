@@ -38,8 +38,7 @@ sub select_company{
     $self->stash( user => $user );
     $self->stash( companies => $companies ) if scalar keys %{$companies};
 
-    DbClient::set_sqlite_file($self->session('company id'));
-    $self->stash( debug_info => DbClient::get_sqlite_file() );
+    $self->stash( debug_info => (Utils::get_db_client($self)) );
 };
 
 1;
