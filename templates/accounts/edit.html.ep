@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml 'Edit' %></h2>
+<h2><%= ml 'Chart of Accounts' %> | <%= ml 'Edit' %></h2>
 <div class="toolbar">
  <a href='/accounts/list'><%= ml 'Back' %></a>
 </div>
