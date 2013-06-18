@@ -1,7 +1,7 @@
 %# bts = business transactions
  <ul>
   % my $bt = param 'bt';
-  % for my $id ( sort { $bts->{$a}{number} cmp $bts->{$b}{number} } keys %{$bts} ){
+  % for my $id ( sort { $bts->{$a}{number} <=> $bts->{$b}{number} } keys %{$bts} ){
    % my $name   = $bts->{$id}{name};   
    % my $number = $bts->{$id}{number};   
    % my $debet  = $bts->{$id}{debet};   
