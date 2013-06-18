@@ -7,7 +7,7 @@
    % my $debet  = $bts->{$id}{debet};   
    % my $credit = $bts->{$id}{credit};   
    <li>
-    % if ( $bt eq $id ){
+    % if ( $bt && $bt eq $id ){
      %= "$number. $name" 
     % } else {
      <%= $number %>. <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
