@@ -77,9 +77,25 @@ sub initialize{
 sub change_name{
     my ($new_name, $id) = @_;
     if( $new_name && $id ){
-         my $dbh = Db::get_db_connection() || return;
+         my $dbh = get_db_connection() || return;
          return $dbh->do("UPDATE objects SET name = '$new_name' WHERE id = '$id' ;");
     }
+    return;
+};
+
+sub change_id{
+    my ($idold, $idnew) = @_;
+    if( $idold && $idnew ){
+        my $found = get_objects({id => [$idnew]});
+        if( $found ){
+            warn "Db::change_id:error Object with id '$idnew' already exists!";
+            return;
+        }
+
+        my $dbh = get_db_connection() || return;
+        return $dbh->do("UPDATE objects SET id = '$idnew' WHERE id = '$idold' ;");
+    }
+    warn "Db::change_id:error NEW or OLD id not defined!";
     return;
 };
 
@@ -168,7 +184,7 @@ sub format_statement2hash_objects{
         }
     }
     return($result) if scalar(keys%{$result});
-    return;
+    return(undef);
 };
 
 sub format_sql_parameters{
@@ -299,7 +315,7 @@ sub get_user{
     my @ids = keys %{$users};
     my $count = scalar(@ids);
     if( !$count ){
-        warn "User with email '$email' not exist";
+#        warn "User with email '$email' not exist";
         return(undef);
     }
     if( scalar(@ids) != 1 ){
@@ -370,7 +386,6 @@ sub exists_link{
 
 sub set_link{
     my ($name,$id,$link_name,$link_id) = @_;
-    warn "$name,$id,$link_name,$link_id";
     return(0) if( !$name || !$id || !$link_name || !$link_id );
     return(1) if exists_link($id,$link_id);
 

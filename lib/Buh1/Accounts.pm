@@ -151,16 +151,39 @@ sub validate{
     return($data);
 };
 
-sub fix_account{
+sub fix_subconto{
     my $self = shift;
     return if !access($self);
 
     my $id = $self->param('payload');
-    if( !$id ) { 
-        $self->redirect_to('/accounts/list'); 
-        warn "Accounts:fix_account:error id not defined!";
-        return; 
+    my $pnew = $self->param('pnew');
+    my $pold = $self->param('pold');
+    if( $id && $pnew && $pold ) { 
+        Db::del_link($id,$pold);
+        Db::set_link('account',$pnew,'account subconto',$id);
+    } else {
+        warn "Accounts:fix_subconto:error parameters are not properly defined!";
     }
+    $self->redirect_to('/accounts/list'); 
+};
+
+sub fix_account{
+    my $self = shift;
+    return if !access($self);
+
+    my $idold = $self->param('payload');
+    my $idnew = $self->param('idnew');
+    my $sid   = $self->param('sid');
+    my $aid   = $self->param('aid');
+    if( $idold && $idnew && $sid && $aid ) { 
+	if ( Db::change_id($idold,$idnew) && Db::change_name('account',$idnew) ){
+            Db::del_link($idold,$aid);
+            Db::set_link('account',$idnew,'account section',$sid);
+        }
+    } else {
+        warn "Accounts:fix_account:error parameters are not properly defined!";
+    }
+    $self->redirect_to('/accounts/list'); 
 };
 
 sub edit{
