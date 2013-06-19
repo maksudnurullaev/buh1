@@ -19,7 +19,8 @@
        % my $accounts = $sections->{$sid}{accounts} ;
        <ul>
         % for my $aid (sort keys %{$accounts}) {
-         % my $account = $accounts->{$aid} ;
+         % my $account        = $accounts->{$aid} ;
+         % my $account_prefix = $1 if $aid =~ /(\d{2})00$/ ;
          <li><%= ml "account type $account->{type}" %></li>
          <li><%= link_to $account->{name} => "/accounts/edit/$aid" %></li>
          % if( exists $account->{subcontos} ) {
@@ -27,6 +28,11 @@
           <ul>
            % for my $subconto_id (sort keys %{$subcontos} ) {
             <li>
+            % if ($subconto_id =~ /\d{2}00$/){
+             %= link_to "FIX A" => "/accounts/fix_account/$subconto_id", 'style' => 'color: red'
+            % } elsif ($subconto_id !~ /$account_prefix\d{2}/){
+             %= link_to "FIX S" => "/accounts/fix_subconto/$subconto_id", 'style' => 'color: red'
+            % }
             %= link_to $subcontos->{$subconto_id}{name} => "/accounts/edit/$subconto_id"
             </li>
            % }
