@@ -157,8 +157,9 @@ sub fix_subconto{
 
     my $id = $self->param('payload');
     my $pnew = $self->param('pnew');
+    my $parent_new = Db::get_objects({id=>[$pnew]});
     my $pold = $self->param('pold');
-    if( $id && $pnew && $pold ) { 
+    if( $pnew && $id && $pnew && $pold ) { 
         Db::del_link($id,$pold);
         Db::set_link('account',$pnew,'account subconto',$id);
     } else {

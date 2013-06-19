@@ -87,8 +87,9 @@ sub change_id{
     my ($idold, $idnew) = @_;
     if( $idold && $idnew ){
         my $found = get_objects({id => [$idnew]});
-        if( $found ){
+        if( $found && object_valid($found->{$idnew}) ){
             warn "Db::change_id:error Object with id '$idnew' already exists!";
+            warn Dumper $found;
             return;
         }
 
@@ -160,6 +161,15 @@ sub insert{
         $sth->execute($object_name,$id,$field,$hashref->{$field});
     }
     return($id);
+};
+
+sub object_valid{
+    my $object = shift;
+    return(undef) if !$object;
+    for my $field (keys %{$object}){
+        return(1) if $field !~ /^_/ ;
+    }
+    return(undef);
 };
 
 sub format_statement2hash_objects{
