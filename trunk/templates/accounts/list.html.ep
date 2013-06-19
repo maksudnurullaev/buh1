@@ -29,10 +29,13 @@
            % for my $subconto_id (sort keys %{$subcontos} ) {
             <li>
             % if ($subconto_id =~ /(\d{2})00$/){
-             % my $id_new = "account " . $1 . "00";
-             %= link_to ml("Error!") => "/accounts/fix_account/$subconto_id?id=$id_new&sid=$sid", 'style' => 'color: red'
+             % my $idnew = "account " . $1 . "00";
+             %= link_to ml("Error!") => "/accounts/fix_account/$subconto_id?aid=$aid&idnew=$idnew&sid=$sid", 'style' => 'color: red'
             % } elsif ($subconto_id !~ /$account_prefix\d{2}/){
-             %= link_to ml("Error!") => "/accounts/fix_subconto/$subconto_id", 'style' => 'color: red'
+             % if ( $subconto_id =~ /(\d{2})\d{2}$/ ) {
+              % my $pnew = 'account ' . $1 . '00';
+              %= link_to ml("Error!") => "/accounts/fix_subconto/$subconto_id?pnew=$pnew&pold=$aid", 'style' => 'color: red'
+             % }
             % }
             %= link_to $subcontos->{$subconto_id}{name} => "/accounts/edit/$subconto_id"
             </li>

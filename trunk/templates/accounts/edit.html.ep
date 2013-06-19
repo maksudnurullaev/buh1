@@ -21,7 +21,7 @@
    <td><%= text_area $language => (stash $language) , class => stash ($language . '_class') %></td>
   </tr>
   % }
-% if ( stash 'types' ) {
+% if ( stash 'types') {
   <tr>
    <td class='tar'><u><%= ml 'Type' %></u></td>
     <td><%= select_field type => (stash 'types') %></td>
