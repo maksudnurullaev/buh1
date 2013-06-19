@@ -12,12 +12,18 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Accounts;
 use Data::Dumper;
 
-sub add_part{
+sub access{
     my $self = shift;
     if ( !$self->is_editor ){
         $self->redirect_to('/user/login');
-        return;
+        return(undef);
     }
+    return(1);
+};
+
+sub add_part{
+    my $self = shift;
+    return if !access($self);
 
     my $method = $self->req->method;
     my ($data,$id);
@@ -78,10 +84,7 @@ sub add_part{
 
 sub list{
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
+    return if !access($self);
 
     my $data = Utils::Accounts::get_all_parts();
     $self->stash( parts => $data );
@@ -148,23 +151,32 @@ sub validate{
     return($data);
 };
 
+sub fix_account{
+    my $self = shift;
+    return if !access($self);
+
+    my $id = $self->param('payload');
+    if( !$id ) { 
+        $self->redirect_to('/accounts/list'); 
+        warn "Accounts:fix_account:error id not defined!";
+        return; 
+    }
+};
+
 sub edit{
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
+    return if !access($self);
 
-    my $method = $self->req->method;
-    my $data;
     my $id = $self->param('payload');
     if( !$id ) { 
         $self->redirect_to('/accounts/list'); 
         warn "Accounts:edit:error id not defined!";
         return; 
     }
+
+    my $method = $self->req->method;
     if ( $method =~ /POST/ ){
-        $data = validate( $self, ['rus'], ['eng','uzb','type'] );
+        my $data = validate( $self, ['rus'], ['eng','uzb','type'] );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
             if( Db::update($data) ){
@@ -177,7 +189,7 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::get_objects({id=>[$id]});
+    my $data = Db::get_objects({id=>[$id]});
     if ( !$data ){
         $self->redirect_to('/accounts/list');
         warn "Accounts:edit:error id not found!";
