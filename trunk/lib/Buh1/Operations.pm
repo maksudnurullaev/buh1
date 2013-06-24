@@ -142,14 +142,14 @@ sub edit{
         }
     } 
 
-    my $parent_account = Db::get_objects({
+    $parent_account = Db::get_objects({
         id    => [$parent_account_id], 
         field => Utils::Languages::get()});
     Db::attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     ml($self, $parent_account);
     $self->stash( parent_account => $parent_account );
 
-    my $bt = Db::get_objects({id => [$bt_id]});
+    $bt = Db::get_objects({id => [$bt_id]});
     ml($self,$bt);
     for my $key (keys %{$bt->{$bt_id}}){
         $self->stash( $key => $bt->{$bt_id}{$key} );

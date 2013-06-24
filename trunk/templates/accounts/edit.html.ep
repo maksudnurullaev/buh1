@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Chart of Accounts' %> | <%= ml 'Edit' %></h2>
 <div class="toolbar">
- <a href='/accounts/list'><%= ml 'Back' %></a>
+ %= link_to ml('Back') => "/accounts/list#$payload"
 </div>
 % if( stash 'success' ) { 
 <div class='alert success'> Ok  </div>
@@ -49,14 +49,14 @@
 <ul><li><u><%= stash 'name' %></u></li>
  %# child accounts
  % my $CHILDS = stash 'CHILDS';
- % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {
-    <ul>
-    <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
-    % for my $cid (sort keys %{$CHILDS}) {
-        <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
-    % }    
-    </ul>
- % }
+ <ul>
+  <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+  % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {
+   % for my $cid (sort keys %{$CHILDS}) {
+    <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
+   % }    
+  % }
+ </ul>
 </ul>
 %if ( $parents ) {
 </ul>

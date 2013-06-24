@@ -165,7 +165,7 @@ sub fix_subconto{
     } else {
         warn "Accounts:fix_subconto:error parameters are not properly defined!";
     }
-    $self->redirect_to('/accounts/list'); 
+    $self->redirect_to("/accounts/list#$id"); 
 };
 
 sub fix_account{
@@ -177,14 +177,31 @@ sub fix_account{
     my $sid   = $self->param('sid');
     my $aid   = $self->param('aid');
     if( $idold && $idnew && $sid && $aid ) { 
-	if ( Db::change_id($idold,$idnew) && Db::change_name('account',$idnew) ){
+	    if ( Db::change_id($idold,$idnew) && Db::change_name('account',$idnew) ){
             Db::del_link($idold,$aid);
             Db::set_link('account',$idnew,'account section',$sid);
         }
     } else {
         warn "Accounts:fix_account:error parameters are not properly defined!";
     }
-    $self->redirect_to('/accounts/list'); 
+    $self->redirect_to("/accounts/list#$idnew"); 
+};
+
+sub delete_subconto{
+    my $self = shift;
+    return if !access($self); 
+    
+    my $id = $self->param('payload');
+    my $parent = $self->param('parent');
+    if ( !$id || !$parent ){
+        warn "Accounts:delete_subconto:error parameters are not properly defined!";
+        $self->redirect_to("/accounts/list/$id");
+        return;
+    }
+
+    Db::del_link($id,$parent);
+    Db::del($id);
+    $self->redirect_to("/accounts/list");
 };
 
 sub edit{
@@ -215,7 +232,7 @@ sub edit{
     } 
     my $data = Db::get_objects({id=>[$id]});
     if ( !$data ){
-        $self->redirect_to('/accounts/list');
+        $self->redirect_to("/accounts/list#$id");
         warn "Accounts:edit:error id not found!";
         return;
     }
@@ -232,7 +249,7 @@ sub edit{
                 Utils::Accounts::get_types4select($self,$data->{$id}{type})
             ) if $data->{$id}{object_name} eq Utils::Accounts::get_account_name();
     } else {
-        redirect_to('/accounts/list');
+        redirect_to("/accounts/list#$id");
     }
 };
 
