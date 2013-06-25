@@ -93,7 +93,7 @@ sub add{
                     $id,
                     Utils::Accounts::get_account_name(),
                     $account_id);
-                $self->redirect_to("/operations/account/$account_id");
+                $self->redirect_to("/operations/edit/$account_id?bt=$id");
                 return;
             } else {
                $self->stash(error => 1);
