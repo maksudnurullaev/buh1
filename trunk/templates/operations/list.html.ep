@@ -17,7 +17,7 @@
       <ul>
        % for my $aid (sort keys %{$accounts}) {
         % my $account = $accounts->{$aid} ;
-         <li><%= ml "account type $account->{type}" %></li>
+         <li><%= ml "account type $account->{type}" if $account->{type} %></li>
          % my $count = 0;
          % if ( exists $account->{_link_}{'business transaction'} ) {
              % $count = $account->{_link_}{'business transaction'};
