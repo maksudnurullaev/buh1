@@ -50,6 +50,10 @@ sub validate{
             $self->stash(($field . '_class') => 'error');
         }
     }
+    if( $data->{number} !~ /^[1-9][0-9]*\.?[0-9]*$/ ){
+        $data->{error} = 1;
+         $self->stash('number_class' => 'error');
+    }
     my @fields4rule2 = ('credit','debet');
     for my $field (@fields4rule2){
         if( $data->{$field} !~ /^\d+[\d+|\d+,|\d+-]+$/ ){

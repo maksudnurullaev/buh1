@@ -38,7 +38,11 @@ sub select_company{
     $self->stash( user => $user );
     $self->stash( companies => $companies ) if scalar keys %{$companies};
 
-    $self->stash( debug_info => (Utils::get_db_client($self)) );
+    my $db_client = Utils::get_db_client($self);
+    $self->stash( debug_info => { 
+        path => $db_client->get_db_path,
+        valid => $db_client->is_valid,
+        });
 };
 
 1;

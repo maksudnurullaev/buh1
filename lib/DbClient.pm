@@ -39,7 +39,7 @@ sub is_valid{
     if( ! -e $self->get_db_path ){
         return( $self->initialize );
     }
-    return (0);
+    return (1);
 };
 
 sub get_db_connection{
