@@ -15,6 +15,7 @@ use utf8;
 
 use Db;
 use Utils;
+use Hash::Merge::Simple qw/ merge /;
 use utf8;
 
 my ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $TYPES )
@@ -124,8 +125,25 @@ sub get_account_by_numeric_id{
     my $parameter_string = shift;
     return(undef) if( !$parameter_string );
     my $id_selection;
-    if( $parameter_string =~ /,/ ){
+    if( $parameter_string =~ /,/  && $parameter_string !~ /-/ ){
         $id_selection = [map { "account subconto $_" } split /,/,$parameter_string];
+    }elsif( $parameter_string =~ /,/  && $parameter_string =~ /-/ ){
+        my @list = split /,/, $parameter_string;
+	my @result = ();
+	for my $id_temp (@list){
+            if( $id_temp =~ /-/ ){
+                $id_selection = ['between', map { "account subconto $_" } split( /-/, $parameter_string)];
+                push @result, Db::get_objects({ id => $id_selection });
+            }else{
+	        push @result, Db::get_objects({ id => ["account subconto $id_temp"});
+            }
+        }
+        my $result_hash = {};
+        for $hash_temp (@result){
+            $result_hash = Hash::Merge::Simple::merge($result,$hash_temp);
+        }
+        warn Dumper $result_hash;
+        return($result_hash);
     }elsif ( $parameter_string =~ /-/ ) {
         $id_selection = ['between', map { "account subconto $_" } split( /-/, $parameter_string)];
     } else {
