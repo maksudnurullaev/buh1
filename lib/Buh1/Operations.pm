@@ -33,7 +33,8 @@ sub list{
             $sections->{$section_id}{accounts} = $accounts;
         }
     }
-    ml($self, $data);};
+    ml($self, $data);
+};
 
 sub validate{
     my $self = shift;
@@ -67,6 +68,24 @@ sub validate{
             if Utils::trim $self->param($field);
     }
     return($data);
+};
+
+sub delete_bt{ #delete business transaction
+    my $self = shift;
+    if ( !$self->is_admin ){
+        $self->redirect_to('/user/login');
+        return;
+    }
+    my $account_id = $self->param('payload');
+    my $bt_id      = $self->param('bt');
+    if( !$account_id || !$bt_id ){
+        $self->redirect_to('/operations/list');
+        return;
+    }
+    if( Db::del($bt_id) ){
+        Db::del_link($account_id,$bt_id);
+    }
+    $self->redirect_to("/operations/account/$account_id");
 };
 
 sub add{
