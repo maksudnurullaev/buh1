@@ -37,6 +37,13 @@
     %= submit_button ml('Save')
    </td>
   </tr>
+ % if ( is_admin ) {
+  <tr><td>&nbsp;</td>
+   <td>
+    <sup><%= link_to ml("Delete") => "/operations/delete_bt/$payload?bt=$bt" %></sup>
+   </td>
+  </tr>
+ % }
  </table>
 % my $debets = stash 'debets';
 % my $credits = stash 'credits';

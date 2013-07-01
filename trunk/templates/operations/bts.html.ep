@@ -1,16 +1,22 @@
 %# bts = business transactions
  <ul>
   % my $bt = param 'bt';
+  % my $number_previous;
   % for my $id ( sort { $bts->{$a}{number} <=> $bts->{$b}{number} } keys %{$bts} ){
    % my $name   = $bts->{$id}{name};   
    % my $number = $bts->{$id}{number};   
    % my $debet  = $bts->{$id}{debet};   
    % my $credit = $bts->{$id}{credit};   
    <li>
+    %= "$number."
+    % if ($number eq $number_previous){
+        <font color='red'><%= ml "Error!" %></font>
+    % }
+    % $number_previous = $number;
     % if ( $bt && $bt eq $id ){
-     %= "$number. $name" 
+     %= $name 
     % } else {
-     <%= $number %>. <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
+     <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
     % }
    </li>
    <ul><li><u>DEBET:</u> <%= $debet %>, <u>CREDIT:</u> <%= $credit %></li></ul>
