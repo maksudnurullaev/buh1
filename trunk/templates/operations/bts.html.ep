@@ -1,7 +1,7 @@
 %# bts = business transactions
  <ul>
   % my $bt = param 'bt';
-  % my $number_previous;
+  % my $number_previous = '';
   % for my $id ( sort { $bts->{$a}{number} <=> $bts->{$b}{number} } keys %{$bts} ){
    % my $name   = $bts->{$id}{name};   
    % my $number = $bts->{$id}{number};   
