@@ -7,7 +7,8 @@ BEGIN {
   # Set up password for administrator
   Auth::get_admin_password() || die("Could not set up password for administrator!");
   # Initialize database
-  Db::initialize() || die("Could not set initialize database!");
+  my $db = Db->new();
+  $db->initialize() || die("Could not set initialize database!");
 };
 
 

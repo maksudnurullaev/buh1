@@ -67,12 +67,13 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(companies => $objects) if $objects && scalar(keys %{$objects});
-    Db::attach_links($objects,'users','user',['email']);
+    my $db = Db->new();
+    $db->attach_links($objects,'users','user',['email']);
     for my $cid (keys %{$objects}){
         if ( exists $objects->{$cid}{users} ){
             my $users = $objects->{$cid}{users};
             for my $uid (keys %{$users}){
-                $users->{$uid}{access} = Db::get_linked_value('access',$cid,$uid);
+                $users->{$uid}{access} = $db->get_linked_value('access',$cid,$uid);
             }
         }
     }
@@ -84,7 +85,8 @@ sub restore{
     return if !$self->is_admin;
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "Companies:restore:error company id not defined!"; 
     }
@@ -112,7 +114,8 @@ sub del{
     return if !$self->is_admin;
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($DELETED_OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "Companies:delete:error company id not defined!"; 
     }
@@ -125,8 +128,9 @@ sub remove_user{
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
-    Db::del_link($id,$user_id);
-    Db::del_linked_value('access',$id,$user_id);
+    my $db = Db->new();
+    $db->del_link($id,$user_id);
+    $db->del_linked_value('access',$id,$user_id);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -136,7 +140,8 @@ sub add_user{
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
-    Db::set_link($OBJECT_NAME,$id,'user',$user_id);
+    my $db = Db->new();
+    $db->set_link($OBJECT_NAME,$id,'user',$user_id);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -147,7 +152,8 @@ sub change_access{
     my $id          = $self->param('payload');
     my $user_id     = $self->param('user_id');
     my $user_access = $self->param('user_access');
-    Db::set_linked_value('access',$id,$user_id,$user_access);
+    my $db = Db->new();
+    $db->set_linked_value('access',$id,$user_id,$user_access);
     $self->redirect_to("companies/edit/$id");
 };
 
@@ -164,11 +170,12 @@ sub edit{
         warn "Companies:edit:error company id not defined!";
         return; 
     }
+    my $db = Db->new();
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
-            if( Db::update($data) ){
+            if( $db->update($data) ){
                 $self->stash(success => 1);
             } else {
                 $self->stash(error => 1);
@@ -180,11 +187,11 @@ sub edit{
     } 
 
     my ($non_company_users,$company_users) = 
-        Db::get_difference($id,'user','email');
+        $db->get_difference($id,'user','email');
     my $company_users_hash = {};    
     for my $user (@{$company_users}){
         my ($user_id,$user_mail) = ($user->[1],$user->[0]);
-        my $user_access          = Db::get_linked_value('access',$id,$user_id);
+        my $user_access          = $db->get_linked_value('access',$id,$user_id);
         $company_users_hash->{$user_mail} = {
             id => $user_id,
             access => $user_access,
@@ -194,7 +201,7 @@ sub edit{
     $self->stash(company_users      => $company_users)      if @{$company_users};
     $self->stash(company_users_hash => $company_users_hash) if scalar keys %{$company_users_hash};
 
-    if( $data = Db::get_objects({id=>[$id]}) ){
+    if( $data = $db->get_objects({id=>[$id]}) ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
@@ -214,7 +221,8 @@ sub add{
         my $data = validate( $self );
         # add
         if( !exists($data->{error}) ){
-            if( Db::insert($data) ){
+            my $db = Db->new();
+            if( $db->insert($data) ){
                 $self->redirect_to('companies/list');
             } else {
                 $self->stash(error => 1);

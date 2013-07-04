@@ -36,6 +36,7 @@ sub get_db_path{
 
 sub is_valid{
     my $self = shift;
+    return(undef) if !$self->{file};
     if( ! -e $self->get_db_path ){
         return( $self->initialize );
     }

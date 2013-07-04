@@ -75,7 +75,8 @@ sub get_types4select{
 sub get_child_name_by_id{
     my $id = shift;
     if( $id ){
-        my $objects = Db::get_objects({id=>[$id]});
+        my $db = Db->new();
+        my $objects = $db->get_objects({id=>[$id]});
         return get_child_name($objects->{$id}{object_name}) if $objects;
     }
     return(undef);
@@ -100,25 +101,29 @@ sub get_parent_name{
 };
 
 sub get_all_parts{
-    return(Db::get_objects( { name =>  [$ACCOUNT_PART] } ));
+    my $db = Db->new();
+    return($db->get_objects( { name =>  [$ACCOUNT_PART] } ));
 };
 
 sub get_sections{
     my $part_id = shift;
     return(undef) if !$part_id;
-    return(Db::get_links($part_id,$ACCOUNT_SECTION,['rus','eng','uzb']));
+    my $db = Db->new();
+    return($db->get_links($part_id,$ACCOUNT_SECTION,['rus','eng','uzb']));
 };
 
 sub get_accounts{
     my $section_id = shift;
     return(undef) if !$section_id;
-    return(Db::get_links($section_id,$ACCOUNT));
+    my $db = Db->new();
+    return($db->get_links($section_id,$ACCOUNT));
 };
 
 sub get_subcontos{
     my $account_id = shift;
     if( $account_id ) {
-        return(Db::get_links($account_id,$ACCOUNT_SUBCONTO,['rus','eng','uzb']));
+        my $db = Db->new();
+        return($db->get_links($account_id,$ACCOUNT_SUBCONTO,['rus','eng','uzb']));
     }
 };
 
@@ -126,6 +131,7 @@ sub get_account_by_numeric_id{
     my $parameter_string = shift;
     return(undef) if( !$parameter_string );
     my $id_selection;
+    my $db = Db->new();
     if( $parameter_string =~ /,/  && $parameter_string !~ /-/ ){
         $id_selection = [map { "account subconto $_" } split /,/,$parameter_string];
     }elsif( $parameter_string =~ /,/  && $parameter_string =~ /-/ ){
@@ -134,9 +140,9 @@ sub get_account_by_numeric_id{
         for my $id_temp (@list){
             if( $id_temp =~ /-/ ){
                 $id_selection = ['between', map { "account subconto $_" } split( /-/, $id_temp)];
-                push @result, Db::get_objects({ id => $id_selection });
+                push @result, $db->get_objects({ id => $id_selection });
             }else{
-                push @result, Db::get_objects({ id => ["account subconto $id_temp"]});
+                push @result, $db->get_objects({ id => ["account subconto $id_temp"]});
             }
         }
         my $result_hash = {};
@@ -149,7 +155,7 @@ sub get_account_by_numeric_id{
     } else {
         $id_selection = ["account subconto $parameter_string"];
     }
-    return Db::get_objects({ id => $id_selection });
+    return $db->get_objects({ id => $id_selection });
 };
 
 sub get_type{

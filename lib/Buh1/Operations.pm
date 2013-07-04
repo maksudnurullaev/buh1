@@ -82,8 +82,9 @@ sub delete_bt{ #delete business transaction
         $self->redirect_to('/operations/list');
         return;
     }
-    if( Db::del($bt_id) ){
-        Db::del_link($account_id,$bt_id);
+    my $db = Db->new();
+    if( $db->del($bt_id) ){
+        $db->del_link($account_id,$bt_id);
     }
     $self->redirect_to("/operations/account/$account_id");
 };
@@ -103,11 +104,12 @@ sub add{
 
     my $method = $self->req->method;
     my ($data,$id);
+    my $db = Db->new();
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
-            if( $id = Db::insert($data) ){
-                Db::set_link(
+            if( $id = $db->insert($data) ){
+                $db->set_link(
                     $OBJECT_NAME,
                     $id,
                     Utils::Accounts::get_account_name(),
@@ -123,8 +125,8 @@ sub add{
         }
     } 
 
-    my $account = Db::get_objects({id => [$account_id]});
-    Db::attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    my $account = $db->get_objects({id => [$account_id]});
+    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     $self->stash( account => $account );
     ml($self, $account);
 };
@@ -141,8 +143,9 @@ sub edit{
         $self->redirect_to('/operations/list');
         return;
     }
-    my $bt = Db::get_objects({id => [$bt_id]});
-    my $parent_account = Db::get_objects({id => [$parent_account_id]});
+    my $db = Db->new();
+    my $bt = $db->get_objects({id => [$bt_id]});
+    my $parent_account = $db->get_objects({id => [$parent_account_id]});
     if ( !$bt || !$parent_account ){
         $self->redirect_to('/operations/list');
         warn "Operations:edit:error some objects are not exists!";
@@ -154,7 +157,7 @@ sub edit{
         $data = validate( $self );
         if( !exists($data->{error}) ){
             $data->{id} = $bt_id;
-            if( Db::update($data) ){
+            if( $db->update($data) ){
                $self->stash(success => 1);
             } else {
                $self->stash(error => 1);
@@ -165,14 +168,14 @@ sub edit{
         }
     } 
 
-    $parent_account = Db::get_objects({
+    $parent_account = $db->get_objects({
         id    => [$parent_account_id], 
         field => Utils::Languages::get()});
-    Db::attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     ml($self, $parent_account);
     $self->stash( parent_account => $parent_account );
 
-    $bt = Db::get_objects({id => [$bt_id]});
+    $bt = $db->get_objects({id => [$bt_id]});
     ml($self,$bt);
     for my $key (keys %{$bt->{$bt_id}}){
         $self->stash( $key => $bt->{$bt_id}{$key} );
@@ -208,9 +211,10 @@ sub account{
         return;
     }
 
-    my $account = Db::get_objects({id => [$account_id]});
+    my $db = Db->new();
+    my $account = $db->get_objects({id => [$account_id]});
     $self->stash( account => $account );
-    Db::attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     Utils::Accounts::normalize_local(
         $account,
         Utils::Languages::get(),

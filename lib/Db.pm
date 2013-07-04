@@ -28,17 +28,20 @@ my $_production_mode = 1;
 sub set_production_mode{ $_production_mode = shift; };
 sub get_production_mode{ $_production_mode; };
 
+sub new {
+    my $class = shift;
+    my $self = { sqlite_file => $SQLITE_FILE };
+    return(bless $self, $class);
+};
+
 sub warn_if{
     warn shift if get_production_mode ;
 };
 
-sub get_sqlite_file{
-    return($SQLITE_FILE);
-};
-
 sub get_db_connection{
+    my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbh = DBI->connect("dbi:SQLite:dbname=" . get_sqlite_file(),"","", {sqlite_unicode => 1});
+        my $dbh = DBI->connect("dbi:SQLite:dbname=$self->{sqlite_file}",'','', {sqlite_unicode => 1});
         if(!defined($dbh)){
             warn_if $DBI::errstr;
             return(undef);
@@ -54,9 +57,10 @@ sub get_db_connection{
 };
 
 sub initialize{
-    return(1) if( -e get_sqlite_file() );
+    my $self = shift;
+    return(1) if( -e $self->{sqlite_file} );
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $connection = get_db_connection || die "Could not connect to SQLite database";
+        my $connection = $self->get_db_connection() || die "Could not connect to SQLite database";
         if(defined($connection)){
             my @SQLITE_INIT_SQLs = (
                     "CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);'",
@@ -75,25 +79,26 @@ sub initialize{
 };
 
 sub change_name{
+    my $self = shift;
     my ($new_name, $id) = @_;
     if( $new_name && $id ){
-         my $dbh = get_db_connection() || return;
+         my $dbh = $self->get_db_connection() || return;
          return $dbh->do("UPDATE objects SET name = '$new_name' WHERE id = '$id' ;");
     }
     return;
 };
 
 sub change_id{
+    my $self = shift;
     my ($idold, $idnew) = @_;
     if( $idold && $idnew ){
-        my $found = get_objects({id => [$idnew]});
-        if( $found && object_valid($found->{$idnew}) ){
+        my $found = $self->get_objects({id => [$idnew]});
+        if( $found && $self->object_valid($found->{$idnew}) ){
             warn "Db::change_id:error Object with id '$idnew' already exists!";
-            warn Dumper $found;
             return;
         }
 
-        my $dbh = get_db_connection() || return;
+        my $dbh = $self->get_db_connection() || return;
         return $dbh->do("UPDATE objects SET id = '$idnew' WHERE id = '$idold' ;");
     }
     warn "Db::change_id:error NEW or OLD id not defined!";
@@ -101,13 +106,15 @@ sub change_id{
 };
 
 sub del{
+    my $self = shift;
     my $id = shift;
     return if !$id;
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     return $dbh->do("DELETE FROM objects WHERE id = '$id' ;");
 };
 
 sub update{
+    my $self = shift;
     my ($hashref, $object_name, $id) = (shift, undef, undef);
     if(defined($hashref) 
             && defined($hashref->{object_name})
@@ -124,8 +131,8 @@ sub update{
         warn_if "Error:Db:Insert: No data!";
         return(undef);
     }
-    my $dbh = get_db_connection()  || return;
-    my $data_old = get_objects({id => [$id]});
+    my $dbh = $self->get_db_connection()  || return;
+    my $data_old = $self->get_objects({id => [$id]});
     my $sth_insert = $dbh->prepare(
         qq{ INSERT INTO objects (name,id,field,value) values(?,?,?,?); } );
     my $sth_update = $dbh->prepare(
@@ -141,6 +148,7 @@ sub update{
 };
 
 sub insert{
+    my $self = shift;
     my ($hashref, $object_name) = (shift, undef);
     if( defined($hashref) && defined($hashref->{object_name}) ){
         $object_name = $hashref->{object_name};
@@ -154,7 +162,7 @@ sub insert{
         return(undef);
     }
     my $id = $hashref->{id} || Utils::get_date_uuid();
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     my $sth = $dbh->prepare(
         "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
     for my $field (keys %{$hashref}){
@@ -164,6 +172,7 @@ sub insert{
 };
 
 sub object_valid{
+    my $self = shift;
     my $object = shift;
     return(undef) if !$object;
     for my $field (keys %{$object}){
@@ -173,6 +182,7 @@ sub object_valid{
 };
 
 sub format_statement2hash_objects{
+    my $self = shift;
     my $sth = shift;
     return {} if !$sth;
     my($name,$id,$field,$value,$result) = (undef,undef,undef,undef,{});
@@ -198,6 +208,7 @@ sub format_statement2hash_objects{
 };
 
 sub format_sql_parameters{
+    my $self = shift;
     my $parameters = shift;
     if( !$parameters || scalar(keys %{$parameters}) == 0){
         warn "No parameters!";
@@ -209,7 +220,7 @@ sub format_sql_parameters{
     } else {
         $result = ' SELECT name,id,field,value FROM objects ';
     }
-    my $where_part = format_sql_where_part($parameters);
+    my $where_part = $self->format_sql_where_part($parameters);
     $result .= " WHERE $where_part " if $where_part;
     if( exists $parameters->{order} ){
         $result .= " $parameters->{order} ";
@@ -223,9 +234,10 @@ sub format_sql_parameters{
 };
 
 sub format_sql_where_part{
+    my $self = shift;
     my $parameters = shift;
     my $result = '';
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     my @fields = qw(id name field value);
     for my $field(@fields){
         if( exists($parameters->{$field}) && $parameters->{$field} ){
@@ -256,30 +268,32 @@ sub format_sql_where_part{
 };
 
 sub get_objects{
+    my $self = shift;
     my $parameters = shift;
     if( ref($parameters) ne "HASH" ){
         warn "Parameters should be hash!";
         return;
     }
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my ($sth,$sql_string) = (undef, format_sql_parameters($parameters));
+    my ($sth,$sql_string) = (undef, $self->format_sql_parameters($parameters));
     $sth = $dbh->prepare($sql_string);
     if( $sth->execute ){
-        return(format_statement2hash_objects($sth));
+        return($self->format_statement2hash_objects($sth));
     } else { warn_if $DBI::errstr; }
     return;
 };
 
 sub get_counts{
+    my $self = shift;
     my $parameters = shift;
     if( ref($parameters) ne "HASH" ){
         warn "Parameters should be hash!";
         return;
     }
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $where_part = format_sql_where_part($parameters);
+    my $where_part = $self->format_sql_where_part($parameters);
     my($count) = $dbh->selectrow_array(" SELECT COUNT(*) FROM objects WHERE $where_part ;");
     return($count);
 };
@@ -294,10 +308,11 @@ sub get_counts{
 # | access | id1 | id2   | value |
 # ------------------------------
 sub get_linked_value{
+    my $self = shift;
     my ($name,$id1,$id2) = @_;
     return if(!$name || !$id1 || !$id2 || ($id1 eq $id2) );
     ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
         "SELECT value FROM objects WHERE name=? AND id=? AND field=? ;";
@@ -315,17 +330,18 @@ sub get_linked_value{
 };
 
 sub get_user{
+    my $self = shift;
     my $email = shift;
     return(undef) if !$email;
 
-    my $users = get_objects({
+    my $users = $self->get_objects({
         name  =>['user'],
         add_where => " field='email' AND value='$email' "
         });
     my @ids = keys %{$users};
     my $count = scalar(@ids);
     if( !$count ){
-#        warn "User with email '$email' not exist";
+        warn "User with email '$email' not exist";
         return(undef);
     }
     if( scalar(@ids) != 1 ){
@@ -347,10 +363,11 @@ sub get_user{
 };
 
 sub set_linked_value{
+    my $self = shift;
     my ($name,$id1,$id2,$value) = @_;
     return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );
     ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     if ( get_linked_value($name,$id1,$id2) ) {
         my $sth = $dbh->prepare(
             "UPDATE objects SET value = ? WHERE name =? AND id = ? AND field =? ;");
@@ -364,10 +381,11 @@ sub set_linked_value{
 };
 
 sub del_linked_value{
+    my $self = shift;
     my ($name,$id1,$id2) = @_;
     return if( !$name || !$id1 || !$id2 );
     ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     return 
         $dbh->do("DELETE FROM objects WHERE name='$name' AND id='$id1' AND field='$id2';")
 };
@@ -379,9 +397,10 @@ sub del_linked_value{
 # | link | id1 | name2 | id2   |
 # ------------------------------
 sub exists_link{
+    my $self = shift;
     my ($id1,$id2) = @_;
     return if( !$id1 || !$id2 );
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
         "SELECT COUNT(*) FROM objects WHERE name=? AND id=? AND value=? ;";
@@ -395,11 +414,11 @@ sub exists_link{
 };
 
 sub set_link{
-    my ($name,$id,$link_name,$link_id) = @_;
-    return(0) if( !$name || !$id || !$link_name || !$link_id );
+    my ($self,$name,$id,$link_name,$link_id) = @_;
+    return(0) if( !$self || !$name || !$id || !$link_name || !$link_id );
     return(1) if exists_link($id,$link_id);
 
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     my $sth = $dbh->prepare(
         'INSERT INTO objects (name,id,field,value) values(?,?,?,?);');
     return(0) if !$sth->execute($LINK_OBJECT_NAME,$id,$link_name,$link_id);
@@ -408,14 +427,14 @@ sub set_link{
 };
 
 sub attach_links{
-    my ($result,$links_name,$link_name,$fields) = @_;
+    my ($self,$result,$links_name,$link_name,$fields) = @_;
     for my $id (keys %{$result}){
-        my $links = Db::get_links($id,$link_name, $fields);
+        my $links = $self->get_links($id,$link_name, $fields);
         for my $link_id (keys %{$links}){
             $result->{$id}->{$links_name} = {} 
                 if !exists($result->{$id}->{$links_name});
             my $link_object = 
-                get_objects({id=>[$link_id],name=>[$link_name],field=>$fields});
+                $self->get_objects({id=>[$link_id],name=>[$link_name],field=>$fields});
             $result->{$id}{$links_name}{$link_id} = $link_object->{$link_id}
                 if $link_object;   
         } 
@@ -423,9 +442,9 @@ sub attach_links{
 };
 
 sub get_links{
-    my ($id1,$name2,$fields) = @_;
+    my ($self,$id1,$name2,$fields) = @_;
     return if( !$name2 || !$id1 );
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth_str = 
         "SELECT DISTINCT value FROM objects WHERE name=? AND id=? AND field=? ;";
@@ -436,8 +455,8 @@ sub get_links{
         while ($sth->fetch){
             my $object;
             $object = ($fields ?
-                get_objects({id=>[$link_id],field=>$fields})
-                : get_objects({id=>[$link_id]}));
+                $self->get_objects({id=>[$link_id],field=>$fields})
+                : $self->get_objects({id=>[$link_id]}));
             $result->{$link_id} = $object->{$link_id} if $object;
         }
     } else { warn_if $DBI::errstr; }
@@ -446,10 +465,10 @@ sub get_links{
 };
 
 sub get_difference{
-    my($id,$link_object_name,$field) = @_;
+    my($self,$id,$link_object_name,$field) = @_;
     my ($all_,$links_) = (
-        Db::get_objects({name=>[$link_object_name], field=>[$field]}),
-        Db::get_links($id, $link_object_name, [$field]) );
+        $self->get_objects({name=>[$link_object_name], field=>[$field]}),
+        $self->get_links($id, $link_object_name, [$field]) );
     my ($all,$links) = ([],[]);
     for my $link_id( keys %{$links_}){
         push @{$links}, [$links_->{$link_id}->{$field} => $link_id]
@@ -463,9 +482,9 @@ sub get_difference{
 };
 
 sub del_link{
-    my ($id1,$id2) = @_;
+    my ($self,$id1,$id2) = @_;
     return if( !$id1 || !$id2 );
-    my $dbh = get_db_connection() || return;
+    my $dbh = $self->get_db_connection() || return;
     $dbh->do(
         "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id1' AND value = '$id2' ;");
     return $dbh->do(

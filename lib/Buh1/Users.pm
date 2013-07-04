@@ -56,12 +56,13 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(users => $objects) if $objects && scalar(keys %{$objects});
-    Db::attach_links($objects,'companies','company',['name']);
+    my $db = Db->new();
+    $db->attach_links($objects,'companies','company',['name']);
     for my $uid (keys %{$objects}){
         if ( exists $objects->{$uid}{companies} ){
             my $companies = $objects->{$uid}{companies};
             for my $cid (keys %{$companies}){
-                $companies->{$cid}{access} = Db::get_linked_value('access',$cid,$uid);
+                $companies->{$cid}{access} = $db->get_linked_value('access',$cid,$uid);
             }
         }
     }
@@ -85,7 +86,8 @@ sub restore{
     return if !$self->is_admin;
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "Users:restore:error user id not defined!"; 
     }
@@ -109,7 +111,8 @@ sub validate_passwords{
 sub validate_email{
     my $email = shift;
     return(0) if ( !$email || !Utils::validate_email($email) );
-    return(0) if ( Db::get_user($email) );
+    my $db = Db->new();
+    return(0) if ( $db->get_user($email) );
     return(1);
 };
 
@@ -146,7 +149,8 @@ sub del{
     return if !$self->is_admin;
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($DELETED_OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "Users:delete:error user id not defined!"; 
     }
@@ -159,8 +163,9 @@ sub remove_company{
 
     my $user_id      = $self->param('payload');
     my $id = $self->param('company');
-    Db::del_link($id,$user_id);
-    Db::del_linked_value('access',$id,$user_id);
+    my $db = Db->new();
+    db->del_link($id,$user_id);
+    db->del_linked_value('access',$id,$user_id);
     $self->redirect_to("/users/edit/$user_id");
 };
 
@@ -177,11 +182,12 @@ sub edit{
         warn "Users:edit:error user id not defined!";
         return; 
     }
+    my $db = Db->new();
     if ( $method =~ /POST/ ){
         $data = validate( $self, 1 );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
-            if( Db::update($data) ){
+            if( $db->update($data) ){
                 $self->stash(success => 1);
             } else {
                 $self->stash(error => 1);
@@ -191,9 +197,9 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::get_objects({id=>[$id]});
+    $data = $db->get_objects({id=>[$id]});
     if( $data ){
-        Db::attach_links($data,'companies','company',['name']);
+        $db->attach_links($data,'companies','company',['name']);
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
@@ -213,7 +219,8 @@ sub add{
         my $data = validate( $self, 0 );
         # add
         if( !exists($data->{error}) ){
-            if( Db::insert($data) ){
+            my $db = Db->new();
+            if( $db->insert($data) ){
                 $self->redirect_to('users/list');
             } else {
                 $self->stash(error => 1);

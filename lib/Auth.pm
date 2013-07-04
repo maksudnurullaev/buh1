@@ -68,7 +68,8 @@ sub login{
         return(0);
     }
     # 2. Is email exists
-    my $user = Db::get_user($email);
+    my $db = Db->new();
+    my $user = $db->get_user($email);
     return(0) if !$user ;
     my $salt = $user->{password};
     return(1) if salted_password($password,$salt);
@@ -82,11 +83,12 @@ sub set_password{
     if( $email =~ /^admin$/i ){
         return(set_admin_password($password));
     }
-    my $user = Db::get_user($email);
+    my $db = Db->new();
+    my $user = $db->get_user($email);
     return(0) if !$user || 
             !exists($user->{id});
     my $id  = $user->{id}; 
-    my $dbh = Db::get_db_connection() || return;
+    my $dbh = $db->get_db_connection() || return;
     my $sth = $dbh->prepare(
             "UPDATE objects SET value=? WHERE name='user' AND id=? AND field='password' ;");
     return(0) if !$sth->execute(salted_password($password),$id);

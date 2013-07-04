@@ -56,13 +56,13 @@ sub get_objects{
     my $result_fields = $parameters->{result_fields};
     my $filter_where;
     my $result;
+    my $db = Db->new();
     if( $filter ) {
         $self->stash(filter => $filter) if $filter;
         $filter_where = " field='$filter_field' AND value LIKE '%$filter%' ESCAPE '\\' ";
-
-        $result = Db::get_counts({name=>[$name], add_where=>$filter_where});
+        $result = $db->get_counts({name=>[$name], add_where=>$filter_where});
     } else {
-        $result = Db::get_counts({name=>[$name],field=>[$filter_field]}); 
+        $result = $db->get_counts({name=>[$name],field=>[$filter_field]}); 
     }
     return if !$result; # count is 0
     #paginator
@@ -73,19 +73,19 @@ sub get_objects{
     $limit .= " OFFSET $offset " if $offset ; 
     # find real records if exist
     if( $filter ) {
-        $result = Db::get_objects({
+        $result = $db->get_objects({
             name      => [$name], 
             add_where => $filter_where,
             limit     => $limit});
     } else {
-        $result = Db::get_objects({
+        $result = $db->get_objects({
             name  => [$name],
             field => [$filter_field],
             limit => $limit}); 
     }
     # final
     map { $result->{$_} = 
-        Db::get_objects({
+        $db->get_objects({
             name  => [$name],
             field => $result_fields})->{$_} }
         keys %{$result};
