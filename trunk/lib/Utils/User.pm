@@ -38,7 +38,8 @@ sub is_editor{
     # is editor
     my $email = current($self);
     if( $email ){
-        my $user = Db::get_user($email);
+        my $db = Db->new();
+        my $user = $db->get_user($email);
         return(1) if $user 
              && exists($user->{extended_right})
              && $user->{extended_right} =~ /editor/i ;

@@ -30,8 +30,9 @@ sub add_part{
     # 1. Test for payload - parents account!
     my $parent_id = $self->param('payload');
     my ($parents, $object_name4form);
+    my $db = Db->new();
     if ( $parent_id ){
-        $parents = Db::get_objects({id=>[$parent_id]});
+        $parents = $db->get_objects({id=>[$parent_id]});
         if( !$parents ){
             warn "Accounts:add_part: no parents! Redirecting...";
             $self->redirect_to('/accounts/list');
@@ -50,8 +51,8 @@ sub add_part{
             my $object_name = $data->{object_name};
             # set new id
             $data->{id} = "$object_name $data->{id}";
-            if( $id = Db::insert($data) ){
-                warn Db::set_link(
+            if( $id = $db->insert($data) ){
+                warn $db->set_link(
                     $parents->{$parent_id}{object_name},
                     $parent_id,
                     $object_name,
@@ -66,7 +67,7 @@ sub add_part{
             $self->stash( error => 1 );
         }
     } 
-    $data = Db::get_objects({id=>[$id]});
+    $data = $db->get_objects({id=>[$id]});
     $self->stash( types => 
            Utils::Accounts::get_types4select($self)
         ) if $object_name4form eq Utils::Accounts::get_account_name();
@@ -125,7 +126,8 @@ sub validate4add_part{
         warn "Accounts:validate4add_part: id is not numeric!";
     } else {
         my $parent_id = "$data->{object_name} $data->{id}";
-        if( Db::get_objects({id => [$parent_id]}) ){
+        my $db = Db->new();
+        if( $db->get_objects({id => [$parent_id]}) ){
             $data->{error} = 1 ;
             warn "Accounts:validate4add_part: such object already exists!";
         }
@@ -157,11 +159,12 @@ sub fix_subconto{
 
     my $id = $self->param('payload');
     my $pnew = $self->param('pnew');
-    my $parent_new = Db::get_objects({id=>[$pnew]});
+    my $db = Db->new();
+    my $parent_new = $db->get_objects({id=>[$pnew]});
     my $pold = $self->param('pold');
     if( $pnew && $id && $pnew && $pold ) { 
-        Db::del_link($id,$pold);
-        Db::set_link('account',$pnew,'account subconto',$id);
+        $db->del_link($id,$pold);
+        $db->set_link('account',$pnew,'account subconto',$id);
     } else {
         warn "Accounts:fix_subconto:error parameters are not properly defined!";
     }
@@ -177,9 +180,10 @@ sub fix_account{
     my $sid   = $self->param('sid');
     my $aid   = $self->param('aid');
     if( $idold && $idnew && $sid && $aid ) { 
-	    if ( Db::change_id($idold,$idnew) && Db::change_name('account',$idnew) ){
-            Db::del_link($idold,$aid);
-            Db::set_link('account',$idnew,'account section',$sid);
+        my $db = Db->new();
+	    if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
+            $db->del_link($idold,$aid);
+            $db->set_link('account',$idnew,'account section',$sid);
         }
     } else {
         warn "Accounts:fix_account:error parameters are not properly defined!";
@@ -199,8 +203,9 @@ sub delete_subconto{
         return;
     }
 
-    Db::del_link($id,$parent);
-    Db::del($id);
+    my $db = Db->new();
+    $db->del_link($id,$parent);
+    $db->del($id);
     $self->redirect_to("/accounts/list");
 };
 
@@ -216,11 +221,12 @@ sub edit{
     }
 
     my $method = $self->req->method;
+    my $db = Db->new();
     if ( $method =~ /POST/ ){
         my $data = validate( $self, ['rus'], ['eng','uzb','type'] );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
-            if( Db::update($data) ){
+            if( $db->update($data) ){
                 $self->stash(success => 1);
             } else {
                 $self->stash(error => 1);
@@ -230,7 +236,7 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    my $data = Db::get_objects({id=>[$id]});
+    my $data = $db->get_objects({id=>[$id]});
     if ( !$data ){
         $self->redirect_to("/accounts/list#$id");
         warn "Accounts:edit:error id not found!";
@@ -238,8 +244,8 @@ sub edit{
     }
     my $parent_name = Utils::Accounts::get_parent_name($data->{$id}{object_name});
     my $child_name  = Utils::Accounts::get_child_name($data->{$id}{object_name});
-    Db::attach_links($data,'PARENTS',$parent_name,['rus','eng','uzb']) if $parent_name;
-    Db::attach_links($data,'CHILDS' ,$child_name,['rus','eng','uzb']) if $child_name;
+    $db->attach_links($data,'PARENTS',$parent_name,['rus','eng','uzb']) if $parent_name;
+    $db->attach_links($data,'CHILDS' ,$child_name,['rus','eng','uzb']) if $child_name;
     if( $data ){
         generate_name($self,$data);
         for my $key (keys %{$data->{$id}} ){

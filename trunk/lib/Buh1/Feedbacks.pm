@@ -85,7 +85,8 @@ sub restore{
 
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "$OBJECT_NAMES:restore:error $OBJECT_NAME id not defined!"; 
     }
@@ -123,7 +124,8 @@ sub del{
 
     my $id = $self->param('payload');
     if( $id ){
-        Db::change_name($DELETED_OBJECT_NAME, $id);
+        my $db = Db->new();
+        $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "$OBJECT_NAMES:delete:error $OBJECT_NAME id not defined!"; 
     }
@@ -146,12 +148,13 @@ sub edit{
         warn "$OBJECT_NAMES:edit:error $OBJECT_NAME id not defined!";
         return; 
     }
+    my $db = Db->new();
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
             delete $data->{creator}; # creator already exists!
             $data->{id} = $id;
-            if( Db::update($data) ){
+            if( $db->update($data) ){
                 $self->stash(success => 1);
             } else {
                 $self->stash(error => 1);
@@ -161,7 +164,7 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = Db::get_objects({id=>[$id]});
+    $data = $db->get_objects({id=>[$id]});
     if( $data ){
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
@@ -181,7 +184,8 @@ sub add{
         my $data = validate( $self );
         # add
         if( !exists($data->{error}) ){
-            if( Db::insert($data) ){
+            my $db = Db->new();
+            if( $db->insert($data) ){
                 $self->stash(success => 1);
             } else {
                 warn "$OBJECT_NAMES:add:error: could not add new one!";
