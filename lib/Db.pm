@@ -94,14 +94,14 @@ sub change_id{
     if( $idold && $idnew ){
         my $found = $self->get_objects({id => [$idnew]});
         if( $found && $self->object_valid($found->{$idnew}) ){
-            warn "Db::change_id:error Object with id '$idnew' already exists!";
+            warn "change_id:error Object with id '$idnew' already exists!";
             return;
         }
 
         my $dbh = $self->get_db_connection() || return;
         return $dbh->do("UPDATE objects SET id = '$idnew' WHERE id = '$idold' ;");
     }
-    warn "Db::change_id:error NEW or OLD id not defined!";
+    warn "change_id:error NEW or OLD id not defined!";
     return;
 };
 
@@ -350,7 +350,7 @@ sub get_user{
     }
     # make map
     my $user_id = $ids[0];
-    $users = Db::get_objects({
+    $users = $self->get_objects({
         name  =>['user'],
         field =>['email','password','extended_right'], 
         add_where => " name='user' AND id='$user_id' "

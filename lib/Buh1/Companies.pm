@@ -42,13 +42,19 @@ sub filter{
 
 sub list{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
     select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
     select_objects($self,$DELETED_OBJECT_NAME,'/companies/deleted');
 };
 
@@ -82,7 +88,10 @@ sub select_objects{
 
 sub restore{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
     my $id = $self->param('payload');
     if( $id ){
         my $db = Db->new();
@@ -111,7 +120,10 @@ sub validate{
 
 sub del{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
     my $id = $self->param('payload');
     if( $id ){
         my $db = Db->new();
@@ -124,7 +136,10 @@ sub del{
 
 sub remove_user{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
@@ -136,7 +151,10 @@ sub remove_user{
 
 sub add_user{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
@@ -147,7 +165,10 @@ sub add_user{
 
 sub change_access{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
 
     my $id          = $self->param('payload');
     my $user_id     = $self->param('user_id');
@@ -159,7 +180,10 @@ sub change_access{
 
 sub edit{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
 
     $self->stash(edit_mode => 1);
     my $method = $self->req->method;
@@ -213,7 +237,10 @@ sub edit{
 
 sub add{
     my $self = shift;
-    return if !$self->is_admin;
+    if( !$self->is_admin ){
+        $self->redirect_to("/user/login");
+        return;
+    }
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){

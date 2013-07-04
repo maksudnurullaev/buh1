@@ -72,7 +72,7 @@ sub validate{
 
 sub delete_bt{ #delete business transaction
     my $self = shift;
-    if ( !$self->is_admin ){
+    if ( !$self->is_editor ){
         $self->redirect_to('/user/login');
         return;
     }
@@ -134,7 +134,7 @@ sub add{
 sub edit{
     my $self = shift;
     if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
+       $self->redirect_to('/user/login');
         return;
     }
 
