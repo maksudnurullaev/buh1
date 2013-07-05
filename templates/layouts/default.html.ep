@@ -62,7 +62,10 @@
               % }              
               % if( $user && check_for('company name') ) {
                <li><%= ml 'Desktop' %>
+                % if ( is_user && !is_editor ) {
                 <ul><li><a href="/accounts/list"><%= ml 'Chart of Accounts' %></a></li></ul>
+                <ul><li><a href="/operations/list"><%= ml 'Business transactions' %></a></li></ul>
+                % }
                </li>
               % }              
             </ul>
