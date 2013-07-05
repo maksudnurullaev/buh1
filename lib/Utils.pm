@@ -17,7 +17,6 @@ use Time::Piece;
 use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
-use DbClient;
 
 sub trim{
     my $string = $_[0];
@@ -142,14 +141,6 @@ sub get_paginator{
     }
     return([$page,$pages,$pagesize]);
 };
-
-sub get_db_client{
-    my $self = shift;
-    if ( $self && $self->session('company id') ){
-        return(new DbClient($self->session('company id')) );
-    }
-    return(undef);
-};    
 
 # END OF PACKAGE
 };

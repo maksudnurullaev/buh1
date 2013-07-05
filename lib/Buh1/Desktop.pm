@@ -14,7 +14,7 @@ use warnings;
 use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
-use DbClient;
+use Utils::Db;
 
 sub select_company{
     my $self = shift;
@@ -39,8 +39,8 @@ sub select_company{
     $self->stash( user => $user );
     $self->stash( companies => $companies ) if scalar keys %{$companies};
 
-    my $db_client = Utils::get_db_client($self);
-    return if !$db_client;
+    my $db_client = Utils::Db::get_db_client($self);
+    return if !$db_client || !$db_client->is_valid ;
     warn Dumper $db_client ;
     $self->stash( debug_info => { 
         path => $db_client->get_db_path,
