@@ -12,18 +12,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Accounts;
 use Data::Dumper;
 
-sub access{
-    my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return(undef);
-    }
-    return(1);
-};
-
 sub add_part{
     my $self = shift;
-    return if !access($self);
 
     my $method = $self->req->method;
     my ($data,$id);
@@ -85,7 +75,6 @@ sub add_part{
 
 sub list{
     my $self = shift;
-    return if !access($self);
 
     my $data = Utils::Accounts::get_all_parts();
     $self->stash( parts => $data );
@@ -155,7 +144,6 @@ sub validate{
 
 sub fix_subconto{
     my $self = shift;
-    return if !access($self);
 
     my $id = $self->param('payload');
     my $pnew = $self->param('pnew');
@@ -173,7 +161,6 @@ sub fix_subconto{
 
 sub fix_account{
     my $self = shift;
-    return if !access($self);
 
     my $idold = $self->param('payload');
     my $idnew = $self->param('idnew');
@@ -193,7 +180,6 @@ sub fix_account{
 
 sub delete_subconto{
     my $self = shift;
-    return if !access($self); 
     
     my $id = $self->param('payload');
     my $parent = $self->param('parent');
@@ -211,7 +197,6 @@ sub delete_subconto{
 
 sub edit{
     my $self = shift;
-    return if !access($self);
 
     my $id = $self->param('payload');
     if( !$id ) { 

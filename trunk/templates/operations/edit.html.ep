@@ -6,8 +6,10 @@
 % }
 <div class="toolbar">
  %= link_to ml('Back') => "/operations/account/$payload"
- | 
- %= link_to ml('Add') => "/operations/add/$payload";
+ % if( is_editor ){
+  | 
+  %= link_to ml('Add') => "/operations/add/$payload";
+ % }
 </div>
 % if( stash 'success' ) { 
  <div class='alert success'>Ok</div>
@@ -25,18 +27,20 @@
    <td class='tar'><u>#</u></td>
    <td><%= text_field number => (stash 'number') , class => stash ('number_class') %></td>
   </tr>
-  % my @fields = ('rus','eng','uzb','debet','credit');
-  % for my $field (@fields) {
+ % my @fields = ('rus','eng','uzb','debet','credit');
+ % for my $field (@fields) {
   <tr>
    <td class='tar'><u><%= uc $field %></u></td>
    <td><%= text_area $field => (stash $field) , class => stash ($field . '_class') %></td>
   </tr>
-  % }
+ % }
+ % if( is_editor ){  
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save')
    </td>
   </tr>
+ % }
  % if ( is_admin ) {
   <tr><td>&nbsp;</td>
    <td>

@@ -27,11 +27,13 @@
     <td><%= select_field type => (stash 'types') %></td>
   </tr>
 % }
+% if( is_editor ) {
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save')
    </td>
   </tr>
+% }
  </table>
  % end
 </div>
@@ -50,7 +52,9 @@
  %# child accounts
  % my $CHILDS = stash 'CHILDS';
  <ul>
-  <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+  % if( is_editor ){
+   <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+  % }
   % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {
    % for my $cid (sort keys %{$CHILDS}) {
     <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>

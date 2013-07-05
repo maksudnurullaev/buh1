@@ -16,11 +16,6 @@ my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-
     my $data = Utils::Accounts::get_all_parts();
     $self->stash( parts => $data );
 
@@ -72,10 +67,6 @@ sub validate{
 
 sub delete_bt{ #delete business transaction
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
     my $account_id = $self->param('payload');
     my $bt_id      = $self->param('bt');
     if( !$account_id || !$bt_id ){
@@ -91,11 +82,6 @@ sub delete_bt{ #delete business transaction
 
 sub add{
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-
     my $account_id = $self->param("payload");
     if( !$account_id ){
         $self->redirect_to('/operations/list');
@@ -133,11 +119,6 @@ sub add{
 
 sub edit{
     my $self = shift;
-    if ( !$self->is_editor ){
-       $self->redirect_to('/user/login');
-        return;
-    }
-
     my ($parent_account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
     if( !$parent_account_id || !$bt_id ){
         $self->redirect_to('/operations/list');
@@ -200,11 +181,6 @@ sub ml{
 
 sub account{
     my $self = shift;
-    if ( !$self->is_editor ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-
     my $account_id = $self->param("payload");
     if( !$account_id ){
         $self->redirect_to('/operations/list');
