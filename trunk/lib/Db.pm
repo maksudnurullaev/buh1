@@ -30,18 +30,30 @@ sub get_production_mode{ $_production_mode; };
 
 sub new {
     my $class = shift;
-    my $self = { sqlite_file => $SQLITE_FILE };
+    my $self = { file => $SQLITE_FILE };
     return(bless $self, $class);
+};
+
+sub get_db_path{
+    my $self = shift;
+    return($SQLITE_FILE);
 };
 
 sub warn_if{
     warn shift if get_production_mode ;
 };
 
+sub is_valid{
+    my $self = shift;
+    return( $self->initialize ) if ! -e $self->get_db_path();
+    return (1);
+};
+
 sub get_db_connection{
     my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbh = DBI->connect("dbi:SQLite:dbname=$self->{sqlite_file}",'','', {sqlite_unicode => 1});
+        my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->get_db_path();
+        my $dbh = DBI->connect($dbi_connection_string,'','', {sqlite_unicode => 1});
         if(!defined($dbh)){
             warn_if $DBI::errstr;
             return(undef);
@@ -58,7 +70,7 @@ sub get_db_connection{
 
 sub initialize{
     my $self = shift;
-    return(1) if( -e $self->{sqlite_file} );
+    return(1) if( -e $self->get_db_path() );
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $connection = $self->get_db_connection() || die "Could not connect to SQLite database";
         if(defined($connection)){

@@ -12,6 +12,7 @@ BEGIN {
 
 my $db_client = new DbClient('test');
 ok($db_client->is_valid(),        'Stage #1 - Client database porperly initialized!!');
+ok( -e $db_client->get_db_path(), 'Stage #2 - Client database file exist!');
 
 ### -= FINISH =-
 END{
