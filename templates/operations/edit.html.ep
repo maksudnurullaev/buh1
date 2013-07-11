@@ -57,5 +57,6 @@
 </div>
 % if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
  <hr />   
+ <h3><%= ml 'Business operations' %></h3>
  %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
 % }
