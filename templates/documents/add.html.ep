@@ -1,0 +1,16 @@
+% layout 'default';
+<h2><%= ml 'Documents' %> | <%= ml 'Add' %></h2>
+<div class="toolbar">
+ <a href='/documents/list'><%= ml 'Back' %></a>
+</div>
+% if( defined stash( 'error' ) ) { 
+<div class='alert error'>
+%= ml 'Error!' 
+</div>
+% } 
+% if( stash 'success' ) { 
+<div class='alert success'><%= ml 'Message sent' %>!</div>
+%= link_to ml('Again') => '/documents/add';
+% } else { 
+  %= include 'documents/form';
+% }

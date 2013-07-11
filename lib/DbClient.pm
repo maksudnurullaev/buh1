@@ -35,6 +35,7 @@ __END__
 
 =head1 AUTHOR
 
-    M.Nurullaev <maksud.nurullaev@gmail.com>
+ M.Nurullaev <maksud.nurullaev@gmail.com>
 
+=cut
 

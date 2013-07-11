@@ -1,0 +1,26 @@
+% layout 'default';
+<h2><%= ml 'Documents' %></h2>
+<div class="toolbar">
+ <a href='/documents/add'><%= ml 'Add' %></a>
+</div>
+%= include 'filter'   , filter4    => 'documents'
+%= include 'paginator', paginator4 => 'documents'
+% my  $documents = stash 'documents';
+% if ( scalar(keys %{$documents}) ) {
+ <ul>
+  % for my $id( reverse sort keys %{$documents} ) {
+   <li><%= $documents->{$id}{message} %><br />
+    <%= link_to "/documents/edit/$id" => begin%><%= ml 'Edit' %><% end %>
+    % if($documents->{$id}{number}) {
+     <ul><li><%= ml 'User' %>:
+      %= $documents->{$id}{number}
+     </li></ul>
+    % }
+   </li>
+  % }
+ </ul>
+% } else {
+ %= ml 'No data!'
+% }
+%= include 'paginator', paginator4 => 'documents'
+%= include 'filter'   , filter4    => 'documents'

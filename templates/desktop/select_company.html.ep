@@ -2,12 +2,17 @@
 <h1><%= ml 'Companies' %></h1>
 % my $user      = stash 'user';
 % my $companies = stash 'companies';
+% my $company = check_for("company name");
 % if ( $companies ){
  <div>
   <ul>
   % for my $cid (keys %{$companies}) {
    %if ( $companies->{$cid}{access} ) { 
-    <li><%= link_to $companies->{$cid}{name} => "/desktop/select_company/$cid" %></li>
+    % if ($company && $company eq $companies->{$cid}{name} ){
+     <li><%= $companies->{$cid}{name} %></li>
+    % } else {    
+     <li><%= link_to $companies->{$cid}{name} => "/desktop/select_company/$cid" %></li>
+    % } 
     <ul><li><u><%= ml 'Access' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
    % } else {
     <li><%= $companies->{$cid}{name} %></li>  
@@ -19,4 +24,3 @@
 % } else {
  <h3><%= ml 'No data!' %></h3>
 % }
-%= dumper stash 'debug_info' if stash 'debug_info';
