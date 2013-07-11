@@ -65,3 +65,8 @@
 %if ( $parents ) {
 </ul>
 % }
+% if( my $bts = stash 'bts' ){
+ <hr />
+ <h3><%= ml 'Business operations' %></h3>
+ %= include 'operations/bts', bts => $bts;
+% }
