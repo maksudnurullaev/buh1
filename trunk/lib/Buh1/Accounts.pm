@@ -231,6 +231,12 @@ sub edit{
     my $child_name  = Utils::Accounts::get_child_name($data->{$id}{object_name});
     $db->attach_links($data,'PARENTS',$parent_name,['rus','eng','uzb']) if $parent_name;
     $db->attach_links($data,'CHILDS' ,$child_name,['rus','eng','uzb']) if $child_name;
+    if( $data->{$id}{object_name} eq 'account' ){ # attach bts
+        $db->attach_links($data,
+            'bts',
+            'business transaction',
+            ['rus','eng','uzb','number','debet','credit']);
+    }
     if( $data ){
         generate_name($self,$data);
         for my $key (keys %{$data->{$id}} ){

@@ -190,7 +190,10 @@ sub account{
     my $db = Db->new();
     my $account = $db->get_objects({id => [$account_id]});
     $self->stash( account => $account );
-    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->attach_links($account,
+        'bts',
+        $OBJECT_NAME,
+        ['rus','eng','uzb','number','debet','credit']);
     Utils::Accounts::normalize_local(
         $account,
         Utils::Languages::get(),

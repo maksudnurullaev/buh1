@@ -55,7 +55,7 @@
 %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $credits
 % end
 </div>
-<hr />
 % if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
-%= include 'operations/bts', bts => $parent_account->{$payload}{bts};
+ <hr />   
+ %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
 % }
