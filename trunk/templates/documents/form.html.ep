@@ -1,0 +1,60 @@
+<div>
+ %= form_for '/documents/add' => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr><td class='tar'><%= ml 'Money order' %> №</td>
+   <td><%= text_field 'number', class => stash 'number_class' %> </td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Date(dd.mm.yyy)' %></td>
+   <td><%= text_field 'date', class => stash 'date_class' %> </td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Permitter' %></td>
+   <td><%= text_area Permitter => (stash 'Permitter'), class => (stash 'Permitter_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Permitter debet' %></td>
+   <td><%= text_field 'Permitter debet', class => stash 'Permitter debet_class' %> </td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Permitter INN' %></td>
+   <td><%= text_field 'Permitter INN', class => stash 'Permitter INN_class' %> </td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Permitter bank name' %></td>
+   <td><%= text_area 'Permitter bank name' => (stash 'Permitter bank name'), class => (stash 'Permitter bank name_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Permitter bank code' %></td>
+   <td><%= text_field 'Permitter bank code' => (stash 'Permitter bank code'), class => (stash 'Permitter bank code_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Currency amount' %></td>
+   <td><%= text_field 'Currency amount' => (stash 'Currency amount'), class => (stash 'Currency amount_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Beneficiary' %></td>
+   <td><%= text_area Beneficiary => (stash 'Beneficiary'), class => (stash 'Beneficiary_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Beneficiary credit' %></td>
+   <td><%= text_field 'Beneficiary credit', class => stash 'Beneficiary credit_class' %> </td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Beneficiary bank name' %></td>
+   <td><%= text_area 'Beneficiary bank name' => (stash 'Beneficiary bank name'), class => (stash 'Beneficiary bank name_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Beneficiary bank code' %></td>
+   <td><%= text_field 'Beneficiary bank code' => (stash 'Beneficiary bank code'), class => (stash 'Beneficiary bank code_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Currency amount in words' %></td>
+   <td><%= text_area 'Currency amount in words' => (stash 'Currency amount in words'), class => (stash 'Currency amount in words_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Details' %></td>
+   <td><%= text_area 'Details' => (stash 'Details'), class => (stash 'Details_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Executive' %></td>
+   <td><%= text_field 'Executive' => (stash 'Executive'), class => (stash 'Executive_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'Accounting manager' %></td>
+   <td><%= text_field 'Accounting manager' => (stash 'Accounting manager'), class => (stash 'Accounting manager_class') %></td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button 
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+

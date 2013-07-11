@@ -4,7 +4,7 @@ package Utils::Db; {
 
 =head1 NAME
 
-    Different utilites 
+    Database utilites 
 
 =cut
 
@@ -15,7 +15,7 @@ use utf8;
 use Data::Dumper;
 use DbClient;
 
-sub get_db_client{
+sub get_client_db{
     my $self = shift;
     if ( $self && $self->session('company id') ){
         return(new DbClient($self->session('company id')) );
@@ -32,6 +32,6 @@ __END__
 
 =head1 AUTHOR
 
-    M.Nurullaev <maksud.nurullaev@gmail.com>
+ M.Nurullaev <maksud.nurullaev@gmail.com>
 
 =cut

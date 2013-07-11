@@ -1,5 +1,5 @@
 <div>
- % my $path = $path || "/$filter4/list" ;
+ % my $path = stash('path') || "/$filter4/list" ;
  %= form_for "/$filter4/filter?path=$path" => ( method => 'POST') => begin
   %= text_field filter => (stash 'filter')
   %= submit_button ml 'Filter'
