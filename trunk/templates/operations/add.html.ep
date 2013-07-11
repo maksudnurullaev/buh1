@@ -10,6 +10,7 @@
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
+% if( is_editor ){
 <div class="form">
  %= form_for "/operations/add/$payload" => (method => 'POST') => begin
  %= hidden_field object_name => 'business transaction'
@@ -35,6 +36,7 @@
  % end
 </div>
 <hr />
+% }
 % if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
 %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
 % }
