@@ -66,8 +66,9 @@
               % }
               % if( $company ) {
                <li><%= ml 'Desktop' %>
-                <ul><li><a href="/g_ledger/list"><%= ml 'General ledger' %></a></li></ul>
+                <!-- ul><li><a href="/g_ledger/list"><%= ml 'General ledger' %></a></li></ul-->
                 <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
+                <!--ul><li><a href="/g_ledger/list"><%= ml 'Reports' %></a></li></ul-->
                </li>
               % }              
             </ul>
