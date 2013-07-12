@@ -4,13 +4,13 @@
 % if( $account ) {
 %= include 'operations/paccount', account => $account;
 % }
+</div>
 <div class="toolbar">
  <a href="/operations/list"><%= ml 'Back' %></a>
 % if ( is_editor ) {
  | 
  %= link_to ml('Add') => "/operations/add/$payload";
 % }
-</div>
 % $account = stash 'account';
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
 %# business transactions (bts)

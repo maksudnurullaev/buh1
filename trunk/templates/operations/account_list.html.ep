@@ -1,15 +1,16 @@
 %# account list
- % my $title = $parameters->{title};
- % my $bts   = $parameters->{data};
- <ul>
-  <li><strong><%= $title %></strong></li>
-  <ul>
-  % my $bt = param 'bt';
-  % for my $id ( sort keys %{$bts} ){
-   % my $name   = $bts->{$id}{name};   
-   <li>
-    <%= link_to $name => "/accounts/edit/$id"  %>
-   </li>
-  % }
- </ul>
-</ul> 
+% my $title = $parameters->{title};
+% my $bts   = $parameters->{data};
+% my $form  = exists($parameters->{form}) && $parameters->{form};
+<h4><%= $title %></h4>
+<fieldset>
+% my $bt = param 'bt';
+% for my $id ( sort keys %{$bts} ){
+ % my $name   = $bts->{$id}{name};   
+ % my $lid = "$title$id";
+ %= radio_button $title => $id, style => 'width:auto;', id=>$lid if $form;
+ <label for='<%= $lid %>'><%= $name %></label>
+ <sup><%= link_to ml('Chart of Accounts') => "/accounts/edit/$id" %></sup>
+ <br />
+% }
+</fieldset>

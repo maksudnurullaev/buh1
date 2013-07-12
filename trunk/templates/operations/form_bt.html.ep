@@ -1,0 +1,36 @@
+<h2><%= ml 'Business operation' %></h2>
+<div class="form">
+ % my $bt = param 'bt';
+ %= form_for "/operations/edit/$payload?bt=$bt" => (method => 'POST') => begin
+ %= hidden_field object_name => 'business transaction'
+ %= hidden_field account     => $payload
+ <table class='colortable'>
+  <tr>
+   <td class='tar'><u>#</u></td>
+   <td><%= text_field number => (stash 'number') , class => stash ('number_class') %></td>
+  </tr>
+ % my @fields = ('rus','eng','uzb','debet','credit');
+ % for my $field (@fields) {
+  <tr>
+   <td class='tar'><u><%= uc $field %></u></td>
+   <td><%= text_area $field => (stash $field) , class => stash ($field . '_class') %></td>
+  </tr>
+ % }
+ % if( is_editor ){  
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save')
+   </td>
+  </tr>
+ % }
+ % if ( is_admin ) {
+  <tr><td>&nbsp;</td>
+   <td>
+    <sup><%= link_to ml("Delete") => "/operations/delete_bt/$payload?bt=$bt" %></sup>
+   </td>
+  </tr>
+ % }
+ </table>
+% end
+</div>
+
