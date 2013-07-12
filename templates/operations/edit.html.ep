@@ -1,17 +1,15 @@
 % layout 'default';
 %= include 'success_error'
 <h2><%= ml 'Business operation' %></h2>
+<ul><li><%= stash 'name' %></li></ul>
 % if( is_editor ) {
  %= include 'operations/form_bt';
-% } else {
- %= stash 'name'
 % }
 % my $debets = stash 'debets';
 % my $credits = stash 'credits';
 % my $company = check_for("company name");
 %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets, form => $company } if $debets 
 %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits, form => $company } if $credits
-<hr />
 <h2><%= ml 'Business operations' %></h2>
 % my $parent_account = stash 'parent_account';
 % if( $parent_account ){
