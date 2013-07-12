@@ -1,4 +1,3 @@
-<h2><%= ml 'Business operation' %></h2>
 <div class="form">
  % my $bt = param 'bt';
  %= form_for "/operations/edit/$payload?bt=$bt" => (method => 'POST') => begin

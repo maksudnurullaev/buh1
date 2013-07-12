@@ -1,4 +1,3 @@
-%# bts = business transactions
  <ul>
   % my $bt = param 'bt';
   % my $number_previous = '';
@@ -14,7 +13,7 @@
     % }
     % $number_previous = $number;
     % if ( $bt && $bt eq $id ){
-     %= $name 
+     <strong><%= $name %></strong>
     % } else {
      <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
     % }

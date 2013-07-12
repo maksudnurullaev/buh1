@@ -1,25 +1,22 @@
 % layout 'default';
-<h2><%= ml 'Business transactions' %></h2>
-% my $parent_account = stash 'parent_account';
-% if( $parent_account ){
-%= include 'operations/paccount', account => $parent_account;
+%= include 'success_error'
+<h2><%= ml 'Business operation' %></h2>
+% if( is_editor ) {
+ %= include 'operations/form_bt';
+% } else {
+ %= stash 'name'
 % }
-<div class="toolbar">
- %= link_to ml('Back') => "/operations/account/$payload"
- % if( is_editor ){
-  | 
-  %= link_to ml('Add') => "/operations/add/$payload";
- % }
-</div>
- %= include 'success_error'
-%= include 'operations/form_bt';
 % my $debets = stash 'debets';
 % my $credits = stash 'credits';
 % my $company = check_for("company name");
 %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets, form => $company } if $debets 
 %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits, form => $company } if $credits
+<hr />
+<h2><%= ml 'Business operations' %></h2>
+% my $parent_account = stash 'parent_account';
+% if( $parent_account ){
+%= include 'operations/paccount', account => $parent_account;
+% }
 % if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
- <hr />   
- <h3><%= ml 'Business operations' %></h3>
  %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
 % }
