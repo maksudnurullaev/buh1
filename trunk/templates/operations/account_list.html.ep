@@ -3,7 +3,6 @@
 % my $bts   = $parameters->{data};
 % my $form  = exists($parameters->{form}) && $parameters->{form};
 <h4><%= $title %></h4>
-<fieldset>
 % my $bt = param 'bt';
 % for my $id ( sort keys %{$bts} ){
  % my $name   = $bts->{$id}{name};   
@@ -13,4 +12,3 @@
  <sup><%= link_to ml('Chart of Accounts') => "/accounts/edit/$id" %></sup>
  <br />
 % }
-</fieldset>

@@ -3,40 +3,10 @@
 <div class="toolbar">
  %= link_to ml('Back') => "/accounts/list#$payload"
 </div>
-% if( stash 'success' ) { 
-<div class='alert success'> Ok  </div>
-% } 
-% if( stash 'error' ) { 
-<div class='alert error'><%= ml 'Error!' %></div>
-% } 
-<div class="form">
- % my $path = "/accounts/edit/$payload";
- %= form_for $path => (method => 'POST') => begin
- %= hidden_field object_name => stash('object_name')
- <table class='colortable'>
-  % my @languages = ('rus','eng','uzb');
-  % for my $language (@languages) {
-  <tr>
-   <td class='tar'><u><%= uc $language %></u></td>
-   <td><%= text_area $language => (stash $language) , class => stash ($language . '_class') %></td>
-  </tr>
-  % }
-% if ( stash 'types') {
-  <tr>
-   <td class='tar'><u><%= ml 'Type' %></u></td>
-    <td><%= select_field type => (stash 'types') %></td>
-  </tr>
+% if( is_editor ){
+ %= include 'success_error';
+ %= include 'accounts/form';
 % }
-% if( is_editor ) {
-  <tr><td>&nbsp;</td>
-   <td>
-    %= submit_button ml('Save')
-   </td>
-  </tr>
-% }
- </table>
- % end
-</div>
 %# parent account
 % my $parents = stash 'PARENTS';
 % if ( $parents ) {
@@ -66,7 +36,8 @@
 </ul>
 % }
 % if( my $bts = stash 'bts' ){
- <hr />
+<fieldset>
  <h3><%= ml 'Business operations' %></h3>
  %= include 'operations/bts', bts => $bts;
+</fieldset> 
 % }
