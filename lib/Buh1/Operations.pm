@@ -119,14 +119,14 @@ sub add{
 
 sub edit{
     my $self = shift;
-    my ($parent_account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
-    if( !$parent_account_id || !$bt_id ){
+    my ($account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
+    if( !$account_id || !$bt_id ){
         $self->redirect_to('/operations/list');
         return;
     }
     my $db = Db->new();
     my $bt = $db->get_objects({id => [$bt_id]});
-    my $parent_account = $db->get_objects({id => [$parent_account_id]});
+    my $parent_account = $db->get_objects({id => [$account_id]});
     if ( !$bt || !$parent_account ){
         $self->redirect_to('/operations/list');
         warn "Operations:edit:error some objects are not exists!";
@@ -150,7 +150,7 @@ sub edit{
     } 
 
     $parent_account = $db->get_objects({
-        id    => [$parent_account_id], 
+        id    => [$account_id], 
         field => Utils::Languages::get()});
     $db->attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     ml($self, $parent_account);
