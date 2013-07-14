@@ -14,12 +14,12 @@
  % my $bt      = param 'bt';
  % my $form    = $skd && $skc && $company && $bt;
  % if( $form ){
-  %= form_for "/documents/new/$payload?bt=$bt" => (method => 'POST') => begin
+  %= form_for "/documents/add/$payload?bt=$bt" => (method => 'POST') => begin
   %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets, form => $company } if $skd ;
   %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits, form => $company } if $skc ;
   <div class='note'>
    %= include 'documents/types'
-   %= submit_button ml('Create') 
+   %= submit_button ml('Create') if $skd && $skc; 
   </div>
   % end
  % } else {
