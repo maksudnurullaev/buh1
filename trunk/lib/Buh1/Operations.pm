@@ -165,7 +165,6 @@ sub edit{
         Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{debet}),
         Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{credit})
         );
-    warn Dumper $debets;
     ml($self,$debets);
     $self->stash( debets  => $debets );
     ml($self,$credits);
