@@ -1,0 +1,10 @@
+% # pp = Платежное поручение, mo = Мемориальный ордер и т.д.
+% my $types     = ['pp','mo'];
+% my $doc_types = [];
+% my $type  = stash 'type';
+% for my $doc_type (@{$types}){
+%  if ( $type && $type eq $doc_type ){ 
+%    push @{$doc_types}, [ml("Document $doc_type") => $doc_type, selected => 'true'] ;
+%  } else { push @{$doc_types}, [ml("Document $doc_type") => $doc_type] ; }
+% }
+%= select_field type => $doc_types;
