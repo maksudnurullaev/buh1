@@ -28,10 +28,10 @@
  % }
 </fieldset>
 <h2><%= ml 'Business operations' %></h2>
-% my $parent_account = stash 'parent_account';
-% if( $parent_account ){
-%= include 'operations/paccount', account => $parent_account;
+% my $account = stash 'paccount';
+% if( $account ){
+%= include 'operations/paccount', account => $account;
 % }
-% if ( exists($parent_account->{$payload}) && exists($parent_account->{$payload}{bts}) ){ 
- %= include 'operations/bts', bts => $parent_account->{$payload}{bts};
+% if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
+ %= include 'operations/bts', bts => $account->{$payload}{bts};
 % }
