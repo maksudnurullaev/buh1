@@ -126,8 +126,8 @@ sub edit{
     }
     my $db = Db->new();
     my $bt = $db->get_objects({id => [$bt_id]});
-    my $parent_account = $db->get_objects({id => [$account_id]});
-    if ( !$bt || !$parent_account ){
+    my $account = $db->get_objects({id => [$account_id]});
+    if ( !$bt || !$account ){
         $self->redirect_to('/operations/list');
         warn "Operations:edit:error some objects are not exists!";
         return;
@@ -149,12 +149,12 @@ sub edit{
         }
     } 
 
-    $parent_account = $db->get_objects({
+    $account = $db->get_objects({
         id    => [$account_id], 
         field => Utils::Languages::get()});
-    $db->attach_links($parent_account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
-    ml($self, $parent_account);
-    $self->stash( parent_account => $parent_account );
+    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    ml($self, $account);
+    $self->stash( paccount => $account );
 
     $bt = $db->get_objects({id => [$bt_id]});
     ml($self,$bt);
