@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml 'Chart of Accounts' %> | <%= ml 'Edit' %></h2>
+<h2><%= ml 'Chart of Accounts' %><%= (' | ' . ml('Edit')) if is_editor %></h2>
 <div class="toolbar">
  %= link_to ml('Back') => "/accounts/list#$payload"
 </div>
