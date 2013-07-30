@@ -1,4 +1,9 @@
 % layout 'default';
+<h2><%= ml 'Business operations' %></h2>
+% my $account = stash 'paccount';
+% if( $account ){
+%= include 'operations/paccount', account => $account;
+% }
 %= include 'success_error'
 <h2><%= ml 'Business operation' %></h2>
 <fieldset>
@@ -27,11 +32,6 @@
   %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $skc ;
  % }
 </fieldset>
-<h2><%= ml 'Business operations' %></h2>
-% my $account = stash 'paccount';
-% if( $account ){
-%= include 'operations/paccount', account => $account;
-% }
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
  %= include 'operations/bts', bts => $account->{$payload}{bts};
 % }

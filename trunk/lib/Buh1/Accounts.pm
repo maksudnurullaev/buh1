@@ -63,12 +63,12 @@ sub add_part{
         ) if $object_name4form eq Utils::Accounts::get_account_name();
     if( $data ){
         $data->{PARENTS} = $parents->{$parent_id} if $parents;
-        generate_name($self,$data);
+        Utils::Languages::generate_name($self,$data);
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
     } else {
-        generate_name($self,$parents);
+        Utils::Languages::generate_name($self,$parents);
         $self->stash(PARENTS => $parents) if $parents;
     }
 };
@@ -92,19 +92,8 @@ sub list{
             }
         }
     }
-    Utils::Accounts::normalize_local(
-        $data,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
+    Utils::Languages::generate_name($self, $data);
 };
-
-sub generate_name{
-    my ($self,$hashref) = @_;
-    Utils::Accounts::normalize_local(
-        $hashref,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
-}
 
 sub validate4add_part{
     my $self = shift;
@@ -238,7 +227,7 @@ sub edit{
             ['rus','eng','uzb','number','debet','credit']);
     }
     if( $data ){
-        generate_name($self,$data);
+        Utils::Languages::generate_name($self,$data);
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }

@@ -41,6 +41,35 @@ sub bar{
     return (Mojo::ByteStream->new($result));
 };
 
+sub generate_name{
+    my ($self,$hashref) = @_;
+    my ($langs,$lang)   = (get(),current($self));
+    return(undef) if !$hashref || !$langs || !$lang ;
+    for my $key (keys %{$hashref}){
+        if( ref $hashref->{$key} eq 'HASH' ){
+            generate_name($self,$hashref->{$key});
+        }
+    }
+    my $found = 0;
+    if ( exists($hashref->{$lang}) && 
+         $hashref->{$lang} ){
+        $hashref->{name} = $hashref->{$lang}
+    }else{
+        my @result = ();
+        my @names = ("-$lang");
+        for my $name (@{$langs}){
+            if($name ne $lang && exists($hashref->{$name})){
+                push @names, "+$name"; 
+                push @result, $hashref->{$name};
+            }
+        }
+
+        $hashref->{name} = 
+            '[' . join('/',@names) . '] ' . join('/',@result)
+            if @result; 
+    }
+};
+
 # END OF PACKAGE
 };
 
