@@ -3,14 +3,14 @@
 <div class="toolbar">
  <a href='/documents/list'><%= ml 'Back' %></a>
 </div>
-% if( defined stash( 'error' ) ) { 
-<div class='alert error'>
-%= ml 'Error!' 
-</div>
-% } 
-% if( stash 'success' ) { 
-<div class='alert success'><%= ml 'Message sent' %>!</div>
-%= link_to ml('Again') => '/documents/add';
-% } else { 
-  %= include 'documents/form';
-% }
+%= include 'success_error'
+<fieldset>
+ <legend><%= ml 'Business operation' %></legend>
+ %= include 'documents/header' if stash('account') && stash('bt') && stash('credit') && stash('debet');
+ % if( $payload ){
+  %= link_to ml('Edit') => "/operations/account/$payload";
+ % } else {    
+  %= link_to ml('Edit') => "/operations/list";
+ % }
+</fieldset>
+%= include 'documents/form';

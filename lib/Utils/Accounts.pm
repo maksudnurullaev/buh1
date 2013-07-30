@@ -30,34 +30,6 @@ sub get_account_name{
     return($ACCOUNT);
 };
 
-sub normalize_local{
-    my($hashref,$langs,$lang) = @_;
-    return(undef) if !$hashref || !$langs || !$lang ;
-    for my $key (keys %{$hashref}){
-        if( ref $hashref->{$key} eq 'HASH' ){
-            normalize_local($hashref->{$key},$langs,$lang);
-        }
-    }
-    my $found = 0;
-    if ( exists($hashref->{$lang}) && 
-         $hashref->{$lang} ){
-        $hashref->{name} = $hashref->{$lang}
-    }else{
-        my @result = ();
-        my @names = ("-$lang");
-        for my $name (@{$langs}){
-            if($name ne $lang && exists($hashref->{$name})){
-                push @names, "+$name"; 
-                push @result, $hashref->{$name};
-            }
-        }
-
-        $hashref->{name} = 
-            '[' . join('/',@names) . '] ' . join('/',@result)
-            if @result; 
-    }
-};
-
 sub get_types4select{
     my $self = shift;
     my $selected_value = shift;

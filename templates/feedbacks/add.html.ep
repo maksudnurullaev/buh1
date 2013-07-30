@@ -1,13 +1,8 @@
 % layout 'default';
 <h2><%= ml 'Feedback' %></h2>
-% if( defined stash( 'error' ) ) { 
-<div class='alert error'>
-%= ml 'Error!' 
-</div>
-% } 
+%= include 'success_error'
 % if( stash 'success' ) { 
-<div class='alert success'><%= ml 'Message sent' %>!</div>
-%= link_to ml('Again') => '/feedbacks/add';
+ %= link_to ml('Again') => '/feedbacks/add';
 % } else { 
-  %= include 'feedbacks/form';
+ %= include 'feedbacks/form';
 % }

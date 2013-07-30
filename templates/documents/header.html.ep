@@ -1,0 +1,15 @@
+  <ul>
+   <li>
+    %= link_to $account->{name} => "/operations/account/$payload"
+    <sup>
+     %= link_to ml('Chart of Accounts') => "/accounts/edit/$payload"
+    </sup>
+    <ul>
+     <li><%= link_to $bt->{name} => ("/operations/edit/$payload?bt=" . param('bt')) %></li>
+     <ul>
+      <li>DEBET: <%= $debet->{name} %></li>
+      <li>CREDIT: <%= $credit->{name} %></li>
+     </ul>
+    </ul>
+   </li>
+  </ul> 

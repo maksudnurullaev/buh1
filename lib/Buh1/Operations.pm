@@ -28,7 +28,7 @@ sub list{
             $sections->{$section_id}{accounts} = $accounts;
         }
     }
-    ml($self, $data);
+    Utils::Languages::generate_name($self, $data);
 };
 
 sub validate{
@@ -114,7 +114,7 @@ sub add{
     my $account = $db->get_objects({id => [$account_id]});
     $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     $self->stash( account => $account );
-    ml($self, $account);
+    Utils::Languages::generate_name($self, $account);
 };
 
 sub edit{
@@ -149,15 +149,12 @@ sub edit{
         }
     } 
 
-    $account = $db->get_objects({
-        id    => [$account_id], 
-        field => Utils::Languages::get()});
     $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
-    ml($self, $account);
+    Utils::Languages::generate_name($self, $account);
     $self->stash( paccount => $account );
 
     $bt = $db->get_objects({id => [$bt_id]});
-    ml($self,$bt);
+    Utils::Languages::generate_name($self,$bt);
     for my $key (keys %{$bt->{$bt_id}}){
         $self->stash( $key => $bt->{$bt_id}{$key} );
     }
@@ -165,18 +162,10 @@ sub edit{
         Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{debet}),
         Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{credit})
         );
-    ml($self,$debets);
+    Utils::Languages::generate_name($self,$debets);
     $self->stash( debets  => $debets );
-    ml($self,$credits);
+    Utils::Languages::generate_name($self,$credits);
     $self->stash( credits => $credits );
-};
-
-sub ml{
-    my ($self,$hash) = @_;
-    Utils::Accounts::normalize_local(
-        $hash,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
 };
 
 sub account{
@@ -190,14 +179,12 @@ sub account{
     my $db = Db->new();
     my $account = $db->get_objects({id => [$account_id]});
     $self->stash( account => $account );
-    $db->attach_links($account,
+    $db->attach_links(
+        $account,
         'bts',
         $OBJECT_NAME,
         ['rus','eng','uzb','number','debet','credit']);
-    Utils::Accounts::normalize_local(
-        $account,
-        Utils::Languages::get(),
-        Utils::Languages::current($self));
+    Utils::Languages::generate_name($self,$account);
 };
 
 # END OF PACKAGE
