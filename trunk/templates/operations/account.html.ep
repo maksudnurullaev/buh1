@@ -12,7 +12,7 @@
  %= link_to ml('Add') => "/operations/add/$payload";
 % }
 </div>
-% $account = stash 'account';
+%# $account = stash 'account';
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
 %# business transactions (bts)
 %= include 'operations/bts', bts => $account->{$payload}{bts};

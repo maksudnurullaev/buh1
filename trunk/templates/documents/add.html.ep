@@ -4,13 +4,14 @@
  <a href='/documents/list'><%= ml 'Back' %></a>
 </div>
 %= include 'success_error'
+% my $isValid = stash('account') && stash('bt') && stash('credit') && stash('debet');
 <fieldset>
  <legend><%= ml 'Business operation' %></legend>
- %= include 'documents/header' if stash('account') && stash('bt') && stash('credit') && stash('debet');
+ %= include 'documents/header' if $isValid ;
  % if( $payload ){
-  %= link_to ml('Edit') => "/operations/account/$payload";
+  %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{object_id}";
  % } else {    
   %= link_to ml('Edit') => "/operations/list";
  % }
 </fieldset>
-%= include 'documents/form';
+%= include 'documents/form' if $isValid;
