@@ -1,10 +1,5 @@
 % layout 'default';
 <h2><%= ml 'Business transactions' %></h2>
-% my $account = stash 'account';
-% if( $account ) {
-%= include 'operations/paccount', account => $account;
-% }
-</div>
 <div class="toolbar">
  <a href="/operations/list"><%= ml 'Back' %></a>
 % if ( is_editor ) {
