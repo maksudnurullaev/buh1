@@ -16,10 +16,16 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Db;
 
-my $OBJECT_NAME         = 'document';
-my $OBJECT_NAMES        = 'documents';
+my $OBJECT_NAME   = 'document';
+my $OBJECT_NAMES  = 'documents';
+my $OBJECT_FIELDS = ['account','bt','debet','credit','type','document number',
+                     'date','Permitter','Permitter debet','Permitter INN',
+                     'Permitter bank name','Permitter bank code','Currency amount',
+                     'Beneficiary','Beneficiary credit','Beneficiary bank name',
+                     'Beneficiary bank code','Currency amount in words',
+                     'Details','Executive','Accounting manager'];
 
-sub valid_user{
+sub isValidUser{
     my $self = shift;
     if( !$self->is_user ){
         $self->redirect_to('/user/login');
@@ -28,14 +34,21 @@ sub valid_user{
     return(1);
 };
 
-sub link_accounts_and_bt{
+sub set_form_header{
     my $self = shift;
-    my $parameters = {
-        account => $self->param("payload"),
-        bt => $self->param("bt"),
-        debet => $self->param("DEBET"),
-        credit => $self->param("CREDIT"),
-        };
+    my $parameters = {};
+    my @headers = ('account','bt','debet','credit');
+    for my $header (@headers){
+        my $value = $self->param($header);
+        if( $value ){
+            $parameters->{$header} = $value;
+            warn "Find proper value($value) for '$header'";
+        }else{
+            warn "Could not find proper value for '$header'";
+            $self->stash( error => 1 );
+            return;
+        }
+    }
     my $db = Db->new();
     for my $key (keys %{$parameters}){
         my $id = $parameters->{$key};
@@ -58,16 +71,44 @@ sub link_accounts_and_bt{
 
 sub list{
     my $self = shift;
-    return if !valid_user($self);
+    return if !isValidUser($self);
 
     my $db_client = Utils::Db::get_client_db($self);
     return if !$db_client;
 };
 
-sub add{
+sub validate{
     my $self = shift;
-    return if !valid_user($self);
-    return if !link_accounts_and_bt($self);
+    my $isNew = shift;
+    my $data = { 
+        object_name => $OBJECT_NAME,
+        creator => Utils::User::current($self),
+    };
+    for my $field_name (@{$OBJECT_FIELDS}){
+        my $field_value = Utils::trim $self->param($field_name);
+        if( $field_value ){
+            $data->{$field_name} = $field_value;
+        } else {
+            $data->{error} = 1;
+            $self->stash(($field_name . '_class') => 'error');
+        }
+    }
+    return($data);
+};
+
+sub update{
+    my $self = shift;
+    return if !isValidUser($self);
+    return if !set_form_header($self);
+
+    my $isPost = ($self->req->method =~ /POST/);
+    if( $isPost ){
+        my $isNew = defined($self->param('docid'));
+        my $data  = validate($self,$isNew);
+        if( !exists($data->{error}) ){
+           warn "Insert PART!"; 
+        }
+    }
 };
 
 1;

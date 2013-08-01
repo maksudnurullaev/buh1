@@ -106,6 +106,12 @@ sub is_editor{
     return;
 };
 
+sub get_date{
+    my $self = shift;
+    my $format = shift || '%d.%m.%Y';
+    return Time::Piece->new->strftime($format);
+};
+
 sub validate_passwords{
     my ($password1, $password2) = @_;
     return(     $password1 

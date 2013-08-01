@@ -13,13 +13,13 @@
  % if( $form ) {
   % if( !$bts_set ){
    % if( $bts_count == 1 || !$form_value || ($form_value && $form_value eq $id)){
-    %= radio_button $title => $id, style => 'width:auto;', id=>$lid, checked=>'checked';
+    %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid, checked=>'checked';
     % $bts_set = 1;
    % } else {
-    %= radio_button $title => $id, style => 'width:auto;', id=>$lid;
+    %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid;
    % }
   % } else {
-   %= radio_button $title => $id, style => 'width:auto;', id=>$lid;
+   %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid;
   % }
  % }
  <label for='<%= $lid %>'><%= $name %></label>

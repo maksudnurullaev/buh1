@@ -8,13 +8,13 @@
 <fieldset>
  <legend><%= ml 'Business operation' %></legend>
  %= include 'documents/header' if $isValid ;
- % if( stash('payload') ){
-   % if( stash('bt') ){
-    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{object_id}";
+ % if( my $payload = param('payload') ){
+   % if( my $bt = param('bt') ){
+    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt";
    % } else {
     %= link_to ml('Edit') => "/operations/edit/$payload";
    % }
- % } else {    
+ % } else {
   %= link_to ml('Edit') => "/operations/list";
  % }
 </fieldset>

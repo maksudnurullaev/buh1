@@ -1,16 +1,18 @@
 <div>
- %= form_for '/documents/add' => (method => 'POST') => begin
- %= hidden_field account => $account->{object_id};
- %= hidden_field bt => $bt->{object_id};
- %= hidden_field debet => $debet->{object_id};
- %= hidden_field credit => $credit->{object_id};
+ % my $id = stash 'id' ;
+ %= form_for "/documents/update/$payload?bt=$bt->{id}" => (method => 'POST') => begin
+ %= hidden_field account => $account->{id};
+ %= hidden_field bt => $bt->{id};
+ %= hidden_field debet => $debet->{id};
+ %= hidden_field credit => $credit->{id};
  %= hidden_field type => 'pp';
+ %= hidden_field id => $id if $id;
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Money order' %> №</td>
-   <td><%= text_field 'number' => (stash 'number'), class => (stash 'number_class') %> </td>
+   <td><%= text_field 'document number' => (stash 'document number'), class => (stash 'document number_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Date(dd.mm.yyy)' %></td>
-   <td><%= text_field 'date' => (stash 'date'), class => (stash 'date_class') %> </td>
+   <td><%= text_field 'date' => stash('date), class => (stash 'date_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter' %></td>
    <td><%= text_area Permitter => (stash 'Permitter'), class => (stash 'Permitter_class') %></td>
