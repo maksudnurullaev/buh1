@@ -41,6 +41,7 @@ sub register {
     $app->helper( is_admin  => sub { Utils::is_admin  (@_); } );
     $app->helper( is_user   => sub { Utils::is_user   (@_); } );
     $app->helper( is_editor => sub { Utils::is_editor (@_); } );
+    $app->helper( get_date  => sub { Utils::get_date  (@_); } );
 };
 
 };

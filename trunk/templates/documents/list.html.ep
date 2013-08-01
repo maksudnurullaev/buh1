@@ -1,8 +1,5 @@
 % layout 'default';
 <h2><%= ml 'Documents' %></h2>
-<div class="toolbar">
- <a href='/documents/add'><%= ml 'Add' %></a>
-</div>
 %= include 'filter'   , filter4    => 'documents'
 %= include 'paginator', paginator4 => 'documents'
 % my  $documents = stash 'documents';

@@ -210,7 +210,7 @@ sub format_statement2hash_objects{
                 $result->{$id}{$name}{$field} = 1;
             }
         } else {
-            $result->{$id} = { object_name => $name, object_id => $id} 
+            $result->{$id} = { object_name => $name, id => $id} 
                 if !exists($result->{$id}->{object_name}); 
             $result->{$id}{$field} = $value;
         }
