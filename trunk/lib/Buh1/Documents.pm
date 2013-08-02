@@ -109,8 +109,8 @@ sub update{
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::get_client_db($self);
             if( $isNew )
-                if( $id = $db->insert($data) ){
-                    $self->redirect_to('/documents/update/$payload');
+                if( $id = $db_client->insert($data) ){
+                    $self->redirect_to("/documents/update/$payload");
             } else {
                 $self->stash(error => 1);
                 warn 'Users:add:error: could not add new user!';
