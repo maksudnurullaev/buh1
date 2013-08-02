@@ -42,7 +42,6 @@ sub set_form_header{
         my $value = $self->param($header);
         if( $value ){
             $parameters->{$header} = $value;
-            warn "Find proper value($value) for '$header'";
         }else{
             warn "Could not find proper value for '$header'";
             $self->stash( error => 1 );
@@ -99,16 +98,29 @@ sub validate{
 sub update{
     my $self = shift;
     return if !isValidUser($self);
-    return if !set_form_header($self);
 
-    my $isPost = ($self->req->method =~ /POST/);
+    my $isPost  = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
+    my $id      = $self->param('docid');
+    my $isNew   = !$id; 
+    my $payload = $self->('payload');
+    my $bt      = $self->('bt');
     if( $isPost ){
-        my $isNew = defined($self->param('docid'));
         my $data  = validate($self,$isNew);
         if( !exists($data->{error}) ){
-           warn "Insert PART!"; 
+            my $db_client = Utils::Db::get_client_db($self);
+            if( $isNew )
+                if( $id = $db->insert($data) ){
+                    $self->redirect_to('/documents/update/$payload');
+            } else {
+                $self->stash(error => 1);
+                warn 'Users:add:error: could not add new user!';
+            }
+            if( $db_client->insert($data) ){
+                $self->redirect_to('users/list');
+
         }
     }
+    set_form_header($self);
 };
 
 1;
