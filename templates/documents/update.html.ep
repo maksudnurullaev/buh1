@@ -10,7 +10,7 @@
  %= include 'documents/header' if $isValid ;
  % if( my $payload = param('payload') ){
    % if( my $bt = param('bt') ){
-    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt";
+    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt&debet=$debet->{id}&credit=&$credit->{id}";
    % } else {
     %= link_to ml('Edit') => "/operations/edit/$payload";
    % }

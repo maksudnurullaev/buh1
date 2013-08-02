@@ -4,8 +4,8 @@
 % my $form  = exists($parameters->{form}) && $parameters->{form};
 % my $bts_count = scalar(keys(%{$bts}));
 % my $bts_set   = 0;
-% my $form_value = stash $title;
-<h4><%= $title %></h4>
+% my $form_value = param $title;
+<h4><%= uc($title) %></h4>
 % my $bt = param 'bt';
 % for my $id ( sort keys %{$bts} ){
  % my $name   = $bts->{$id}{name};   
@@ -13,13 +13,13 @@
  % if( $form ) {
   % if( !$bts_set ){
    % if( $bts_count == 1 || !$form_value || ($form_value && $form_value eq $id)){
-    %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid, checked=>'checked';
+    %= radio_button $title => $id, style => 'width:auto;', id=>$lid, checked=>'checked';
     % $bts_set = 1;
    % } else {
-    %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid;
+    %= radio_button $title => $id, style => 'width:auto;', id=>$lid;
    % }
   % } else {
-   %= radio_button lc($title) => $id, style => 'width:auto;', id=>$lid;
+   %= radio_button $title => $id, style => 'width:auto;', id=>$lid;
   % }
  % }
  <label for='<%= $lid %>'><%= $name %></label>

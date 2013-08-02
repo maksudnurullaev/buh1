@@ -1,5 +1,6 @@
 <div>
  % my $id = stash 'id' ;
+ % my $isNew = !$id;
  %= form_for "/documents/update/$payload?bt=$bt->{id}" => (method => 'POST') => begin
  %= hidden_field account => $account->{id};
  %= hidden_field bt => $bt->{id};
@@ -7,12 +8,21 @@
  %= hidden_field credit => $credit->{id};
  %= hidden_field type => 'pp';
  %= hidden_field id => $id if $id;
+ % if( $isNew ){
+  <h1>New</h1>
+ % } else {
+  <h1>Old</h1>
+ % }
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Money order' %> №</td>
    <td><%= text_field 'document number' => (stash 'document number'), class => (stash 'document number_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Date(dd.mm.yyy)' %></td>
-   <td><%= text_field 'date' => stash('date'), class => (stash 'date_class') %></td>
+   % if( $isNew ){
+    <td><%= text_field 'date' => get_date, class => (stash 'date_class') %></td>
+   % } else {
+    <td><%= text_field 'date' => stash('date'), class => (stash 'date_class') %></td>
+   % }
   </tr>
   <tr><td class='tar'><%= ml 'Permitter' %></td>
    <td><%= text_area Permitter => (stash 'Permitter'), class => (stash 'Permitter_class') %></td>
