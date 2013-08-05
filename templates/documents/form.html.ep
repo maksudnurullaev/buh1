@@ -31,7 +31,7 @@
    <td><%= text_field 'Permitter debet' => (stash 'Permitter debet'), class => (stash 'Permitter debet_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter INN' %></td>
-   <td><%= text_field 'Permitter INN' => (stash 'Permitter debet'), class => (stash 'Permitter INN_class') %> </td>
+   <td><%= text_field 'Permitter INN' => (stash 'Permitter INN'), class => (stash 'Permitter INN_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter bank name' %></td>
    <td><%= text_area 'Permitter bank name' => (stash 'Permitter bank name'), class => (stash 'Permitter bank name_class') %></td>

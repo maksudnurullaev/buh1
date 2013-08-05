@@ -102,8 +102,8 @@ sub update{
     my $isPost  = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id      = $self->param('docid');
     my $isNew   = !$id; 
-    my $payload = $self->('payload');
-    my $bt      = $self->('bt');
+    my $payload = $self->param('payload');
+    my $bt      = $self->param('bt');
     if( $isPost ){
         my $data  = validate($self,$isNew);
         if( !exists($data->{error}) ){
@@ -111,16 +111,33 @@ sub update{
             if( $isNew )
                 if( $id = $db_client->insert($data) ){
                     $self->redirect_to("/documents/update/$payload");
+                }
             } else {
                 $self->stash(error => 1);
                 warn 'Users:add:error: could not add new user!';
             }
             if( $db_client->insert($data) ){
                 $self->redirect_to('users/list');
-
+            }
         }
+    } elsif( $isNew ){
+        set_test_data($self);
     }
     set_form_header($self);
+};
+
+sub set_test_data{
+    my $self = shift || return;
+    $self->stash( number => 1);
+    $self->stash( 'document number' => '121' );
+    $self->stash( 'Permitter' => 'ООО "Узбек лойиха созлаш бошкармаси"');
+    $self->stash( 'Permitter debet' => 'Дебет счетимиз');
+    $self->stash( 'Permitter INN' => 'ИНН-миз'); 
+#                     'Permitter bank name','Permitter bank code','Currency amount',
+#                     'Beneficiary','Beneficiary credit','Beneficiary bank name',
+#                     'Beneficiary bank code','Currency amount in words',
+#                     'Details','Executive','Accounting manager'];
+
 };
 
 1;
