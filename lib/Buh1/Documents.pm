@@ -15,15 +15,17 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Db;
+use Utils::Digital;
+use Encode;
 
 my $OBJECT_NAME   = 'document';
 my $OBJECT_NAMES  = 'documents';
-my $OBJECT_FIELDS = ['account','bt','debet','credit','type','document number',
-                     'date','Permitter','Permitter debet','Permitter INN',
-                     'Permitter bank name','Permitter bank code','Currency amount',
-                     'Beneficiary','Beneficiary credit','Beneficiary bank name',
-                     'Beneficiary bank code','Currency amount in words',
-                     'Details','Executive','Accounting manager'];
+my @OBJECT_FIELDS = ('object_name','account','bt','debet','credit','type','document number',
+                     'date','permitter','permitter debet','permitter inn',
+                     'permitter bank name','permitter bank code','currency amount',
+                     'beneficiary','beneficiary credit','beneficiary bank name',
+                     'beneficiary bank code','currency amount in words',
+                     'details','executive','accounting manager');
 
 sub isValidUser{
     my $self = shift;
@@ -39,7 +41,7 @@ sub set_form_header{
     my $parameters = {};
     my @headers = ('account','bt','debet','credit');
     for my $header (@headers){
-        my $value = $self->param($header);
+        my $value = $self->param($header) || $self->stash($header);;
         if( $value ){
             $parameters->{$header} = $value;
         }else{
@@ -78,18 +80,17 @@ sub list{
 
 sub validate{
     my $self = shift;
-    my $isNew = shift;
-    my $data = { 
-        object_name => $OBJECT_NAME,
-        creator => Utils::User::current($self),
-    };
-    for my $field_name (@{$OBJECT_FIELDS}){
-        my $field_value = Utils::trim $self->param($field_name);
-        if( $field_value ){
-            $data->{$field_name} = $field_value;
+    my $id = shift;
+    my $data = { object_name => $OBJECT_NAME };
+    my @fields = @OBJECT_FIELDS;
+    push(@fields, 'id') if $id;
+    for my $field (@fields){
+        my $value = Utils::trim $self->param($field);
+        if( $value ){
+            $data->{$field} = $value;
         } else {
             $data->{error} = 1;
-            $self->stash(($field_name . '_class') => 'error');
+            $self->stash(($field . '_class') => 'error');
         }
     }
     return($data);
@@ -101,42 +102,75 @@ sub update{
 
     my $isPost  = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id      = $self->param('docid');
-    my $isNew   = !$id; 
+    warn "DOCID = " . $id if defined $id;
     my $payload = $self->param('payload');
     my $bt      = $self->param('bt');
     if( $isPost ){
-        my $data  = validate($self,$isNew);
+        my $data  = validate($self,$id);
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::get_client_db($self);
-            if( $isNew )
-                if( $id = $db_client->insert($data) ){
-                    $self->redirect_to("/documents/update/$payload");
+            if( defined $id ){
+                warn "Is updatIs update!!! $id";
+                if( $db_client->update($data) ){
+                    $self->stash(success => 1);
+                    $self->redirect_to("/documents/update/$payload?docid=$id");
+                } else {
+                    $self->stash(error => 1);
+                    warn 'Could not update objects!';
                 }
             } else {
-                $self->stash(error => 1);
-                warn 'Users:add:error: could not add new user!';
+                warn "Is new!!!";
+                if( $id = $db_client->insert($data) ){
+                    $self->redirect_to("/documents/update/$payload?docid=$id");
+                } else {
+                    $self->stash(error => 1);
+                    warn 'Could not insert object!';
+                }
             }
-            if( $db_client->insert($data) ){
-                $self->redirect_to('users/list');
-            }
+        } else {
+            $self->stash( error => 1 );
         }
-    } elsif( $isNew ){
+    }
+    if( $id ){
+        deploy_document($self,$id);
+    } else {
         set_test_data($self);
     }
     set_form_header($self);
 };
 
+sub deploy_document{
+    my ($self,$id) = @_;
+    return if !$self || !$id;
+    my $db_client = Utils::Db::get_client_db($self);
+    my $objects = $db_client->get_objects({id=>[$id]});
+    if( $objects && exists($objects->{$id}) ){
+        my $document = $objects->{$id};
+        for my $field (keys %{$document}){
+            $self->stash($field => $document->{$field});
+        }
+    }
+};
+
 sub set_test_data{
     my $self = shift || return;
-    $self->stash( number => 1);
-    $self->stash( 'document number' => '121' );
-    $self->stash( 'Permitter' => 'ООО "Узбек лойиха созлаш бошкармаси"');
-    $self->stash( 'Permitter debet' => 'Дебет счетимиз');
-    $self->stash( 'Permitter INN' => 'ИНН-миз'); 
-#                     'Permitter bank name','Permitter bank code','Currency amount',
-#                     'Beneficiary','Beneficiary credit','Beneficiary bank name',
-#                     'Beneficiary bank code','Currency amount in words',
-#                     'Details','Executive','Accounting manager'];
+    my $number = int(rand(100));
+    $self->stash( 'document number' => $number );
+    $self->stash( 'permitter' => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"' );
+    $self->stash( 'permitter debet' => '01234567890123456789' );
+    $self->stash( 'permitter inn' => '123456789' ); 
+    $self->stash( 'permitter bank name' => 'ЧОАКБ ИнФинБанк' );
+    $self->stash( 'permitter bank code' => '01041' );
+    $number = int(rand(10000000));
+    $self->stash( 'currency amount' => $number );
+    $self->stash( 'beneficiary' => 'ОАО "Узбекистон Темирйуллари"' );
+    $self->stash( 'beneficiary credit' => '99999999999999999999' );
+    $self->stash( 'beneficiary bank name' => 'АИКБ "Ипак Йули"' );
+    $self->stash( 'beneficiary bank code' => '14230' );
+    $self->stash( 'currency amount in words' => Utils::Digital::rur_in_words($number) );
+    $self->stash( 'details' => 'Оплата за установку кронштейна!' );
+    $self->stash( 'executive' => 'Abdullaev Z.S.' );
+    $self->stash( 'accounting manager' => 'Umarova I.M.' );
 
 };
 
