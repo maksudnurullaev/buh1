@@ -1,70 +1,67 @@
 <div>
- % my $id = stash 'id' ;
- % my $isNew = !$id;
- %= form_for "/documents/update/$payload?bt=$bt->{id}" => (method => 'POST') => begin
+ % my $docid = param 'docid' ;
+ % my $path = "/documents/update/$payload?bt=$bt->{id}";
+ % $path = "/documents/update/$payload?docid=$docid" if $docid;
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field object_name => 'document';
  %= hidden_field account => $account->{id};
  %= hidden_field bt => $bt->{id};
  %= hidden_field debet => $debet->{id};
  %= hidden_field credit => $credit->{id};
  %= hidden_field type => 'pp';
- %= hidden_field id => $id if $id;
- % if( $isNew ){
-  <h1>New</h1>
- % } else {
-  <h1>Old</h1>
- % }
+ %= hidden_field id => $docid if $docid;
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Money order' %> №</td>
    <td><%= text_field 'document number' => (stash 'document number'), class => (stash 'document number_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Date(dd.mm.yyy)' %></td>
-   % if( $isNew ){
-    <td><%= text_field 'date' => get_date, class => (stash 'date_class') %></td>
-   % } else {
+   % if( $docid ){
     <td><%= text_field 'date' => stash('date'), class => (stash 'date_class') %></td>
+   % } else {
+    <td><%= text_field 'date' => get_date, class => (stash 'date_class') %></td>
    % }
   </tr>
   <tr><td class='tar'><%= ml 'Permitter' %></td>
-   <td><%= text_area Permitter => (stash 'Permitter'), class => (stash 'Permitter_class') %></td>
+   <td><%= text_area permitter => (stash 'permitter'), class => (stash 'permitter_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter debet' %></td>
-   <td><%= text_field 'Permitter debet' => (stash 'Permitter debet'), class => (stash 'Permitter debet_class') %> </td>
+   <td><%= text_field 'permitter debet' => (stash 'permitter debet'), class => (stash 'permitter debet_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter INN' %></td>
-   <td><%= text_field 'Permitter INN' => (stash 'Permitter INN'), class => (stash 'Permitter INN_class') %> </td>
+   <td><%= text_field 'permitter inn' => (stash 'permitter inn'), class => (stash 'permitter inn_class') %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter bank name' %></td>
-   <td><%= text_area 'Permitter bank name' => (stash 'Permitter bank name'), class => (stash 'Permitter bank name_class') %></td>
+   <td><%= text_area 'permitter bank name' => (stash 'permitter bank name'), class => (stash 'permitter bank name_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter bank code' %></td>
-   <td><%= text_field 'Permitter bank code' => (stash 'Permitter bank code'), class => (stash 'Permitter bank code_class') %></td>
+   <td><%= text_field 'permitter bank code' => (stash 'permitter bank code'), class => (stash 'permitter bank code_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Currency amount' %></td>
-   <td><%= text_field 'Currency amount' => (stash 'Currency amount'), class => (stash 'Currency amount_class') %></td>
+   <td><%= text_field 'currency amount' => (stash 'currency amount'), class => (stash 'currency amount_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary' %></td>
-   <td><%= text_area Beneficiary => (stash 'Beneficiary'), class => (stash 'Beneficiary_class') %></td>
+   <td><%= text_area beneficiary => (stash 'beneficiary'), class => (stash 'beneficiary_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary credit' %></td>
-   <td><%= text_field 'Beneficiary credit', class => stash 'Beneficiary credit_class' %> </td>
+   <td><%= text_field 'beneficiary credit' => (stash 'beneficiary credit') , class => stash 'beneficiary credit_class' %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary bank name' %></td>
-   <td><%= text_area 'Beneficiary bank name' => (stash 'Beneficiary bank name'), class => (stash 'Beneficiary bank name_class') %></td>
+   <td><%= text_area 'beneficiary bank name' => (stash 'beneficiary bank name'), class => (stash 'beneficiary bank name_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary bank code' %></td>
-   <td><%= text_field 'Beneficiary bank code' => (stash 'Beneficiary bank code'), class => (stash 'Beneficiary bank code_class') %></td>
+   <td><%= text_field 'beneficiary bank code' => (stash 'beneficiary bank code'), class => (stash 'beneficiary bank code_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Currency amount in words' %></td>
-   <td><%= text_area 'Currency amount in words' => (stash 'Currency amount in words'), class => (stash 'Currency amount in words_class') %></td>
+   <td><%= text_area 'currency amount in words' => (stash 'currency amount in words'), class => (stash 'currency amount in words_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Details' %></td>
-   <td><%= text_area 'Details' => (stash 'Details'), class => (stash 'Details_class') %></td>
+   <td><%= text_area 'details' => (stash 'details'), class => (stash 'details_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Executive' %></td>
-   <td><%= text_field 'Executive' => (stash 'Executive'), class => (stash 'Executive_class') %></td>
+   <td><%= text_field 'executive' => (stash 'executive'), class => (stash 'executive_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Accounting manager' %></td>
-   <td><%= text_field 'Accounting manager' => (stash 'Accounting manager'), class => (stash 'Accounting manager_class') %></td>
+   <td><%= text_field 'accounting manager' => (stash 'accounting manager'), class => (stash 'accounting manager_class') %></td>
   </tr>
   <tr><td>&nbsp;</td>
    <td>

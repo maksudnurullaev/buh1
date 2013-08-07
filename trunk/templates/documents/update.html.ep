@@ -1,5 +1,10 @@
 % layout 'default';
-<h2><%= ml 'Documents' %> | <%= ml 'Add' %></h2>
+% my $docid = param 'docid' ;
+% if( $docid ){
+ <h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>
+% } else {
+ <h2><%= ml 'Documents' %> | <%= ml 'Add' %></h2>
+% }
 <div class="toolbar">
  <a href='/documents/list'><%= ml 'Back' %></a>
 </div>
@@ -8,14 +13,15 @@
 <fieldset>
  <legend><%= ml 'Business operation' %></legend>
  %= include 'documents/header' if $isValid ;
- % if( my $payload = param('payload') ){
+ % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
+ % if( $payload && $debet && $credit ){
    % if( my $bt = param('bt') ){
     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt&debet=$debet->{id}&credit=&$credit->{id}";
    % } else {
     %= link_to ml('Edit') => "/operations/edit/$payload";
    % }
  % } else {
-  %= link_to ml('Edit') => "/operations/list";
+  %= ml 'No data!';
  % }
 </fieldset>
 %= include 'documents/form' if $isValid;
