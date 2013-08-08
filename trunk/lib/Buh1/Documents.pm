@@ -15,6 +15,7 @@ use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Db;
+use Utils::Filter;
 use Utils::Digital;
 use Encode;
 
@@ -73,9 +74,63 @@ sub set_form_header{
 sub list{
     my $self = shift;
     return if !isValidUser($self);
-
     my $db_client = Utils::Db::get_client_db($self);
-    return if !$db_client;
+    if( $db_client ){
+        select_objects($self,$db_client,$OBJECT_NAME,'');
+    } else {
+        $self->reditect_to('desktop/select_company');
+    }
+};
+
+sub redirect2list_or_path{
+    my $self = shift;
+    if ( $self->param('path') ){
+        $self->redirect_to($self->param('path'));
+        return;
+    }
+    $self->redirect_to("$OBJECT_NAMES/list");
+};
+
+sub pagesize{
+    my $self = shift;
+    Utils::Filter::pagesize($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
+
+sub page{
+    my $self = shift;
+    Utils::Filter::page($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
+
+sub nofilter{
+    my $self = shift;
+    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
+    redirect2list_or_path($self);
+};
+
+sub filter{
+    my $self = shift;
+    Utils::Filter::filter($self,$OBJECT_NAMES);
+    redirect2list_or_path($self);
+};
+
+sub select_objects{
+    my ($self,$db,$name,$path) = @_;
+
+    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
+    my $objects = $db->get_filtered_objects({
+            self          => $self,
+            name          => $name,
+            names         => $OBJECT_NAMES,
+            filter        => $filter,
+            filter_field  => 'currency amount',
+            result_fields => ['document number', 'currency amount','details','date'],
+            path          => ''
+        });
+#    warn Dumper $objects;
+    $self->stash(path  => $path);
+    $self->stash(documents => $objects) if $objects && scalar(keys %{$objects});
 };
 
 sub validate{
@@ -113,7 +168,7 @@ sub update{
                 warn "Is updatIs update!!! $id";
                 if( $db_client->update($data) ){
                     $self->stash(success => 1);
-                    $self->redirect_to("/documents/update/$payload?docid=$id");
+                    $self->redirect_to("/documents/update/$payload?docid=$id&success=1");
                 } else {
                     $self->stash(error => 1);
                     warn 'Could not update objects!';
@@ -121,7 +176,7 @@ sub update{
             } else {
                 warn "Is new!!!";
                 if( $id = $db_client->insert($data) ){
-                    $self->redirect_to("/documents/update/$payload?docid=$id");
+                    $self->redirect_to("/documents/update/$payload?docid=$id&success=1");
                 } else {
                     $self->stash(error => 1);
                     warn 'Could not insert object!';
@@ -143,11 +198,13 @@ sub deploy_document{
     my ($self,$id) = @_;
     return if !$self || !$id;
     my $db_client = Utils::Db::get_client_db($self);
-    my $objects = $db_client->get_objects({id=>[$id]});
-    if( $objects && exists($objects->{$id}) ){
-        my $document = $objects->{$id};
-        for my $field (keys %{$document}){
-            $self->stash($field => $document->{$field});
+    if( $db_client ){
+        my $objects = $db_client->get_objects({id=>[$id]});
+        if( $objects && exists($objects->{$id}) ){
+            my $document = $objects->{$id};
+            for my $field (keys %{$document}){
+                $self->stash($field => $document->{$field});
+            }
         }
     }
 };

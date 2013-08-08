@@ -17,6 +17,7 @@ use Time::Piece;
 use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
+use Locale::Currency::Format;
 
 sub trim{
     my $string = $_[0];
@@ -111,6 +112,12 @@ sub get_date{
     my $format = shift || '%d.%m.%Y';
     return Time::Piece->new->strftime($format);
 };
+
+sub currency_format{
+    my $self = shift;
+    my $amount = shift;
+    return Locale::Currency::Format::currency_format('USD',$amount, FMT_COMMON);
+}
 
 sub validate_passwords{
     my ($password1, $password2) = @_;
