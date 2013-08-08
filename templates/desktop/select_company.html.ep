@@ -6,7 +6,7 @@
 % if ( $companies ){
  <div>
   <ul>
-  % for my $cid (keys %{$companies}) {
+  % for my $cid ( sort keys %{$companies}) {
    %if ( $companies->{$cid}{access} ) { 
     % if ($company && $company eq $companies->{$cid}{name} ){
      <li><%= $companies->{$cid}{name} %></li>

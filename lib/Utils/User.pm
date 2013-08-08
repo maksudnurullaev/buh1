@@ -19,7 +19,15 @@ use Utils::Languages;
 sub current{
     my $self = shift;
     if( $self ){
-        return($self->session->{'email'} );
+        return($self->session->{'user email'} );
+    }
+    return;
+};
+
+sub id{
+    my $self = shift;
+    if( $self ){
+        return($self->session->{'user id'} );
     }
     return;
 };

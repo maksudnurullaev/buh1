@@ -1,5 +1,6 @@
 package Buh1::User; {
 use Mojo::Base 'Mojolicious::Controller';
+use Data::Dumper;
 
 sub login{
     my $self = shift;
@@ -11,8 +12,9 @@ sub login{
         my $password = Utils::trim $self->param('password');
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
-            if ( Auth::login($email, $password) ){ 
-                $self->session->{'email'} = $email;
+            if ( my $user = Auth::login($email, $password) ){ 
+                $self->session->{'user email'} = $email;
+                $self->session->{'user id'} = $user->{id};
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }

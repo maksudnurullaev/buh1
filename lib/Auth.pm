@@ -72,7 +72,7 @@ sub login{
     my $user = $db->get_user($email);
     return(0) if !$user ;
     my $salt = $user->{password};
-    return(1) if salted_password($password,$salt);
+    return($user) if salted_password($password,$salt);
     warn "User with mail '$email' exists but password is invalid!";
     return(0);
 };
