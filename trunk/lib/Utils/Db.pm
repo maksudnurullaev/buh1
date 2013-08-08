@@ -18,7 +18,8 @@ use DbClient;
 sub get_client_db{
     my $self = shift;
     if ( $self && $self->session('company id') ){
-        return(new DbClient($self->session('company id')) );
+	my $db_client = new DbClient($self->session('company id'));
+        return($db_client) if $db_client->is_valid ;
     }
     return(undef);
 };    

@@ -416,7 +416,6 @@ sub get_user{
     return(undef) if !$users ||
         !exists($users->{$user_id}) ||
         !exists($users->{$user_id}{password}) ;
-    $users->{$user_id}{id} = $user_id; # set id 
     return($users->{$user_id});
 };
 
