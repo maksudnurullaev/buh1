@@ -46,53 +46,6 @@ sub filter{
     }
 };
 
-sub get_objects{
-    my $parameters = shift;
-    my $self          = $parameters->{self};
-    my $name          = $parameters->{name};
-    my $names         = $parameters->{names};
-    my $filter        = $parameters->{filter};
-    my $filter_field  = $parameters->{filter_field};
-    my $result_fields = $parameters->{result_fields};
-    my $filter_where;
-    my $result;
-    my $db = Db->new();
-    if( $filter ) {
-        $self->stash(filter => $filter) if $filter;
-        $filter_where = " field='$filter_field' AND value LIKE '%$filter%' ESCAPE '\\' ";
-        $result = $db->get_counts({name=>[$name], add_where=>$filter_where});
-    } else {
-        $result = $db->get_counts({name=>[$name],field=>[$filter_field]}); 
-    }
-    return if !$result; # count is 0
-    #paginator
-    my $paginator = Utils::get_paginator($self,$names,$result);
-    $self->stash(paginator => $paginator);        
-    my ($limit,$offset) = (" LIMIT $paginator->[2] ",
-            $paginator->[2] * ($paginator->[0] - 1));
-    $limit .= " OFFSET $offset " if $offset ; 
-    # find real records if exist
-    if( $filter ) {
-        $result = $db->get_objects({
-            name      => [$name], 
-            add_where => $filter_where,
-            limit     => $limit});
-    } else {
-        $result = $db->get_objects({
-            name  => [$name],
-            field => [$filter_field],
-            limit => $limit}); 
-    }
-    # final
-    map { $result->{$_} = 
-        $db->get_objects({
-            name  => [$name],
-            field => $result_fields})->{$_} }
-        keys %{$result};
-    return($result);
-};
-
-
 # END OF PACKAGE
 };
 

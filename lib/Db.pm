@@ -296,6 +296,52 @@ sub get_objects{
     return;
 };
 
+sub get_filtered_objects{
+    my $self          = shift;
+    my $parameters    = shift;
+    my $app           = $parameters->{self};
+    my $name          = $parameters->{name};
+    my $names         = $parameters->{names};
+    my $filter        = $parameters->{filter};
+    my $filter_field  = $parameters->{filter_field};
+    my $result_fields = $parameters->{result_fields};
+    my $filter_where;
+    my $result;
+    if( $filter ) {
+        $app->stash(filter => $filter) if $filter;
+        $filter_where = " field='$filter_field' and value like '%$filter%' escape '\\' ";
+        $result = $self->get_counts({name=>[$name], add_where=>$filter_where});
+    } else {
+        $result = $self->get_counts({name=>[$name],field=>[$filter_field]}); 
+    }
+    return if !$result; # count is 0
+    #paginator
+    my $paginator = Utils::get_paginator($app,$names,$result);
+    $app->stash(paginator => $paginator);        
+    my ($limit,$offset) = (" limit $paginator->[2] ",
+            $paginator->[2] * ($paginator->[0] - 1));
+    $limit .= " offset $offset " if $offset ; 
+    # find real records if exist
+    if( $filter ) {
+        $result = $self->get_objects({
+            name      => [$name], 
+            add_where => $filter_where,
+            limit     => $limit});
+    } else {
+        $result = $self->get_objects({
+            name  => [$name],
+            field => [$filter_field],
+            limit => $limit}); 
+    }
+    # final
+    map { $result->{$_} = 
+        $self->get_objects({
+            name  => [$name],
+            field => $result_fields})->{$_} }
+        keys %{$result};
+    return($result);
+};
+
 sub get_counts{
     my $self = shift;
     my $parameters = shift;

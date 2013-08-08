@@ -1,6 +1,6 @@
-% if( stash 'success' ) { 
-<div class='alert success'>Ok</div>
+% if( stash('success') || param('success') ) { 
+ <div class='alert success'>Ok</div>
 % } 
-% if( stash 'error' ) { 
-<div class='alert error'><%= ml 'Error!' %></div>
+% if( stash('error') || param('error') ) { 
+ <div class='alert error'><%= ml 'Error!' %></div>
 % } 

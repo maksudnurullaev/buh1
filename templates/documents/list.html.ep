@@ -4,18 +4,23 @@
 %= include 'paginator', paginator4 => 'documents'
 % my  $documents = stash 'documents';
 % if ( scalar(keys %{$documents}) ) {
- <ul>
+ <table border="1">
+   <tr>   
+    <th><%= ml 'document number' %></th>
+    <th><%= ml 'currency amount' %></th>
+    <th><%= ml 'date' %></th>
+    <th><%= ml 'details' %></th>
+   </tr>
+  
   % for my $id( reverse sort keys %{$documents} ) {
-   <li><%= $documents->{$id}{message} %><br />
-    <%= link_to "/documents/edit/$id" => begin%><%= ml 'Edit' %><% end %>
-    % if($documents->{$id}{number}) {
-     <ul><li><%= ml 'User' %>:
-      %= $documents->{$id}{number}
-     </li></ul>
-    % }
-   </li>
+   <tr>   
+    <td><%= $documents->{$id}{'document number'} %></td>
+    <td><%= currency_format $documents->{$id}{'currency amount'} %></td>
+    <td><%= $documents->{$id}{'date'} %></td>
+    <td><%= $documents->{$id}{'details'} %></td>
+   </tr>
   % }
- </ul>
+ </table>
 % } else {
  %= ml 'No data!'
 % }

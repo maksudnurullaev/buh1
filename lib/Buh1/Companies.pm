@@ -63,7 +63,8 @@ sub select_objects{
     my ($self,$name,$path) = @_;
 
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
-    my $objects = Utils::Filter::get_objects({
+    my $db = Db->new();
+    my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
             names         => $OBJECT_NAMES,
@@ -73,7 +74,6 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(companies => $objects) if $objects && scalar(keys %{$objects});
-    my $db = Db->new();
     $db->attach_links($objects,'users','user',['email']);
     for my $cid (keys %{$objects}){
         if ( exists $objects->{$cid}{users} ){
