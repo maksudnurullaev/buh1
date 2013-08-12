@@ -147,6 +147,19 @@ sub validate{
             $self->stash(($field . '_class') => 'error');
         }
     }
+    # recalculate amount if needs
+    my $currency_amount = $data->{'currency amount'};
+    my $currency_amount_in_words = Utils::Digital::rur_in_words($currency_amount);
+    if( $id ){
+        my $old_currency_amount = $self->param('old currency amount');
+        if( $currency_amount && $currency_amount ne $old_currency_amount ){
+            $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount);
+            $self->stash('currency amount in words' => Utils::Digital::rur_in_words($currency_amount));
+        }
+    } else {
+        $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount) ;
+        $self->param('currency amount in words' => Utils::Digital::rur_in_words($currency_amount)) ;
+    }
     return($data);
 };
 
@@ -220,7 +233,6 @@ sub set_test_data{
     $self->stash( 'beneficiary credit' => '99999999999999999999' );
     $self->stash( 'beneficiary bank name' => 'АИКБ "Ипак Йули"' );
     $self->stash( 'beneficiary bank code' => '14230' );
-    $self->stash( 'currency amount in words' => Utils::Digital::rur_in_words($number) );
     $self->stash( 'details' => 'Оплата за установку кронштейна!' );
     $self->stash( 'executive' => 'Abdullaev Z.S.' );
     $self->stash( 'accounting manager' => 'Umarova I.M.' );

@@ -258,7 +258,7 @@ img {}
 }
 .tar {
     text-align: right;
-    vertical-align:text-top;
+    vertical-align: top;
 }
 div.alert {
     padding: 5px 5px 5px 5px;
