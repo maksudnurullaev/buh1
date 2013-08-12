@@ -5,7 +5,11 @@
      %= link_to ml('Chart of Accounts') => "/accounts/edit/$payload"
     </sup>
     <ul>
-     <li><%= link_to $bt->{name} => ("/operations/edit/$payload?bt=" . param('bt')) %></li>
+     % if( my $bt = stash 'bt' ){
+      <li><%= link_to $bt->{name} => ("/operations/edit/$payload?bt=$bt->{id}") %></li>
+     % } else {
+      <li><%= $bt->{name} %></li>
+     %}
      <ul>
       <li>DEBET: <%= $debet->{name} %></li>
       <li>CREDIT: <%= $credit->{name} %></li>
