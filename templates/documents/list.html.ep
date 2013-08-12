@@ -1,9 +1,10 @@
 % layout 'default';
 <h2><%= ml 'Documents' %></h2>
-%= include 'filter'   , filter4    => 'documents'
-%= include 'paginator', paginator4 => 'documents'
-% my  $documents = stash 'documents';
-% if ( scalar(keys %{$documents}) ) {
+% my $documents = stash 'documents';
+% my $count     = scalar(keys %{$documents});
+% if ( $count ) {
+ %= include 'filter'   , filter4    => 'documents';
+ %= include 'paginator', paginator4 => 'documents';
  <table border="1">
    <tr>   
     <th><%= ml 'document number' %></th>
@@ -14,15 +15,17 @@
   
   % for my $id( reverse sort keys %{$documents} ) {
    <tr>   
-    <td><%= $documents->{$id}{'document number'} %></td>
+    % my $doc_num    = $documents->{$id}{'document number'};
+    % my $account_id = $documents->{$id}{account};
+    <td><%= link_to $doc_num => "/documents/update/$account_id?docid=$id" %></td>
     <td><%= currency_format $documents->{$id}{'currency amount'} %></td>
     <td><%= $documents->{$id}{'date'} %></td>
     <td><%= $documents->{$id}{'details'} %></td>
    </tr>
   % }
  </table>
+ %= include 'paginator', paginator4 => 'documents';
+ %= include 'filter'   , filter4    => 'documents';
 % } else {
  %= ml 'No data!'
 % }
-%= include 'paginator', paginator4 => 'documents'
-%= include 'filter'   , filter4    => 'documents'

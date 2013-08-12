@@ -125,10 +125,9 @@ sub select_objects{
             names         => $OBJECT_NAMES,
             filter        => $filter,
             filter_field  => 'currency amount',
-            result_fields => ['document number', 'currency amount','details','date'],
+            result_fields => ['document number', 'currency amount','details','date','account'],
             path          => ''
         });
-#    warn Dumper $objects;
     $self->stash(path  => $path);
     $self->stash(documents => $objects) if $objects && scalar(keys %{$objects});
 };
@@ -157,7 +156,6 @@ sub update{
 
     my $isPost  = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id      = $self->param('docid');
-    warn "DOCID = " . $id if defined $id;
     my $payload = $self->param('payload');
     my $bt      = $self->param('bt');
     if( $isPost ){
@@ -165,7 +163,6 @@ sub update{
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::get_client_db($self);
             if( defined $id ){
-                warn "Is updatIs update!!! $id";
                 if( $db_client->update($data) ){
                     $self->stash(success => 1);
                     $self->redirect_to("/documents/update/$payload?docid=$id&success=1");
@@ -174,7 +171,6 @@ sub update{
                     warn 'Could not update objects!';
                 }
             } else {
-                warn "Is new!!!";
                 if( $id = $db_client->insert($data) ){
                     $self->redirect_to("/documents/update/$payload?docid=$id&success=1");
                 } else {
