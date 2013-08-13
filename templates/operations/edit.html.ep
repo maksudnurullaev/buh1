@@ -10,27 +10,8 @@
  <strong><%= stash('number') . '. ' . stash('name') %></strong>
  % if( is_editor ) {
   %= include 'operations/form_bt';
- % }
- % my $debets  = stash 'debets';
- % my $credits = stash 'credits';
- % my $company = check_for("company name");
- % my $skd     = scalar(keys(%{$debets}));
- % my $skc     = scalar(keys(%{$credits}));
- % my $bt      = param 'bt';
- % my $form    = $skd && $skc && $company && $bt;
- % if( $form ){
-  %= form_for "/documents/update/$payload?bt=$bt&post=preliminary" => (method => 'POST') => begin
-  %= hidden_field account => $payload;
-  %= include 'operations/account_list', parameters => { title => 'debet', data => $debets, form => $company } if $skd ;
-  %= include 'operations/account_list', parameters => { title => 'credit', data => $credits, form => $company } if $skc ;
-  <div class='note'>
-   %= include 'documents/types'
-   %= submit_button ml('Create') if $skd && $skc; 
-  </div>
-  % end
  % } else {
-  %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets } if $skd ;
-  %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $skc ;
+  %= include 'operations/form4user';   
  % }
 </fieldset>
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 

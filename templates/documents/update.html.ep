@@ -16,9 +16,9 @@
  % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
  % if( $isValid ){
   % if( $docid ){
-   %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=&$credit->{id}&docid=$docid";
+   %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";
   % } else {
-   %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=&$credit->{id}";
+   %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";
   % }
  % } else {
   %= ml 'No data!';

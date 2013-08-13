@@ -11,6 +11,7 @@ package Buh1::Operations; {
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Accounts;
+use Utils::Documents;
 
 my $OBJECT_NAME = 'business transaction';
 
@@ -119,7 +120,8 @@ sub add{
 
 sub edit{
     my $self = shift;
-    my ($account_id,$bt_id) = ($self->param("payload"),$self->param("bt"));
+    my ($account_id,$bt_id, $docid) = ($self->param("payload"),$self->param("bt"),$self->param('docid'));
+    Utils::Documents::attach($self,$docid) if $docid ;
     if( !$account_id || !$bt_id ){
         $self->redirect_to('/operations/list');
         return;

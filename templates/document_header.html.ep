@@ -1,0 +1,17 @@
+% my $document = session->{document};
+% if ( $document ){
+ <table border="1">
+   <tr>   
+    <th><%= ml 'document number' %></th>
+    <th><%= ml 'currency amount' %></th>
+    <th><%= ml 'details' %></th>
+   </tr>
+   <tr>   
+    <td><%= $document->{'document number'} %></td>
+    <td><%= currency_format $document->{'currency amount'} %></td>
+    <td><%= $document->{'details'} %></td>
+   </tr>
+ </table>
+% } else {
+ %= ml 'No data!'
+% }
