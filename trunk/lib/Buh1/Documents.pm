@@ -17,6 +17,7 @@ use Data::Dumper;
 use Utils::Db;
 use Utils::Filter;
 use Utils::Digital;
+use Utils::Documents;
 use Encode;
 
 my $OBJECT_NAME   = 'document';
@@ -27,6 +28,7 @@ my @OBJECT_FIELDS = ('object_name','account','bt','debet','credit','type','docum
                      'beneficiary','beneficiary credit','beneficiary bank name',
                      'beneficiary bank code','currency amount in words',
                      'details','executive','accounting manager');
+my @OBJECT_HEADER_FIELDS = ('docid','account','bt','debet','credit');
 
 sub isValidUser{
     my $self = shift;
@@ -161,6 +163,50 @@ sub validate{
         $self->param('currency amount in words' => Utils::Digital::rur_in_words($currency_amount)) ;
     }
     return($data);
+};
+
+sub validate_document_header{
+    my $self = shift;
+    my $result = {};
+    for my $header (@OBJECT_HEADER_FIELDS){
+        my $value = $self->param($header);
+        if( !$value ){
+            warn "No value found for mandatory $header field";
+            return;
+        }
+        $result->{$header} = $value;
+    }
+    $result->{object_name} = $OBJECT_NAME;
+    $result->{id} = $result->{docid};
+    delete $result->{docid};
+    return($result);
+};
+
+sub update_document_header{
+    my $self = shift;
+    return if !isValidUser($self);
+
+    if( my $data = validate_document_header($self) ){
+        my $db_client = Utils::Db::get_client_db($self);
+        if( $db_client->update($data) ){
+            $self->stash(success => 1);
+        } else {
+            $self->stash(error => 1);
+            warn 'Could not update objects!';
+        }
+    }
+    my $payload = $self->param("payload");
+    my $docid = Utils::Documents::detach($self);
+    $self->redirect_to("/documents/update/$payload?docid=$docid");
+};
+
+sub cancel_update_document_header{
+    my $self = shift;
+    return if !isValidUser($self);
+
+    my $payload = $self->param("payload");
+    my $docid = Utils::Documents::detach($self);
+    $self->redirect_to("/documents/update/$payload?docid=$docid");
 };
 
 sub update{

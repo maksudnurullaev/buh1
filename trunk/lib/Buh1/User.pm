@@ -14,7 +14,11 @@ sub login{
         if (!$error_found){
             if ( my $user = Auth::login($email, $password) ){ 
                 $self->session->{'user email'} = $email;
-                $self->session->{'user id'} = $user->{id};
+                if( $email =~ /^admin$/i ){
+                    $self->session->{'user id'} = $user;
+                } else {
+                    $self->session->{'user id'} = $user->{id};
+                }
                 $self->redirect_to('/'); 
                 return;
             } else { $error_found = 1; }
