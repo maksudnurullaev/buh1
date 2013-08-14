@@ -18,6 +18,8 @@
 6.1.1   (DONE) Export account including "забаланнсовые счета" 
 7.1     (DONE) Check for document number existence when document update any
 7.1.1   (DONE) Show last document number as tip
+8.1     Setup filter for document
+8.1.1   Filter should work for every document fields 
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
