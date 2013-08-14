@@ -113,7 +113,7 @@ sub get_date{
     return Time::Piece->new->strftime($format);
 };
 
-sub currency_format{
+sub currency_format1{
     my $self = shift;
     my $amount = shift;
     return Locale::Currency::Format::currency_format('USD',$amount, FMT_COMMON);

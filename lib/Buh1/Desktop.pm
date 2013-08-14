@@ -16,6 +16,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Db;
 use DbClient;
+use Utils::Documents;
 
 sub select_company{
     my $self = shift;
@@ -28,6 +29,7 @@ sub select_company{
         deploy_client_company($self,$cid,$company->{$cid}{name}) if $company && $company->{$cid};
     }
     deploy_client_companies($self);
+    Utils::Documents::detach($self);
 };
 
 sub deploy_client_company{
