@@ -13,9 +13,11 @@
 3.1     (DONE) Create memo system for registered user comments
 4.1     (DONE) Change main logo picture
 5.1     Create demo account for users!
-5.1.2   Setup individual database for each company
-5.1.3   Setup auto-recovery for each companies's database
-6.1.1   Export account including "забаланнсовые счета" 
+5.1.2   (DONE) Setup individual database for each company
+5.1.3   (DONE) Setup auto-recovery for each companies's database
+6.1.1   (DONE) Export account including "забаланнсовые счета" 
+7.1     (DONE) Check for document number existence when document update any
+7.1.1   (DONE) Show last document number as tip
 
 === Useful SQLs ===
 CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);

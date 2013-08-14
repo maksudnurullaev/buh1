@@ -219,6 +219,21 @@ sub format_statement2hash_objects{
     return(undef);
 };
 
+sub get_from_sql{
+    my $self = shift;
+    my $sql_string = shift;
+    return(undef) if !$self || !$sql_string;
+
+    my $dbh = $self->get_db_connection() || return(undef) ;
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
+    my $sth = $dbh->prepare($sql_string);
+    if( $sth->execute(@_) ){
+        return($sth);
+    } else { warn_if $DBI::errstr; }
+    return(undef);
+
+};
+
 sub format_sql_parameters{
     my $self = shift;
     my $parameters = shift;

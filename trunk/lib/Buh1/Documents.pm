@@ -162,6 +162,11 @@ sub validate{
         $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount) ;
         $self->param('currency amount in words' => Utils::Digital::rur_in_words($currency_amount)) ;
     }
+    # check for document number existance
+    if( Utils::Documents::document_number_exist($self,$data->{'document number'},$id) ){
+        $data->{error} = 1;
+        $self->stash('document number_class' => 'error');
+    }
     return($data);
 };
 
@@ -244,7 +249,7 @@ sub update{
     if( $id ){
         deploy_document($self,$id);
     } else {
-        set_test_data($self);
+        set_new_data($self);
     }
     set_form_header($self);
 };
@@ -264,9 +269,9 @@ sub deploy_document{
     }
 };
 
-sub set_test_data{
+sub set_new_data{
     my $self = shift || return;
-    my $number = int(rand(100));
+    my $number = Utils::Documents::get_document_number_next($self);
     $self->stash( 'document number' => $number );
     $self->stash( 'permitter' => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"' );
     $self->stash( 'permitter debet' => '01234567890123456789' );

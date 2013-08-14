@@ -39,6 +39,47 @@ sub detach{
     return($docid);
 };
 
+sub get_document_number_next{
+    my $self = shift;
+    my $document_number_last = get_document_number_last($self);
+    return($document_number_last + 1) if $document_number_last && $document_number_last =~ /^\d+$/ ;
+    return("$document_number_last.1") if $document_number_last ;
+    return('1');
+};
+
+sub get_document_number_last{
+    my $self = shift;
+    my $db = Utils::Db::get_client_db($self);
+    my $sth = $db->get_from_sql(
+        "SELECT value FROM objects WHERE name = 'document' AND field='document number' AND id=(SELECT MAX(id) FROM objects WHERE name='document');"
+        );
+    if( $sth && (my $result = $sth->fetch()) ){
+        return $result->[0] if $result && $result->[0] ; 
+    }
+    return(undef);
+};
+
+sub document_number_exist{
+    my $self = shift;
+    my $document_number = shift;
+    my $document_id     = shift;
+    return(1) if !$document_number;
+
+    my $db = Utils::Db::get_client_db($self);
+    my $sql_string = " SELECT value FROM objects WHERE name = 'document' AND field='document number' AND value=? ";
+    my $sth;
+    if( $document_id ){
+        $sql_string .= " AND id!=? ";
+        $sth = $db->get_from_sql($sql_string,$document_number,$document_id);
+    }else{
+        $sth = $db->get_from_sql($sql_string,$document_number);
+    }
+    if( $sth && (my $result = $sth->fetch()) ){
+        return $result->[0] if $result && $result->[0] ; 
+    }
+    return(undef);
+};
+
 # END OF PACKAGE
 };
 
