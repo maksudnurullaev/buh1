@@ -285,8 +285,8 @@ sub set_new_data{
     $self->stash( 'beneficiary bank name' => 'АИКБ "Ипак Йули"' );
     $self->stash( 'beneficiary bank code' => '14230' );
     $self->stash( 'details' => 'Оплата за установку кронштейна!' );
-    $self->stash( 'executive' => 'Abdullaev Z.S.' );
-    $self->stash( 'accounting manager' => 'Umarova I.M.' );
+    $self->stash( 'executive' => 'Петров И.У.' );
+    $self->stash( 'accounting manager' => 'Камолова К.С.' );
 
 };
 
