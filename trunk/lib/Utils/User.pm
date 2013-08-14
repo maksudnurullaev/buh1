@@ -50,6 +50,7 @@ sub is_editor{
         my $user = $db->get_user($email);
         return(1) if $user 
              && exists($user->{extended_right})
+             && $user->{extended_right}
              && $user->{extended_right} =~ /editor/i ;
     }
     # is admin
