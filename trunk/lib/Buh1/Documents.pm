@@ -125,8 +125,9 @@ sub select_objects{
             self          => $self,
             name          => $name,
             names         => $OBJECT_NAMES,
-            filter        => $filter,
-            filter_field  => 'currency amount',
+            exist_field   => 'bt',
+            filter_value  => $filter,
+            filter_prefix => " field NOT IN('bt','debet','credit','type','account') ",
             result_fields => ['document number', 'currency amount','details','date','account'],
             path          => ''
         });
@@ -154,7 +155,7 @@ sub validate{
     my $currency_amount_in_words = Utils::Digital::rur_in_words($currency_amount);
     if( $id ){
         my $old_currency_amount = $self->param('old currency amount');
-        if( $currency_amount && $currency_amount ne $old_currency_amount ){
+        if( !$old_currency_amount || ($currency_amount && ($currency_amount ne $old_currency_amount)) ){
             $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount);
             $self->stash('currency amount in words' => Utils::Digital::rur_in_words($currency_amount));
         }
@@ -222,6 +223,12 @@ sub update{
     my $id      = $self->param('docid');
     my $payload = $self->param('payload');
     my $bt      = $self->param('bt');
+    if( $id ){
+        deploy_document($self,$id);
+    } else {
+        set_new_data($self);
+    }
+    set_form_header($self);
     if( $isPost ){
         my $data  = validate($self,$id);
         if( !exists($data->{error}) ){
@@ -246,12 +253,6 @@ sub update{
             $self->stash( error => 1 );
         }
     }
-    if( $id ){
-        deploy_document($self,$id);
-    } else {
-        set_new_data($self);
-    }
-    set_form_header($self);
 };
 
 sub deploy_document{
@@ -271,8 +272,12 @@ sub deploy_document{
 
 sub set_new_data{
     my $self = shift || return;
+    my $user = Utils::User::current($self);
+    return if !$user;
     my $number = Utils::Documents::get_document_number_next($self);
     $self->stash( 'document number' => $number );
+    # for demo quick filling
+    return if index($user,'maksud.nurullaev@gmail.com') == -1 && index($user,'demo@buh1.uz') == -1 ; 
     $self->stash( 'permitter' => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"' );
     $self->stash( 'permitter debet' => '01234567890123456789' );
     $self->stash( 'permitter inn' => '123456789' ); 

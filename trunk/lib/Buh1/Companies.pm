@@ -68,8 +68,9 @@ sub select_objects{
             self          => $self,
             name          => $name,
             names         => $OBJECT_NAMES,
-            filter        => $filter,
-            filter_field  => 'name',
+            exist_field   => 'name',
+            filter_value  => $filter,
+            filter_prefix => " field='name' ",
             result_fields => ['name','description']      
         });
     $self->stash(path  => $path);

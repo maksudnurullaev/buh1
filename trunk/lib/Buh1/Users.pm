@@ -50,8 +50,9 @@ sub select_objects{
             self          => $self,
             name          => $name,
             names         => $OBJECT_NAMES,
-            filter        => $filter,
-            filter_field  => 'email',
+            exist_field   => 'email',
+            filter_value  => $filter,
+            filter_prefix => " field='email' ",
             result_fields => ['email','description'],
             path          => '/users/deleted'
         });
