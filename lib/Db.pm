@@ -317,17 +317,22 @@ sub get_filtered_objects{
     my $app           = $parameters->{self};
     my $name          = $parameters->{name};
     my $names         = $parameters->{names};
-    my $filter        = $parameters->{filter};
-    my $filter_field  = $parameters->{filter_field};
+    my $exist_field   = $parameters->{exist_field};
+    my $filter_value  = $parameters->{filter_value};
+    my $filter_prefix = $parameters->{filter_prefix};
     my $result_fields = $parameters->{result_fields};
     my $filter_where;
     my $result;
-    if( $filter ) {
-        $app->stash(filter => $filter) if $filter;
-        $filter_where = " field='$filter_field' and value like '%$filter%' escape '\\' ";
+    if( $filter_value ) {
+        $app->stash(filter => $filter_value) if $filter_value;
+        if( $filter_prefix ){
+            $filter_where = " $filter_prefix AND value LIKE '%$filter_value%' escape '\\' ";
+        } else {
+            $filter_where = " value LIKE '%$filter_value%' escape '\\' ";
+        }
         $result = $self->get_counts({name=>[$name], add_where=>$filter_where});
     } else {
-        $result = $self->get_counts({name=>[$name],field=>[$filter_field]}); 
+        $result = $self->get_counts({name=>[$name],field=>[$exist_field]}); 
     }
     return if !$result; # count is 0
     #paginator
@@ -337,7 +342,7 @@ sub get_filtered_objects{
             $paginator->[2] * ($paginator->[0] - 1));
     $limit .= " offset $offset " if $offset ; 
     # find real records if exist
-    if( $filter ) {
+    if( $filter_value ) {
         $result = $self->get_objects({
             name      => [$name], 
             add_where => $filter_where,
@@ -345,7 +350,7 @@ sub get_filtered_objects{
     } else {
         $result = $self->get_objects({
             name  => [$name],
-            field => [$filter_field],
+            field => [$exist_field],
             limit => $limit}); 
     }
     # final
