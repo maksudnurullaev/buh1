@@ -1,0 +1,28 @@
+% layout 'default';
+<h2><%= ml 'Trial balance' %></h2>
+% my $path = '/tbalance/page';
+%= form_for $path => (method => 'POST') => begin
+ <table class='colortable'>
+  <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(dd.mm.yyy)' %></td>
+    <td><%= text_field 'start_date' => get_date, class => (stash 'start_date_class') %></td>
+  </tr>
+  <tr><td class='tar'><%= ml 'End'%> <%= ml 'Date(dd.mm.yyy)' %></td>
+    <td><%= text_field 'end_date' => get_date, class => (stash 'end_date_class') %></td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button 
+   </td>
+  </tr>
+</table>
+% end; #form
+<br />
+<!--
+<table border="1">
+ <tr>
+  <th><%= ml 'Account' %></th>
+  <th><%= ml 'Account' %></th>
+ </tr> 
+</table>
+</div>
+-->
