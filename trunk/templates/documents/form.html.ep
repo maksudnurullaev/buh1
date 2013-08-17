@@ -74,5 +74,24 @@
   </tr>
  </table>
  % end
+% if( $docid ){
+<p>
+ % my $path = "/documents/update/$payload?bt=$bt->{id}&post=preliminary";
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field account => $payload;
+ %= hidden_field debet    => $debet->{id};
+ %= hidden_field credit   => $credit->{id};
+ %= hidden_field template => $docid;
+  <table class='colortable'>
+   <tr>
+    <td>
+     %= submit_button ml('Use as template') 
+    </td>
+   </tr>
+  </table>
+ % end
+</p>
+%}
+
 </div>
 
