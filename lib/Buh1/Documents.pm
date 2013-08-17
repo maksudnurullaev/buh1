@@ -219,14 +219,19 @@ sub update{
     my $self = shift;
     return if !isValidUser($self);
 
-    my $isPost  = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
-    my $id      = $self->param('docid');
-    my $payload = $self->param('payload');
-    my $bt      = $self->param('bt');
+    my $isPost   = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
+    my $id       = $self->param('docid');
+    my $payload  = $self->param('payload');
+    my $bt       = $self->param('bt');
     if( $id ){
         deploy_document($self,$id);
     } else {
-        set_new_data($self);
+        my $template = $self->param('template');
+        if( $template){
+            deploy_document($self,$template) 
+        }else{
+            set_new_data($self);
+        }
     }
     set_form_header($self);
     if( $isPost ){
@@ -275,7 +280,7 @@ sub set_new_data{
     my $user = Utils::User::current($self);
     return if !$user;
     my $number = Utils::Documents::get_document_number_next($self);
-    $self->stash( 'document number' => $number );
+    $self->stash( 'document number' => $number );    
     # for demo quick filling
     return if index($user,'maksud.nurullaev@gmail.com') == -1 && index($user,'demo@buh1.uz') == -1 ; 
     $self->stash( 'permitter' => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"' );
