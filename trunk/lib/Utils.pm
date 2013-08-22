@@ -109,8 +109,18 @@ sub is_editor{
 
 sub get_date{
     my $self = shift;
-    my $format = shift || '%d.%m.%Y';
+    my $format = shift || '%Y.%m.%d';
     return Time::Piece->new->strftime($format);
+};
+
+sub validate_date{
+    my $date = shift;
+    return(undef) if $date !~ /^\d{4}\.\d{2}\.\d{2}$/;
+    my $format = shift || '%Y.%m.%d';
+    my $result;
+    eval{ $result = Time::Piece->strptime($date,$format); };
+    return(undef) if $@;
+    return($result->strftime($format));
 };
 
 sub currency_format1{
