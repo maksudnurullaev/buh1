@@ -3,10 +3,10 @@
 % my $path = '/tbalance/page';
 %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
-  <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(dd.mm.yyy)' %></td>
+  <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
     <td><%= text_field 'start_date' => get_date, class => (stash 'start_date_class') %></td>
   </tr>
-  <tr><td class='tar'><%= ml 'End'%> <%= ml 'Date(dd.mm.yyy)' %></td>
+  <tr><td class='tar'><%= ml 'End'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
     <td><%= text_field 'end_date' => get_date, class => (stash 'end_date_class') %></td>
   </tr>
   <tr><td>&nbsp;</td>
