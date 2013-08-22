@@ -168,6 +168,14 @@ sub validate{
         $data->{error} = 1;
         $self->stash('document number_class' => 'error');
     }
+    # validate document date
+    my $date = Utils::validate_date($data->{date});
+    if( $date ){
+        $data->{date} = $date;
+    } else {
+        $data->{error} = 1;
+        $self->stash('date_class' => 'error');
+    }
     return($data);
 };
 

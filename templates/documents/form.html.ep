@@ -14,7 +14,7 @@
   <tr><td class='tar'><%= ml 'Money order' %> №</td>
    <td><%= text_field 'document number' => (stash 'document number'), class => (stash 'document number_class') %> </td>
   </tr>
-  <tr><td class='tar'><%= ml 'Date(dd.mm.yyy)' %></td>
+  <tr><td class='tar'><%= ml 'Date(yyyy.mm.dd)' %></td>
    % if( $docid ){
     <td><%= text_field 'date' => stash('date'), class => (stash 'date_class') %></td>
    % } else {
