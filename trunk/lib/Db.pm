@@ -227,9 +227,15 @@ sub get_from_sql{
     my $dbh = $self->get_db_connection() || return(undef) ;
     $dbh->{FetchHashKeyName} = 'NAME_lc';
     my $sth = $dbh->prepare($sql_string);
-    if( $sth->execute(@_) ){
-        return($sth);
-    } else { warn_if $DBI::errstr; }
+    if( scalar(@_) ){
+        if( $sth->execute(@_) ){
+            return($sth);
+        } else { warn_if $DBI::errstr; }
+    } else {
+        if( $sth->execute ){
+            return($sth);
+        } else { warn_if $DBI::errstr; }
+    }
     return(undef);
 
 };

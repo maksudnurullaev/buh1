@@ -1,5 +1,6 @@
 package Buh1::Tbalance; {
 use Mojo::Base 'Mojolicious::Controller';
+use Utils::Documents;
 use Data::Dumper;
 
 sub isValidUser{
@@ -53,16 +54,12 @@ sub page {
         if( !exists($data->{error}) ){
             my ($start_date,$end_date) = ($data->{start_date},$data->{end_date});
             warn "Start: $start_date, End: $end_date";
-            my $start_data = get_data($start_date,$end_date);
+            my $data = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
+            $self->stash( tbalance_data => $data );
         }
     }
 }
 
-sub get_data{
-    my ($date1,$date2) = @_;
-    warn $date1 if $date1;
-    warn $date2 if $date2;
-};
 
 
 1;

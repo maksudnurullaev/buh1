@@ -80,6 +80,21 @@ sub document_number_exist{
     return(undef);
 };
 
+sub get_tbalance_data{
+    my ($self,$date1,$date2) = @_;
+    my $result_where;
+    if( $date2 ){
+       $result_where = " value <= '$date2' "; 
+    } else {
+        return(undef);
+    }
+    my $sql_string = "SELECT * FROM objects WHERE id IN (SELECT DISTINCT id FROM objects WHERE name = 'document' AND field = 'date' AND $result_where );";
+    my $db = Utils::Db::get_client_db($self);
+    my $sth = $db->get_from_sql($sql_string);
+    my $data = $db->format_statement2hash_objects($sth);
+    return($data);
+};
+
 # END OF PACKAGE
 };
 

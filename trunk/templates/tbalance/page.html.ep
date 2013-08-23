@@ -16,13 +16,4 @@
   </tr>
 </table>
 % end; #form
-<br />
-<!--
-<table border="1">
- <tr>
-  <th><%= ml 'Account' %></th>
-  <th><%= ml 'Account' %></th>
- </tr> 
-</table>
-</div>
--->
+%= include 'tbalance/table' if stash 'tbalance_data' ;
