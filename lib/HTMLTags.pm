@@ -43,6 +43,7 @@ sub register {
     $app->helper( is_editor => sub { Utils::is_editor (@_); } );
     $app->helper( get_date  => sub { Utils::get_date  (@_); } );
     $app->helper( currency_format => sub { Utils::currency_format1 (@_); } );
+    $app->helper( get_document_number_last => sub { Utils::Documents::get_document_number_last (@_); } );
 };
 
 };
