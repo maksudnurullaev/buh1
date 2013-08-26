@@ -10,10 +10,10 @@
   <tr>
    <td><%= $key %></td>
    <td><%= $tbalance_data->{$key}{name} %></td>
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{sd} %></td>
-   % $start_debet  += $tbalance_data->{$key}{sd};
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{sc} %></td>
-   % $start_credit += $tbalance_data->{$key}{sc}; 
+   <td class="tar"><%= currency_format $tbalance_data->{$key}{start_debet} %></td>
+   % $start_debet  += $tbalance_data->{$key}{start_debet};
+   <td class="tar"><%= currency_format $tbalance_data->{$key}{start_credit} %></td>
+   % $start_credit += $tbalance_data->{$key}{start_credit}; 
   </tr>
  % }
  <tr>
@@ -23,3 +23,4 @@
  </tt>
  </table>
 % }
+%= dumper $tbalance_data;

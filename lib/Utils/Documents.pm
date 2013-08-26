@@ -97,7 +97,7 @@ sub get_tbalance_data{
 
 sub generate_tbalance_data{
     my ($self,$data,$date1) = @_;
-    return(undef) if !$self || !$datai || !$date1;
+    return(undef) if !$self || !$data || !$date1;
     my $result = {};
     for my $account_id (keys %{$data}){
         my $debet  = $data->{$account_id}{debet};
