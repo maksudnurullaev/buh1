@@ -91,8 +91,48 @@ sub get_tbalance_data{
     my $sql_string = "SELECT * FROM objects WHERE id IN (SELECT DISTINCT id FROM objects WHERE name = 'document' AND field = 'date' AND $result_where );";
     my $db = Utils::Db::get_client_db($self);
     my $sth = $db->get_from_sql($sql_string);
-    my $data = $db->format_statement2hash_objects($sth);
+    my $data = generate_tbalance_data($self,$db->format_statement2hash_objects($sth),$date1);
     return($data);
+};
+
+sub generate_tbalance_data{
+    my ($self,$data,$date1) = @_;
+    return(undef) if !$self || !$datai || !$date1;
+    my $result = {};
+    for my $account_id (keys %{$data}){
+        my $debet  = $data->{$account_id}{debet};
+        my $debet_code  = get_account_code($data->{$account_id}{debet});
+        my $credit = $data->{$account_id}{credit};
+        my $credit_code  = get_account_code($data->{$account_id}{credit});
+        my $amount = $data->{$account_id}{'currency amount'};
+        my $amount = $data->{$account_id}{'currency amount'};
+
+        if( !exists($result->{$debet_code}) ){
+            $result->{$debet_code} = {};
+            $result->{$debet_code}{name} = "account $debet_code" . '00';
+            $result->{$debet_code}{start_debet} = $amount;
+        } else {
+            $result->{$debet_code}{start_debet} += $amount;
+        }
+        if( !exists($result->{$credit_code}) ){
+            $result->{$credit_code} = {};
+            $result->{$credit_code}{name} = "account $credit_code" . '00';
+            $result->{$credit_code}{start_credit} = $amount;
+        } else {
+            $result->{$debet_code}{start_credit} += $amount;
+        }
+    }
+    return($result);
+};
+
+sub get_account_code{
+    my $account_id = shift;
+    if( $account_id =~ /subconto/ ){
+        return $1 if $account_id =~ /subconto\s(\d\d)/ ;
+    } else {
+        return $1 if $account_id =~ /account\s(\d\d)/ ;
+    }
+    return(undef);
 };
 
 # END OF PACKAGE
