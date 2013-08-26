@@ -5,7 +5,7 @@
  <table border="1">
   <tr><th colspan="2">ACCOUNT</th><th colspan="2">BALANCE START</th><th colspan="2">BALANCE</th><th colspan="2">BALANCE END</th></tr>
   <tr><th>CODE</th><th>NAME</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
- % my ($start_debet,$start_credit,$debet,$credit,$end_debet,$end_credit); 
+ % my ($start_debet,$start_credit,$debet,$credit,$end_debet,$end_credit) = (0,0,0,0,0,0); 
  % for my $key (sort keys %{$tbalance_data}){
   <tr>
    <td><%= $key %></td>
