@@ -100,29 +100,29 @@ sub generate_tbalance_data{
     return(undef) if !$self || !$data || !$date1;
     my $result = {};
     for my $account_id (keys %{$data}){
-        my $debet  = $data->{$account_id}{debet};
-        my $debet_code  = get_account_code($data->{$account_id}{debet});
-        my $credit = $data->{$account_id}{credit};
-        my $credit_code  = get_account_code($data->{$account_id}{credit});
-        my $amount = $data->{$account_id}{'currency amount'};
-        my $amount = $data->{$account_id}{'currency amount'};
+        my $debet         = $data->{$account_id}{debet};
+        my $debet_code    = get_account_code($data->{$account_id}{debet});
+        my $credit        = $data->{$account_id}{credit};
+        my $credit_code   = get_account_code($data->{$account_id}{credit});
+        my $amount        = $data->{$account_id}{'currency amount'};
+        my $is_start_part = ($date1 ge $data->{$account_id}{date});
 
-        if( !exists($result->{$debet_code}) ){
-            $result->{$debet_code} = {};
-            $result->{$debet_code}{name} = "account $debet_code" . '00';
-            $result->{$debet_code}{start_debet} = $amount;
-        } else {
-            $result->{$debet_code}{start_debet} += $amount;
-        }
-        if( !exists($result->{$credit_code}) ){
-            $result->{$credit_code} = {};
-            $result->{$credit_code}{name} = "account $credit_code" . '00';
-            $result->{$credit_code}{start_credit} = $amount;
-        } else {
-            $result->{$debet_code}{start_credit} += $amount;
-        }
+        generate_tbalance_row($result,$debet_code,'debet',$amount,$is_start_part);
+        generate_tbalance_row($result,$credit_code,'credit',$amount,$is_start_part);
     }
     return($result);
+};
+
+sub  generate_tbalance_row{
+    my($result,$code,$code_name,$amount,$is_start_part) = @_;
+    $code_name = "start_$code_name" if $is_start_part;
+    if( !exists($result->{$code}) ){
+        $result->{$code} = {};
+        $result->{$code}{name} = "account $code" . '00';
+        $result->{$code}{$code_name} = $amount;
+    } else {
+        $result->{$code}{$code_name} += $amount;
+    }
 };
 
 sub get_account_code{
