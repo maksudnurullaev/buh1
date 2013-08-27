@@ -25,7 +25,6 @@ sub validate_dates{
     # test for valid dates
     for my $field (@fields){
         my $date = Utils::validate_date Utils::trim $self->param($field);
-        warn $date;
         if( $date ){
             $data->{$field} = $date;
         } else {
