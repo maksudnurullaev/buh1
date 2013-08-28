@@ -53,11 +53,13 @@ sub get_db_connection{
     my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->get_db_path();
-        my $dbh = DBI->connect($dbi_connection_string,'','', {sqlite_unicode => 1});
+        my $dbh = DBI->connect($dbi_connection_string,undef,undef, 
+                   {sqlite_unicode => 1, AutoCommit => 1});
         if(!defined($dbh)){
             warn_if $DBI::errstr;
             return(undef);
         }
+        $dbh->do("PRAGMA synchronous = OFF");
         return($dbh);
     } elsif ($DB_CURRENT_TYPE == $DB_Pg_TYPE) {
         warn_if "Error:Pg: Not implemeted yet!";

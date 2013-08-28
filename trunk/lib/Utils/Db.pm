@@ -35,8 +35,7 @@ sub db_object{
 sub db_client_object{
     my $self = shift;
     my $params = shift;
-    my $db = new Db;
-	my $db = get_client_db($self);
+    my $db = get_client_db($self);
     return($db->get_objects($params));
 };
 
