@@ -1,0 +1,6 @@
+% if( $value ){
+ <td class="tar"><%= currency_format $value %></td>
+% } else {
+ <td class="tar">&nbsp;</td>
+% } 
+

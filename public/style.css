@@ -40,11 +40,10 @@ menu {
 /*
  * table
  */
-table {}
 
-  table.colortable {
-    background-color: #dddddd;
-  }
+table.colortable, tr.details {
+  background-color: #dddddd;
+}
 
 /*
  * h2

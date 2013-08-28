@@ -49,10 +49,9 @@ sub page {
     return if !isValidUser($self);
     my $isPost  = ($self->req->method =~ /POST/);
 
-    if( $isPost && (my $data = validate($self)) ){
+    if( my $data = validate($self) ){
         if( !exists($data->{error}) ){
             my ($start_date,$end_date) = ($data->{start_date},$data->{end_date});
-            warn "Start: $start_date, End: $end_date";
             my $data = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
             $self->stash( tbalance_data => $data );
         }
