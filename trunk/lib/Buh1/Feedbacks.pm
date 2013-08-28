@@ -62,13 +62,14 @@ sub deleted{
 sub select_objects{
     my ($self,$name,$path) = @_;
 
+    my $db = Db->new();
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
-    my $objects = Utils::Filter::get_objects({
+    my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
             names         => $OBJECT_NAMES,
-            filter        => $filter,
-            filter_field  => 'message',
+            exist_field   => 'message',
+            filter_value  => $filter,
             result_fields => ['message','user','contact'],
             path          => "/$OBJECT_NAMES/deleted"
         });
