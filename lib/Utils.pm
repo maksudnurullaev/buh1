@@ -115,7 +115,7 @@ sub get_date{
 
 sub validate_date{
     my $date = shift;
-    return(undef) if $date !~ /^\d{4}\.\d{2}\.\d{2}$/;
+    return(undef) if !$date || $date !~ /^\d{4}\.\d{2}\.\d{2}$/;
     my $format = shift || '%Y.%m.%d';
     my $result;
     eval{ $result = Time::Piece->strptime($date,$format); };

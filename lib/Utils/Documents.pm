@@ -116,7 +116,7 @@ sub generate_tbalance_data{
 sub  generate_tbalance_row{
     my($self,$result,$code,$code_name,$amount,$is_start_part,$doc_id) = @_;
     my $account_id = "account $code" . '00';
-    my $with_details = $account_id eq $self->param('account');
+    my $with_details = $self->param('account') && ($account_id eq $self->param('account'));
     $code_name = "start_$code_name" if $is_start_part;
     if( !exists($result->{$code}) ){
         $result->{$code} = {};
