@@ -165,6 +165,15 @@ sub get_paginator{
     return([$page,$pages,$pagesize]);
 };
 
+sub shrink_if{
+    my $self = shift;
+    my $string = shift;
+    my $length = shift;
+    return(undef) if !$string;
+    return (substr($string,0,$length) . '...') if length($string) > (5+$length);
+    return($string);
+}
+
 # END OF PACKAGE
 };
 

@@ -3,43 +3,51 @@
 % if( $count ){
 <hr />
  <table border="1">
-  <tr><th colspan="2">ACCOUNT</th><th colspan="2">BALANCE START</th><th colspan="2">BALANCE</th><th colspan="2">BALANCE END</th></tr>
-  <tr><th>CODE</th><th>NAME</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
- % my ($start_debets,$start_credits,$debets,$credits) = (0,0,0,0); 
+  <tr><th rowspan="2">NAME</th><th colspan="2">BALANCE START</th><th colspan="2">BALANCE</th><th colspan="2">BALANCE END</th></tr>
+  <tr><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
+ % my ($start_debets,$start_credits,$debets,$credits,$end_debets,$end_credits) = (0,0,0,0,0,0); 
+ % my ($start_date,$end_date) = (param('start_date'),param('end_date'));
  % for my $key (sort keys %{$tbalance_data}){
-  % my ($row_debets,$row_credits,$debets,$credits) = (0,0,0,0); 
+  % my ($sd,$sc,$d,$c) = (0,0,0,0); 
+  % my $account_id = $tbalance_data->{$key}{account_id};
+  % my $account = db_object({id =>[$account_id], field => ['type','rus','eng','uzb']})->{$account_id};
+  % generate_name $account;
   <tr>
-   <td><%= $key %></td>
-   <td><%= $tbalance_data->{$key}{name} %></td>
+   <td><%= link_to shrink_if($account->{name},50) => "/tbalance/page/$account_id?account=$account_id&start_date=$start_date&end_date=$end_date" %></td>
+   % $sd = $tbalance_data->{$key}{start_debet};
+   % $sc = $tbalance_data->{$key}{start_credit};
+   % $d = $tbalance_data->{$key}{debet};
+   % $c = $tbalance_data->{$key}{credit};
+   % my ($start_debet,$start_credit,$debet,$credit,$end_debet,$end_credit) = tbalance_row ($account->{type},$sd,$sc,$d,$c);
 
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{start_debet} %></td>
-   % $start_debets  += $tbalance_data->{$key}{start_debet} if $tbalance_data->{$key}{start_debet};
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{start_credit} %></td>
-   % $start_credits += $tbalance_data->{$key}{start_credit} if $tbalance_data->{$key}{start_credit}; 
+   %= include 'tbalance/table_td', value => $start_debet;
+   % $start_debets += $start_debet;
 
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{debet} %></td>
-   % $debet  += $tbalance_data->{$key}{debet} if $tbalance_data->{$key}{debet};
-   <td class="tar"><%= currency_format $tbalance_data->{$key}{credit} %></td>
-   % $credit += $tbalance_data->{$key}{credit} if $tbalance_data->{$key}{credit}; 
+   %= include 'tbalance/table_td', value => $start_credit;
+   % $start_credits += $start_credit;
 
-   % my $end_debet  = 0; $end_debet = $start_debet + $debet;
-   % my $end_credit = $start_credit + $credit; 
-   <td class="tar"><%= currency_format $end_debet if $end_debet %></td>
-   <td class="tar"><%= currency_format $end_credit if $end_credit %></td>
-   % $debets += $end_debet;
-   % $credits += $end_credit;
+   %= include 'tbalance/table_td', value => $debet;
+   % $debets += $debet;
 
+   %= include 'tbalance/table_td', value => $credit;
+   % $credits += $credit;
+
+   %= include 'tbalance/table_td', value => $end_debet;
+   % $end_debets += $end_debet;
+
+   %= include 'tbalance/table_td', value => $end_credit;
+   % $end_credits += $end_credit;
   </tr>
+  %= include 'tbalance/docs_row', docs => $tbalance_data->{$key}{docs}; # if exists $tbalance_data->{$key}{docs};
  % }
  <tr>
-  <th colspan="2">TOTAL</th>
-  <td class="tar"><%= currency_format $start_debet %></td>
-  <td class="tar"><%= currency_format $start_credit %></td>
-  <td class="tar"><%= currency_format $debet %></td>
-  <td class="tar"><%= currency_format $credit %></td>
-  <td class="tar"><%= currency_format $debets %></td>
-  <td class="tar"><%= currency_format $credits %></td>
+  <th>TOTAL</th>
+  <th class="tar"><%= currency_format $start_debets %></th>
+  <th class="tar"><%= currency_format $start_credits %></th>
+  <th class="tar"><%= currency_format $debets %></th>
+  <th class="tar"><%= currency_format $credits %></th>
+  <th class="tar"><%= currency_format $end_debets %></th>
+  <th class="tar"><%= currency_format $end_credits %></th>
  </tr>
  </table>
 % }
-%= dumper $tbalance_data;

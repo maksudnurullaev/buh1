@@ -14,6 +14,7 @@ use warnings;
 use utf8;
 use Data::Dumper;
 use DbClient;
+use Db;
 
 sub get_client_db{
     my $self = shift;
@@ -23,6 +24,21 @@ sub get_client_db{
     }
     return(undef);
 };    
+
+sub db_object{
+    my $self = shift;
+    my $params = shift;
+    my $db = new Db;
+    return($db->get_objects($params));
+};
+
+sub db_client_object{
+    my $self = shift;
+    my $params = shift;
+    my $db = new Db;
+	my $db = get_client_db($self);
+    return($db->get_objects($params));
+};
 
 # END OF PACKAGE
 };

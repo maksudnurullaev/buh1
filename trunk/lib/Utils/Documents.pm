@@ -99,29 +99,39 @@ sub generate_tbalance_data{
     my ($self,$data,$date1) = @_;
     return(undef) if !$self || !$data || !$date1;
     my $result = {};
-    for my $account_id (keys %{$data}){
-        my $debet         = $data->{$account_id}{debet};
-        my $debet_code    = get_account_code($data->{$account_id}{debet});
-        my $credit        = $data->{$account_id}{credit};
-        my $credit_code   = get_account_code($data->{$account_id}{credit});
-        my $amount        = $data->{$account_id}{'currency amount'};
-        my $is_start_part = ($date1 ge $data->{$account_id}{date});
+    for my $doc_id (keys %{$data}){
+        my $debet         = $data->{$doc_id}{debet};
+        my $debet_code    = get_account_code($data->{$doc_id}{debet});
+        my $credit        = $data->{$doc_id}{credit};
+        my $credit_code   = get_account_code($data->{$doc_id}{credit});
+        my $amount        = $data->{$doc_id}{'currency amount'};
+        my $is_start_part = ($date1 ge $data->{$doc_id}{date});
 
-        generate_tbalance_row($result,$debet_code,'debet',$amount,$is_start_part);
-        generate_tbalance_row($result,$credit_code,'credit',$amount,$is_start_part);
+        generate_tbalance_row($self,$result,$debet_code,'debet',$amount,$is_start_part,$doc_id);
+        generate_tbalance_row($self,$result,$credit_code,'credit',$amount,$is_start_part,$doc_id);
     }
     return($result);
 };
 
 sub  generate_tbalance_row{
-    my($result,$code,$code_name,$amount,$is_start_part) = @_;
+    my($self,$result,$code,$code_name,$amount,$is_start_part,$doc_id) = @_;
+    my $account_id = "account $code" . '00';
+    my $with_details = $account_id eq $self->param('account');
     $code_name = "start_$code_name" if $is_start_part;
     if( !exists($result->{$code}) ){
         $result->{$code} = {};
-        $result->{$code}{name} = "account $code" . '00';
+        $result->{$code}{account_id} = "account $code" . '00';
         $result->{$code}{$code_name} = $amount;
     } else {
         $result->{$code}{$code_name} += $amount;
+    }
+    # row details
+    if( $with_details ){
+        if( !exists($result->{$code}{docs}) ){
+            $result->{$code}{docs} = { $doc_id => $code_name };
+        }else{
+            $result->{$code}{docs}{$doc_id} = $code_name;
+        }
     }
 };
 
@@ -134,6 +144,24 @@ sub get_account_code{
     }
     return(undef);
 };
+
+sub tbalance_row{
+    my $self = shift;
+    my $account_type = shift || 0;
+    my $start_debet = shift || 0;
+    my $start_credit = shift || 0;
+    my $debet = shift || 0;
+    my $credit = shift || 0;
+    if( $account_type =~ /^[a|ca]/ ) { # active account
+        $start_debet -= $start_credit; 
+        my $end_debet = $start_debet+$debet-$credit; 
+        return($start_debet,0,$debet,$credit,$end_debet,0);
+    }
+    $start_credit -= $start_debet;
+    my $end_credit = $start_credit+$credit-$debet;
+    return(0,$start_credit,$debet,$credit,0,$end_credit);
+};
+
 
 # END OF PACKAGE
 };

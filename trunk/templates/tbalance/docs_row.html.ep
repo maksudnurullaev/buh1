@@ -1,0 +1,21 @@
+% for my $doc_id (keys %{$docs}){  
+  % my $col_name = $docs->{$doc_id};
+  % my $doc = db_client_object({id =>[$doc_id], field => ['document number','account','currency amount','details','date']});
+  % if( $doc = $doc->{$doc_id} ){
+    <tr class="details">
+     <td>
+       %= $doc->{'document number'} . '.';
+       %= link_to shrink_if("($doc->{date}) $doc->{details}",50) => ("/documents/update/" . $doc->{account} . "?docid=$doc_id");
+     </td>
+     % my @cnames = ('start_debet','start_credit','debet','credit'); 
+     % for my $cname (@cnames){
+        %if( $cname eq $col_name ){
+         <td class='tar'><%= currency_format $doc->{'currency amount'} %></td>
+        % } else {
+         <td>&nbsp;</td>   
+        % }    
+     % }
+     <td colspan="2">&nbsp;</td> 
+    </tr>
+  % }
+% }
