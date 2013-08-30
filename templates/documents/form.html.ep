@@ -79,6 +79,13 @@
     %= submit_button 
    </td>
   </tr>
+% if( $docid ){
+  <tr><td>&nbsp;</td>
+   <td class="tar">
+    %= link_to ml('Print') => "/documents/print/$docid", target=>'_blank';
+   </td>
+  </tr>
+% }
  </table>
  % end
 % if( $docid ){

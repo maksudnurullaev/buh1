@@ -259,6 +259,9 @@ img {}
     text-align: right;
     vertical-align: top;
 }
+.bordered{
+    border: 1px solid black ;
+};
 div.alert {
     padding: 5px 5px 5px 5px;
     margin: 5px 0px 5px 0px;

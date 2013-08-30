@@ -223,6 +223,16 @@ sub cancel_update_document_header{
     $self->redirect_to("/documents/update/$payload?docid=$docid");
 };
 
+sub print{
+    my $self = shift;
+    return if !isValidUser($self);
+
+    my $docid = $self->param('payload');
+    if( $docid ){
+        deploy_document($self,$docid);
+    }
+};
+
 sub update{
     my $self = shift;
     return if !isValidUser($self);
