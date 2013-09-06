@@ -21,7 +21,7 @@
   <td class="tar"><%= ml 'Permitter bank code' %></td><td style="border-style: solid ;"><%= stash 'permitter bank code' %></td>
  </tr>
  <tr>
-  <td class="tar"><strong><%= ml 'Currency amount' %></strong></td><td colspan="3" style="border-style: solid ;"><%= substr(currency_format(stash('currency amount')),1) %></td>
+  <td class="tar"><strong><%= ml 'Currency amount' %></strong></td><td colspan="3" style="border-style: solid ;"><%= currency_format(stash('currency amount')) %></td>
  </tr>
  <tr>
   <td class="tar"><%= ml 'Beneficiary' %></td><td colspan="3" style="border-style: solid ;"><%= stash 'beneficiary' %></td>

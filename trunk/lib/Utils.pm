@@ -124,8 +124,12 @@ sub validate_date{
 };
 
 sub currency_format1{
-    my $self = shift;
+    my $self   = shift;
     my $amount = shift;
+    my $ccode  = shift || 'UZB';
+    if( $ccode eq 'UZB' ){
+        Locale::Currency::Format::currency_set('USD','#.###,## ', FMT_COMMON);
+    }
     return Locale::Currency::Format::currency_format('USD',$amount, FMT_COMMON);
 }
 
