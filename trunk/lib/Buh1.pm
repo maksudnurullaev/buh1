@@ -18,6 +18,8 @@ sub startup {
 
   $self->plugin('HTMLTags');
   $self->app->secret('Nkjlkj344!!!#4jkj;l');
+  $self->app->mode('production');
+  $self->app->config(hypnotoad => {listen => ['http://*:3000']});
 
   my $r = $self->routes;
   # General route

@@ -257,7 +257,6 @@ sub update{
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::get_client_db($self);
             if( defined $id ){
-                warn $data->{type};
                 if( $db_client->update($data) ){
                     $self->stash(success => 1);
                     $self->redirect_to("/documents/update/$payload?docid=$id&success=1");
