@@ -8,7 +8,6 @@
  %= hidden_field bt => $bt->{id};
  %= hidden_field debet => $debet->{id};
  %= hidden_field credit => $credit->{id};
- %= hidden_field type => 'pp';
  %= hidden_field id => $docid if $docid;
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Money order' %> №</td>
@@ -18,6 +17,10 @@
        <%= ml 'Last' %>: <%= get_document_number_last %>
      % }    
    </td>
+  </tr>
+  <tr>
+   <td class='tar'><%= ml 'Document type' %></td>
+   <td><%= include 'documents/types' %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Date(yyyy.mm.dd)' %></td>
    % if( $docid ){
