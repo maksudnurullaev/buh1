@@ -127,8 +127,8 @@ sub select_objects{
             names         => $OBJECT_NAMES,
             exist_field   => 'bt',
             filter_value  => $filter,
-            filter_prefix => " field NOT IN('bt','debet','credit','type','account') ",
-            result_fields => ['document number', 'currency amount','details','date','account'],
+            filter_prefix => " field NOT IN('bt','debet','credit','account') ",
+            result_fields => ['document number', 'currency amount','details','date','account', 'type'],
             path          => ''
         });
     $self->stash(path  => $path);
@@ -257,6 +257,7 @@ sub update{
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::get_client_db($self);
             if( defined $id ){
+                warn $data->{type};
                 if( $db_client->update($data) ){
                     $self->stash(success => 1);
                     $self->redirect_to("/documents/update/$payload?docid=$id&success=1");

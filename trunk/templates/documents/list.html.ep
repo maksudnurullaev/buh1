@@ -17,10 +17,10 @@
    <tr>   
     % my $doc_num    = $documents->{$id}{'document number'};
     % my $account_id = $documents->{$id}{account};
-    <td><%= link_to $doc_num => "/documents/update/$account_id?docid=$id" %></td>
+    <td><%= link_to $doc_num => "/documents/update/$account_id?docid=$id" %>
     <td class="tar"><%= currency_format $documents->{$id}{'currency amount'} %></td>
     <td><%= $documents->{$id}{'date'} %></td>
-    <td><%= $documents->{$id}{'details'} %></td>
+    <td><strong><%= ml ("Document " . $documents->{$id}{type}) %>:</strong> <%= $documents->{$id}{'details'} %></td>
    </tr>
   % }
  </table>
