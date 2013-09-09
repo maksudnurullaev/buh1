@@ -10,7 +10,7 @@
  %= hidden_field credit => $credit->{id};
  %= hidden_field id => $docid if $docid;
  <table class='colortable'>
-  <tr><td class='tar'><%= ml 'Money order' %> №</td>
+  <tr><td class='tar'><%= ml 'Document order' %></td>
    <td>
     <%= text_field 'document number' => (stash 'document number'), class => (stash 'document number_class') %>
     % if( !$docid ){
