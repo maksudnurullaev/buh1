@@ -1,7 +1,7 @@
 %= stylesheet '/style.css'
 <table>
  <tr>
-  <td>&nbsp;</td><th><%= uc ml('Money order') %>#</th>
+  <td>&nbsp;</td><th><%= uc ml('Document ' . stash('type')) %>#</th>
   <th style="border-style: solid ;"><%= stash 'document number' %></th><td>&nbsp;</td>
  </tr>
  <tr>
