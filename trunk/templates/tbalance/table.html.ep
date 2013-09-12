@@ -3,7 +3,12 @@
 % if( $count ){
 <hr />
  <table border="1">
-  <tr><th rowspan="2">NAME</th><th colspan="2">BALANCE START</th><th colspan="2">BALANCE</th><th colspan="2">BALANCE END</th></tr>
+  <tr>
+   <th rowspan="2"><%= ml 'Account' %></th>
+   <th colspan="2"><%= ml 'BALANCE FOR START PERIOD' %></th>
+   <th colspan="2"><%= ml 'BALANCE FOR PERIOD' %></th>
+   <th colspan="2"><%= ml 'BALANCE FOR END PERIOD' %></th>
+  </tr>
   <tr><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
  % my ($start_debets,$start_credits,$debets,$credits,$end_debets,$end_credits) = (0,0,0,0,0,0); 
  % my ($start_date,$end_date) = (param('start_date'),param('end_date'));
@@ -41,7 +46,7 @@
   %= include 'tbalance/docs_row', docs => $tbalance_data->{$key}{docs}; # if exists $tbalance_data->{$key}{docs};
  % }
  <tr>
-  <th>TOTAL</th>
+  <th><%= ml 'TOTAL' %></th>
   <th class="tar"><%= currency_format $start_debets %></th>
   <th class="tar"><%= currency_format $start_credits %></th>
   <th class="tar"><%= currency_format $debets %></th>
