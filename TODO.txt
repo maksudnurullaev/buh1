@@ -29,7 +29,7 @@ CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
 CREATE INDEX i_objects ON objects (name, id, field);
 
 === Packages to install ===
-cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils Hash::Merge::Simple
+cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils Hash::Merge::Simple Locale::Currency::Format
 
 
 === Documents and business transactions ===
