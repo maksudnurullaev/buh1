@@ -65,9 +65,10 @@
                </li>
               % }
               % if( $company ) {
-               <li><%= ml 'General ledger' %>
+               <li><u><%= $company %></u><!-- 'General ledger' %-->
                 <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
                 <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
+                <ul><li><a href="/hr/list"><%= ml 'Human Resource' %></a></li></ul>
                </li>
               % }              
             </ul>
