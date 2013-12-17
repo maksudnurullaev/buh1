@@ -8,9 +8,9 @@ sub login{
     my $error_found = 0;
     if ( $method =~ /POST/ ){
         my $email = Utils::trim $self->param('email');
-        if (!$email) { $error_found = 1; $self->stash(email_class => "error")};
+        if ( !$email || $email =~ /[^\x00-\xFF]/ ) { $error_found = 1; $self->stash(email_class => "error")};
         my $password = Utils::trim $self->param('password');
-        if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
+        if ( !$password || $password =~ /[^\x00-\xFF]/ ) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
             if ( my $user = Auth::login($email, $password) ){ 
                 $self->session->{'user email'} = $email;

@@ -19,6 +19,14 @@ use File::Spec;
 use File::Path qw(make_path);
 use Locale::Currency::Format;
 
+sub user_role2company{
+    my $self = shift;
+    my ($user_id,$company_id) = ($self->session->{'user id'}, $self->session->{'company id'});
+    return if !$user_id || !$company_id ;
+    my $db = Db->new();
+    return($db->get_linked_value('access',$user_id,$company_id));
+};
+
 sub trim{
     my $string = $_[0];
     if(defined($string) && $string){

@@ -175,6 +175,7 @@ sub change_access{
     my $user_id     = $self->param('user_id');
     my $user_access = $self->param('user_access');
     my $db = Db->new();
+    $db->del_linked_value('access',$id,$user_id); # delete all old linkes
     $db->set_linked_value('access',$id,$user_id,$user_access);
     $self->redirect_to("companies/edit/$id");
 };

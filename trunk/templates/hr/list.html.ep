@@ -1,0 +1,15 @@
+% layout 'default';
+<h2><%= ml 'Human Resource' %></h2>
+% if( user_role2company =~ /write|admin/i ) {
+<div class="toolbar">
+ <a href='/hr/add'><%= ml 'Add' %></a>
+</div>
+% }
+<div>
+ % my $recources = stash 'resources';
+ % for my $id (sort keys %{$recources}) {
+  <ul>
+   <li><dfn id="<%= $id %>"><%= link_to $recources->{$id}{name} => "/hr/edit/$id" %></dfn></li>
+  </ul>
+ % }    
+</div>
