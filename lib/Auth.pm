@@ -61,6 +61,7 @@ sub get_admin_password{
 
 sub login{
     my($email,$password) = @_;
+    $email = lc $email; # email string should be case insensative!!!
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
         return(1) if salted_password($password,get_admin_password);
