@@ -13,12 +13,15 @@ use Utils::Hr ;
 
 sub add{
     my $self = shift;
+    if( $self->user_role2company !~ /write|admin/i ){
+        $self->redirect_to('/hr/list');
+        return;
+    }
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
     } else {
 	}
-	$self->redirect_to('hr/list');
 };
 
 sub list{
