@@ -1,9 +1,9 @@
 % layout 'default';
 <h2><%= ml 'Human Resource' %></h2>
 % if( user_role2company =~ /write|admin/i ) {
-<div class="toolbar">
- <a href='/hr/add'><%= ml 'Add' %></a>
-</div>
+ <div class="toolbar">
+  <a href='/hr/add'><%= ml 'Add' %></a>
+ </div>
 % }
 <div>
  % my $recources = stash 'resources';
