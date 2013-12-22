@@ -14,6 +14,9 @@ use warnings;
 use utf8;
 use Utils::Db;
 
+my ($HR_DESRIPTOR_NAME,$HR_PERSON_NAME) = 
+   ('hr descriptor',   'hr person') 
+
 sub get_all_resources{
     my $self = shift;
     my $db = Utils::Db::get_client_db($self);
