@@ -1,6 +1,6 @@
 <div class="form">
  %= form_for '/hr/add' => (method => 'POST') => begin
- %= hidden_field type => 'descriptor';
+ %= hidden_field type => 'hr descriptor';
  <table class='colortable'>
   <tr>
    <td class='tar'> 
