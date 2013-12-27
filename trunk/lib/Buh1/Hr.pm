@@ -11,13 +11,18 @@ package Buh1::Hr; {
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
 
-sub add{
-    my $self = shift;
-    if( $self->user_role2company !~ /write|admin/i ){
-        $self->redirect_to('/hr/list');
+sub auth{
+    my ($self,$access) = @_;
+    if( $self->user_role2company !~ /$access/i ){
+        $self->stash( noaccess => 1 );
         return;
     }
+    return(1);
+};
 
+sub add{
+    my $self = shift;
+    return if( !auth($self,'write|admin') );
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
     } else {
@@ -26,11 +31,11 @@ sub add{
 
 sub list{
     my $self = shift;
+    return if( !auth($self,'read|write|admin') );
 
     my $resources = Utils::Hr::get_all_resources($self);
     $self->stash( resources => $resources );
 };
-
 
 # END OF PACKAGE
 };

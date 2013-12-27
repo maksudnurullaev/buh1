@@ -14,8 +14,8 @@ use warnings;
 use utf8;
 use Utils::Db;
 
-my ($HR_DESRIPTOR_NAME,$HR_PERSON_NAME) = 
-   ('hr descriptor',   'hr person') 
+my ($HR_DESCRIPTOR_NAME,$HR_PERSON_NAME) = 
+   ('hr descriptor',    'hr person') ;
 
 sub get_all_resources{
     my $self = shift;
