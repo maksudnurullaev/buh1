@@ -4,3 +4,6 @@
 % if( stash('error') || param('error') ) { 
  <div class='alert error'><%= ml 'Error!' %></div>
 % } 
+% if( stash('noaccess') || param('noaccess') ) { 
+ <div class='alert error'><%= ml 'No access' %>!</div>
+% } 

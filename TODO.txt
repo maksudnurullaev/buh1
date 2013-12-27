@@ -20,8 +20,9 @@
 7.1.1   (DONE) Show last document number as tip
 8.1     (DONE) Setup filter for document
 8.1.1   (DONE) Filter should work for every document fields 
-9.1     Create link 'Use as template' to create new document based on existing one
+9.1     (DONE) Create link 'Use as template' to create new document based on existing one
 10.1    Validate correctness of dates in documents!
+11.1    admin|user|companies - add access type string
 
 
 === Useful SQLs ===
