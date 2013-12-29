@@ -4,3 +4,4 @@
 
 %= include 'hr/toolbar' if user_role2company =~ /write|admin/i ;
 %= include 'hr/list_resources' if user_role2company =~ /read|write|admin/i ;
+

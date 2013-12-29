@@ -58,7 +58,7 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(users => $objects) if $objects && scalar(keys %{$objects});
-    $db->attach_links($objects,'companies','company',['name']);
+    $db->links_attach($objects,'companies','company',['name']);
     for my $uid (keys %{$objects}){
         if ( exists $objects->{$uid}{companies} ){
             my $companies = $objects->{$uid}{companies};
@@ -218,7 +218,7 @@ sub edit{
     } 
     $data = $db->get_objects({id=>[$id]});
     if( $data ){
-        $db->attach_links($data,'companies','company',['name']);
+        $db->links_attach($data,'companies','company',['name']);
         for my $key (keys %{$data->{$id}} ){
             $self->stash($key => $data->{$id}->{$key});
         }
