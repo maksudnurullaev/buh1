@@ -75,7 +75,7 @@ sub select_objects{
         });
     $self->stash(path  => $path);
     $self->stash(companies => $objects) if $objects && scalar(keys %{$objects});
-    $db->attach_links($objects,'users','user',['email']);
+    $db->links_attach($objects,'users','user',['email']);
     for my $cid (keys %{$objects}){
         if ( exists $objects->{$cid}{users} ){
             my $users = $objects->{$cid}{users};

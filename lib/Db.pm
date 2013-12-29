@@ -239,7 +239,6 @@ sub get_from_sql{
         } else { warn_if $DBI::errstr; }
     }
     return(undef);
-
 };
 
 sub format_sql_parameters{
@@ -511,7 +510,7 @@ sub set_link{
     return(1);
 };
 
-sub attach_links{
+sub links_attach{
     my ($self,$result,$links_name,$link_name,$fields) = @_;
     for my $id (keys %{$result}){
         my $links = $self->get_links($id,$link_name, $fields);

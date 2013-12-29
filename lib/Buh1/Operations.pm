@@ -113,7 +113,7 @@ sub add{
     } 
 
     my $account = $db->get_objects({id => [$account_id]});
-    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->links_attach($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     $self->stash( account => $account );
     Utils::Languages::generate_name($self, $account);
 };
@@ -151,7 +151,7 @@ sub edit{
         }
     } 
 
-    $db->attach_links($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->links_attach($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
     Utils::Languages::generate_name($self, $account);
     $self->stash( paccount => $account );
 
@@ -181,7 +181,7 @@ sub account{
     my $db = Db->new();
     my $account = $db->get_objects({id => [$account_id]});
     $self->stash( account => $account );
-    $db->attach_links(
+    $db->links_attach(
         $account,
         'bts',
         $OBJECT_NAME,
