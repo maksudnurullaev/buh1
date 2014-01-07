@@ -10,6 +10,7 @@ package Buh1::Hr; {
 
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
+use Data::Dumper ;
 
 sub auth{
     my ($self,$access) = @_;
@@ -20,11 +21,33 @@ sub auth{
     return(1);
 };
 
+sub validate{
+    my $self = shift;
+    my $data = { 
+        object_name => $self->param('oname'),
+        creator     => Utils::User::current($self),
+    };
+    $data->{description} = Utils::trim $self->param('description')
+        if Utils::trim $self->param('description');
+    if( !exists $data->{description} ){
+        $data->{error} = 1 ;
+        $self->stash('description_class' => 'error');
+        $self->stash('error' => 1);
+    }
+    return($data)
+};
+
 sub add{
     my $self = shift;
     return if( !auth($self,'write|admin') );
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
+        # 1. validate
+        my $data = validate($self);
+        if( !exists($data->{error}) ){
+            
+        }
+        # 2. add object to db
     } else {
 	}
 };

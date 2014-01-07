@@ -1,7 +1,7 @@
 <div class="form">
  %= form_for '/hr/add' => (method => 'POST') => begin
- %= hidden_field type => 'hr descriptor';
- %= hidden_field id   => (stash('id') or 'new');
+ %= hidden_field oname => 'hr descriptor';
+ %= hidden_field id    => (stash('id') or 'new');
  <table class='colortable'>
   <tr>
    <td class='tar'> 

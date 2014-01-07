@@ -1,9 +1,9 @@
 % if( stash('success') || param('success') ) { 
- <div class='alert success'>Ok</div>
+ <div class='alert success noaccess'>Ok</div>
 % } 
 % if( stash('error') || param('error') ) { 
- <div class='alert error'><%= ml 'Error!' %></div>
+ <div class='alert error noaccess'><%= ml 'Error!' %></div>
 % } 
 % if( stash('noaccess') || param('noaccess') ) { 
- <div class='alert error'><%= ml 'No access' %>!</div>
+ <div class='alert error noaccess'><%= ml 'No access' %>!</div>
 % } 

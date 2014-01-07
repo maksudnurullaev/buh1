@@ -1,7 +1,7 @@
 % layout 'default';
-<h2><%= ml 'Human Resource' %></h2>
-%= include 'success_error' ;
+%= include 'hr/header' ;
 
+<h2><%= ml 'Human Resource' %></h2>
 %= include 'hr/toolbar' if user_role2company =~ /write|admin/i ;
 %= include 'hr/list_resources' if user_role2company =~ /read|write|admin/i ;
 

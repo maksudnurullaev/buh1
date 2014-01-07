@@ -275,10 +275,14 @@ div.toolbar{
 }
 .error {
     background-color: red;
+}
+div.error{
     text-align: center;
 }
 .success {
     background-color: green;
+}
+div.error{
     text-align: center;
 }
 input[name^="access"]{
