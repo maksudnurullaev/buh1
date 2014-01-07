@@ -27,6 +27,7 @@ sub validate{
         object_name => $self->param('oname'),
         creator     => Utils::User::current($self),
     };
+	$data->{id} = $self->param('id') if $self->param('id') !~ /new/i ;
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
     if( !exists $data->{description} ){
@@ -45,7 +46,7 @@ sub add{
         # 1. validate
         my $data = validate($self);
         if( !exists($data->{error}) ){
-            
+            warn Dumper $data ;
         }
         # 2. add object to db
     } else {
