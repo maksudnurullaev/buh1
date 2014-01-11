@@ -1,7 +1,7 @@
 % layout 'default';
 <% my $user = check_for('user'); %>
 % if ( $user ) { 
- <h1><%= ml 'Access denied!' %></h1>
+ <h1><%= ml 'Access denied' %>!</h1>
 % } else {
  <h2><%= ml 'Login' %></h2>
  % if( defined stash( 'error' ) && length stash( 'error' ) ) { 

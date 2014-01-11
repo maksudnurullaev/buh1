@@ -14,9 +14,11 @@ use Data::Dumper ;
 
 sub auth{
     my ($self,$access) = @_;
-    if( $self->user_role2company !~ /$access/i ){
-        $self->stash( noaccess => 1 );
-        return;
+    if( !defined($self->user_role2company) 
+		|| $self->user_role2company !~ /$access/i ){
+        #TODO $self->stash( noaccess => 1 );
+        $self->redirect_to('user/login');
+		return;
     }
     return(1);
 };
@@ -46,7 +48,7 @@ sub add{
         # 1. validate
         my $data = validate($self);
         if( !exists($data->{error}) ){
-            warn Dumper $data ;
+            #TODO INSERT NEW $data ;
         }
         # 2. add object to db
     } else {

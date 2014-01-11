@@ -43,8 +43,10 @@ sub is_admin{
 
 sub is_editor{
     my $self = shift;
-    # is editor
     my $email = current($self);
+    # is admin
+    return(1) if is_admin($self);
+    # is editor
     if( $email ){
         my $db = Db->new();
         my $user = $db->get_user($email);
@@ -53,8 +55,6 @@ sub is_editor{
              && $user->{extended_right}
              && $user->{extended_right} =~ /editor/i ;
     }
-    # is admin
-    return(1) if is_admin($self);
     # not role
     return(0);
 };
