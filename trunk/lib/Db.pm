@@ -420,7 +420,7 @@ sub get_user{
     return(undef) if !$email;
 
     my $users = $self->get_objects({
-        name  =>['user'],
+        name      => ['user'],
         add_where => " field='email' AND value='$email' "
         });
     my @ids = keys %{$users};
