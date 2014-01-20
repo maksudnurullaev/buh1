@@ -20,7 +20,7 @@ sub add{
         # 1. validate
         my $data = Utils::Hr::form2data($self);
         if( Utils::Hr::validate($self,$data) ){
-            warn 'Utils::Hr::add($self, $data);';
+            Utils::Hr::add($self,$data);
         }
         # 2. add object to db
     } else {
