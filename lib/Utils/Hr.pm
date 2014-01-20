@@ -13,13 +13,15 @@ use strict;
 use warnings;
 use utf8;
 use Utils::Db;
+use Data::Dumper;
 
 my ($HR_DESCRIPTOR_NAME,$HR_PERSON_NAME) = 
    ('hr descriptor',    'hr person') ;
 
 sub add{
     my ($self,$data) = @_ ;
-
+	my $dbc = Utils::Db::client($self) ;
+	warn Dumper $dbc if $dbc->is_valid;
 };
 
 sub auth{
