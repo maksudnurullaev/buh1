@@ -16,7 +16,7 @@ use Data::Dumper;
 use DbClient;
 use Db;
 
-sub get_client_db{
+sub client{
     my $self = shift;
     if ( $self && $self->session('company id') ){
 	my $db_client = new DbClient($self->session('company id'));
@@ -35,7 +35,7 @@ sub db_object{
 sub db_client_object{
     my $self = shift;
     my $params = shift;
-    my $db = get_client_db($self);
+    my $db = client($self);
     return($db->get_objects($params));
 };
 
