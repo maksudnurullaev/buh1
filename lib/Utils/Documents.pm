@@ -19,7 +19,7 @@ use Utils::Db;
 sub attach{
     my ($self,$docid) = @_ ;
     return if !$docid ;
-    my $db = Utils::Db::get_client_db($self);
+    my $db = Utils::Db::client($self);
     return if !$db;
 
     my $objects = $db->get_objects({id => [$docid], 
@@ -49,7 +49,7 @@ sub get_document_number_next{
 
 sub get_document_number_last{
     my $self = shift;
-    my $db = Utils::Db::get_client_db($self);
+    my $db = Utils::Db::client($self);
     my $sth = $db->get_from_sql(
         "SELECT value FROM objects WHERE name = 'document' AND field='document number' AND id=(SELECT MAX(id) FROM objects WHERE name='document');"
         );
@@ -65,7 +65,7 @@ sub document_number_exist{
     my $document_id     = shift;
     return(1) if !$document_number;
 
-    my $db = Utils::Db::get_client_db($self);
+    my $db = Utils::Db::client($self);
     my $sql_string = " SELECT value FROM objects WHERE name = 'document' AND field='document number' AND value=? ";
     my $sth;
     if( $document_id ){
@@ -89,7 +89,7 @@ sub get_tbalance_data{
         return(undef);
     }
     my $sql_string = "SELECT * FROM objects WHERE id IN (SELECT DISTINCT id FROM objects WHERE name = 'document' AND field = 'date' AND $result_where );";
-    my $db = Utils::Db::get_client_db($self);
+    my $db = Utils::Db::client($self);
     my $sth = $db->get_from_sql($sql_string);
     my $data = generate_tbalance_data($self,$db->format_statement2hash_objects($sth),$date1);
     return($data);

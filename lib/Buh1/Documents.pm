@@ -76,7 +76,7 @@ sub set_form_header{
 sub list{
     my $self = shift;
     return if !isValidUser($self);
-    my $db_client = Utils::Db::get_client_db($self);
+    my $db_client = Utils::Db::client($self);
     if( $db_client ){
         select_objects($self,$db_client,$OBJECT_NAME,'');
     } else {
@@ -201,7 +201,7 @@ sub update_document_header{
     return if !isValidUser($self);
 
     if( my $data = validate_document_header($self) ){
-        my $db_client = Utils::Db::get_client_db($self);
+        my $db_client = Utils::Db::client($self);
         if( $db_client->update($data) ){
             $self->stash(success => 1);
         } else {
@@ -255,7 +255,7 @@ sub update{
     if( $isPost ){
         my $data  = validate($self,$id);
         if( !exists($data->{error}) ){
-            my $db_client = Utils::Db::get_client_db($self);
+            my $db_client = Utils::Db::client($self);
             if( defined $id ){
                 if( $db_client->update($data) ){
                     $self->stash(success => 1);
@@ -281,7 +281,7 @@ sub update{
 sub deploy_document{
     my ($self,$id) = @_;
     return if !$self || !$id;
-    my $db_client = Utils::Db::get_client_db($self);
+    my $db_client = Utils::Db::client($self);
     if( $db_client ){
         my $objects = $db_client->get_objects({id=>[$id]});
         if( $objects && exists($objects->{$id}) ){

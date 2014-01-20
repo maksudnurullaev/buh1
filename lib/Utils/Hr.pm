@@ -57,7 +57,7 @@ sub validate{
 
 sub get_all_resources{
     my $self = shift;
-    my $db = Utils::Db::get_client_db($self);
+    my $db = Utils::Db::client($self);
     if( !$db ){
         warn "Could not connect to client's db!";
         return(undef);
