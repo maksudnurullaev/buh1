@@ -1,6 +1,6 @@
 % for my $doc_id (keys %{$docs}){  
   % my $col_name = $docs->{$doc_id};
-  % my $doc = db_client_object({id =>[$doc_id], field => ['document number','account','currency amount','details','date']});
+  % my $doc = dbc_get_objects({id =>[$doc_id], field => ['document number','account','currency amount','details','date']});
   % if( $doc = $doc->{$doc_id} ){
     <tr class="details">
      <td>

@@ -46,8 +46,8 @@ sub register {
     $app->helper( currency_format => sub { Utils::currency_format1 (@_); } );
     $app->helper( get_document_number_last => sub { Utils::Documents::get_document_number_last (@_); } );
     $app->helper( generate_name => sub { Utils::Languages::generate_name (@_); } );
-    $app->helper( db_object => sub { Utils::Db::db_object (@_) ; } );
-    $app->helper( db_client_object => sub { Utils::Db::db_client_object (@_) ; } );
+    $app->helper( db_get_objects => sub { Utils::Db::db_get_objects (@_) ; } );
+    $app->helper( dbc_get_objects => sub { Utils::Db::dbc_get_objects (@_) ; } );
     $app->helper( shrink_if => sub { Utils::shrink_if (@_) ; } );
     $app->helper( tbalance_row => sub { Utils::Documents::tbalance_row (@_); } );
 };

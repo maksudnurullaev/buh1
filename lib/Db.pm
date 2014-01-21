@@ -4,7 +4,7 @@ package Db; {
 
 =head1 NAME
 
-   Db functions
+Db - Database I<functions> package
 
 =cut
 
@@ -383,37 +383,6 @@ sub get_counts{
     return($count);
 };
 
-# -= access betweeen two objects =-
-#   sort when incoming order by less id inserted always in ID colomn
-#   whane greater id always inserted in FIELD column
-#   ALWAYS: ID < FIELD
-# ==============================
-# | name   | id  | field | value |
-# ==============================
-# | access | id1 | id2   | value |
-# ------------------------------
-sub get_linked_value{
-    my $self = shift;
-    my ($name,$id1,$id2) = @_;
-    return if(!$name || !$id1 || !$id2 || ($id1 eq $id2) );
-    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
-    my $dbh = $self->get_db_connection() || return;
-    $dbh->{FetchHashKeyName} = 'NAME_lc';
-    my $sth_str = 
-        "SELECT value FROM objects WHERE name=? AND id=? AND field=? ;";
-    my $sth = $dbh->prepare($sth_str);
-    if($sth->execute($name,$id1,$id2)){
-        my $value;
-        $sth->bind_columns(\($value));
-        if($sth->fetch){
-            return($value);
-        }
-        return(undef);
-    } 
-    warn_if $DBI::errstr; 
-    return(undef); # some error happens
-};
-
 sub get_user{
     my $self = shift;
     my $email = shift;
@@ -444,6 +413,36 @@ sub get_user{
         !exists($users->{$user_id}) ||
         !exists($users->{$user_id}{password}) ;
     return($users->{$user_id});
+};
+
+# -= access to linked value between two objects =-
+# Note: ALWAYS: ID1 < ID2
+# example:
+# ==============================
+# | name   | id  | field | value |
+# ==============================
+# | access | id1 | id2   | value |
+# ------------------------------
+sub get_linked_value{
+    my $self = shift;
+    my ($name,$id1,$id2) = @_;
+    return if(!$name || !$id1 || !$id2 || ($id1 eq $id2) );
+    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
+    my $dbh = $self->get_db_connection() || return;
+    $dbh->{FetchHashKeyName} = 'NAME_lc';
+    my $sth_str = 
+        "SELECT value FROM objects WHERE name=? AND id=? AND field=? ;";
+    my $sth = $dbh->prepare($sth_str);
+    if($sth->execute($name,$id1,$id2)){
+        my $value;
+        $sth->bind_columns(\($value));
+        if($sth->fetch){
+            return($value);
+        }
+        return(undef);
+    } 
+    warn_if $DBI::errstr; 
+    return(undef); # some error happens
 };
 
 sub set_linked_value{

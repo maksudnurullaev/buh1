@@ -15,7 +15,7 @@
  % for my $key (sort keys %{$tbalance_data}){
   % my ($sd,$sc,$d,$c) = (0,0,0,0); 
   % my $account_id = $tbalance_data->{$key}{account_id};
-  % my $account = db_object({id =>[$account_id], field => ['type','rus','eng','uzb']})->{$account_id};
+  % my $account = db_get_objects({id =>[$account_id], field => ['type','rus','eng','uzb']})->{$account_id};
   % generate_name $account;
   <tr>
    <td><%= link_to shrink_if($account->{name},50) => "/tbalance/page/$account_id?account=$account_id&start_date=$start_date&end_date=$end_date" %></td>

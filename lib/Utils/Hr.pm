@@ -21,14 +21,13 @@ my ($HR_DESCRIPTOR_NAME,$HR_PERSON_NAME) =
 sub add{
     my ($self,$data) = @_ ;
 	my $dbc = Utils::Db::client($self) ;
-	warn Dumper $dbc if $dbc->is_valid;
+	warn $dbc->insert( $data ) if $dbc->is_valid;
 };
 
 sub auth{
     my ($self,$access) = @_;
     if( !defined($self->user_role2company) 
 		|| $self->user_role2company !~ /$access/i ){
-        #TODO $self->stash( noaccess => 1 );
         $self->redirect_to('user/login');
 		return;
     }
@@ -41,7 +40,7 @@ sub form2data{
         object_name => $self->param('oname'),
         creator     => Utils::User::current($self),
     };
-	$data->{id} = $self->param('id') if $self->param('id') !~ /new/i ;
+	$data->{id} = $self->param('id') if $self->param('id') ;
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
     return($data)
@@ -57,14 +56,31 @@ sub validate{
     return(1);
 };
 
-sub get_all_resources{
+sub get_all{
     my $self = shift;
-    my $db = Utils::Db::client($self);
-    if( !$db ){
+    my $dbc = Utils::Db::client($self);
+    if( !$dbc ){
         warn "Could not connect to client's db!";
         return(undef);
     }
-    return({ id => { name => 'Hello from Moscow!' } });
+    $self->stash( hr_objects => $dbc->get_objects(
+            { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } )
+        );
+};
+
+sub deploy{
+    my ($self,$id) = @_ ;
+    return if !$id ;
+    my $dbc = Utils::Db::client($self);
+    if( $dbc ){
+        my $objects = $dbc->get_objects( { id => [$id] } );
+        if( $objects && exists($objects->{$id}) ){
+            my $object = $objects->{$id};
+            for my $key (keys %{$object}){
+                $self->stash($key => $object->{$key});
+            }
+        }
+    }
 };
 
 # END OF PACKAGE
