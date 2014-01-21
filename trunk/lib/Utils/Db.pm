@@ -25,14 +25,14 @@ sub client{
     return(undef);
 };    
 
-sub db_object{
+sub db_get_objects{
     my $self = shift;
     my $params = shift;
     my $db = new Db;
     return($db->get_objects($params));
 };
 
-sub db_client_object{
+sub dbc_get_objects{
     my $self = shift;
     my $params = shift;
     my $db = client($self);

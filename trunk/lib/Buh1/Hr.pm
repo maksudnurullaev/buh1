@@ -17,13 +17,11 @@ sub add{
     return if( !Utils::Hr::auth($self,'write|admin') );
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
-        # 1. validate
         my $data = Utils::Hr::form2data($self);
         if( Utils::Hr::validate($self,$data) ){
             Utils::Hr::add($self,$data);
+            $self->redirect_to('/hr/list');
         }
-        # 2. add object to db
-    } else {
 	}
 };
 
@@ -31,9 +29,19 @@ sub list{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
-    my $resources = Utils::Hr::get_all_resources($self);
+    my $resources = Utils::Hr::get_all($self);
     $self->stash( resources => $resources );
 };
+
+sub edit{
+    my $self = shift;
+    my $id = $self->param('payload');
+    Utils::Hr::deploy($self,$id);
+};
+
+
+
+
 
 # END OF PACKAGE
 };
