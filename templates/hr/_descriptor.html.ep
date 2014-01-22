@@ -1,5 +1,0 @@
-% my $id = stash('id');
-% my $action = stash('action');
-% my $editor = user_role2company =~ /write|admin/i ;
-%= include 'hr/descriptor_for_toolbar' if $id && $editor && $action =~ /edit/i ;
-%= include 'hr/descriptor_form' ;
