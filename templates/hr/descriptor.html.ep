@@ -1,6 +1,12 @@
+% my $id = stash('id');
+% my $action = stash('action');
+% my $path = "/hr/$action";
+% my $edit = user_role2company =~ /write|admin/i ;
+% $path .= "/$id" if $id;
+
+%= include 'hr/descriptor_toolbar' if $id && $edit && $action =~ /edit/i ;
+
 <div class="form">
- % my $id = stash('id');
- % my $path = '/hr/' . ($id?'edit':'add');
  %= form_for $path => (method => 'POST') => begin
  %= hidden_field oname => 'hr descriptor';
  %= hidden_field id    => $id if $id ;
@@ -9,14 +15,26 @@
    <td class='tar'> 
     %= ml 'Description' 
    </td>
-   <td> 
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   <td>
+    % if( $action eq 'edit' ) {
+        %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    % } else {
+        <strong><%= stash 'description' %></strong>
+    % }
    </td>
   </tr>
   <tr><td>&nbsp;</td>
    <td>
-     %= submit_button ml('Save')
-     <%= link_to "/hr/list" => begin %><%= ml 'Cancel' %><% end %>
+     % if( $action eq 'del' ){
+      %= submit_button ml('Delete') ;
+      | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
+     % } elsif( $action eq 'move' ){
+      %= submit_button ml('Move') ;
+      | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
+     % } else {
+      %= submit_button ml('Save') ;
+      | <%= link_to "/hr/list" => begin %><%= ml 'Cancel' %><% end %>
+     % } 
    </td>
   </tr>
  </table>

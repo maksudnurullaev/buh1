@@ -1,0 +1,5 @@
+<div class="toolbar">
+ <%= link_to ml("Delete") => "/hr/del/$id" %>
+ | <%= link_to ml("Move") => "/hr/move/$id" %>
+</div>
+
