@@ -1,3 +1,8 @@
+% my $id = stash('id') ;
+% my $action = stash('action') ;
+% my $path = "/hr/$action" ;
+% $path .= "/$id" if $id ;
+
 <div class="form">
  %= form_for $path => (method => 'POST') => begin
  %= hidden_field oname => 'hr descriptor';

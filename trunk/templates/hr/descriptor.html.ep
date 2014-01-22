@@ -1,8 +1,6 @@
 % my $id = stash('id');
 % my $action = stash('action');
-% my $path = "/hr/$action";
-% $path .= "/$id" if $id ;
 % my $editor = user_role2company =~ /write|admin/i ;
 
 %= include 'hr/descriptor_for_toolbar' if $id && $editor && $action =~ /edit/i ;
-%# = include 'hr/descriptor_form', { path => $path } ;
+%= include 'hr/descriptor_form' ;
