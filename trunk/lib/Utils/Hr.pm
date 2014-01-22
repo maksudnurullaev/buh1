@@ -18,10 +18,21 @@ use Data::Dumper;
 my ($HR_DESCRIPTOR_NAME,$HR_PERSON_NAME) = 
    ('hr descriptor',    'hr person') ;
 
-sub add{
+sub del{
+    my ($self,$id) = @_;
+    my $dbc = Utils::Db::client($self) ;
+    $dbc->del($id);
+};
+
+sub insert_or_update{
     my ($self,$data) = @_ ;
 	my $dbc = Utils::Db::client($self) ;
-	warn $dbc->insert( $data ) if $dbc->is_valid;
+    if( exists($data->{id}) ){
+        $dbc->update( $data );
+    } else {
+        $dbc->insert( $data );
+    }
+    $self->stash(success => 1);
 };
 
 sub auth{
@@ -39,7 +50,7 @@ sub form2data{
     my $data = { 
         object_name => $self->param('oname'),
         creator     => Utils::User::current($self),
-    };
+        } ;
 	$data->{id} = $self->param('id') if $self->param('id') ;
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
@@ -64,8 +75,7 @@ sub get_all{
         return(undef);
     }
     $self->stash( hr_objects => $dbc->get_objects(
-            { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } )
-        );
+            { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) );
 };
 
 sub deploy{

@@ -1,0 +1,5 @@
+% layout 'default';
+%= include 'hr/header' ;
+
+<h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
+%= include 'hr/descriptor' if user_role2company =~ /write|admin/i ;

@@ -2,7 +2,9 @@
  % my $hr_objects = stash 'hr_objects';
  % for my $id (sort keys %{$hr_objects}) {
   <ul>
-   <li><dfn id="<%= $id %>"><%= link_to $hr_objects->{$id}{description} => "/hr/edit/$id" %></dfn></li>
+   <li>
+    <dfn id="<%= $id %>"><%= link_to $hr_objects->{$id}{description} => "/hr/edit/$id" %></dfn>
+   </li>
   </ul>
  % }    
 </div>
