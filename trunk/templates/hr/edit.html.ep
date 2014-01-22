@@ -1,4 +1,5 @@
 % layout 'default';
-
 <h2><%= ml 'Human Resource' %> | <%= ml 'Edit' %></h2>
-%= include 'hr/descriptor' if user_role2company =~ /write|admin/i ;
+%= include 'success_error' ;
+%= include 'hr/descriptor_form_toolbar' ;
+%= include 'hr/descriptor_form' ;
