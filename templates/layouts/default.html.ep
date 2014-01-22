@@ -74,7 +74,8 @@
             </ul>
           </td>
           <td class="body" valign="top" width="80%">
-            <%= content %>
+			%= include 'success_error' ;
+            %= content ;
           </td>
         </tr>
       </tbody>
