@@ -67,15 +67,14 @@ sub validate{
     return(1);
 };
 
-sub get_all{
+sub get_resources{
     my $self = shift;
     my $dbc = Utils::Db::client($self);
     if( !$dbc ){
         warn "Could not connect to client's db!";
         return(undef);
     }
-    $self->stash( hr_objects => $dbc->get_objects(
-            { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) );
+    $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } );
 };
 
 sub deploy{

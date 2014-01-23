@@ -35,6 +35,7 @@
    </td>
   </tr>
  </table>
+ %= include stash('include_bottom') if stash('include_bottom')  ;
  % end
 </div>
 

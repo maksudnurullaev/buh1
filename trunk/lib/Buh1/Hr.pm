@@ -29,8 +29,7 @@ sub list{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
-    my $resources = Utils::Hr::get_all($self);
-    $self->stash( resources => $resources );
+    $self->stash( resources => Utils::Hr::get_resources($self) );
 };
 
 sub edit{
@@ -67,11 +66,10 @@ sub move{
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
-#    if( uc($method) eq 'POST' ){
-#        warn "going delete $id ";
-#        Utils::Hr::del($self,$id);
-#        $self->redirect_to('/hr/list');
-#    }
+
+    my $resources = Utils::Hr::get_resources($self);
+    $self->stash( resources => $resources );
+
     # final action
     Utils::Hr::deploy($self,$id);
 };

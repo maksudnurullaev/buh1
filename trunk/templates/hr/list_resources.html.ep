@@ -1,10 +1,10 @@
 <div>
- % my $hr_objects = stash 'hr_objects';
- % for my $id (sort keys %{$hr_objects}) {
-  <ul>
-   <li>
-    <dfn id="<%= $id %>"><%= link_to $hr_objects->{$id}{description} => "/hr/edit/$id" %></dfn>
-   </li>
-  </ul>
+ % my $resources = stash 'resources';
+ <ul>
+ % for my $id (sort keys %{$resources}) {
+  <li>
+   <dfn id="<%= $id %>"><%= link_to $resources->{$id}{description} => "/hr/edit/$id" %></dfn>
+  </li>
  % }    
+ </ul>
 </div>
