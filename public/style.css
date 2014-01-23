@@ -299,3 +299,7 @@ textarea {
 .nobgcolor {
   background-color: white ;
 }
+
+ul.nostyle li{
+    list-style: none ;
+};

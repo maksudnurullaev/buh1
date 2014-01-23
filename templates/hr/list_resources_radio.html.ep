@@ -1,0 +1,15 @@
+<div>
+ <ul class='nostyle'>
+  % for my $id (sort keys %{$temp_hash}) {
+   <li>
+    % if( stash('id') ne $id ){
+     %= radio_button 'parent' => $id, style => 'width:auto;', id=>"label $id" ;
+     %= label_for "label $id" => $temp_hash->{$id}{description} ;
+    % } else {
+     %= radio_button 'parent' => $id, style => 'width:auto;', id=>"label $id", disabled => 1 ;
+     <strong><%= $temp_hash->{$id}{description} %></strong>
+    % }
+   </li>
+  % }    
+ </ul>
+</div>

@@ -1,4 +1,27 @@
 % layout 'default';
 %= include 'hr/header' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
-%= include 'hr/descriptor_form' if user_role2company =~ /write|admin/i ;
+% my $id = stash('id') ;
+% my $action = stash('action') ;
+% my $path = "/hr/$action" ;
+% $path .= "/$id" if $id ;
+
+<div class="form">
+ %= form_for $path => (method => 'POST') => begin
+  %= hidden_field id    => $id if $id ;
+  <table class='colortable'>
+   <tr>
+    <td class='tar'><%= ml 'Description' %></td>
+    <td><strong><%= stash 'description' %></strong></td>
+   </tr>
+   <tr><td>&nbsp;</td>
+    <td>
+     %= submit_button ml('Move') ;
+     | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
+    </td>
+   </tr>
+  </table>
+  %= include 'hr/list_resources_radio', temp_hash => stash('resources') if stash('resources') ;
+ % end
+</div>
+
