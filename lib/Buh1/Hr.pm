@@ -67,6 +67,15 @@ sub move{
     my $method = $self->req->method ;
     my $id = $self->param('payload');
 
+    if( $method eq 'POST' ){
+        my $parent = $self->param('parent');
+        if( !$parent ){
+            $self->stash( error => 1 );
+            return;
+        } else {
+            Utils::Hr::set_parent($self,);
+        }
+    }
     my $resources = Utils::Hr::get_resources($self);
     $self->stash( resources => $resources );
 
