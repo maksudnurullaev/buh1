@@ -67,6 +67,17 @@ sub validate{
     return(1);
 };
 
+sub set_parent{
+    my $self = shift ;
+    my $dbc = Utils::Db::client($self);
+
+    my $data = { 
+        object_name => $self->param('oname'), 
+        id          => $self->param('payload'), 
+        PARENT      => $self->param('parent') } ;
+    $dbc->update($data) ;
+};
+
 sub get_resources{
     my $self = shift;
     my $dbc = Utils::Db::client($self);
@@ -74,7 +85,8 @@ sub get_resources{
         warn "Could not connect to client's db!";
         return(undef);
     }
-    $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } );
+    $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
+    ny $sth = $dbc->get_from_sql( " SELECT id FROM objects WHERE name LIKE 'hr%' " ) ;
 };
 
 sub deploy{

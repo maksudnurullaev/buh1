@@ -5,6 +5,9 @@
     % if( stash('id') ne $id ){
      %= radio_button 'parent' => $id, style => 'width:auto;', id=>"label $id" ;
      %= label_for "label $id" => $temp_hash->{$id}{description} ;
+     % if( exists $temp_hash->{$id}{CHILDS} ){
+      %= include 'hr/list_resources_radio', temp_hash => $temp_hash->{$id}{CHILDS} ;
+     % }
     % } else {
      %= radio_button 'parent' => $id, style => 'width:auto;', id=>"label $id", disabled => 1 ;
      <strong><%= $temp_hash->{$id}{description} %></strong>
