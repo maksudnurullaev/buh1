@@ -85,8 +85,8 @@ sub get_resources{
         warn "Could not connect to client's db!";
         return(undef);
     }
+    my $sth = $dbc->get_from_sql( " SELECT id FROM objects WHERE name LIKE 'hr%' " ) ;
     $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
-    ny $sth = $dbc->get_from_sql( " SELECT id FROM objects WHERE name LIKE 'hr%' " ) ;
 };
 
 sub deploy{

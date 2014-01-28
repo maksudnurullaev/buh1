@@ -17,7 +17,7 @@ sub startup {
   my $self = shift;
 
   $self->plugin('HTMLTags');
-  $self->app->secret('Nkjlkj344!!!#4jkj;l');
+  $self->app->secrets(['Nkjlkj344!!!#4jkj;l','Hl53gfsgd;-l=rtw45@#']);
 #  $self->app->mode('production');
   $self->app->config(hypnotoad => {listen => ['http://*:3000']});
 
