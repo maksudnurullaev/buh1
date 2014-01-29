@@ -86,24 +86,49 @@ sub get_resources{
         return(undef);
     }
     # ===============
-    my $parents = {};
+    my $parents1 = {};
+	my $parents2 = {};
     my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects WHERE name LIKE 'hr%' " ) ;
     my $id = undef;
     $sth->bind_col(1, \$id);
     while($sth->fetch){
-        $parents->{$id} = {};
+        $parents1->{$id} = undef ;
+        $parents2->{$id} = undef ;
     }
 
     $sth = $dbc->get_from_sql( " SELECT DISTINCT id, value FROM objects WHERE name LIKE 'hr%' AND field = 'PARENT' " ) ;
     $sth->bind_col(1, \$id);
     my $parent = undef; $sth->bind_col(2,\$parent);
     while($sth->fetch){
-        #$parents->{$parent) = {$id => {}} ;
+        $parents1->{$parent} = {$id => undef} ;
+        $parents2->{$parent} = {$id => undef} ;
     }
-    warn Dumper $parents;
+    warn Dumper $parents1;
+	my $tree = {} ;
+	make_tree($parents1, {}, $tree);
+	warn Dumper $tree ;
     # =================
     # final
     $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
+};
+
+sub make_tree{
+	my $hash = shift ;
+	my $keys = shift ;
+	my $tree = shift ;
+	return if ref($hash) ne 'HASH' ;
+	for my $key (keys %{$hash}){
+		if( !exists($keys->{$key}) ){
+			warn "-> $key";
+			$keys->{$key} = undef;
+			if( $hash->{$key} && $hash->{$hash->{$hash}} ){
+				$tree->{$key} = { $hash->{$key} => $hash->{$hash->{$key}} } ; 
+				make_tree($hash->{$hash->{$key}},$keys,$tree->{$key}{$hash->{$key}}) ;
+			} else {
+				$tree->{$key} = undef ;
+			}
+		}
+	}
 };
 
 sub deploy{
