@@ -85,7 +85,24 @@ sub get_resources{
         warn "Could not connect to client's db!";
         return(undef);
     }
-    my $sth = $dbc->get_from_sql( " SELECT id FROM objects WHERE name LIKE 'hr%' " ) ;
+    # ===============
+    my $parents = {};
+    my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects WHERE name LIKE 'hr%' " ) ;
+    my $id = undef;
+    $sth->bind_col(1, \$id);
+    while($sth->fetch){
+        $parents->{$id} = {};
+    }
+
+    $sth = $dbc->get_from_sql( " SELECT DISTINCT id, value FROM objects WHERE name LIKE 'hr%' AND field = 'PARENT' " ) ;
+    $sth->bind_col(1, \$id);
+    my $parent = undef; $sth->bind_col(2,\$parent);
+    while($sth->fetch){
+        #$parents->{$parent) = {$id => {}} ;
+    }
+    warn Dumper $parents;
+    # =================
+    # final
     $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
 };
 
