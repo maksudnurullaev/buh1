@@ -3,4 +3,8 @@
 %= include 'success_error' ;
 %= include 'hr/toolbar' if user_role2company =~ /write|admin/i ;
 %= include 'hr/list_resources' ;
+%#= include 'hr/list_resources_radio', temp_hash => stash('resources_tree') if stash('resources_tree') ;
+<pre>
+%= dumper stash 'resources_tree' ;
+</pre>
 
