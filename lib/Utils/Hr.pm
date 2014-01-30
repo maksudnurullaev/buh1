@@ -95,14 +95,12 @@ sub get_tree{
     my $dbc = Utils::Db::client($self);
     # PARENTS
     # we needs two parents: one for get key->object, second for traverse
-    my $parents1 = {};
-	my $parents2 = {};
+    my $parents = {};
     my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects $where_sql ; " ) ;
     my $id = undef;
     $sth->bind_col(1, \$id);
     while($sth->fetch){
-        $parents1->{$id} = undef ;
-        $parents2->{$id} = undef ;
+        $parents->{$id} = undef ;
     }
     # CHILDS
     # generate CHILD->PARENT links
@@ -110,34 +108,40 @@ sub get_tree{
     $sth->bind_col(1, \$id);
     my $parent = undef; $sth->bind_col(2,\$parent) ;
     while($sth->fetch){
-        $parents1->{$parent} = {$id => undef} ;
-        $parents2->{$parent} = {$id => undef} ;
+        $parents->{$parent} = $id ;
     }
 	my $tree = {} ;
     my $keys = {} ;
-    warn "=== parent before ===" ;
-    warn Dumper $parents1 ;
-	make_tree_hash($parents1,$parents2, 0);
+    warn "=== original ===" ;
+    warn Dumper $parents ;
     warn "=== parent after ===" ;
-    warn Dumper $parents1 ;
-    return($parents1);
+    warn Dumper make_tree_hash($parents);
+    return($parents);
 };
 
 sub make_tree_hash{
 	my $hash = shift ;
-    my $hash_part = shift ;
-    my $level = shift ;
-	for my $key (keys %{$hash_part}){
-        if( ref($hash_part->{$key}) eq 'HASH' ){
-            make_tree_hash($hash, $hash_part->{$key}, 1 ) ;
-        } else {
-            if( $level ){
-                delete $hash->{$key} ;
-            } else {
-                
-            }
-        }
+	my $result = {} ;
+	for my $child (sort keys %{$hash}){
+		my $parent = $hash->{$child} ;
+		if( $parent ){
+			$result->{$parent} = find_child($hash,$child) ;
+		} 
 	}
+	return($result);
+};
+
+sub find_child{
+	my $hash = shift ;
+	my $parent = shift ;
+	my $result = {} ;
+	for my $c (keys %{$hash}){
+		if( $hash->{$c} && $hash->{$c} eq $parent ){
+			$result->{$parent}{$c} = find_child($hash,$c);
+			last;
+		} 
+	}
+	return($result);
 };
 
 sub deploy{
