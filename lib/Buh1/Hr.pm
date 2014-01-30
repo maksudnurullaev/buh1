@@ -29,7 +29,8 @@ sub list{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
-    $self->stash( resources => Utils::Hr::get_resources($self) );
+    $self->stash( resources      => Utils::Hr::get_resources($self) );
+    $self->stash( resources_tree => Utils::Hr::get_tree($self, " WHERE name LIKE 'hr%' " ) ); 
 };
 
 sub edit{
@@ -76,8 +77,8 @@ sub move{
             Utils::Hr::set_parent($self,);
         }
     }
-    my $resources = Utils::Hr::get_resources($self);
-    $self->stash( resources => $resources );
+    $self->stash( resources      => Utils::Hr::get_resources($self) );
+    $self->stash( resources_tree => Utils::Hr::get_tree($self, " WHERE name LIKE 'hr%' " ) ); 
 
     # final action
     Utils::Hr::deploy($self,$id);

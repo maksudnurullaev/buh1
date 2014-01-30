@@ -85,49 +85,58 @@ sub get_resources{
         warn "Could not connect to client's db!";
         return(undef);
     }
-    # ===============
+    return $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
+};
+
+sub get_tree{
+    my ($self,$where_sql) = @_ ;
+    return if !$where_sql ;
+
+    my $dbc = Utils::Db::client($self);
+    # PARENTS
+    # we needs two parents: one for get key->object, second for traverse
     my $parents1 = {};
 	my $parents2 = {};
-    my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects WHERE name LIKE 'hr%' " ) ;
+    my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects $where_sql ; " ) ;
     my $id = undef;
     $sth->bind_col(1, \$id);
     while($sth->fetch){
         $parents1->{$id} = undef ;
         $parents2->{$id} = undef ;
     }
-
-    $sth = $dbc->get_from_sql( " SELECT DISTINCT id, value FROM objects WHERE name LIKE 'hr%' AND field = 'PARENT' " ) ;
+    # CHILDS
+    # generate CHILD->PARENT links
+    $sth = $dbc->get_from_sql( " SELECT DISTINCT id, value FROM objects $where_sql AND field = 'PARENT' ; " ) ;
     $sth->bind_col(1, \$id);
-    my $parent = undef; $sth->bind_col(2,\$parent);
+    my $parent = undef; $sth->bind_col(2,\$parent) ;
     while($sth->fetch){
         $parents1->{$parent} = {$id => undef} ;
         $parents2->{$parent} = {$id => undef} ;
     }
-    warn Dumper $parents1;
 	my $tree = {} ;
-	make_tree($parents1, {}, $tree);
-	warn Dumper $tree ;
-    # =================
-    # final
-    $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
+    my $keys = {} ;
+    warn "=== parent before ===" ;
+    warn Dumper $parents1 ;
+	make_tree_hash($parents1,$parents2, 0);
+    warn "=== parent after ===" ;
+    warn Dumper $parents1 ;
+    return($parents1);
 };
 
-sub make_tree{
+sub make_tree_hash{
 	my $hash = shift ;
-	my $keys = shift ;
-	my $tree = shift ;
-	return if ref($hash) ne 'HASH' ;
-	for my $key (keys %{$hash}){
-		if( !exists($keys->{$key}) ){
-			warn "-> $key";
-			$keys->{$key} = undef;
-			if( $hash->{$key} && $hash->{$hash->{$hash}} ){
-				$tree->{$key} = { $hash->{$key} => $hash->{$hash->{$key}} } ; 
-				make_tree($hash->{$hash->{$key}},$keys,$tree->{$key}{$hash->{$key}}) ;
-			} else {
-				$tree->{$key} = undef ;
-			}
-		}
+    my $hash_part = shift ;
+    my $level = shift ;
+	for my $key (keys %{$hash_part}){
+        if( ref($hash_part->{$key}) eq 'HASH' ){
+            make_tree_hash($hash, $hash_part->{$key}, 1 ) ;
+        } else {
+            if( $level ){
+                delete $hash->{$key} ;
+            } else {
+                
+            }
+        }
 	}
 };
 
