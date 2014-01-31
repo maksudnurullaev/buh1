@@ -30,7 +30,7 @@ sub list{
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
     $self->stash( resources      => Utils::Hr::get_resources($self) );
-    $self->stash( resources_tree => Utils::Hr::get_tree($self, " WHERE name LIKE 'hr%' " ) ); 
+    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
 };
 
 sub edit{
@@ -70,15 +70,15 @@ sub move{
 
     if( $method eq 'POST' ){
         my $parent = $self->param('parent');
+        my $old_parent = $self->param('');
         if( !$parent ){
             $self->stash( error => 1 );
-            return;
         } else {
-            Utils::Hr::set_parent($self,);
+            my $dbc = Utils::Db::client($self);
+            $dbc->child_set_parent($id,$parent);
         }
     }
     $self->stash( resources      => Utils::Hr::get_resources($self) );
-    $self->stash( resources_tree => Utils::Hr::get_tree($self, " WHERE name LIKE 'hr%' " ) ); 
 
     # final action
     Utils::Hr::deploy($self,$id);

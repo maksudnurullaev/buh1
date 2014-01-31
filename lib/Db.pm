@@ -574,6 +574,86 @@ sub del_link{
         "DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id2' AND value = '$id1' ;");
 };
 
+# -= parent & child functionality =-
+sub child_set_parent{
+    my ($self,$cid,$pid) = @_ ;
+    my $scope = $self->get_objects({id => [$cid], field => ['creator', 'PARENT']});
+    my $child = $scope->{$cid} ;
+    if( exists($child->{PARENT}) ){ # if old parent exist
+        # remove from children for old parent
+        $self->parent_remove_child($child->{PARENT},$child);
+    }
+    # set new parent
+    $child->{PARENT} = $pid;
+    $self->update($child); 
+    # add this child to new parent
+    $self->parent_add_child($pid,$cid);
+};
+
+sub parent_remove_child{
+    my ($self,$pid,$cid) = @_ ;
+    my $scope = $self->get_objects({id => [$pid], field => ['creator', 'CHILDREN']});
+    my $parent = $scope->{$pid};
+    $parent->{CHILDREN} =~ s/$cid//g ;
+    $parent->{CHILDREN} =~ s/,,/,/g ;
+    if( $parent->{CHILDREN} eq ',' ){ # no more children
+        $self->get_from_sql("delete from objects where id = '$pid' and field = 'CHILDREN' ; ");
+    } else {
+        $self->update($parent) ;
+    }
+};
+
+sub parent_add_child{
+    my ($self,$pid,$cid) = @_ ;
+    my $scope = $self->get_objects({id => [$pid], field => ['creator', 'CHILDREN']});
+    my $parent = $scope->{$pid};
+    if( exists($parent->{CHILDREN}) ){
+        $parent->{CHILDREN} .= ",$cid" ;
+    } else {
+        $parent->{CHILDREN} = $cid ;
+    }
+    $self->update($parent);
+};
+
+sub get_root_parents{
+    my ($self,$where_sql) = @_ ;
+    return if !$where_sql ;
+
+    # PARENTS
+    # we needs two parents: one for get key->object, second for traverse
+    my $parents_root = {};
+    my $sth = $self->get_from_sql( " SELECT DISTINCT id FROM objects $where_sql ; " ) ;
+    my $id = undef;
+    $sth->bind_col(1, \$id);
+    while($sth->fetch){
+        $parents_root->{$id} = 0 ;
+    }
+    # PARENTS WITH CHILD
+    # generate CHILD->PARENT links
+    my $parents_with_childs = {};
+    $sth = $self->get_from_sql( " SELECT DISTINCT id, value FROM objects $where_sql AND field = 'PARENT' ; " ) ;
+    $sth->bind_col(1, \$id);
+    my $parent = undef; $sth->bind_col(2,\$parent) ;
+    while($sth->fetch){
+        delete $parents_root->{$id} ;
+    }
+    return($parents_root);
+};
+
+sub get_parent_childs{
+    my ($self,$pid,$fields) = @_ ;
+    my $scope = $self->get_objects({id => [$pid], field => $fields });
+    my $parent = $scope->{$pid};
+    if( exists($parent->{CHILDREN}) ){ 
+        my @childs = split /,/, $parent->{CHILDREN};
+        for my $cid (@childs) {
+            $parent->{CHILDREN} = {} if ref($parent->{CHILDREN}) ne 'HASH' ;
+            $parent->{CHILDREN}{$cid} = $self->get_parent_childs($cid,$fields) ;
+        }
+    }
+    return($parent);
+};
+
 };
 
 1;
