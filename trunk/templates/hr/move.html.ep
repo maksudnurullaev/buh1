@@ -1,7 +1,9 @@
 % layout 'default';
-%= include 'hr/header' ;
+%= include 'success_error' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
 % my $id = stash('id') ;
+%# current parent id
+% my $cpid = stash('PARENT') ;
 % my $action = stash('action') ;
 % my $path = "/hr/$action" ;
 % $path .= "/$id" if $id ;
@@ -9,7 +11,9 @@
 <div class="form">
  %= form_for $path => (method => 'POST') => begin
   %= hidden_field oname => 'hr descriptor';
-  %= hidden_field id    => $id if $id ;
+  %= hidden_field id    => $id   if $id ;
+  %= hidden_field cpid  => $cpid if $cpid ;
+
   <table class='colortable'>
    <tr>
     <td class='tar'><%= ml 'Description' %></td>

@@ -88,60 +88,16 @@ sub get_resources{
     return $dbc->get_objects( { name => [ $HR_DESCRIPTOR_NAME, $HR_PERSON_NAME ] } ) ;
 };
 
-sub get_tree{
-    my ($self,$where_sql) = @_ ;
-    return if !$where_sql ;
+sub get_resources_root{
+    my $self = shift ;
 
     my $dbc = Utils::Db::client($self);
-    # PARENTS
-    # we needs two parents: one for get key->object, second for traverse
-    my $parents = {};
-    my $sth = $dbc->get_from_sql( " SELECT DISTINCT id FROM objects $where_sql ; " ) ;
-    my $id = undef;
-    $sth->bind_col(1, \$id);
-    while($sth->fetch){
-        $parents->{$id} = undef ;
+    my $resource_root = $dbc->get_root_parents(" WHERE name LIKE 'hr%' ") ;
+    my $result = {};
+    for my $pid (keys %{$resource_root}){
+        $result->{ $pid } = $dbc->get_parent_childs($pid,['description','CHILDREN']) ;
     }
-    # CHILDS
-    # generate CHILD->PARENT links
-    $sth = $dbc->get_from_sql( " SELECT DISTINCT id, value FROM objects $where_sql AND field = 'PARENT' ; " ) ;
-    $sth->bind_col(1, \$id);
-    my $parent = undef; $sth->bind_col(2,\$parent) ;
-    while($sth->fetch){
-        $parents->{$parent} = $id ;
-    }
-	my $tree = {} ;
-    my $keys = {} ;
-    warn "=== original ===" ;
-    warn Dumper $parents ;
-    warn "=== parent after ===" ;
-    warn Dumper make_tree_hash($parents);
-    return($parents);
-};
-
-sub make_tree_hash{
-	my $hash = shift ;
-	my $result = {} ;
-	for my $child (sort keys %{$hash}){
-		my $parent = $hash->{$child} ;
-		if( $parent ){
-			$result->{$parent} = find_child($hash,$child) ;
-		} 
-	}
-	return($result);
-};
-
-sub find_child{
-	my $hash = shift ;
-	my $parent = shift ;
-	my $result = {} ;
-	for my $c (keys %{$hash}){
-		if( $hash->{$c} && $hash->{$c} eq $parent ){
-			$result->{$parent}{$c} = find_child($hash,$c);
-			last;
-		} 
-	}
-	return($result);
+    return( $result );
 };
 
 sub deploy{
