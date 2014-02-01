@@ -74,8 +74,10 @@ sub files{
 			return ;
 		}
 		my $new_file = $self->param('new_file');
-		warn $new_file->size ;
-		warn $new_file->filename ;
+		if( $new_file->size ){
+			warn $new_file->filename ;
+			#TODO Utils::Files:new_file4id($new_file,$id);
+		}
 	}
 
     Utils::Hr::deploy($self,$id);
