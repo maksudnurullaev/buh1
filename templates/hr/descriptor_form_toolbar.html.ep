@@ -1,5 +1,16 @@
 <div class="toolbar">
- <%= link_to ml("Delete") => "/hr/del/$id" %>
- | <%= link_to ml("Move") => "/hr/move/$id" %>
+ % if ( !stash('CHILDREN') ){
+  <%= link_to ml("Delete") => "/hr/del/$id" %> 
+ % } else {
+  %= ml('Delete') ;
+ % }
+ |
+ % if( stash('PARENT') ) {
+  <%= link_to "/hr/make_root/$id" => begin %><%= ml 'Make root' %><% end %>
+ % } else {
+  %= ml 'Make root' ;
+ % }
+ |
+ <%= link_to ml("Move") => "/hr/move/$id" %>
 </div>
 

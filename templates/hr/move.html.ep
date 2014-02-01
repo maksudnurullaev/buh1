@@ -23,9 +23,6 @@
     <td>
      %= submit_button ml('Move') ;
      | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
-	 % if( $parent ) {
-      | <%= link_to "/hr/make_root/$id" => begin %><%= ml 'Make root' %><% end %>
-	 % } 
     </td>
    </tr>
   </table>
