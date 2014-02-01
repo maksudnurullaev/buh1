@@ -25,10 +25,7 @@
      % if( $action eq 'del' ){
       %= submit_button ml('Delete') ;
       | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
-     % } elsif( $action eq 'move' ){
-      %= submit_button ml('Move') ;
-      | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
-     % } else {
+     % }  else {
       %= submit_button ml('Save') ;
       | <%= link_to "/hr/list" => begin %><%= ml 'Cancel' %><% end %>
      % } 

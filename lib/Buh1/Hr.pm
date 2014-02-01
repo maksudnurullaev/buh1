@@ -29,7 +29,6 @@ sub list{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
-    $self->stash( resources      => Utils::Hr::get_resources($self) );
     $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
 };
 
@@ -69,19 +68,27 @@ sub move{
     my $id = $self->param('payload');
 
     if( $method eq 'POST' ){
+        my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
-        my $old_parent = $self->param('');
-        if( !$parent ){
+		
+        if( $parent && $parent eq $new_parent ){
             $self->stash( error => 1 );
         } else {
             my $dbc = Utils::Db::client($self);
-            $dbc->child_set_parent($id,$parent);
+            $dbc->child_set_parent($id,$new_parent);
         }
     }
-    $self->stash( resources      => Utils::Hr::get_resources($self) );
-
+    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
     # final action
     Utils::Hr::deploy($self,$id);
+};
+
+sub make_root{
+	my $self = shift;
+	my $id   = $self->param('payload');
+    my $dbc = Utils::Db::client($self);
+	$dbc->child_make_root($id);
+    $self->redirect_to("/hr/move/$id");
 };
 
 
