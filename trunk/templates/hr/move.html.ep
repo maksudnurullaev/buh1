@@ -3,16 +3,16 @@
 <h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
 % my $id = stash('id') ;
 %# current parent id
-% my $cpid = stash('PARENT') ;
+% my $parent = stash('PARENT') ;
 % my $action = stash('action') ;
-% my $path = "/hr/$action" ;
-% $path .= "/$id" if $id ;
+% my $path   = "/hr/$action" ;
+% $path     .= "/$id" if $id ;
 
 <div class="form">
  %= form_for $path => (method => 'POST') => begin
-  %= hidden_field oname => 'hr descriptor';
-  %= hidden_field id    => $id   if $id ;
-  %= hidden_field cpid  => $cpid if $cpid ;
+  %= hidden_field oname  => 'hr descriptor';
+  %= hidden_field id     => $id     if $id ;
+  %= hidden_field parent => $parent if $parent ;
 
   <table class='colortable'>
    <tr>
@@ -23,10 +23,12 @@
     <td>
      %= submit_button ml('Move') ;
      | <%= link_to "/hr/edit/$id" => begin %><%= ml 'Cancel' %><% end %>
+	 % if( $parent ) {
+      | <%= link_to "/hr/make_root/$id" => begin %><%= ml 'Make root' %><% end %>
+	 % } 
     </td>
    </tr>
   </table>
-  %= include 'hr/list_resources_radio', temp_hash => stash('resources') if stash('resources') ;
+  %= include 'hr/list_resources_radio', temp_hash => stash('resources_root') if stash('resources_root') ;
  % end
 </div>
-

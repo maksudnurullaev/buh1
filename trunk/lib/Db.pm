@@ -576,41 +576,53 @@ sub del_link{
 
 # -= parent & child functionality =-
 sub child_set_parent{
-    my ($self,$cid,$pid) = @_ ;
-    my $scope = $self->get_objects({id => [$cid], field => ['creator', 'PARENT']});
-    my $child = $scope->{$cid} ;
+    my ($self,$id,$parent_id) = @_ ;
+    my $scope = $self->get_objects({id => [$id], field => ['creator', 'PARENT']});
+    my $child = $scope->{$id} ;
     if( exists($child->{PARENT}) ){ # if old parent exist
         # remove from children for old parent
-        $self->parent_remove_child($child->{PARENT},$child);
+        $self->parent_remove_child($child->{PARENT},$id);
     }
     # set new parent
-    $child->{PARENT} = $pid;
+    $child->{PARENT} = $parent_id;
     $self->update($child); 
     # add this child to new parent
-    $self->parent_add_child($pid,$cid);
+    $self->parent_add_child($parent_id,$id);
 };
 
 sub parent_remove_child{
-    my ($self,$pid,$cid) = @_ ;
-    my $scope = $self->get_objects({id => [$pid], field => ['creator', 'CHILDREN']});
-    my $parent = $scope->{$pid};
-    $parent->{CHILDREN} =~ s/$cid//g ;
-    $parent->{CHILDREN} =~ s/,,/,/g ;
-    if( $parent->{CHILDREN} eq ',' ){ # no more children
-        $self->get_from_sql("delete from objects where id = '$pid' and field = 'CHILDREN' ; ");
+    my ($self,$parent_id,$id) = @_ ;
+    my $scope = $self->get_objects({id => [$parent_id], field => ['creator', 'CHILDREN']});
+    my $parent = $scope->{$parent_id};
+    $parent->{CHILDREN} =~ s/$id//g ;
+    $parent->{CHILDREN} =~ s/,{2,}/,/g ;
+    $parent->{CHILDREN} =~ s/,$//g ;
+    if( !$parent->{CHILDREN} ){ # no more children
+        $self->get_from_sql("delete from objects where id = '$parent_id' and field = 'CHILDREN' ; ");
     } else {
         $self->update($parent) ;
     }
 };
 
+sub child_make_root{
+    my ($self,$id) = @_ ;
+    my $scope = $self->get_objects({id => [$id], field => ['creator', 'PARENT']});
+    my $child = $scope->{$id};
+	return if !exists($child->{PARENT}) ;
+	
+	my $parent_id = $child->{PARENT};
+	$self->parent_remove_child($parent_id,$id);
+    $self->get_from_sql("delete from objects where id = '$id' and field = 'PARENT' ; ");
+};
+
 sub parent_add_child{
-    my ($self,$pid,$cid) = @_ ;
-    my $scope = $self->get_objects({id => [$pid], field => ['creator', 'CHILDREN']});
-    my $parent = $scope->{$pid};
+    my ($self,$parent_id,$id) = @_ ;
+    my $scope = $self->get_objects({id => [$parent_id], field => ['creator', 'CHILDREN']});
+    my $parent = $scope->{$parent_id};
     if( exists($parent->{CHILDREN}) ){
-        $parent->{CHILDREN} .= ",$cid" ;
+        $parent->{CHILDREN} .= ",$id" ;
     } else {
-        $parent->{CHILDREN} = $cid ;
+        $parent->{CHILDREN} = $id ;
     }
     $self->update($parent);
 };
@@ -641,14 +653,15 @@ sub get_root_parents{
 };
 
 sub get_parent_childs{
-    my ($self,$pid,$fields) = @_ ;
-    my $scope = $self->get_objects({id => [$pid], field => $fields });
-    my $parent = $scope->{$pid};
+    my ($self,$parent_id,$fields) = @_ ;
+    my $scope = $self->get_objects({id => [$parent_id], field => $fields });
+    my $parent = $scope->{$parent_id};
     if( exists($parent->{CHILDREN}) ){ 
         my @childs = split /,/, $parent->{CHILDREN};
-        for my $cid (@childs) {
+        for my $id (@childs) {
+			next if !$id;
             $parent->{CHILDREN} = {} if ref($parent->{CHILDREN}) ne 'HASH' ;
-            $parent->{CHILDREN}{$cid} = $self->get_parent_childs($cid,$fields) ;
+            $parent->{CHILDREN}{$id} = $self->get_parent_childs($id,$fields) ;
         }
     }
     return($parent);

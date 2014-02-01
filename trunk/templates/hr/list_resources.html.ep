@@ -1,9 +1,15 @@
 <div>
- % my $resources = stash 'resources';
  <ul>
- % for my $id (sort keys %{$resources}) {
+ % for my $id (sort keys %{$temp_hash}) {
   <li>
-   <dfn id="<%= $id %>"><%= link_to $resources->{$id}{description} => "/hr/edit/$id" %></dfn>
+   % if( stash('id') && stash('id') eq $id ){
+    <strong><%= $temp_hash->{$id}{description} %></strong>
+   % } else {
+    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => "/hr/edit/$id" %></dfn>
+   % }
+   % if( exists $temp_hash->{$id}{CHILDREN} ){
+    %= include 'hr/list_resources', temp_hash => $temp_hash->{$id}{CHILDREN} ;
+   % }
   </li>
  % }    
  </ul>
