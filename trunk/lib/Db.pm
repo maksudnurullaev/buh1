@@ -124,6 +124,12 @@ sub del{
     my $id = shift;
     return if !$id;
     my $dbh = $self->get_db_connection() || return;
+    my $scope = $self->get_objects({id => [$id], field => ['PARENT']});
+    my $child = $scope->{$id} ;
+    if( $child ){ # if old parent exist
+        # remove from parent's children scope 
+        $self->parent_remove_child($child->{PARENT},$id);
+    }
     return $dbh->do("DELETE FROM objects WHERE id = '$id' ;");
 };
 
@@ -597,6 +603,8 @@ sub parent_remove_child{
     $parent->{CHILDREN} =~ s/$id//g ;
     $parent->{CHILDREN} =~ s/,{2,}/,/g ;
     $parent->{CHILDREN} =~ s/,$//g ;
+    $parent->{CHILDREN} =~ s/^,//g ;
+    $parent->{CHILDREN} =~ s/^,$//g ;
     if( !$parent->{CHILDREN} ){ # no more children
         $self->get_from_sql("delete from objects where id = '$parent_id' and field = 'CHILDREN' ; ");
     } else {

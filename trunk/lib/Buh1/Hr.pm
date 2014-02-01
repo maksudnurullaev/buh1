@@ -44,6 +44,7 @@ sub edit{
     # final action
     my $id = $self->param('payload');
     Utils::Hr::deploy($self,$id);
+    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
 };
 
 sub del{
@@ -71,7 +72,8 @@ sub move{
         my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
 		
-        if( $parent && $parent eq $new_parent ){
+		warn "xxx $new_parent xxx";
+        if( !$new_parent || ($parent && $parent eq $new_parent) ){
             $self->stash( error => 1 );
         } else {
             my $dbc = Utils::Db::client($self);
