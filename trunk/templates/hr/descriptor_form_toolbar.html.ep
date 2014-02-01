@@ -1,16 +1,26 @@
 <div class="toolbar">
- % if ( !stash('CHILDREN') ){
-  <%= link_to ml("Delete") => "/hr/del/$id" %> 
+ % if ( stash('action') ne 'del' && !stash('CHILDREN') ){
+  <%= link_to ml("Delete") => "/hr/del/$payload" %> 
  % } else {
-  %= ml('Delete') ;
+  <strong><%= ml('Delete') %></strong>
  % }
  |
  % if( stash('PARENT') ) {
-  <%= link_to "/hr/make_root/$id" => begin %><%= ml 'Make root' %><% end %>
+  <%= link_to "/hr/make_root/$payload" => begin %><%= ml 'Make root' %><% end %>
  % } else {
   %= ml 'Make root' ;
  % }
  |
- <%= link_to ml("Move") => "/hr/move/$id" %>
+ % if( stash('action') ne 'move' ){
+  <%= link_to ml("Move") => "/hr/move/$payload" %>
+ % } else {
+  <strong><%= ml 'Move' %></strong>
+ % }
+ |
+ % if( stash('action') ne 'files' ){
+  <%= link_to "/hr/files/$payload" => begin %><%= ml 'Files' %>(0)<% end %>
+ % } else {
+  <strong><%= ml 'Files' %>(0)</strong>
+ % }
 </div>
 
