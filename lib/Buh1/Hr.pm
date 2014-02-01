@@ -61,6 +61,26 @@ sub del{
     Utils::Hr::deploy($self,$id);
 };
 
+sub files{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $method = $self->req->method ;
+    my $id = $self->param('payload');
+
+	if( $method eq 'POST' ){
+		if( $self->req->is_limit_exceeded ){
+            $self->stash( error => 1 );
+			return ;
+		}
+		my $new_file = $self->param('new_file');
+		warn $new_file->size ;
+		warn $new_file->filename ;
+	}
+
+    Utils::Hr::deploy($self,$id);
+};
+
 sub move{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
@@ -72,7 +92,6 @@ sub move{
         my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
 		
-		warn "xxx $new_parent xxx";
         if( !$new_parent || ($parent && $parent eq $new_parent) ){
             $self->stash( error => 1 );
         } else {
