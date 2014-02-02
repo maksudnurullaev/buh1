@@ -1,8 +1,12 @@
 <div class="toolbar">
- % if ( stash('action') ne 'del' && !stash('CHILDREN') ){
+ % if ( !stash('CHILDREN') ){
   <%= link_to ml("Delete") => "/hr/del/$payload" %> 
  % } else {
-  <strong><%= ml('Delete') %></strong>
+  % if ( stash('action') eq 'del' ){
+   <strong><%= ml('Delete') %></strong>
+  % } else {
+   %= ml('Delete') 
+  % }
  % }
  |
  % if( stash('PARENT') ) {

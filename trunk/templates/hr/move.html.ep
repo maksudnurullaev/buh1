@@ -4,4 +4,3 @@
 
 %= include 'hr/descriptor_form_toolbar' ;
 %= include 'hr/descriptor_form_move' ;
-%= include 'hr/list_resources_radio', temp_hash => stash('resources_root') if stash('resources_root') ;

@@ -10,6 +10,7 @@ package Buh1::Hr; {
 
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
+use Utils::Files ;
 use Data::Dumper ;
 
 sub add{
@@ -75,8 +76,7 @@ sub files{
 		}
 		my $new_file = $self->param('new_file');
 		if( $new_file->size ){
-			warn $new_file->filename ;
-			#TODO Utils::Files:new_file4id($new_file,$id);
+			Utils::Files::add_file4id($self,$new_file,$id);
 		}
 	}
 
