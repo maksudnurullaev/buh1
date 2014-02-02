@@ -1,9 +1,23 @@
-<div class="toolbar">
- %= stash 'description' ;
-</div>
-<div class="toolbar">
- %= form_for "/hr/files/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
-  %= file_field 'new_file'
-  %= submit_button ml 'Upload'
+<div class="form">
+ %= form_for "/hr/move/$payload" => (method => 'POST') => begin
+  %= hidden_field id    => $payload if $payload ;
+  <table class='colortable'>
+   <tr>
+    <td class='tar'> 
+     %= ml 'Description' 
+    </td>
+    <td>
+     <strong><%= stash 'description' %></strong>
+    </td>
+   </tr>
+   <tr><td>&nbsp;</td>
+    <td>
+     %= submit_button ml('Move') ;
+     | <%= link_to "/hr/list" => begin %><%= ml 'Cancel' %><% end %>
+    </td>
+   </tr>
+  </table>
+  %= include 'hr/list_resources_radio', temp_hash => stash('resources_root') if stash('resources_root') ;
  % end
 </div>
+

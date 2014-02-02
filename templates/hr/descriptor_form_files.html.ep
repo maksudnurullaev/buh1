@@ -1,0 +1,27 @@
+<div class="toolbar">
+ %= stash 'description' ;
+</div>
+<div class="toolbar">
+ %= form_for "/hr/files/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area 'file description' => (stash 'file description')
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= file_field 'new_file'
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Upload'
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
