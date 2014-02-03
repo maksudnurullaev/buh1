@@ -1,0 +1,11 @@
+<div class="toolbar">
+ % if( $action ne 'files_add_new' ){
+  <strong><%= ml 'List' %></strong>  
+  |
+  <%= link_to "/hr/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
+ % } else {
+  <%= link_to "/hr/files/$payload" => begin %><%= ml 'List' %><% end %>
+  |
+  <strong><%= ml 'New' %></strong>  
+ % }
+</div>

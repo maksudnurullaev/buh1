@@ -13,6 +13,15 @@
    <tr><td>&nbsp;</td>
     <td>
      %= submit_button ml('Move') ;
+    </td>
+   </tr>
+   <tr><td>&nbsp;</td>
+    <td>
+     % if( stash('PARENT') ) {
+      <%= link_to "/hr/make_root/$payload" => begin %><%= ml 'Make root' %><% end %>
+     % } else {
+      %= ml 'Make root' ;
+     % }
      | <%= link_to "/hr/list" => begin %><%= ml 'Cancel' %><% end %>
     </td>
    </tr>

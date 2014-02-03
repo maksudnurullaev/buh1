@@ -1,8 +1,6 @@
 <div class="toolbar">
- %= stash 'description' ;
-</div>
-<div class="toolbar">
- %= form_for "/hr/files/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= form_for "/hr/files_add_new/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= hidden_field page => "files_add_new" ;
  <table class='colortable'>
   <tr>
    <td class='tar'> 
