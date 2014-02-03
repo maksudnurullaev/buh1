@@ -72,12 +72,14 @@ sub files_add_new{
 
 		if( $self->req->is_limit_exceeded ){
             $self->stash( error => 1 );
-			return ;
-		}
-		my $new_file = $self->param('new_file');
-		if( $new_file->size ){
-			Utils::Files::add_file4id($self,$new_file,$id);
-            $self->redirect_to("/hr/files/$id");
+		} else {
+			my $new_file = $self->param('new_file');
+			if( $new_file && $new_file->size ){
+				Utils::Files::add_file4id($self,$new_file,$id);
+            	$self->redirect_to("/hr/files/$id");
+			} else {
+            	$self->stash( error => 1 );
+			}
 		}
 	}
     Utils::Hr::deploy($self,$id);
