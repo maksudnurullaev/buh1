@@ -1,6 +1,6 @@
 % layout 'default';
 %= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Files' %></h2>
+<h2><%= ml 'Human Resource' %> | <%= ml 'Files' %> | <%= ml 'New' %></h2>
 
 %= include 'hr/descriptor_form_toolbar' ;
 
@@ -9,4 +9,5 @@
 </div>
 
 %= include 'hr/files_toolbar' ;
-%= include 'hr/files_list' ;
+%= include 'hr/files_add_new_form' ;
+

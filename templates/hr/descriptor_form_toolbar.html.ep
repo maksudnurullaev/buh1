@@ -9,19 +9,13 @@
   % }
  % }
  |
- % if( stash('PARENT') ) {
-  <%= link_to "/hr/make_root/$payload" => begin %><%= ml 'Make root' %><% end %>
- % } else {
-  %= ml 'Make root' ;
- % }
- |
  % if( stash('action') ne 'move' ){
   <%= link_to ml("Move") => "/hr/move/$payload" %>
  % } else {
   <strong><%= ml 'Move' %></strong>
  % }
  |
- % if( stash('action') ne 'files' ){
+ % if( stash('action') !~ /files/ ){
   <%= link_to "/hr/files/$payload" => begin %><%= ml 'Files' %>(0)<% end %>
  % } else {
   <strong><%= ml 'Files' %>(0)</strong>
