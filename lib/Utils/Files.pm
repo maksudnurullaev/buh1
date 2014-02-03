@@ -44,11 +44,39 @@ sub file_list4id{
     
     my $dir;
     opendir($dir, $path);
+	my $result = {};
     while (my $file = readdir($dir)) {
-        next if ($file =~ m/^\./);
-        warn "$file";
+        next if ($file =~ m/^\./) || ($file =~ /\.description$/);
+		$result->{ $file } = get_file_description("$path/$file") ;
     }
     closedir($dir);
+	return($result);
+};
+
+sub get_file_description{
+	my $file_path = shift;
+	return(undef) if !$file_path ;
+	my $description_file = $file_path . '.description' ;
+	if( -e $description_file ){
+		return get_file_content($description_file);
+	}
+	return(undef);
+};
+
+sub get_file_content{
+	my $file_path = shift;
+	return(undef) if !$file_path ;
+	if( -e $file_path ){
+		my($fh,$content);
+		if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
+			$content = do { local $/; <$fh> }; 
+			close($fh);
+			return($content)
+		} else {
+			warn $! ;
+		}
+	}
+	return(undef);
 };
 
 # END OF PACKAGE
