@@ -31,6 +31,26 @@ sub get_path{
 	return( "db/clients/$client_id/$id" ) ;
 };
 
+sub file_list4id{
+	my ($self,$id) = @_ ;
+	my $client_id = $self->session('company id') ;
+
+	my $path = Utils::get_root_path(get_path($self,$id));
+    warn $path ;
+	if( ! -d $path ){
+        system "mkdir -p '$path/'" ;
+        return ;
+    }
+    
+    my $dir;
+    opendir($dir, $path);
+    while (my $file = readdir($dir)) {
+        next if ($file =~ m/^\./);
+        warn "$file";
+    }
+    closedir($dir);
+};
+
 # END OF PACKAGE
 };
 

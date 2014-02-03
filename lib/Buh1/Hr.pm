@@ -88,6 +88,7 @@ sub files{
 
     my $id = $self->param('payload');
 
+    warn Dumper Utils::Files::file_list4id($self,$id);
     Utils::Hr::deploy($self,$id);
 };
 
