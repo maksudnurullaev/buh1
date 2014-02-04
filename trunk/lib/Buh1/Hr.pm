@@ -93,7 +93,7 @@ sub files{
     my $id         = $self->param('payload');
     my $company_id = $self->session('company id') ;
 
-    warn Dumper Utils::Files::file_list4id($company_id,$id);
+    $self->stash(files=>Utils::Files::file_list4id($company_id,$id));
 
     Utils::Hr::deploy($self,$id);
 };

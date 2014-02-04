@@ -57,7 +57,7 @@ sub set_file_content{
     my($file_path,$content) = @_ ;
 	return(undef) if !$file_path || !$content ;
     my $fh;
-    if( open($fh, ">", $file_path) ){
+    if( open($fh, "> :encoding(UTF-8)", $file_path) ){
         warn  "Cannot write to $file_path: $!" if ! (print $fh $content) ;
         warn "Cannot close $file_path: $!" if !close($fh) ;
     } else { warn "Cannot open $file_path: $!" } ;
