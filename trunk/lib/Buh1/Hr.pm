@@ -75,7 +75,9 @@ sub files_add_new{
 		} else {
 			my $new_file = $self->param('new_file');
 			if( $new_file && $new_file->size ){
-				Utils::Files::add_file4id($self,$new_file,$id);
+                my $company_id = $self->session('company id') ;
+                my $file_description = $self->param('file description');
+				Utils::Files::add_file4id($company_id,$id,$new_file,$file_description);
             	$self->redirect_to("/hr/files/$id");
 			} else {
             	$self->stash( error => 1 );
@@ -88,9 +90,11 @@ sub files{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
 
-    my $id = $self->param('payload');
+    my $id         = $self->param('payload');
+    my $company_id = $self->session('company id') ;
 
-    warn Dumper Utils::Files::file_list4id($self,$id);
+    warn Dumper Utils::Files::file_list4id($company_id,$id);
+
     Utils::Hr::deploy($self,$id);
 };
 
