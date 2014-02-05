@@ -73,17 +73,6 @@ sub files_update{
     Utils::Files::deploy($self,$id,$file);
 };
 
-sub files_update{
-    my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
-
-    my $id = $self->param('payload');
-    my $file = $self->param('file');
-
-    Utils::Hr::deploy($self,$id);
-    Utils::Files::deploy($self,$id,$file);
-};
-
 sub files_update_desc{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
@@ -97,6 +86,32 @@ sub files_update_desc{
     $self->redirect_to("/hr/files_update/$id?file=$file");
 };
 
+sub files_update_file{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+	if( $self->req->method  eq 'POST' ){
+        if( Utils::Files::update_file($self) ){
+    		$self->redirect_to("/hr/files_update/$id?file=$file");
+			return;
+		} else {
+         	$self->stash( error => 1 );
+		}
+	}
+};
+
+sub files_del{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    Utils::Files::del_file($self);
+    $self->redirect_to("/hr/files/$id");
+};
+
 sub files_add_new{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
@@ -108,7 +123,7 @@ sub files_add_new{
            	$self->redirect_to("/hr/files/$id");
             return;
 		} else {
-            	$self->stash( error => 1 );
+         	$self->stash( error => 1 );
 		}
 	}
 

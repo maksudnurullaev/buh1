@@ -38,6 +38,39 @@ sub add_new{
     return(1)
 };
 
+sub del_file{
+    my $self = shift;
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+    my $company_id = $self->session('company id') ;
+	my $path       = Utils::get_root_path(get_path($company_id,$id));
+	my $path_file  = "$path/$file" ;
+	
+	unlink $path_file ;
+    unlink ($path_file . '.name') ;
+    unlink ($path_file . '.desc') ;
+};
+
+sub update_file{
+    my $self = shift;
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+    return(0) if $self->req->is_limit_exceeded ;
+
+	my $new_file = $self->param('new_file');
+	return(0) if( !$new_file || !$new_file->size ) ;
+
+    my $company_id = $self->session('company id') ;
+	my $path      = Utils::get_root_path(get_path($company_id,$id));
+
+	my $path_file = "$path/$file" ;
+	$new_file->move_to($path_file) ;
+    set_file_content($path_file . '.name', $new_file->filename) ;
+    return(1)
+};
+
 sub update_desc{
     my $self = shift;
     my $id = $self->param('payload');
