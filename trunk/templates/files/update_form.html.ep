@@ -1,7 +1,7 @@
 <div class="toolbar">
  % my $file = param 'file' ;
  %= form_for "/$controller/files_update_desc/$payload?file=$file"  => ( method => 'POST') => begin
- %= hidden_field page => "files_add_new" ;
+ %= hidden_field "redirect_to" => "/$controller/files_update/$payload?file=$file"
  <table class='colortable'>
   <tr>
    <td class='tar'> 
@@ -17,9 +17,9 @@
    </td>
   </tr>
  % end
-  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
  %= form_for "/$controller/files_update_file/$payload?file=$file" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
- %= hidden_field page => "files_update" ;
+ %= hidden_field "redirect_to" => "/$controller/files_update/$payload?file=$file"
+  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td class='tar'> 
     %= ml 'Upload' 
@@ -38,6 +38,14 @@
     %= submit_button ml 'Update'
    </td>
   </tr>
- </table>
  % end
+ %= form_for "/$controller/files_del/$payload?file=$file" => ( method => 'POST') => begin
+  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Delete'
+   </td>
+  </tr>
+ % end
+ </table>
 </div>

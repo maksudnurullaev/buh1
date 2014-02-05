@@ -38,6 +38,20 @@ sub add_new{
     return(1)
 };
 
+sub update_desc{
+    my $self = shift;
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+    my $file_description = $self->param('file.desc');
+    my $redirect_to = $self->param('redirect_to');
+    my $company_id = $self->session('company id') ;
+
+	my $path      = Utils::get_root_path(get_path($company_id,$id));
+	my $path_file = "$path/$file" . '.desc' ;
+    set_file_content($path_file, $file_description) ;
+};
+
+
 sub get_path{
 	my($company_id,$id) = @_ ;
 	return( "db/clients/$company_id/$id" ) ;
