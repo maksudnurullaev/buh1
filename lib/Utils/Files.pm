@@ -15,8 +15,18 @@ use utf8;
 use Utils;
 use Data::Dumper;
 
-sub add_file4id{
-	my ($company_id,$id,$new_file,$file_description) = @_ ;
+sub add_new{
+    my $self = shift;
+    my $id = $self->param('payload');
+
+    return(0) if $self->req->is_limit_exceeded ;
+
+	my $new_file = $self->param('new_file');
+	return(0) if( !$new_file || !$new_file->size ) ;
+
+    my $company_id = $self->session('company id') ;
+    my $file_description = $self->param('file.desc');
+
 	my $path      = Utils::get_root_path(get_path($company_id,$id));
 	system "mkdir -p '$path/'" if ! -d $path ;
 
@@ -25,6 +35,7 @@ sub add_file4id{
 
     set_file_content($path_file . '.name', $new_file->filename) ;
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
+    return(1)
 };
 
 sub get_path{
@@ -32,6 +43,26 @@ sub get_path{
 	return( "db/clients/$company_id/$id" ) ;
 };
 
+sub deploy{
+    my($self,$id,$file) = @_ ;
+    my $company_id = $self->session('company id');
+    my $path = Utils::get_root_path(get_path($company_id,$id));
+    my $file_path = "$path/$file" ;
+    return if ! -e $file_path ;
+    $self->stash( 'file_name' => get_file_content($file_path . '.name') )
+        if -e ($file_path . '.name');
+    $self->stash( 'file_desc' => get_file_content($file_path . '.desc') )
+        if -e ($file_path . '.desc');
+};
+
+sub files_count{
+    my($self,$id) = @_ ;
+    my $company_id = $self->session('company id');
+    my $path = Utils::get_root_path(get_path($company_id,$id));
+    return(0) if ! -d $path;
+    my @files = <"$path/*.name">;
+    return(scalar(@files));
+};
 sub file_list4id{
 	my ($company_id,$id) = @_ ;
 	my $path = Utils::get_root_path(get_path($company_id,$id));

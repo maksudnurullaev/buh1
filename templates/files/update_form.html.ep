@@ -1,0 +1,43 @@
+<div class="toolbar">
+ % my $file = param 'file' ;
+ %= form_for "/$controller/files_update_desc/$payload?file=$file"  => ( method => 'POST') => begin
+ %= hidden_field page => "files_add_new" ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area 'file.desc' => $file_desc ;
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Update'
+   </td>
+  </tr>
+ % end
+  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
+ %= form_for "/$controller/files_update_file/$payload?file=$file" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= hidden_field page => "files_update" ;
+  <tr>
+   <td class='tar'> 
+    %= ml 'Upload' 
+   </td>
+   <td>
+    <strong><a target="_blank" href='<%= "/files/download/$payload?file=$file" %>'><%= $file_name %></a></strong>
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= file_field 'new_file'
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Update'
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

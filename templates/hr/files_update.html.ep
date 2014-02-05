@@ -1,13 +1,13 @@
 % layout 'default';
 %= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Files' %> | <%= ml 'New' %></h2>
+<h2><%= ml 'Human Resource' %> | <%= ml 'Files' %> | <%= ml 'Update' %></h2>
 
-%= include 'hr/descriptor_form_toolbar' ;
+%= include 'hr/descriptor_toolbar' ;
 
 <div class="toolbar">
  <h3><%= stash 'description' %></h3>
 </div>
 
 %= include 'hr/files_toolbar' ;
-%= include 'files/add_new_form' ;
+%= include 'files/update_form' ;
 

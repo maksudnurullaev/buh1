@@ -1,0 +1,13 @@
+% my $files = stash 'files' ;
+% if( scalar keys %{$files} ){
+ <ul>
+  % for my $file (reverse sort keys %{$files}){
+   <li><%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?file=$file" %></li>
+   % if( $files->{$file}{desc} ){
+    <sub><%= $files->{$file}{desc} %></sub>
+   % }
+  % }
+ </pre>
+% } else {
+ <br /><%= ml 'No data!' %>
+% }

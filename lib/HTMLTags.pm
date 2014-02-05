@@ -50,6 +50,7 @@ sub register {
     $app->helper( dbc_get_objects => sub { Utils::Db::dbc_get_objects (@_) ; } );
     $app->helper( shrink_if => sub { Utils::shrink_if (@_) ; } );
     $app->helper( tbalance_row => sub { Utils::Documents::tbalance_row (@_); } );
+    $app->helper( files_count => sub { Utils::Files::files_count (@_); } );
 };
 
 };

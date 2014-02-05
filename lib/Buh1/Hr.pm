@@ -62,6 +62,16 @@ sub del{
     Utils::Hr::deploy($self,$id);
 };
 
+sub files_update{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+    Utils::Hr::deploy($self,$id);
+    Utils::Files::deploy($self,$id,$file);
+};
 sub files_add_new{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
@@ -69,21 +79,14 @@ sub files_add_new{
     my $id = $self->param('payload');
 
 	if( $self->req->method  eq 'POST' ){
-
-		if( $self->req->is_limit_exceeded ){
-            $self->stash( error => 1 );
+        if( Utils::Files::add_new($self) ){
+           	$self->redirect_to("/hr/files/$id");
+            return;
 		} else {
-			my $new_file = $self->param('new_file');
-			if( $new_file && $new_file->size ){
-                my $company_id = $self->session('company id') ;
-                my $file_description = $self->param('file description');
-				Utils::Files::add_file4id($company_id,$id,$new_file,$file_description);
-            	$self->redirect_to("/hr/files/$id");
-			} else {
             	$self->stash( error => 1 );
-			}
 		}
 	}
+
     Utils::Hr::deploy($self,$id);
 };
 sub files{
