@@ -72,6 +72,31 @@ sub files_update{
     Utils::Hr::deploy($self,$id);
     Utils::Files::deploy($self,$id,$file);
 };
+
+sub files_update{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+    Utils::Hr::deploy($self,$id);
+    Utils::Files::deploy($self,$id,$file);
+};
+
+sub files_update_desc{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $file = $self->param('file');
+
+	if( $self->req->method  eq 'POST' ){
+        Utils::Files::update_desc($self);
+	}
+    $self->redirect_to("/hr/files_update/$id?file=$file");
+};
+
 sub files_add_new{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
