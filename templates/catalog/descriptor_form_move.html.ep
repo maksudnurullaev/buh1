@@ -1,0 +1,32 @@
+<div class="form">
+ %= form_for "/$controller/move/$payload" => (method => "POST") => begin
+  %= hidden_field id    => $payload if $payload ;
+  <table class="colortable">
+   <tr>
+    <td class="tar"> 
+     %= ml "Description" 
+    </td>
+    <td>
+     <strong><%= stash "description" %></strong>
+    </td>
+   </tr>
+   <tr><td>&nbsp;</td>
+    <td>
+     %= submit_button ml("Move") ;
+    </td>
+   </tr>
+   <tr><td>&nbsp;</td>
+    <td>
+     % if( stash("PARENT") ) {
+      <%= link_to "/$controller/make_root/$payload" => begin %><%= ml "Make root" %><% end %>
+     % } else {
+      %= ml "Make root" ;
+     % }
+     | <%= link_to "/$controller/list" => begin %><%= ml "Cancel" %><% end %>
+    </td>
+   </tr>
+  </table>
+  %= include "$controller/list_resources_radio", temp_hash => stash("resources_root") if stash("resources_root") ;
+ % end
+</div>
+

@@ -1,0 +1,4 @@
+% layout "default";
+<h2><%= ml "Catalog" %> | <%= ml "Delete" %></h2>
+%= include "$controller/descriptor_toolbar" ;
+%= include "$controller/descriptor_form" ;

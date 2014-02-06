@@ -1,0 +1,15 @@
+% layout "default";
+%= include "success_error" ;
+<h2><%= ml "Catalog" %> | <%= ml "Files" %></h2>
+
+%= include "$controller/descriptor_toolbar" ;
+
+<div class="toolbar">
+ <%= ml "Name" %>:
+ <strong>
+  %= link_to stash("description") => "/$controller/edit/$payload" 
+ </strong>
+</div>
+
+%= include "$controller/files_toolbar" ;
+%= include "files/list" ;

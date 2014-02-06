@@ -1,0 +1,7 @@
+% layout "default";
+<h2><%= ml "Catalog" %> | <%= ml "Edit" %></h2>
+%= include "success_error" ;
+
+%= include "catalog/descriptor_toolbar" ;
+%= include "catalog/descriptor_form" ;
+%= include "catalog/list_resources", temp_hash => stash("resources_root") if stash("resources_root") ;

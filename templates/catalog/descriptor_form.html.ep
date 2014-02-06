@@ -1,0 +1,37 @@
+% my $id = stash('id') ;
+% my $action = stash('action') ;
+% my $path = "/$controller/$action" ;
+% $path .= "/$id" if $id ;
+
+<div class="form">
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field oname => 'catalog';
+ %= hidden_field id    => $id if $id ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    % if( $action =~ /add|edit/i ) {
+        %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    % } else {
+        <strong><%= stash 'description' %></strong>
+    % }
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+     % if( $action eq 'del' ){
+      %= submit_button ml('Delete') ;
+      | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
+     % }  else {
+      %= submit_button ml('Save') ;
+      | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
+     % } 
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+
