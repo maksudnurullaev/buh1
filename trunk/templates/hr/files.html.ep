@@ -5,7 +5,10 @@
 %= include 'hr/descriptor_toolbar' ;
 
 <div class="toolbar">
- <h3><%= stash 'description' %></h3>
+ <%= ml 'Name' %>:
+ <strong>
+  %= link_to stash('description') => "/hr/edit/$payload" 
+ </strong>
 </div>
 
 %= include 'hr/files_toolbar' ;
