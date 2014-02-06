@@ -1,4 +1,4 @@
-package Utils::Hr; {
+package Utils::Catalog; {
 
 =encoding utf8
 
@@ -49,7 +49,7 @@ sub validate{
 
 sub get_root_objects{
     my $self = shift ;
-    return(Utils::Db::cdb_get_root($self," WHERE name LIKE 'hr%' "));
+    return(Utils::Db::cdb_get_root($self," WHERE name = 'catalog' "));
 };
 
 
