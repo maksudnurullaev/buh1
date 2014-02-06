@@ -1,4 +1,0 @@
- <div class="toolbar">
-  <a href='/hr/add'><%= ml 'Add' %></a>
- </div>
-

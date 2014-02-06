@@ -1,6 +1,0 @@
-% layout 'default';
-%= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
-
-%= include 'hr/descriptor_toolbar' ;
-%= include 'hr/descriptor_form_move' ;
