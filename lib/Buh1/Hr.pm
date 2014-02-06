@@ -20,7 +20,8 @@ sub add{
     if ( $method =~ /POST/ ){
         my $data = Utils::Hr::form2data($self);
         if( Utils::Hr::validate($self,$data) ){
-            Utils::Hr::insert_or_update($self,$data);
+            Utils::Db::cdb_insert_or_update($self,$data);
+            $self->stash(success => 1);
             $self->redirect_to('/hr/list');
         }
 	}
@@ -30,7 +31,7 @@ sub list{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'read|write|admin') );
 
-    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
+    $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
 };
 
 sub edit{
@@ -40,12 +41,13 @@ sub edit{
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
         my $data = Utils::Hr::form2data($self);
-        Utils::Hr::insert_or_update($self,$data);
+        $self->stash(success => 1);
+        Utils::Db::cdb_insert_or_update($self,$data);
     }
     # final action
     my $id = $self->param('payload');
-    Utils::Hr::deploy($self,$id);
-    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
+    Utils::Db::cdb_deploy($self,$id);
+    $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
 };
 
 sub del{
@@ -59,7 +61,7 @@ sub del{
         $self->redirect_to('/hr/list');
     }
     # final action
-    Utils::Hr::deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id);
 };
 
 sub files_update{
@@ -69,7 +71,7 @@ sub files_update{
     my $id = $self->param('payload');
     my $file = $self->param('file');
 
-    Utils::Hr::deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id);
     Utils::Files::deploy($self,$id,$file);
 };
 
@@ -119,6 +121,10 @@ sub files_add_new{
     my $id = $self->param('payload');
 
 	if( $self->req->method  eq 'POST' ){
+        if( $self->req->error ){
+            $self->stash( error => 1 );
+            return;
+        }
         if( Utils::Files::add_new($self) ){
            	$self->redirect_to("/hr/files/$id");
             return;
@@ -127,7 +133,7 @@ sub files_add_new{
 		}
 	}
 
-    Utils::Hr::deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id);
 };
 sub files{
     my $self = shift;
@@ -138,7 +144,7 @@ sub files{
 
     $self->stash(files=>Utils::Files::file_list4id($company_id,$id));
 
-    Utils::Hr::deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id);
 };
 
 sub move{
@@ -159,9 +165,9 @@ sub move{
             $dbc->child_set_parent($id,$new_parent);
         }
     }
-    $self->stash( resources_root => Utils::Hr::get_resources_root($self) );
+    $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
     # final action
-    Utils::Hr::deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id);
 };
 
 sub make_root{
