@@ -1,0 +1,13 @@
+<div class="toolbar">
+ % if( $action eq 'files_add_new' ){
+  <%= link_to "/hr/files/$payload" => begin %><%= ml 'List' %><% end %>
+  |
+  <strong><%= ml 'New' %></strong>  
+ % } elsif( $action eq 'files_update' ) {
+  <%= link_to "/hr/files/$payload" => begin %><%= ml 'List' %><% end %>
+ % } else {
+  <strong><%= ml 'List' %></strong>  
+  |
+  <%= link_to "/hr/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
+ % }
+</div>

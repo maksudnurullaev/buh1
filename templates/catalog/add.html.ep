@@ -1,0 +1,4 @@
+% layout 'default';
+<h2><%= ml 'Human Resource' %> | <%= ml 'Add' %></h2>
+%= include 'success_error' ;
+%= include 'hr/descriptor_form' ;

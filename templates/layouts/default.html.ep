@@ -68,6 +68,7 @@
                <li><u><%= $company %></u><!-- ml 'General ledger' %-->
                 <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
                 <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
+                <ul><li><a href="/catalog/list"><%= ml 'Catalog' %></a></li></ul>
                 <ul><li><a href="/hr/list"><%= ml 'Human Resource' %></a></li></ul>
                </li>
               % }              
