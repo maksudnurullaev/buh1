@@ -9,7 +9,7 @@
     <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => "/$controller/edit/$id" %></dfn>
    % }
    % my $files_count = files_count($id) ;
-   <sup><%= $files_count %></sup>
+   <sup><%= link_to $files_count => "/$controller/files/$id" %></sup>
    % if( exists $temp_hash->{$id}{CHILDREN} ){
     %= include "$controller/list_resources", temp_hash => $temp_hash->{$id}{CHILDREN} ;
    % }

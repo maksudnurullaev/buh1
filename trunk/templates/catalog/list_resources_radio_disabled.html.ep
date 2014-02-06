@@ -1,4 +1,3 @@
-
 <div>
  <ul class="nostyle">
   % for my $id (sort keys %{$temp_hash}) {
