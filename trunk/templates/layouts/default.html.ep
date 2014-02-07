@@ -58,6 +58,7 @@
               <li><%= ml 'Guides' %>
                <ul><li><a href="/accounts/list"><%= ml 'Chart of Accounts' %></a></li></ul>
                <ul><li><a href="/operations/list"><%= ml 'Business transactions' %></a></li></ul>
+               <ul><li><a href="/templates/list"><%= ml 'Templates' %></a></li></ul>
               </li>
               % if( $user && !$admin ) {
                <li><%= ml 'Companies' %>

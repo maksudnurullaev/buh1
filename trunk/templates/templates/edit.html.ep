@@ -1,5 +1,5 @@
 % layout "default";
-<h2><%= ml "Catalog" %> | <%= ml "Edit" %></h2>
+<h2><%= ml "Templates" %> | <%= ml "Edit" %></h2>
 %= include "success_error" ;
 
 %= include "$controller/descriptor_toolbar" ;
