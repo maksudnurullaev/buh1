@@ -19,7 +19,7 @@ sub download{
     my $id         = $self->param('payload');
     my $file       = $self->param('file');
     my $company_id = $self->session('company id');
-	my $path       = Utils::get_root_path(Utils::Files::get_path($company_id,$id));
+	my $path       = Utils::get_root_path(Utils::Files::get_path($self,$company_id,$id));
     my $file_path  = "$path/$file" ;
     my $file_name  = Utils::Files::get_file_content("$path/$file" . '.name') ;
 
