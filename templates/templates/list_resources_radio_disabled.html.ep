@@ -1,0 +1,13 @@
+<div>
+ <ul class="nostyle">
+  % for my $id (sort keys %{$temp_hash}) {
+   <li>
+    %= radio_button "new_parent" => $id, style => "width:auto;", id=>"label $id", disabled => 1 ;
+    <%= $temp_hash->{$id}{description} %>
+    % if( exists $temp_hash->{$id}{CHILDREN} ){
+     %= include "$controller/list_resources_radio_disabled", temp_hash => $temp_hash->{$id}{CHILDREN} ;
+    % }
+   </li>
+  % }    
+ </ul>
+</div>

@@ -27,7 +27,7 @@ sub add_new{
     my $company_id = $self->session('company id') ;
     my $file_description = $self->param('file.desc');
 
-	my $path      = Utils::get_root_path(get_path($company_id,$id));
+	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
 	system "mkdir -p '$path/'" if ! -d $path ;
 
 	my $path_file = "$path/" . Utils::get_date_uuid() ;
@@ -44,7 +44,7 @@ sub del_file{
     my $file = $self->param('file');
 
     my $company_id = $self->session('company id') ;
-	my $path       = Utils::get_root_path(get_path($company_id,$id));
+	my $path       = Utils::get_root_path(get_path($self,$company_id,$id));
 	my $path_file  = "$path/$file" ;
 	
 	unlink $path_file ;
@@ -63,7 +63,7 @@ sub update_file{
 	return(0) if( !$new_file || !$new_file->size ) ;
 
     my $company_id = $self->session('company id') ;
-	my $path      = Utils::get_root_path(get_path($company_id,$id));
+	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
 
 	my $path_file = "$path/$file" ;
 	$new_file->move_to($path_file) ;
@@ -79,21 +79,21 @@ sub update_desc{
     my $redirect_to = $self->param('redirect_to');
     my $company_id = $self->session('company id') ;
 
-	my $path      = Utils::get_root_path(get_path($company_id,$id));
+	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
 	my $path_file = "$path/$file" . '.desc' ;
     set_file_content($path_file, $file_description) ;
 };
 
-
 sub get_path{
-	my($company_id,$id) = @_ ;
-	return( "db/clients/$company_id/$id" ) ;
+	my($self,$company_id,$id) = @_ ;
+    return( "db/clients/$company_id/$id" ) if  $self->stash('controller') !~ /[templates|infos]/ ;
+    return( "db/main/$id");
 };
 
 sub deploy{
     my($self,$id,$file) = @_ ;
     my $company_id = $self->session('company id');
-    my $path = Utils::get_root_path(get_path($company_id,$id));
+    my $path = Utils::get_root_path(get_path($self,$company_id,$id));
     my $file_path = "$path/$file" ;
     return if ! -e $file_path ;
     $self->stash( 'file_name' => get_file_content($file_path . '.name') )
@@ -105,14 +105,14 @@ sub deploy{
 sub files_count{
     my($self,$id) = @_ ;
     my $company_id = $self->session('company id');
-    my $path = Utils::get_root_path(get_path($company_id,$id));
+    my $path = Utils::get_root_path(get_path($self,$company_id,$id));
     return(0) if ! -d $path;
     my @files = <"$path/*.name">;
     return(scalar(@files));
 };
 sub file_list4id{
-	my ($company_id,$id) = @_ ;
-	my $path = Utils::get_root_path(get_path($company_id,$id));
+	my ($self,$company_id,$id) = @_ ;
+	my $path = Utils::get_root_path(get_path($self,$company_id,$id));
 	if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;

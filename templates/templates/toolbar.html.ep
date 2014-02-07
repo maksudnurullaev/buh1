@@ -1,0 +1,4 @@
+ <div class="toolbar">
+  %= link_to ml('Add') => "/$controller/add" ; 
+ </div>
+

@@ -1,0 +1,19 @@
+% layout "default";
+%= include "success_error" ;
+<h2><%= ml "Templates" %> | <%= ml "Files" %></h2>
+
+%= include "$controller/descriptor_toolbar" if is_admin ;
+
+<div class="toolbar">
+ <%= ml "Name" %>:
+ <strong>
+  % if( is_admin ){ 
+   %= link_to stash("description") => "/$controller/edit/$payload" ;
+  % } else {
+    %= stash("description") ;
+  % }
+ </strong>
+</div>
+
+%= include "$controller/files_toolbar" if is_admin ;
+%= include "files/list" ;

@@ -1,0 +1,4 @@
+% layout 'default';
+<h2><%= ml 'Templates' %> | <%= ml 'Add' %></h2>
+%= include 'success_error' ;
+%= include "$controller/descriptor_form" ;
