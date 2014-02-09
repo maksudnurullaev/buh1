@@ -86,8 +86,8 @@ sub update_desc{
 
 sub get_path{
 	my($self,$company_id,$id) = @_ ;
-    return( "db/clients/$company_id/$id" ) if  $self->stash('controller') !~ /[templates|infos]/ ;
-    return( "db/main/$id");
+	return( "db/main/$id") if( -d "db/main/$id" ) ;
+    return( "db/clients/$company_id/$id" ) ;
 };
 
 sub deploy{
