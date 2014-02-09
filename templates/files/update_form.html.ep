@@ -40,7 +40,10 @@
   </tr>
  % end
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
-  <tr><td>&nbsp;</td>
+  <tr>
+   <td>
+    <%= link_to "/hr/files/$payload" => begin %><%= ml 'Cancel' %><% end %>
+   </td>
    <td class='tar'>
     %= link_to ml('Delete') => "/$controller/files_del/$payload?file=$file"
    </td>
