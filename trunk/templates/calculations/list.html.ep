@@ -1,0 +1,16 @@
+% layout 'default';
+<h2><%= ml 'Calculations' %></h2>
+%= include 'success_error' ;
+%= include "calculations/toolbar" if is_admin ;
+
+% my $calcs = stash 'calculations' ;
+% if( scalar keys %{$calcs} ){
+ <ul>
+  % for my $key (reverse sort keys %{$calcs}){
+   <li>
+    %= link_to $calcs->{$key}{description} => "/calculations/edit/$key"
+   </li>
+  % }
+% } else {
+ <br /><%= ml 'No data!' %>
+% }

@@ -8,12 +8,11 @@
     % } else {
      <%= link_to $files->{$file}{name} => "/files/download/$payload?file=$file" %>
     % }
+    % if( $files->{$file}{desc} ){
+     <br /><small><%= $files->{$file}{desc} %></small>
+    % }
    </li>
-   % if( $files->{$file}{desc} ){
-    <sub><%= $files->{$file}{desc} %></sub>
-   % }
   % }
- </pre>
 % } else {
  <br /><%= ml 'No data!' %>
 % }

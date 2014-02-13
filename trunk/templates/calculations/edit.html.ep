@@ -1,0 +1,70 @@
+% layout 'default';
+<h2><%= ml('Calculations') . ' | ' . ml('Edit') %></h2>
+%= include 'success_error' ;
+
+<div class="form">
+ <table class='colortable'>
+  %= form_for 'update' => (method => 'POST') => begin
+  %= hidden_field oname => 'calculation' ;
+  %= hidden_field id => stash('id') ;
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+    | <%= link_to "/calculations/list" => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+  % end
+  % my @definitions = stash('definitions') ;
+  % my @fields      = stash('fields') ;
+  % if ( $#definitions ) {
+   % for my $i ( 0 .. $#definitions ){
+    <tr><td class='tar'>
+     %= ml 'Name' ;
+     </td><td>
+     %= text_field "d$i" =>$definitions[$i] ;
+    </td></tr>
+    <tr><td class=V'tar'>
+     %= ml 'Value' ;
+     </td><td>
+     %= text_field "v$i" =>$definitions[$i] ;
+    </td></tr>
+   % }
+  % } 
+   <tr style="background:white;"><td>&nbsp;</td><td>
+    <strong>
+    %= ml 'Fields' ;
+    </strong>
+   </td></tr>
+  % my $i = $#definitions ;
+   <tr><td class='tar'>
+    %= ml 'Name' ;
+    </td><td>
+    %= text_field "d$i" =>$definitions[$i] ;
+   </td></tr>
+   <tr><td class='tar'>
+    %= ml 'Value' ;
+    </td><td>
+    %= text_field "v$i" =>$definitions[$i] ;
+   </td></tr>
+   <tr style="background:white;"><td>&nbsp;</td><td>
+    <strong>
+    %= ml 'Calculations' ;
+    </strong>
+   </td></tr>
+   <tr><td>&nbsp;</td><td>
+    %= text_area "calculation" => stash('calculation') ;
+   </td></tr>
+   <tr><td class='tar'>&nbsp;</td><td>
+   =
+    %= 'not impelemted yet' ;
+   </td></tr>
+ </table>
+</div>
