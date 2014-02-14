@@ -1,0 +1,5 @@
+  <tr><td class='tar'>
+   %= ml $title ;
+   </td><td>
+   %= text_field $name => $value ;
+  </td></tr>

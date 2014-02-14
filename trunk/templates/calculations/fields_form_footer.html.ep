@@ -1,0 +1,12 @@
+ <tr><td>&nbsp;</td><td>
+  %= text_area "calculation" => stash('calculation') ;
+ </td></tr>
+ <tr><td class='tar'>&nbsp;</td><td>
+ = <%= stash 'result' %>
+ </td></tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+   </td>
+  </tr>
+
