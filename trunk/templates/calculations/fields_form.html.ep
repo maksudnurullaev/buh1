@@ -1,16 +1,16 @@
 % my @defs = stash('definitions') ;
 % my @fields      = stash('fields') ;
 %= include 'calculations/fields_form_splitter', title => 'Fields' ; 
-%= form_for 'update_fields' => (method => 'POST') => begin
+%= form_for '/calculations/edit/$payload' => (method => 'POST') => begin
 % if ( $#defs ) {
  % for my $i ( 0 .. $#defs ){
-  %= include 'calculations/fields_form_row', title => 'Name' , name => "d$i", value => $defs[$i] ;
-  %= include 'calculations/fields_form_row', title => 'Value', name => "v$i", value => $defs[$i] ;
+  %= include 'calculations/fields_form_row', index => $i, title => 'Name' , name => "d$i", value => $defs[$i] ;
+  %= include 'calculations/fields_form_row', index => $i, title => 'Value', name => "v$i", value => $defs[$i] ;
  % }
 % } 
 % my $i = $#defs ;
-%= include 'calculations/fields_form_row',  title => 'Name' , name => "d$i", value => ''  ;
-%= include 'calculations/fields_form_row',  title => 'Value', name => "v$i", value => ''  ;
-%= include 'calculations/fields_form_footer'  ;
+%= include 'calculations/fields_form_row', index => $i, title => 'Name' , name => "d$i", value => ''  ;
+%= include 'calculations/fields_form_row', index => $i, title => 'Value', name => "v$i", value => ''  ;
+%= include 'calculations/fields_form_footer' ;
 % end
 
