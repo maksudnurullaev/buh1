@@ -3,7 +3,7 @@
 %= include 'success_error' ;
 
 <div class="form">
- %= form_for 'add' => (method => 'POST') => begin
+ %= form_for '/calculations/add' => (method => 'POST') => begin
  %= hidden_field oname => 'calculation' ;
  <table class='colortable'>
   <tr>

@@ -4,7 +4,7 @@
 
 <div class="form">
  <table class='colortable'>
-  %= form_for 'update' => (method => 'POST') => begin
+  %= form_for '' => (method => 'POST') => begin
   %= hidden_field oname => 'calculation' ;
   %= hidden_field id => stash('id') ;
   <tr>
