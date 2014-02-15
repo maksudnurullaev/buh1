@@ -17,11 +17,10 @@ use Data::Dumper ;
 sub download{
     my $self = shift;
     my $id         = $self->param('payload');
-    my $file       = $self->param('file');
-    my $company_id = $self->session('company id');
-	my $path       = Utils::get_root_path(Utils::Files::get_path($self,$company_id,$id));
-    my $file_path  = "$path/$file" ;
-    my $file_name  = Utils::Files::get_file_content("$path/$file" . '.name') ;
+    my $fileid     = $self->param('fileid');
+	my $path       = Utils::get_root_path(Utils::Files::get_path($self,$id));
+    my $file_path  = "$path/$fileid" ;
+    my $file_name  = Utils::Files::get_file_content("$path/$fileid" . '.name') ;
 
     $self->stash( 'file.name' => $file_name );
     $self->render_file('filepath' => $file_path, 'filename' => $file_name);
