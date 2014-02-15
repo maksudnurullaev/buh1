@@ -20,7 +20,10 @@ use Utils::Documents;
 
 sub select_company{
     my $self = shift;
-    return if !$self->is_user;
+    if( !$self->is_user ){
+        $self->redirect_to('/user/login');
+        return;
+    }
 
     my $cid = $self->param('payload');
     if( $cid ){
