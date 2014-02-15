@@ -15,6 +15,7 @@ use utf8;
 use Utils;
 use Data::Dumper;
 
+
 sub add_new{
     my $self = shift;
     my $id = $self->param('payload');
@@ -24,16 +25,15 @@ sub add_new{
 	my $new_file = $self->param('new_file');
 	return(0) if( !$new_file || !$new_file->size ) ;
 
-    my $company_id = $self->session('company id') ;
-    my $file_description = $self->param('file.desc');
-
-	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
+	my $path      = Utils::get_root_path(get_path($self,$id));
 	system "mkdir -p '$path/'" if ! -d $path ;
-
+    # save file
 	my $path_file = "$path/" . Utils::get_date_uuid() ;
 	$new_file->move_to($path_file);
-
+	# save file name
     set_file_content($path_file . '.name', $new_file->filename) ;
+    my $file_description = $self->param('file.desc');
+	# save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
     return(1)
 };
@@ -41,11 +41,10 @@ sub add_new{
 sub del_file{
     my $self = shift;
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
 
-    my $company_id = $self->session('company id') ;
-	my $path       = Utils::get_root_path(get_path($self,$company_id,$id));
-	my $path_file  = "$path/$file" ;
+	my $path       = Utils::get_root_path(get_path($self,$id));
+	my $path_file  = "$path/$fileid" ;
 	
 	unlink $path_file ;
     unlink ($path_file . '.name') ;
@@ -55,17 +54,15 @@ sub del_file{
 sub update_file{
     my $self = shift;
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
 
     return(0) if $self->req->is_limit_exceeded ;
 
 	my $new_file = $self->param('new_file');
 	return(0) if( !$new_file || !$new_file->size ) ;
 
-    my $company_id = $self->session('company id') ;
-	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
-
-	my $path_file = "$path/$file" ;
+	my $path      = Utils::get_root_path(get_path($self,$id));
+	my $path_file = "$path/$fileid" ;
 	$new_file->move_to($path_file) ;
     set_file_content($path_file . '.name', $new_file->filename) ;
     return(1)
@@ -74,27 +71,29 @@ sub update_file{
 sub update_desc{
     my $self = shift;
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
     my $file_description = $self->param('file.desc');
-    my $redirect_to = $self->param('redirect_to');
-    my $company_id = $self->session('company id') ;
 
-	my $path      = Utils::get_root_path(get_path($self,$company_id,$id));
-	my $path_file = "$path/$file" . '.desc' ;
+	my $path      = Utils::get_root_path(get_path($self,$id));
+	my $path_file = "$path/$fileid" . '.desc' ;
     set_file_content($path_file, $file_description) ;
 };
 
 sub get_path{
-	my($self,$company_id,$id) = @_ ;
-	return( "db/main/$id") if( -d "db/main/$id" ) ;
+	my($self,$id) = @_ ;
+	my $controller = $self->stash('controller') ;
+warn $controller ;
+	if( $controller =~ /templates/i ){ # admin actions
+		return( "db/main/$id") ;
+	} 
+    my $company_id = $self->session('company id') ;
     return( "db/clients/$company_id/$id" ) ;
 };
 
 sub deploy{
-    my($self,$id,$file) = @_ ;
-    my $company_id = $self->session('company id');
-    my $path = Utils::get_root_path(get_path($self,$company_id,$id));
-    my $file_path = "$path/$file" ;
+    my($self,$id,$fileid) = @_ ;
+    my $path = Utils::get_root_path(get_path($self,$id));
+    my $file_path = "$path/$fileid" ;
     return if ! -e $file_path ;
     $self->stash( 'file_name' => get_file_content($file_path . '.name') )
         if -e ($file_path . '.name');
@@ -104,15 +103,15 @@ sub deploy{
 
 sub files_count{
     my($self,$id) = @_ ;
-    my $company_id = $self->session('company id');
-    my $path = Utils::get_root_path(get_path($self,$company_id,$id));
+    my $path = Utils::get_root_path(get_path($self,$id));
     return(0) if ! -d $path;
     my @files = <"$path/*.name">;
     return(scalar(@files));
 };
+
 sub file_list4id{
-	my ($self,$company_id,$id) = @_ ;
-	my $path = Utils::get_root_path(get_path($self,$company_id,$id));
+	my ($self,$id) = @_ ;
+	my $path = Utils::get_root_path(get_path($self,$id));
 	if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;
@@ -121,11 +120,11 @@ sub file_list4id{
     my $dir;
     opendir($dir, $path);
 	my $result = {};
-    while (my $file = readdir($dir)) {
-        next if ($file =~ m/^\./) || ($file =~ /[description|name]$/);
-		$result->{ $file } = {};
-        $result->{ $file }{name} = get_file_content("$path/$file" . '.name') ;
-        $result->{ $file }{desc} = get_file_content("$path/$file" . '.desc') ;
+    while (my $fileid = readdir($dir)) {
+        next if ($fileid =~ m/^\./) || ($fileid =~ /[desc|name]$/);
+		$result->{ $fileid } = {};
+        $result->{ $fileid }{name} = get_file_content("$path/$fileid" . '.name') ;
+        $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
     }
     closedir($dir);
 	return($result);

@@ -72,10 +72,10 @@ sub files_update{
     return if !$self->is_admin();
 
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
 
     Utils::Db::db_deploy($self,$id);
-    Utils::Files::deploy($self,$id,$file);
+    Utils::Files::deploy($self,$id,$fileid);
 };
 
 sub files_update_desc{
@@ -83,12 +83,12 @@ sub files_update_desc{
     return if !$self->is_admin();
 
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
 
 	if( $self->req->method  eq 'POST' ){
         Utils::Files::update_desc($self);
 	}
-    $self->redirect_to("/templates/files_update/$id?file=$file");
+    $self->redirect_to("/templates/files_update/$id?fileid=$fileid");
 };
 
 sub files_update_file{
@@ -96,17 +96,18 @@ sub files_update_file{
     return if !$self->is_admin();
 
     my $id = $self->param('payload');
-    my $file = $self->param('file');
+    my $fileid = $self->param('fileid');
 
 	if( $self->req->method  eq 'POST' ){
         if( Utils::Files::update_file($self) ){
-    		$self->redirect_to("/templates/files_update/$id?file=$file");
+    		$self->redirect_to("/templates/files_update/$id?fileid=$fileid");
 			return;
 		} else {
          	$self->stash( error => 1 );
 		}
 	}
-};
+}
+;
 
 sub files_del{
     my $self = shift;
@@ -142,9 +143,8 @@ sub files{
     my $self = shift;
 
     my $id         = $self->param('payload');
-    my $company_id = $self->session('company id') ;
 
-    $self->stash(files=>Utils::Files::file_list4id($self,$company_id,$id));
+    $self->stash(files=>Utils::Files::file_list4id($self,$id));
 
     Utils::Db::db_deploy($self,$id);
 };

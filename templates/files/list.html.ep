@@ -4,9 +4,9 @@
   % for my $file (reverse sort keys %{$files}){
    <li>
     % if( is_admin || user_role2company =~ /write|admin/i ){
-     <%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?file=$file" %>
+     <%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?fileid=$file" %>
     % } else {
-     <%= link_to $files->{$file}{name} => "/files/download/$payload?file=$file" %>
+     <%= link_to $files->{$file}{name} => "/files/download/$payload?fileid=$file" %>
     % }
     % if( $files->{$file}{desc} ){
      <br /><small><%= $files->{$file}{desc} %></small>

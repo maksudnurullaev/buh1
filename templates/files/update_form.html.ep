@@ -1,7 +1,7 @@
 <div class="toolbar">
- % my $file = param 'file' ;
- %= form_for "/$controller/files_update_desc/$payload?file=$file"  => ( method => 'POST') => begin
- %= hidden_field "redirect_to" => "/$controller/files_update/$payload?file=$file"
+ % my $fileid = param 'fileid' ;
+ %= form_for "/$controller/files_update_desc/$payload?fileid=$fileid"  => ( method => 'POST') => begin
+ %= hidden_field "redirect_to" => "/$controller/files_update/$payload?fileid=$fileid"
  <table class='colortable'>
   <tr>
    <td class='tar'> 
@@ -17,15 +17,15 @@
    </td>
   </tr>
  % end
- %= form_for "/$controller/files_update_file/$payload?file=$file" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
- %= hidden_field "redirect_to" => "/$controller/files_update/$payload?file=$file"
+ %= form_for "/$controller/files_update_file/$payload?fileid=$fileid" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= hidden_field "redirect_to" => "/$controller/files_update/$payload?fileid=$fileid"
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td class='tar'> 
     %= ml 'Upload' 
    </td>
    <td>
-    <strong><a target="_blank" href='<%= "/files/download/$payload?file=$file" %>'><%= stash 'file_name' %></a></strong>
+    <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$fileid" %>'><%= stash 'file_name' %></a></strong>
    </td>
   </tr> 
   <tr><td>&nbsp;</td>
@@ -42,10 +42,10 @@
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td>
-    <%= link_to "/hr/files/$payload" => begin %><%= ml 'Cancel' %><% end %>
+    <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Cancel' %><% end %>
    </td>
    <td class='tar'>
-    %= link_to ml('Delete') => "/$controller/files_del/$payload?file=$file"
+    %= link_to ml('Delete') => "/$controller/files_del/$payload?fileid=$fileid"
    </td>
   </tr>
  </table>
