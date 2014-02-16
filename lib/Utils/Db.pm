@@ -50,6 +50,20 @@ sub db_deploy{
     deploy($self,$dbc,$id);
 };
 
+sub dbc_execute_sql{
+	my($self,$sql) = @_ ;
+	return if !$sql ;
+	my $dbc = client($self);
+	$dbc->get_from_sql($sql);
+};
+
+sub db_execute_sql{
+	my($sels,$sql) = @_ ;
+	return if !$sql ;
+	my $dbc = Db->new();
+	$dbc->get_from_sql($sql);
+};
+
 sub cdb_deploy{
     my ($self,$id) = @_ ;
     return if !$id ;
