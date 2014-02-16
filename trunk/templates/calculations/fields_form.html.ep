@@ -1,16 +1,15 @@
-% my @defs = stash('definitions') ;
-% my @fields      = stash('fields') ;
 %= include 'calculations/fields_form_splitter', title => 'Fields' ; 
-%= form_for '/calculations/edit/$payload' => (method => 'POST') => begin
-% if ( $#defs ) {
- % for my $i ( 0 .. $#defs ){
-  %= include 'calculations/fields_form_row', index => $i, title => 'Name' , name => "d$i", value => $defs[$i] ;
-  %= include 'calculations/fields_form_row', index => $i, title => 'Value', name => "v$i", value => $defs[$i] ;
- % }
+%= form_for "/calculations/update_fields/$payload" => (method => 'POST') => begin
+%= hidden_field oname => 'calculation' ;
+% my $field_index = 1 ;
+% while( stash("f_description_$field_index") ){
+ %= include 'calculations/fields_form_row', index => $field_index, title => 'Name' , name => "f_description_$field_index", value => stash("f_description_$field_index") ;
+ %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "f_value_$field_index", value => stash("f_value_$field_index") ;
+ % $field_index++ ; 
 % } 
-% my $i = $#defs ;
-%= include 'calculations/fields_form_row', index => $i, title => 'Name' , name => "d$i", value => ''  ;
-%= include 'calculations/fields_form_row', index => $i, title => 'Value', name => "v$i", value => ''  ;
+%# additional field for adding, to remove just make empty field's description
+%= include 'calculations/fields_form_row', index => $field_index, title => 'Name' , name => "f_description_$field_index", value => "" ;
+%= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "f_value_$field_index", value => "" ;
 %= include 'calculations/fields_form_footer' ;
 % end
 

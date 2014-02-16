@@ -6,7 +6,6 @@
  <table class='colortable'>
   %= form_for '' => (method => 'POST') => begin
   %= hidden_field oname => 'calculation' ;
-  %= hidden_field id => stash('id') ;
   <tr>
    <td class='tar'> 
     %= ml 'Description' 

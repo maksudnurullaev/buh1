@@ -82,7 +82,6 @@ sub update_desc{
 sub get_path{
 	my($self,$id) = @_ ;
 	my $controller = $self->stash('controller') ;
-warn $controller ;
 	if( $controller =~ /templates/i ){ # admin actions
 		return( "db/main/$id") ;
 	} 
