@@ -178,6 +178,10 @@ sub make_root{
     $self->redirect_to("/hr/move/$id");
 };
 
+sub calculations{
+    my $self = shift;
+
+};
 
 # END OF PACKAGE
 };

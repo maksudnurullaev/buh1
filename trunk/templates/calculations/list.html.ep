@@ -1,20 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Calculations' %></h2>
 %= include 'success_error' ;
-%= include "calculations/toolbar" if is_admin ;
+%= include 'calculations/toolbar' if is_admin ;
 
-% my $calcs = stash 'calculations' ;
-% if( scalar keys %{$calcs} ){
- <ul>
-  % for my $key (reverse sort keys %{$calcs}){
-   <li>
-    % if( stash('controller') eq 'calculations' && is_admin ) {
-     %= link_to $calcs->{$key}{description} => "/calculations/edit/$key"
-    % } else {
-     %= link_to $calcs->{$key}{description} => "/calculations/test/$key"
-    % }
-   </li>
-  % }
-% } else {
- <br /><%= ml 'No data!' %>
-% }
+%#= include 'calculations/list_page', c_ontoller => $controller, edit_a_ction => 'edit', test_a_ction => 'test', e_ditable => is_admin ;
+%= dumper stash 'calculations' ;

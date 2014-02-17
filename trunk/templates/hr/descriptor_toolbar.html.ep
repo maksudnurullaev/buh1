@@ -21,5 +21,11 @@
  % } else {
   <strong><%= ml 'Files' %>(<%= $files_count %>)</strong>
  % }
+ |
+ % if( stash('action') !~ /calculations/ ){
+  <%= link_to "/hr/calculations/$payload" => begin %><%= ml 'Calculations' %><% end %>
+ % } else {
+  <strong><%= ml 'Calculations' %></strong>
+ % }
 </div>
 
