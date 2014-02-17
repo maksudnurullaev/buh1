@@ -140,10 +140,8 @@ sub files{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
 
-    my $id         = $self->param('payload');
-
+    my $id = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
-
     Utils::Db::cdb_deploy($self,$id);
 };
 
@@ -180,7 +178,9 @@ sub make_root{
 
 sub calculations{
     my $self = shift;
-
+    my $id = $self->param('payload');
+    Utils::Db::cdb_deploy($self,$id);
+    $self->stash( calculations => Utils::Db::cdb_get_objects($self,{name=>['calculation']}));
 };
 
 # END OF PACKAGE

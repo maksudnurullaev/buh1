@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Calculations' %></h2>
 %= include 'success_error' ;
-%= include 'calculations/toolbar' if is_admin ;
+%= include 'calculations/toolbar', add_path => '/calculations/add' if is_admin ;
 
-%#= include 'calculations/list_page', c_ontoller => $controller, edit_a_ction => 'edit', test_a_ction => 'test', e_ditable => is_admin ;
-%= dumper stash 'calculations' ;
+% my $edit = is_admin() ;
+%= include 'calculations/list_page', _c => stash('controller'), _a_edit => 'edit', _a_test => 'test', _editable => $edit ;

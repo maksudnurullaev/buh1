@@ -24,8 +24,7 @@ sub auth{
 
 sub list{
     my $self = shift;
-    $self->stash( calculations 
-        => Utils::Db::db_get_objects($self,{name=>['calculation']}));
+    $self->stash( calculations => Utils::Db::db_get_objects($self,{name=>['calculation']}));
 };
 
 sub add{
