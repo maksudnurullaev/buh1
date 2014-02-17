@@ -17,7 +17,7 @@ use Data::Dumper;
 
 sub form2data_fields{
      my $self = shift;
-     my $data = { object_name => $self->param('oname'),
+     my $data = { object_name => 'calculation',
 				  id          => $self->param('payload'),
 				  calculation => ($self->param('calculation') || "_1") } ;
     my $field_index = 1 ;
@@ -31,7 +31,7 @@ sub form2data_fields{
 
 sub form2data{
     my $self = shift;
-    my $data = { object_name => $self->param('oname'),
+    my $data = { object_name => 'calculation',
 		         creator     => Utils::User::current($self) } ;
 	
 	$data->{id} = $self->param('payload') if $self->param('payload') ;
@@ -53,15 +53,13 @@ sub validate{
 sub deploy_result{
     my ($self,$data) = @_ ;
     my $calculation = $data->{calculation};
-    warn $calculation ;
     for my $key (keys %{$data}){
         if( $key =~ /f_value(_\d+)/ ){
             my $value = $data->{$key} ;
-            warn " $key: $1 " ;
             $calculation =~ s/$1/$value/g ;
         }
     }
-    $self->stash( result => eval($calculation) ) ;
+    $self->stash( result => eval($calculation) ) if $calculation ;
     if( $@ ) { # some error in eval
         $self->stash( result_error => $calculation );
         warn $@ ;

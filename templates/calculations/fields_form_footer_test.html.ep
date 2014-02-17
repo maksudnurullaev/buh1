@@ -10,7 +10,9 @@
  </td></tr>
   <tr><td>&nbsp;</td>
    <td>
-    %= submit_button ml('Save') ;
+    %= submit_button ml('Calculations') ;
+    |
+    %= link_to  ml('Reset') => "/$controller/$action/$payload" ;
    </td>
   </tr>
 
