@@ -2,7 +2,11 @@
   %= text_area "calculation" => stash('calculation') ;
  </td></tr>
  <tr><td class='tar'>&nbsp;</td><td>
- = <%= stash 'result' %>
+ % if( stash 'result_error' ) {
+    <strong style="color: red;">= <%= ml 'Error' %>: <%= stash 'result_error' %></strong>
+ % } else {
+    <strong>= <%= stash 'result' %></strong>
+ % }
  </td></tr>
   <tr><td>&nbsp;</td>
    <td>

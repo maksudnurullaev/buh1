@@ -47,7 +47,7 @@ sub db_deploy{
     my ($self,$id) = @_ ;
     return if !$id ;
     my $dbc = Db->new();
-    deploy($self,$dbc,$id);
+    return(deploy($self,$dbc,$id));
 };
 
 sub dbc_execute_sql{
@@ -68,7 +68,7 @@ sub cdb_deploy{
     my ($self,$id) = @_ ;
     return if !$id ;
     my $dbc = client($self);
-    deploy($self,$dbc,$id);
+    return(deploy($self,$dbc,$id));
 };
 
 sub deploy{
@@ -79,7 +79,9 @@ sub deploy{
         for my $key (keys %{$object}){
             $self->stash($key => $object->{$key});
         }
+        return($object);
     }
+    return(undef);
 };
 
 sub db_insert_or_update{
