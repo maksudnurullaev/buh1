@@ -1,0 +1,15 @@
+% layout 'default';
+%= include 'success_error' ;
+<h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %></h2>
+
+%= include 'hr/descriptor_toolbar' ;
+
+<div class="toolbar">
+ <%= ml 'Name' %>:
+ <strong>
+  %= link_to stash('description') => "/hr/edit/$payload" 
+ </strong>
+</div>
+
+%= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" ;
+%= include 'calculations/list_page', _c => stash('controller'), _a_edit => 'calculations_edit', _a_test => 'calculations_test', _editable => 1 ;
