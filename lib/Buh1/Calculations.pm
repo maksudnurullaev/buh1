@@ -56,7 +56,8 @@ sub edit{
             $self->stash(success => 1);
         }
 	}
-    Utils::Db::db_deploy($self,$id);
+    my $data = Utils::Db::db_deploy($self,$id) ;
+    Utils::Calculations::deploy_result($self, $data) ;
 };
 
 sub update_fields{

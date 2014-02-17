@@ -50,6 +50,23 @@ sub validate{
     return(1);
 };
 
+sub deploy_result{
+    my ($self,$data) = @_ ;
+    my $calculation = $data->{calculation};
+    warn $calculation ;
+    for my $key (keys %{$data}){
+        if( $key =~ /f_value(_\d+)/ ){
+            my $value = $data->{$key} ;
+            warn " $key: $1 " ;
+            $calculation =~ s/$1/$value/g ;
+        }
+    }
+    $self->stash( result => eval($calculation) ) ;
+    if( $@ ) { # some error in eval
+        $self->stash( result_error => $calculation );
+        warn $@ ;
+    }
+}; 
 
 # END OF PACKAGE
 };
