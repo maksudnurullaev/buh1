@@ -1,5 +1,11 @@
+  % my $disabled = stash 'disabled'  ;
   <tr><td class='tar'>
-   %= ml($title) . ' ' . ($index) ;
+   %= ml($title) . ' _' . ($index) ;
    </td><td>
-   %= text_field $name => $value ;
+    % if( $disabled ) {
+     <u><%= $value %></u>
+     %= hidden_field $name => $value ;
+    % } else {
+     %= text_field $name => $value ;
+    % }
   </td></tr>
