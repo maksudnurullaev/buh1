@@ -6,5 +6,7 @@
  <table class='colortable'>
   %= include 'calculations/form'       , _path_post => "/calculations/edit/$payload", _path_cancel => "/calculations/list" ;
   %= include 'calculations/fields_form', _path_post => "/calculations/update_fields/$payload" ;
+  %= include 'calculations/fields_form_splitter', title => '' ; 
+  %= include 'form_delete_row', _path => "/calculations/delete/$payload" ;
  </table>
 </div>

@@ -25,17 +25,19 @@
     %= text_area description => (stash 'description'), class => (stash 'description_class') 
    </td>
   </tr>
+  % if( stash('calculation_templates') ){
   <tr>
    <td class='tar'> 
     %= ml 'Templates' 
    </td>
    <td>
-    %= check_box use_template => 0, id => 'use_template', style => 'width:auto;' ;
+    %= check_box use_template => 1, id => 'use_template', style => 'width:auto;' ;
     <label for="use_template"><%= ml 'Use template' %></label>
     <br />
     %= select_field calculation_template => stash('calculation_templates') ;
    </td>
   </tr>
+  % }
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Add') ;

@@ -1,4 +1,5 @@
 % my $files_count = files_count($payload) ;
+% my $calcs_count = calcs_count($payload) ;
 <div class="toolbar">
  % if ( !stash('CHILDREN') && !$files_count ){
   <%= link_to ml("Delete") => "/hr/del/$payload" %> 
@@ -17,15 +18,17 @@
  % }
  |
  % if( stash('action') !~ /files/ ){
-  <%= link_to "/hr/files/$payload" => begin %><%= ml 'Files' %>(<%= $files_count %>)<% end %>
+  <%= link_to "/hr/files/$payload" => begin %><%= ml 'Files' %><% end %>
  % } else {
-  <strong><%= ml 'Files' %>(<%= $files_count %>)</strong>
+  <strong><%= ml 'Files' %></strong>
  % }
+ (<%= $files_count %>)
  |
  % if( stash('action') !~ /calculations/ ){
   <%= link_to "/hr/calculations/$payload" => begin %><%= ml 'Calculations' %><% end %>
  % } else {
   <strong><%= ml 'Calculations' %></strong>
  % }
+(<%= $calcs_count %>)
 </div>
 
