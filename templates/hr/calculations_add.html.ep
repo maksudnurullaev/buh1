@@ -1,0 +1,47 @@
+% layout 'default';
+%= include 'success_error' ;
+<h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %> | <%= ml 'Add' %></h2>
+
+%= include 'hr/descriptor_toolbar' ;
+
+<div class="toolbar">
+ <%= ml 'Name' %>:
+ <strong>
+  %= link_to stash('description') => "/hr/edit/$payload" 
+ </strong>
+</div>
+
+<div class="toolbar">
+<h3><%= ml 'New' %></h3>
+<div class="form">
+ %= form_for "/hr/calculations_add/$payload" => (method => 'POST') => begin
+ %= hidden_field oname => 'calculation' ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Templates' 
+   </td>
+   <td>
+    %= check_box use_template => 0, id => 'use_template', style => 'width:auto;' ;
+    <label for="use_template"><%= ml 'Use template' %></label>
+    <br />
+    %= select_field calculation_template => stash('calculation_templates') ;
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Add') ;
+    | <%= link_to "/hr/calculations/$payload" => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

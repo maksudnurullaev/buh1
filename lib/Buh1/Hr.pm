@@ -213,7 +213,7 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
-    return if !auth($self) ;
+    return if( !Utils::Hr::auth($self,'write|admin') );
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -221,14 +221,34 @@ sub calculations_edit{
     if ( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-            Utils::Db::db_insert_or_update($self,$data);
+            Utils::Db::cdb_insert_or_update($self,$data);
             $self->stash(success => 1);
         }
     }
-    my $data = Utils::Db::db_deploy($self,$id) ;
+    # finish
+    Utils::Db::cdb_deploy($self,$id, 'hr');
+    my $data = Utils::Db::cdb_deploy($self,$cid) ;
     Utils::Calculations::deploy_result($self, $data) ;
-
 };
+
+sub calculations_update_fields{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $cid = $self->param('id') ; 
+    my $method = $self->req->method;
+    if ( $method =~ /POST/ ){
+        my $data = Utils::Calculations::form2data_fields($self);
+        # delete all old definitions
+        Utils::Db::cdb_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
+        # insert new ones
+        Utils::Db::cdb_insert_or_update($self,$data);
+        $self->stash(success => 1);
+    }
+    $self->redirect_to("/hr/calculations_edit/$id?id=$cid") ;
+};
+
 # END OF PACKAGE
 };
 

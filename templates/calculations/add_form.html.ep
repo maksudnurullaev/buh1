@@ -1,0 +1,23 @@
+<div class="form">
+ %= form_for $_path_post => (method => 'POST') => begin
+ %= hidden_field oname => 'calculation' ;
+ %= hidden_field id => stash('id') if stash('id') ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Add') ;
+    | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
+

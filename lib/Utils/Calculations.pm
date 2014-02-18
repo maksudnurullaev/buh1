@@ -16,17 +16,19 @@ use Utils::Db;
 use Data::Dumper;
 
 sub form2data_fields{
-     my $self = shift;
-     my $data = { object_name => 'calculation',
-				  id          => $self->param('payload'),
-				  calculation => ($self->param('calculation') || "_1") } ;
+    my $self = shift;
+    warn Dumper $self->param('id') ;
+    my $data = { object_name => 'calculation',
+				 id          => $self->param('id'),
+				 calculation => ($self->param('calculation') || '_1') } ;
     my $field_index = 1 ;
     while( $self->param("f_description_$field_index") ){
-		$data->{ "f_description_$field_index" } = $self->param("f_description_$field_index") ;
-		$data->{ "f_value_$field_index" } = $self->param("f_value_$field_index") ;
-		$field_index++ ;
+ 		$data->{ "f_description_$field_index" } = $self->param("f_description_$field_index") ;
+ 		$data->{ "f_value_$field_index" } = $self->param("f_value_$field_index") ;
+ 	    $field_index++ ;
     }
-	return($data);
+    warn Dumper $data ;
+    return($data);
 };
 
 sub form2data{
@@ -48,16 +50,18 @@ sub validate{
 sub deploy_result{
     my ($self,$data) = @_ ;
     my $calculation = $data->{calculation};
-    for my $key (keys %{$data}){
-        if( $key =~ /f_value(_\d+)/ ){
-            my $value = $data->{$key} ;
-            $calculation =~ s/$1/$value/g ;
+    if( $calculation ){
+        for my $key (keys %{$data}){
+            if( $key =~ /f_value(_\d+)/ ){
+                my $value = $data->{$key} ;
+                $calculation =~ s/$1/$value/g if $value ;
+            }
         }
-    }
-    $self->stash( result => eval($calculation) ) if $calculation ;
-    if( $@ ) { # some error in eval
-        $self->stash( result_error => $calculation );
-        warn $@ ;
+        $self->stash( result => eval($calculation) ) if $calculation ;
+        if( $@ ) { # some error in eval
+            $self->stash( result_error => $calculation );
+            warn $@ ;
+        }
     }
 }; 
 
