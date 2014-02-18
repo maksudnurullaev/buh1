@@ -3,5 +3,8 @@
 %= include 'success_error' ;
 %= include 'calculations/toolbar', add_path => '/calculations/add' if is_admin ;
 
-% my $edit = is_admin() ;
-%= include 'calculations/list_page', _c => stash('controller'), _a_edit => 'edit', _a_test => 'test', _editable => $edit ;
+% if( is_admin() ){
+ %= include 'calculations/list_page', link_path_prefix => "/$controller/edit/" ;
+%} else {
+ %= include 'calculations/list_page', link_path_prefix => "/$controller/test/" ;
+%}

@@ -19,17 +19,17 @@ sub auth{
         $self->redirect_to('/user/login'); 
         return ; 
     }
-	return(1);
+    return(1);
 };
 
 sub list{
     my $self = shift;
-    $self->stash( calculations => Utils::Db::db_get_objects($self,{name=>['calculation']}));
+    $self->stash( calculations => Utils::Calculations::get_db_list($self));
 };
 
 sub add{
     my $self = shift;
-	return if !auth($self) ;
+    return if !auth($self) ;
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -38,8 +38,11 @@ sub add{
             Utils::Db::db_insert_or_update($self,$data);
             $self->stash(success => 1);
             $self->redirect_to('/calculations/list');
+        } else {
+           $self->stash('description_class' => 'error');
+           $self->stash('error' => 1);
         }
-	}
+    }
 };
 
 sub test{
@@ -54,7 +57,7 @@ sub test{
             $data->{$key} = $self->param($key);
             $self->stash( $key => $self->param($key) ) ;
         }
-	} else {
+    } else {
         $data = Utils::Db::db_deploy($self,$id) ;
     }
     Utils::Calculations::deploy_result($self, $data) ;
@@ -62,7 +65,7 @@ sub test{
 
 sub edit{
     my $self = shift;
-	return if !auth($self) ;
+    return if !auth($self) ;
 
     my $id = $self->param('payload');
     my $method = $self->req->method;
@@ -72,26 +75,26 @@ sub edit{
             Utils::Db::db_insert_or_update($self,$data);
             $self->stash(success => 1);
         }
-	}
+    }
     my $data = Utils::Db::db_deploy($self,$id) ;
     Utils::Calculations::deploy_result($self, $data) ;
 };
 
 sub update_fields{
-	my $self = shift;
-	return if !auth($self) ;
+    my $self = shift;
+    return if !auth($self) ;
 
     my $id = $self->param('payload');
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data_fields($self);
-	    # delete all old definitions
-		Utils::Db::db_execute_sql($self, " delete from objects where id = '$id' and field like 'f_%' ; " ) ;
-		# insert new ones
+        # delete all old definitions
+        Utils::Db::db_execute_sql($self, " delete from objects where id = '$id' and field like 'f_%' ; " ) ;
+        # insert new ones
         Utils::Db::db_insert_or_update($self,$data);
         $self->stash(success => 1);
-	}
-	$self->redirect_to("/calculations/edit/$id");
+    }
+    $self->redirect_to("/calculations/edit/$id");
 };
 
 # END OF PACKAGE

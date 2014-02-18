@@ -11,5 +11,5 @@
  </strong>
 </div>
 
-%= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" ;
-%= include 'calculations/list_page', _c => stash('controller'), _a_edit => 'calculations_edit', _a_test => 'calculations_test', _editable => 1 ;
+%= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" if user_role2company =~ /write|admin/i ;
+%= include 'calculations/list_page', link_path_prefix => "/$controller/calculations_edit/$payload?id=" ;
