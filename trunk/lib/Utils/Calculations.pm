@@ -27,7 +27,6 @@ sub form2data_fields{
  		$data->{ "f_value_$field_index" } = $self->param("f_value_$field_index") ;
  	    $field_index++ ;
     }
-    warn Dumper $data ;
     return($data);
 };
 
