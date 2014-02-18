@@ -44,13 +44,37 @@ sub cdb_get_objects{
 };
 
 sub db_deploy{
-    my ($self,$id) = @_ ;
+    my ($self,$id,$prefix) = @_ ;
     return if !$id ;
     my $dbc = Db->new();
-    return(deploy($self,$dbc,$id));
+    return(deploy($self,$dbc,$id,$prefix));
 };
 
-sub dbc_execute_sql{
+sub cdb_deploy{
+    my ($self,$id,$prefix) = @_ ;
+    return if !$id ;
+    my $dbc = client($self);
+    return(deploy($self,$dbc,$id,$prefix));
+};
+
+sub deploy{
+    my ($self,$dbc,$id,$prefix) = @_ ;
+    my $objects = $dbc->get_objects( { id => [$id] } );
+    if( $objects && exists($objects->{$id}) ){
+        my $object = $objects->{$id};
+        for my $key (keys %{$object}){
+            if( $prefix ){
+                $self->stash("$prefix.$key" => $object->{$key});
+            } else {
+                $self->stash($key => $object->{$key});
+            }
+        }
+        return($object);
+    }
+    return(undef);
+};
+
+sub cdb_execute_sql{
 	my($self,$sql) = @_ ;
 	return if !$sql ;
 	my $dbc = client($self);
@@ -62,26 +86,6 @@ sub db_execute_sql{
 	return if !$sql ;
 	my $dbc = Db->new();
 	$dbc->get_from_sql($sql);
-};
-
-sub cdb_deploy{
-    my ($self,$id) = @_ ;
-    return if !$id ;
-    my $dbc = client($self);
-    return(deploy($self,$dbc,$id));
-};
-
-sub deploy{
-    my ($self,$dbc,$id) = @_ ;
-    my $objects = $dbc->get_objects( { id => [$id] } );
-    if( $objects && exists($objects->{$id}) ){
-        my $object = $objects->{$id};
-        for my $key (keys %{$object}){
-            $self->stash($key => $object->{$key});
-        }
-        return($object);
-    }
-    return(undef);
 };
 
 sub db_insert_or_update{
