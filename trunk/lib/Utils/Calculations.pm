@@ -17,7 +17,6 @@ use Data::Dumper;
 
 sub form2data_fields{
     my $self = shift;
-    warn Dumper $self->param('id') ;
     my $data = { object_name => 'calculation',
 				 id          => $self->param('id'),
 				 calculation => ($self->param('calculation') || '_1') } ;
@@ -50,12 +49,15 @@ sub deploy_result{
     my ($self,$data) = @_ ;
     my $calculation = $data->{calculation};
     if( $calculation ){
+		my $found = 0 ;
         for my $key (keys %{$data}){
-            if( $key =~ /f_value(_\d+)/ ){
+            if( $key =~ /f_value(_\d+)/ && $data->{$key} ){
+				$found = 1 if !$found ;
                 my $value = $data->{$key} ;
                 $calculation =~ s/$1/$value/g if $value ;
             }
         }
+		return if !$found ;
         $self->stash( result => eval($calculation) ) if $calculation ;
         if( $@ ) { # some error in eval
             $self->stash( result_error => $calculation );
@@ -72,6 +74,7 @@ sub get_db_list{
 sub get_list_as_select_data{
     my $self = shift ;
     my $data = shift ;
+	return(undef) if !scalar(keys(%{$data})) ;
     my $result = [];
     for my $key (reverse sort keys %{$data}){
         my $description = $data->{$key}{description};
@@ -81,6 +84,14 @@ sub get_list_as_select_data{
         push @{$result}, [ $description => $key ] ;
     }
     return($result);
+};
+
+sub count{
+    my($self,$id) = @_ ;
+    my $dbc = Utils::Db::client($self);
+    my $calculations = $dbc->get_links($id,'calculation',['description']);
+	return(0) if !$calculations ;
+	return(scalar(keys(%{$calculations}))) ;
 };
 
 # END OF PACKAGE

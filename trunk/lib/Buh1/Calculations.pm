@@ -80,6 +80,16 @@ sub edit{
     Utils::Calculations::deploy_result($self, $data) ;
 };
 
+sub delete{
+    my $self = shift;
+    return if !auth($self) ;
+
+    my $id = $self->param('payload') ;
+	my $db = Utils::Db::main() ;
+	$db->del($id);
+	$self->redirect_to("/calculations/list");
+};
+
 sub update_fields{
     my $self = shift;
     return if !auth($self) ;

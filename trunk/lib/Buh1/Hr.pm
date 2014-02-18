@@ -195,10 +195,22 @@ sub calculations_add{
     if ( $self->req->method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
+	    	if( defined $self->param('use_template') ){
+				my $cid = $self->param('calculation_template');
+				my $db = Utils::Db::main();
+				my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
+				delete $template->{id} ;
+				delete $template->{description} ;
+				delete $template->{creator} ;
+				delete $template->{object_name} ;
+				for my $key (keys %{$template}){
+					$data->{$key} = $template->{$key} ;
+				}
+			}
             my $dbc = Utils::Db::client($self);
             my $cid = $dbc->insert($data);
             $dbc->set_link('hr descriptor',$id,'calculation',$cid);
-            $self->redirect_to("/hr/calculations_edit/$id?cid=$cid");
+            $self->redirect_to("/hr/calculations_edit/$id?id=$cid");
         } else {
            $self->stash('description_class' => 'error');
            $self->stash('error' => 1);
@@ -247,6 +259,18 @@ sub calculations_update_fields{
         $self->stash(success => 1);
     }
     $self->redirect_to("/hr/calculations_edit/$id?id=$cid") ;
+};
+
+sub calculations_delete{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    my $cid = $self->param('id') ; 
+    my $dbc = Utils::Db::client($self);
+	$dbc->del_link($id,$cid);
+	$dbc->del($cid);
+    $self->redirect_to("/hr/calculations/$id") ;
 };
 
 # END OF PACKAGE

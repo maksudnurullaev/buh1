@@ -1,0 +1,3 @@
+<tr><td>&nbsp;</td><td class="tar">
+ %= link_to ml('Delete') => $_path ;  	
+</td></tr>
