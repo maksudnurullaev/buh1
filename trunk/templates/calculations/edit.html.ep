@@ -4,23 +4,7 @@
 
 <div class="form">
  <table class='colortable'>
-  %= form_for '' => (method => 'POST') => begin
-  %= hidden_field oname => 'calculation' ;
-  <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
-   <td>
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
-   </td>
-  </tr>
-  <tr><td>&nbsp;</td>
-   <td>
-    %= submit_button ml('Save') ;
-    | <%= link_to "/calculations/list" => begin %><%= ml 'Cancel' %><% end %>
-   </td>
-  </tr>
-  % end
+  %= include 'calculations/form', _path_post => "/calculations/add", _path_cancel => "/calculations/list" ;
   %= include 'calculations/fields_form' ;
  </table>
 </div>

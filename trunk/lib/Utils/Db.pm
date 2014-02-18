@@ -99,9 +99,9 @@ sub cdb_insert_or_update{
 sub insert_or_update{
     my ($dbc,$data) = @_ ;
     if( exists($data->{id}) ){
-        $dbc->update( $data );
+        return( $dbc->update($data) );
     } else {
-        $dbc->insert( $data );
+        return( $dbc->insert($data) );
     }
 };
 

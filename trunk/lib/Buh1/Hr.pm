@@ -11,6 +11,7 @@ package Buh1::Hr; {
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
 use Utils::Files ;
+use Utils::Calculations ;
 use Data::Dumper ;
 
 sub add{
@@ -24,7 +25,7 @@ sub add{
             $self->stash(success => 1);
             $self->redirect_to('/hr/list');
         }
-	}
+    }
 };
 
 sub list{
@@ -83,9 +84,9 @@ sub files_update_desc{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         Utils::Files::update_desc($self);
-	}
+    }
     $self->redirect_to("/hr/files_update/$id?fileid=$fileid");
 };
 
@@ -96,14 +97,14 @@ sub files_update_file{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( Utils::Files::update_file($self) ){
-    		$self->redirect_to("/hr/files_update/$id?fileid=$fileid");
-			return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+            $self->redirect_to("/hr/files_update/$id?fileid=$fileid");
+            return;
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 };
 
 sub files_del{
@@ -121,18 +122,18 @@ sub files_add_new{
 
     my $id = $self->param('payload');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( $self->req->error ){
             $self->stash( error => 1 );
             return;
         }
         if( Utils::Files::add_new($self) ){
-           	$self->redirect_to("/hr/files/$id");
+               $self->redirect_to("/hr/files/$id");
             return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 
     Utils::Db::cdb_deploy($self,$id);
 };
@@ -155,7 +156,7 @@ sub move{
     if( $method eq 'POST' ){
         my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
-		
+        
         if( !$new_parent || ($parent && $parent eq $new_parent) ){
             $self->stash( error => 1 );
         } else {
@@ -169,20 +170,65 @@ sub move{
 };
 
 sub make_root{
-	my $self = shift;
-	my $id   = $self->param('payload');
+    my $self = shift;
+    my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
-	$dbc->child_make_root($id);
+    $dbc->child_make_root($id);
     $self->redirect_to("/hr/move/$id");
 };
 
 sub calculations{
     my $self = shift;
+    return if( !Utils::Hr::auth($self,'read|write|admin') );
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
-    $self->stash( calculations => Utils::Db::cdb_get_objects($self,{name=>['calculation']}));
+    my $dbc = Utils::Db::client($self);
+    my $calculations = $dbc->get_links($id,'calculation',['description']);
+    $self->stash( calculations => $calculations );
 };
 
+sub calculations_add{
+    my $self = shift ;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+    my $id = $self->param('payload');
+
+    if ( $self->req->method =~ /POST/ ){
+        my $data = Utils::Calculations::form2data($self);
+        if( Utils::Calculations::validate($self,$data) ){
+            my $dbc = Utils::Db::client($self);
+            my $cid = $dbc->insert($data);
+            $dbc->set_link('hr descriptor',$id,'calculation',$cid);
+            $self->redirect_to("/hr/calculations_edit/$id?cid=$cid");
+        } else {
+           $self->stash('description_class' => 'error');
+           $self->stash('error' => 1);
+        }
+    }
+    # finish
+    Utils::Db::cdb_deploy($self,$id);
+    my $calculcation_templates_date = Utils::Calculations::get_list_as_select_data(
+            $self, Utils::Calculations::get_db_list($self));
+    $self->stash( calculation_templates => $calculcation_templates_date );
+};
+
+sub calculations_edit{
+    my $self = shift;
+    return if !auth($self) ;
+
+    my $id = $self->param('payload');
+    my $cid = $self->param('id') ; 
+    my $method = $self->req->method;
+    if ( $method =~ /POST/ ){
+        my $data = Utils::Calculations::form2data($self);
+        if( Utils::Calculations::validate($self,$data) ){
+            Utils::Db::db_insert_or_update($self,$data);
+            $self->stash(success => 1);
+        }
+    }
+    my $data = Utils::Db::db_deploy($self,$id) ;
+    Utils::Calculations::deploy_result($self, $data) ;
+
+};
 # END OF PACKAGE
 };
 

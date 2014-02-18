@@ -21,7 +21,7 @@ sub form2data_fields{
 				  id          => $self->param('payload'),
 				  calculation => ($self->param('calculation') || "_1") } ;
     my $field_index = 1 ;
-    while( $self->param("f_description_$field_index") ) {
+    while( $self->param("f_description_$field_index") ){
 		$data->{ "f_description_$field_index" } = $self->param("f_description_$field_index") ;
 		$data->{ "f_value_$field_index" } = $self->param("f_value_$field_index") ;
 		$field_index++ ;
@@ -34,7 +34,7 @@ sub form2data{
     my $data = { object_name => 'calculation',
 		         creator     => Utils::User::current($self) } ;
 	
-	$data->{id} = $self->param('payload') if $self->param('payload') ;
+	$data->{id} = $self->param('id') if $self->param('id') ;
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
     return($data)
@@ -42,12 +42,7 @@ sub form2data{
 
 sub validate{
     my ($self,$data) = @_ ;
-    if( !exists $data->{description} ){
-        $self->stash('description_class' => 'error');
-        $self->stash('error' => 1);
-        return(0);
-    }
-    return(1);
+    return( exists $data->{description} );
 };
 
 sub deploy_result{
@@ -65,6 +60,25 @@ sub deploy_result{
         warn $@ ;
     }
 }; 
+
+sub get_db_list{
+    my $self = shift;
+    return(Utils::Db::db_get_objects($self,{name=>['calculation'], field => ['description']}));
+};
+
+sub get_list_as_select_data{
+    my $self = shift ;
+    my $data = shift ;
+    my $result = [];
+    for my $key (reverse sort keys %{$data}){
+        my $description = $data->{$key}{description};
+        $description = substr($description, 0, 20) 
+            . '...' 
+            . substr($description, -5, 5) if length($description) > 30 ; 
+        push @{$result}, [ $description => $key ] ;
+    }
+    return($result);
+};
 
 # END OF PACKAGE
 };

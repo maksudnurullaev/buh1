@@ -3,11 +3,7 @@
  <ul>
   % for my $key (reverse sort keys %{$calcs}){
    <li>
-    % if( $_editable ) {
-     %= link_to $calcs->{$key}{description} => "/$_c/$_a_edit/$key"
-    % } else {
-     %= link_to $calcs->{$key}{description} => "/$_c/$_a_test/$key"
-    % }
+     %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
    </li>
   % }
 % } else {
