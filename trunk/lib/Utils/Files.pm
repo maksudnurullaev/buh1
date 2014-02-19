@@ -82,7 +82,7 @@ sub update_desc{
 sub get_path{
 	my($self,$id) = @_ ;
 	my $controller = $self->stash('controller') ;
-	if( $controller =~ /templates/i ){ # admin actions
+	if( $controller =~ /[templates|files]/i ){ # admin actions
 		return( "db/main/$id") ;
 	} 
     my $company_id = $self->session('company id') ;

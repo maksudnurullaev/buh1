@@ -69,12 +69,12 @@ sub del{
 
 sub files_update{
     my $self = shift;
-    return if !$self->is_admin();
+    # return if !$self->is_admin();
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-    Utils::Db::db_deploy($self,$id);
+    warn Dumper Utils::Db::db_deploy($self,$id,'template');
     Utils::Files::deploy($self,$id,$fileid);
 };
 

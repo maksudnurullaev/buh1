@@ -5,7 +5,7 @@
 %= include "$controller/descriptor_toolbar" ;
 
 <div class="toolbar">
- <h3><%= stash "description" %></h3>
+ <h3><%= stash "template.description" %></h3>
 </div>
 
 %= include "$controller/files_toolbar" ;
