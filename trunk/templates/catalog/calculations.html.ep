@@ -1,13 +1,13 @@
 % layout 'default';
 %= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %></h2>
+<h2><%= ml 'Catalog' %> | <%= ml 'Calculations' %></h2>
 
-%= include 'hr/toolbar' ;
+%= include 'catalog/toolbar' ;
 
 <div class="toolbar">
  <%= ml 'Name' %>:
  <strong>
-  %= link_to stash('description') => "/hr/edit/$payload" 
+  %= link_to stash('description') => "/catalog/edit/$payload" 
  </strong>
 </div>
 

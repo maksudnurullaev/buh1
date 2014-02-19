@@ -3,7 +3,8 @@
  <ul>
   % for my $key (reverse sort keys %{$calcs}){
    <li>
-     %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
+    %= currency_format cdb_calculate($key) ;
+    %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
    </li>
   % }
 % } else {

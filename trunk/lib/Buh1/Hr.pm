@@ -66,6 +66,47 @@ sub del{
     Utils::Db::cdb_deploy($self,$id);
 };
 
+sub move{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $method = $self->req->method ;
+    my $id = $self->param('payload');
+
+    if( $method eq 'POST' ){
+        my $new_parent = $self->param('new_parent');
+        my $parent = $self->param('parent');
+        
+        if( !$new_parent || ($parent && $parent eq $new_parent) ){
+            $self->stash( error => 1 );
+        } else {
+            my $dbc = Utils::Db::client($self);
+            $dbc->child_set_parent($id,$new_parent);
+        }
+    }
+    $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
+    # final action
+    Utils::Db::cdb_deploy($self,$id);
+};
+
+sub make_root{
+    my $self = shift;
+    my $id   = $self->param('payload');
+    my $dbc = Utils::Db::client($self);
+    $dbc->child_make_root($id);
+    $self->redirect_to("/hr/move/$id");
+};
+
+# files part
+sub files{
+    my $self = shift;
+    return if( !Utils::Hr::auth($self,'write|admin') );
+
+    my $id = $self->param('payload');
+    $self->stash(files=>Utils::Files::file_list4id($self,$id));
+    Utils::Db::cdb_deploy($self,$id);
+};
+
 sub files_update{
     my $self = shift;
     return if( !Utils::Hr::auth($self,'write|admin') );
@@ -137,45 +178,8 @@ sub files_add_new{
 
     Utils::Db::cdb_deploy($self,$id);
 };
-sub files{
-    my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
 
-    my $id = $self->param('payload');
-    $self->stash(files=>Utils::Files::file_list4id($self,$id));
-    Utils::Db::cdb_deploy($self,$id);
-};
-
-sub move{
-    my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
-
-    my $method = $self->req->method ;
-    my $id = $self->param('payload');
-
-    if( $method eq 'POST' ){
-        my $new_parent = $self->param('new_parent');
-        my $parent = $self->param('parent');
-        
-        if( !$new_parent || ($parent && $parent eq $new_parent) ){
-            $self->stash( error => 1 );
-        } else {
-            my $dbc = Utils::Db::client($self);
-            $dbc->child_set_parent($id,$new_parent);
-        }
-    }
-    $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
-    # final action
-    Utils::Db::cdb_deploy($self,$id);
-};
-
-sub make_root{
-    my $self = shift;
-    my $id   = $self->param('payload');
-    my $dbc = Utils::Db::client($self);
-    $dbc->child_make_root($id);
-    $self->redirect_to("/hr/move/$id");
-};
+# calculations part
 
 sub calculations{
     my $self = shift;

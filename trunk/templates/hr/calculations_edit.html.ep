@@ -2,7 +2,7 @@
 %= include 'success_error' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %> | <%= ml 'Edit' %></h2>
 
-%= include 'hr/descriptor_toolbar' ;
+%= include 'hr/toolbar' ;
 
 <div class="toolbar">
  <%= ml 'Name' %>:
@@ -10,7 +10,6 @@
   %= link_to stash('hr.description') => "/hr/edit/$payload" 
  </strong>
 </div>
-<h2><%= ml('Calculations') . ' | ' . ml('Edit') %></h2>
 
 <div class="form">
  <table class='colortable'>
