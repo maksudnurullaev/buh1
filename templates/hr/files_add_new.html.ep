@@ -2,7 +2,7 @@
 %= include 'success_error' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Files' %> | <%= ml 'New' %></h2>
 
-%= include 'hr/descriptor_toolbar' ;
+%= include 'hr/toolbar' ;
 
 <div class="toolbar">
  <%= ml 'Name' %>:

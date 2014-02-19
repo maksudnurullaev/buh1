@@ -2,6 +2,6 @@
 <h2><%= ml 'Human Resource' %> | <%= ml 'Edit' %></h2>
 %= include 'success_error' ;
 
-%= include 'hr/descriptor_toolbar' ;
+%= include 'hr/toolbar' ;
 %= include 'hr/descriptor_form' ;
 %= include 'hr/list_resources', temp_hash => stash('resources_root') if stash('resources_root') ;

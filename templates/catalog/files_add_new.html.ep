@@ -2,7 +2,7 @@
 %= include "success_error" ;
 <h2><%= ml "Catalog" %> | <%= ml "Files" %> | <%= ml "New" %></h2>
 
-%= include "$controller/descriptor_toolbar" ;
+%= include "$controller/toolbar" ;
 
 <div class="toolbar">
  <%= ml "Name" %>:

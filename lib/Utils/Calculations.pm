@@ -47,24 +47,58 @@ sub validate{
 
 sub deploy_result{
     my ($self,$data) = @_ ;
-    my $calculation = $data->{calculation};
-    if( $calculation ){
-		my $found = 0 ;
-        for my $key (keys %{$data}){
-            if( $key =~ /f_value(_\d+)/ && $data->{$key} ){
-				$found = 1 if !$found ;
-                my $value = $data->{$key} ;
-                $calculation =~ s/$1/$value/g if $value ;
-            }
-        }
-		return if !$found ;
-        $self->stash( result => eval($calculation) ) if $calculation ;
-        if( $@ ) { # some error in eval
-            $self->stash( result_error => $calculation );
-            warn $@ ;
+    my $eval_string = get_eval_string($data);
+    my $result = calculate($eval_string);
+    if( $result ){
+        $self->stash( result => $result );
+    } else {    
+        $self->stash( result_error => $eval_string );
+    }
+};
+
+sub db_calculate{
+    my( $self,$id ) = @_ ;
+    my $objects = Utils::Db::db_get_objects($self, { id => [$id] });
+    if( $objects ){
+        my $eval_string = get_eval_string($objects->{$id}) ;
+        return( calculate($eval_string) );
+    }
+    return(undef);
+};
+
+sub cdb_calculate{
+    my( $self,$id ) = @_ ;
+    my $objects = Utils::Db::cdb_get_objects($self,{ id => [$id] });
+    if( $objects ){
+        my $eval_string = get_eval_string($objects->{$id}) ;
+        return( calculate($eval_string) );
+    }
+    return(undef);
+};
+
+sub get_eval_string{
+    my $data = shift ;
+    return(undef) if !exists($data->{calculation});
+    my $eval_string = $data->{calculation};
+    return(undef) if !$eval_string;
+    for my $key (keys %{$data}){
+        if( $key =~ /f_value(_\d+)/ && $data->{$key} ){
+            my $value = $data->{$key} ;
+            $eval_string =~ s/$1/$value/g if $value ;
         }
     }
-}; 
+	return($eval_string) ;
+};
+
+sub calculate{
+    my $eval_string = shift ;
+    my $result = eval($eval_string) ;
+    if( $@ ) { # some error in eval
+        warn $@ ;
+        return(undef);
+    }
+    return($result);
+};
 
 sub get_db_list{
     my $self = shift;

@@ -2,6 +2,6 @@
 <h2><%= ml "Catalog" %> | <%= ml "Edit" %></h2>
 %= include "success_error" ;
 
-%= include "$controller/descriptor_toolbar" ;
+%= include "$controller/toolbar" ;
 %= include "$controller/descriptor_form" ;
 %= include "$controller/list_resources", temp_hash => stash("resources_root") if stash("resources_root") ;

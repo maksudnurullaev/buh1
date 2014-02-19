@@ -1,6 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Catalog' %></h2>
 %= include 'success_error' ;
-%= include "$controller/toolbar" if user_role2company =~ /write|admin/i ;
+
+%= include "$controller/toolbar_main", add_path => "/catalog/add" if user_role2company =~ /write|admin/i ;
 %= include "$controller/list_resources", temp_hash => stash('resources_root') if stash('resources_root') ;
 

@@ -1,20 +1,20 @@
 % layout 'default';
 %= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %> | <%= ml 'Add' %></h2>
+<h2><%= ml 'Catalog' %> | <%= ml 'Calculations' %> | <%= ml 'Add' %></h2>
 
-%= include 'hr/toolbar' ;
+%= include 'catalog/toolbar' ;
 
 <div class="toolbar">
  <%= ml 'Name' %>:
  <strong>
-  %= link_to stash('description') => "/hr/edit/$payload" 
+  %= link_to stash('description') => "/catalog/edit/$payload" 
  </strong>
 </div>
 
 <div class="toolbar">
 <h3><%= ml 'New' %></h3>
 <div class="form">
- %= form_for "/hr/calculations_add/$payload" => (method => 'POST') => begin
+ %= form_for "/catalog/calculations_add/$payload" => (method => 'POST') => begin
  %= hidden_field oname => 'calculation' ;
  <table class='colortable'>
   <tr>
@@ -41,7 +41,7 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Add') ;
-    | <%= link_to "/hr/calculations/$payload" => begin %><%= ml 'Cancel' %><% end %>
+    | <%= link_to "/catalog/calculations/$payload" => begin %><%= ml 'Cancel' %><% end %>
    </td>
   </tr>
  </table>
