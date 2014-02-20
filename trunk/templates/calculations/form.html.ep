@@ -7,6 +7,9 @@
    </td>
    <td>
     %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    <br />
+    %= check_box make_copy => 1, id => 'make_copy', style => 'width:auto;' ;
+    <label for="make_copy"><%= ml 'Make copy' %></label>
    </td>
   </tr>
   <tr><td>&nbsp;</td>

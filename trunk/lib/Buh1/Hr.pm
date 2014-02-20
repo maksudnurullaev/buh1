@@ -208,7 +208,7 @@ sub calculations_add{
 				delete $template->{creator} ;
 				delete $template->{object_name} ;
 				for my $key (keys %{$template}){
-					$data->{$key} = $template->{$key} ;
+					$data->{$key} = $template->{$key} if $key !~ /^_/ ;
 				}
 			}
             my $dbc = Utils::Db::client($self);
@@ -237,8 +237,24 @@ sub calculations_edit{
     if ( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-            Utils::Db::cdb_insert_or_update($self,$data);
-            $self->stash(success => 1);
+    	   	if( defined $self->param('make_copy') ){
+	    		my $dbc = Utils::Db::client($self);
+		    	my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
+			    delete $data->{id} ;
+			    delete $template->{id} ;
+			    delete $template->{description} ;
+	    		for my $key (keys %{$template}){
+		    		$data->{$key} = $template->{$key} if $key !~ /^_/ ;
+			    }
+                warn Dumper $data ;
+                my $new_cid = $dbc->insert($data);
+                $dbc->set_link('hr descriptor',$id,'calculation',$new_cid);
+                $self->redirect_to("/hr/calculations/$id");
+                return;
+	    	} else {
+                Utils::Db::cdb_insert_or_update($self,$data);
+                $self->stash(success => 1);
+            }
         }
     }
     # finish

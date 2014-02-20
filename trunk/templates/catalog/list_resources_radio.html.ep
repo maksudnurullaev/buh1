@@ -1,19 +1,16 @@
 <div>
  <ul class="nostyle">
   % for my $id (sort keys %{$temp_hash}) {
-   % my $files_count = files_count($id) ;
    <li>
     % if( stash("id") && stash("id") eq $id ){
      %= radio_button "new_parent" => $id, style => "width:auto;", id=>"label $id", disabled => 1 ;
      <strong><%= $temp_hash->{$id}{description} %></strong>
-     <sup><%= link_to $files_count => "/$controller/files/$id" %></sup>
      % if( exists $temp_hash->{$id}{CHILDREN} ){
       %= include "$controller/list_resources_radio_disabled", temp_hash => $temp_hash->{$id}{CHILDREN} ;
      % }
     % } else {
      %= radio_button "new_parent" => $id, style => "width:auto;", id=>"label $id" ;
      %= label_for "label $id" => ($temp_hash->{$id}{description} || $id) ;
-     <sup><%= link_to $files_count => "/$controller/files/$id" %></sup>
      % if( exists $temp_hash->{$id}{CHILDREN} ){
       %= include "$controller/list_resources_radio", temp_hash => $temp_hash->{$id}{CHILDREN} ;
      % }
