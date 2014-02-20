@@ -69,7 +69,7 @@ sub edit{
 
     my $id = $self->param('payload');
     my $method = $self->req->method;
-    if ( $method =~ /POST/ ){
+    if( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             Utils::Db::db_insert_or_update($self,$data);

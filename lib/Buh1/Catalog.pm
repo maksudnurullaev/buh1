@@ -215,7 +215,7 @@ sub calculations_add{
 			}
             my $dbc = Utils::Db::client($self);
             my $cid = $dbc->insert($data);
-            $dbc->set_link('hr descriptor',$id,'calculation',$cid);
+            $dbc->set_link('catalog',$id,'calculation',$cid);
             $self->redirect_to("/catalog/calculations_edit/$id?id=$cid");
         } else {
            $self->stash('description_class' => 'error');
@@ -239,12 +239,28 @@ sub calculations_edit{
     if ( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-            Utils::Db::cdb_insert_or_update($self,$data);
-            $self->stash(success => 1);
+    	   	if( defined $self->param('make_copy') ){
+	    		my $dbc = Utils::Db::client($self);
+		    	my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
+			    delete $data->{id} ;
+			    delete $template->{id} ;
+			    delete $template->{description} ;
+	    		for my $key (keys %{$template}){
+		    		$data->{$key} = $template->{$key} if $key !~ /^_/ ;
+			    }
+                warn Dumper $data ;
+                my $new_cid = $dbc->insert($data);
+                $dbc->set_link('catalog',$id,'calculation',$new_cid);
+                $self->redirect_to("/catalog/calculations/$id");
+                return;
+	    	} else {
+                Utils::Db::cdb_insert_or_update($self,$data);
+                $self->stash(success => 1);
+            }
         }
     }
     # finish
-    Utils::Db::cdb_deploy($self,$id, 'hr');
+    Utils::Db::cdb_deploy($self,$id, 'catalog');
     my $data = Utils::Db::cdb_deploy($self,$cid) ;
     Utils::Calculations::deploy_result($self, $data) ;
 };

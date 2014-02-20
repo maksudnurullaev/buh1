@@ -209,7 +209,7 @@ sub format_statement2hash_objects{
     $sth->bind_columns(\($name,$id,$field,$value));
     while ($sth->fetch) {
         $result->{$id} = {} if !exists($result->{$id});
-        if( $name =~ /^_/ ){ # extended field name!!!
+        if( $name =~ /^_/  ){ # extended field name!!!
             $result->{$id}{$name} = {} if !exists($result->{$id}->{$name});
             $result->{$id}{$name}{$value} = $field;
             if( exists $result->{$id}{$name}{$field} ) {

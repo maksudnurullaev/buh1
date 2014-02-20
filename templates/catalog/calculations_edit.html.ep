@@ -7,7 +7,7 @@
 <div class="toolbar">
  <%= ml 'Name' %>:
  <strong>
-  %= link_to stash('hr.description') => "/catalog/edit/$payload" 
+  %= link_to stash('catalog.description') => "/catalog/edit/$payload" 
  </strong>
 </div>
 
