@@ -92,11 +92,13 @@ sub get_eval_string{
 
 sub calculate{
     my $eval_string = shift ;
+    return(undef) if !$eval_string ;
     my $result = eval($eval_string) ;
     if( $@ ) { # some error in eval
         warn $@ ;
         return(undef);
     }
+    #return(undef) if $result !~ /^\d+/ ;
     return($result);
 };
 

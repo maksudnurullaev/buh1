@@ -4,11 +4,8 @@
   % for my $key (reverse sort keys %{$calcs}){
    <li>
     %# admin or user part
-    % if( $controller eq 'calculations' ) { 
-     %= (currency_format db_calculate($key)) || '???' ;
-    % } else {
-     %= currency_format cdb_calculate($key) || '???' ;
-    % }
+    % my $result = ($controller eq 'calculations') ? db_calculate($key) : cdb_calculate($key) ;
+    %= $result ? currency_format($result) : '(?)' ;
     %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
    </li>
   % }
