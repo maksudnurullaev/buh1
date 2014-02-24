@@ -1,0 +1,19 @@
+<div class="toolbar">
+ %= form_for "/backup/list/add" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area 'archive.desc' ;
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Add'
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

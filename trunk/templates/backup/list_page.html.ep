@@ -1,0 +1,22 @@
+% my $archives = stash 'archives' ;
+% if( scalar keys %{$archives} ){
+ <ul>
+  % for my $file (reverse sort keys %{$archives}){
+   <li>
+    <%= link_to substr($file,0,19) => "/archives/edit/$file" %>
+<!--    
+    <sup>
+    %= link_to ml('Delete') => "/archives/delete/$file" ;
+    %= link_to ml('Restore') => "/archives/restore/$file" ;
+    </sup>
+-->
+    % if( $archives->{$file}{desc} ){
+     <br /><small><%= $archives->{$file}{desc} %></small>
+    % }
+   </li>
+  % }
+  </ul>
+% } else {
+ <br /><%= ml 'No data!' %>
+% }
+
