@@ -1,0 +1,63 @@
+% layout 'default';
+<h2><%= ml 'Backup/Restore' %> | <%= ml 'Edit' %></h2>
+%= include 'success_error' ;
+
+<div class="toolbar">
+ % my $fileid = param 'fileid' ;
+ %= form_for "/backup/update_desc/$payload"  => ( method => 'POST') => begin
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area 'archive_desc' => stash('archive_desc') ;
+   </td>
+  </tr> 
+  <tr>
+   <td class='tar'> 
+    %= ml 'Size' 
+   </td>
+   <td>
+    %= substr(currency_format(stash 'archive_size'),0,-4);
+    bytes
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Update'
+   </td>
+  </tr>
+ % end
+ <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
+ %= form_for "/backup/update/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+  <tr>
+   <td class='tar'> 
+    %= ml 'Upload' 
+   </td>
+   <td>
+    <strong><a target="_blank" href='<%= "/backup/download/$payload" %>'><%= stash 'payload' %></a></strong>
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= file_field 'new_archive'
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Update'
+   </td>
+  </tr>
+ % end
+  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
+  <tr>
+   <td>
+    <%= link_to "/backup/restore/$payload" => begin %><%= ml 'Restore' %><% end %>
+   </td>
+   <td class='tar'>
+    %= link_to ml('Delete') => "/backup/del/$payload"
+   </td>
+  </tr>
+ </table>
+</div>
