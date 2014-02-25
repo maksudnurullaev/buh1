@@ -32,13 +32,64 @@ sub list{
         make_new_archive $self ;
         $self->stash( success => 1 );
     }
-    # finish
     make_list $self ;
+};
+
+sub del{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my @deletes = ("$archives_path/$file", "$archives_path/$file.desc") ;
+    unlink @deletes ;
+    $self->redirect_to('/backup/list');
+};
+
+sub update{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my $archive_file = "$archives_path/$file" ;
+	my $new_archive = $self->param('new_archive');
+	$new_archive->move_to($archive_file) ;
+    $self->redirect_to("/backup/edit/$file");
+};
+
+sub edit{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my $archive_file = "$archives_path/$file" ;
+    my $archive_file_desc = "$archives_path/$file.desc" ;
+    if( ! -f $archive_file ){
+        $self->redirect_to('/backup/list');
+        return;
+    }
+    my $file_size = -s $archive_file ;
+    $self->stash( archive_desc => Utils::Files::get_file_content($archive_file_desc) );  
+    $self->stash( archive_size => $file_size );
+};
+
+sub download{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my $archive_file = "$archives_path/$file" ;
+    $self->stash( 'file.name' => $file );
+    $self->render_file('filepath' => $archive_file, 'filename' => $file);
+};
+
+sub update_desc{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my $archive_file_desc = "$archives_path/$file.desc" ;
+    my $description = $self->param("archive_desc");
+    utils::files::set_file_content($archive_file_desc,$description);
+    $self->redirect_to("/backup/edit/$file");
 };
 
 sub make_list{
     my $self = shift ;
-
     my $root_path = Utils::get_root_path ;
     chdir $root_path ;
     my $archives_path = get_client_archives_path($self); 
@@ -54,6 +105,7 @@ sub make_list{
         $archives->{ $fileid } = {};
         my $desc_path = "$archives_path/$fileid.desc" ;
         $archives->{ $fileid }{desc} = Utils::Files::get_file_content($desc_path) ;
+        $archives->{ $fileid }{size} = ( -s  "$archives_path/$fileid") ;
     }
     $self->stash( archives => $archives );
 };
@@ -76,6 +128,15 @@ sub make_new_archive{
         Utils::Files::set_file_content("$archive_file.desc",$file_description) ;
     }
     return(1)
+};
+
+sub restore{
+    my $self = shift ;
+    my $file = $self->param('payload');
+    my $archives_path = get_client_archives_path($self); 
+    my $archive_file = "$archives_path/$file" ;
+    system "tar xzf '$archive_file' " ;
+    $self->redirect_to("/backup/edit/$file");
 };
 
 sub get_client_archives_path{

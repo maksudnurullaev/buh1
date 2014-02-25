@@ -3,13 +3,8 @@
  <ul>
   % for my $file (reverse sort keys %{$archives}){
    <li>
-    <%= link_to substr($file,0,19) => "/archives/edit/$file" %>
-<!--    
-    <sup>
-    %= link_to ml('Delete') => "/archives/delete/$file" ;
-    %= link_to ml('Restore') => "/archives/restore/$file" ;
-    </sup>
--->
+    <%= link_to substr($file,0,19) => "/backup/edit/$file" %>
+    <br /><%= substr(currency_format($archives->{$file}{size}),0,-4) %> bytes
     % if( $archives->{$file}{desc} ){
      <br /><small><%= $archives->{$file}{desc} %></small>
     % }
