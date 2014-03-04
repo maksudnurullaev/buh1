@@ -8,4 +8,9 @@
     % } else {
      %= text_field $name => $value ;
     % }
+    % if( $name =~ /value/ && stash("f_calculated_value_$index") ) {
+     <strong> = 
+     %= stash "f_calculated_value_$index"
+     </strong>
+    % }
   </td></tr>

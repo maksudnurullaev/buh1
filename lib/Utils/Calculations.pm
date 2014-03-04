@@ -47,7 +47,9 @@ sub validate{
 
 sub deploy_result{
     my ($self,$data) = @_ ;
-    my $eval_string = get_eval_string($data);
+    my $eval_string = $data->{calculation} ;
+    $eval_string = encode_eval_string($self, $data, $eval_string);
+    warn $eval_string ;
     my $result = calculate($eval_string);
     if( $result ){
         $self->stash( result => $result );
@@ -60,7 +62,9 @@ sub db_calculate{
     my( $self,$id ) = @_ ;
     my $objects = Utils::Db::db_get_objects($self, { id => [$id] });
     if( $objects ){
-        my $eval_string = get_eval_string($objects->{$id}) ;
+        my $data = $objects->{$id} ;
+        my $eval_string = $data->{calculation} ;
+        $eval_string = encode_eval_string($self, $data, $eval_string) ;
         return( calculate($eval_string) );
     }
     return(undef);
@@ -70,24 +74,43 @@ sub cdb_calculate{
     my( $self,$id ) = @_ ;
     my $objects = Utils::Db::cdb_get_objects($self,{ id => [$id] });
     if( $objects ){
-        my $eval_string = get_eval_string($objects->{$id}) ;
+        my $data = $objects->{$id} ;
+        my $eval_string = $data->{calculation} ;
+        $eval_string = encode_eval_string($self, $data, $eval_string) ;
         return( calculate($eval_string) );
     }
     return(undef);
 };
 
-sub get_eval_string{
-    my $data = shift ;
-    return(undef) if !exists($data->{calculation});
-    my $eval_string = $data->{calculation};
-    return(undef) if !$eval_string;
-    for my $key (keys %{$data}){
-        if( $key =~ /f_value(_\d+)/ && $data->{$key} ){
-            my $value = $data->{$key} ;
-            $eval_string =~ s/$1/$value/g if $value ;
+sub encode_eval_string{
+    my $self        = shift ;
+    my $data        = shift ;
+    my $eval_string = shift ;
+    return(undef) if !$eval_string ;
+
+    my $recursion   = shift || 0 ;
+    return "ERROR:RECURSION: $recursion" if $recursion > 10 ;
+
+    for ( $eval_string =~ m/(_\d+)/g ){
+        if( exists($data->{"f_value$_"}) && $data->{"f_value$_"} ){ 
+            warn "X" . ('X' x $recursion ) . " $_" ;
+            my $value = $data->{"f_value$_"} ;
+            warn "Z" . ('Z' x $recursion ) . " $value" ;
+            if( $value =~ /_\d+/ ){
+                $value = encode_eval_string($self,$data,$value,++$recursion);
+                $eval_string =~ s/$_/$value/g;
+                if( !exists($data->{"f_calculated_value$_"}) ){
+                    $data->{"f_calculated_value$_"} = $value ;
+                    $self->stash("f_calculated_value$_" => $value) ;
+                }
+            } else {
+                $eval_string =~ s/$_/$value/g;
+            }
         }
     }
-	return($eval_string) ;
+    --$recursion ;
+    warn "RESULT: $eval_string" ;
+	return("( $eval_string )" ) ;
 };
 
 sub calculate{
@@ -98,7 +121,6 @@ sub calculate{
         warn $@ ;
         return(undef);
     }
-    #return(undef) if $result !~ /^\d+/ ;
     return($result);
 };
 
