@@ -100,8 +100,7 @@ sub encode_eval_string{
                 $value = encode_eval_string($self,$data,$value,++$recursion);
                 $eval_string =~ s/$_/$value/g;
                 if( !exists($data->{"f_calculated_value$_"}) ){
-                    $data->{"f_calculated_value$_"} = $value ;
-                    $self->stash("f_calculated_value$_" => $value) ;
+                    $self->stash("f_calculated_value$_" => calculate($value)) ;
                 }
             } else {
                 $eval_string =~ s/$_/$value/g;
