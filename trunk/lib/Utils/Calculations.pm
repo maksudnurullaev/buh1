@@ -49,7 +49,6 @@ sub deploy_result{
     my ($self,$data) = @_ ;
     my $eval_string = $data->{calculation} ;
     $eval_string = encode_eval_string($self, $data, $eval_string);
-    warn $eval_string ;
     my $result = calculate($eval_string);
     if( $result ){
         $self->stash( result => $result );
@@ -93,9 +92,7 @@ sub encode_eval_string{
 
     for ( $eval_string =~ m/(_\d+)/g ){
         if( exists($data->{"f_value$_"}) && $data->{"f_value$_"} ){ 
-            warn "X" . ('X' x $recursion ) . " $_" ;
             my $value = $data->{"f_value$_"} ;
-            warn "Z" . ('Z' x $recursion ) . " $value" ;
             if( $value =~ /_\d+/ ){
                 $value = encode_eval_string($self,$data,$value,++$recursion);
                 $eval_string =~ s/$_/$value/g;
@@ -108,7 +105,6 @@ sub encode_eval_string{
         }
     }
     --$recursion ;
-    warn "RESULT: $eval_string" ;
 	return("( $eval_string )" ) ;
 };
 
