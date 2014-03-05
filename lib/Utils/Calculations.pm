@@ -103,7 +103,7 @@ sub encode_eval_string{
                     $self->stash("f_calculated_value$_" => calculate($value)) ;
                 }
             } else {
-                $eval_string =~ s/$_/$value/g;
+                $eval_string =~ s/$_\b/$value/g;
             }
         }
     }
