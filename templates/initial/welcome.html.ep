@@ -14,3 +14,6 @@
     </p>
 % }
 </div>
+<p> 
+ <strong><%= ml 'To contact with us' %>.</strong>
+</p> 
