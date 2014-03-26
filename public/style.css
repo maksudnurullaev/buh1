@@ -181,7 +181,7 @@ img {}
 /*
  * Specific use classes
  */
-.topBanner {
+div.login_status {
   float: right;
   margin: 0;
   border: 0;
