@@ -7,7 +7,9 @@
     <td><%= text_field 'user', class => stash 'user_class' %> </td>
    </tr>
    <tr><td class='tar'><%= ml 'Contact' %></td>
-    <td><%= text_field 'contact', class => stash 'contact_class' %> </td>
+    <td>
+     <%= text_field 'contact', class => stash 'contact_class' %><br />
+    </td>
    </tr>
   % }
   <tr><td class='tar'><u><%= ml 'Message' %></u></td>
@@ -21,4 +23,9 @@
  </table>
  % end
 </div>
-
+<p>
+ <u><%= ml 'To contact with you' %>.</u>
+</p>     
+<p> 
+ <strong><%= ml 'To contact with us' %>.</strong>
+</p> 
