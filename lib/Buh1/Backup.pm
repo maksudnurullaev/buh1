@@ -50,7 +50,7 @@ sub update{
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
 	my $new_archive = $self->param('new_archive');
-	$new_archive->move_to($archive_file) ;
+    $new_archive->move_to($archive_file) ;
     $self->redirect_to("/backup/edit/$file");
 };
 

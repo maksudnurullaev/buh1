@@ -16,6 +16,25 @@ use Data::Dumper ;
 
 sub page{
     my $self = shift;
+    my $guides_path = get_guides_path($self);
+    my $guides = {};
+    my $dir ;
+    opendir($dir, $guides_path);
+    while (my $file = readdir($dir)) {
+        next if ($file =~ m/^\./) || ($file =~ /desc$/);
+        $guides->{ $file } = {};
+        my $desc_path = "$guides_path/$file.desc" ;
+        $guides->{ $file }{desc} = Utils::Files::get_file_content($desc_path) ;
+        $guides->{ $file }{size} = ( -s  "$guides_path/$file") ;
+    }
+
+    $self->stash( guides_path => $guides_path );
+};
+
+sub get_guides_path{
+    my $self = shift ;
+    my $path = Utils::get_root_path('db/guides') ;
+    return($path);
 };
 
 # END OF PACKAGE
