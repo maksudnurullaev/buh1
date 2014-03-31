@@ -1,0 +1,32 @@
+% layout 'default';
+<h2><%= ml('Guides') . ' | ' . ml('Add') %></h2>
+%= include 'success_error' ;
+<div class="toolbar">
+ %= link_to ml('Back') => 'page' ; 
+</div>
+
+<div class="form">
+ <table class='colortable'>
+ %= form_for add => (method => 'POST') => begin
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= file_field 'new_file'
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+    | <%= link_to 'page' => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+ % end
+ </table>
+</div>
