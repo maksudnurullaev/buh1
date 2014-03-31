@@ -3,8 +3,8 @@
 %= include 'success_error' ;
 %= include 'calculations/toolbar', add_path => '/calculations/add' if is_admin ;
 
-% if( is_admin() ){
+% if( is_admin() ) {
  %= include 'calculations/list_page', link_path_prefix => "/$controller/edit/" ;
-%} else {
+% } else {
  %= include 'calculations/list_page', link_path_prefix => "/$controller/test/" ;
-%}
+% }
