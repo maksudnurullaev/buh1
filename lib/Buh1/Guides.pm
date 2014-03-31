@@ -20,7 +20,7 @@ sub page{
     my $guides = {};
     my $dir ;
     opendir($dir, $guides_path);
-    while (my $file = readdir($dir)) {
+    while( my $file = readdir($dir) ) {
         next if ($file =~ m/^\./) || ($file =~ /desc$/);
         $guides->{ $file } = {};
         my $desc_path = "$guides_path/$file.desc" ;
@@ -29,12 +29,6 @@ sub page{
     }
 
     $self->stash( guides_path => $guides_path );
-};
-
-sub get_guides_path{
-    my $self = shift ;
-    my $path = Utils::get_root_path('db/guides') ;
-    return($path);
 };
 
 # END OF PACKAGE
