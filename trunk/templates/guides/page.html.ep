@@ -1,0 +1,12 @@
+% layout 'default';
+<h2><%= ml 'Guides' %></h2>
+<% my $admin = check_for('admin'); %>
+% if( $admin ) { 
+ <div class="toolbar">
+  %= link_to ml('Add') => 'add' ; 
+ </div>
+% } 
+<ul>
+ <li><%= dumper stash('guides_path') %></li>
+ <li><%= dumper stash('guides') %></li>
+</li> 
