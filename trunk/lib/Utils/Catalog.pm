@@ -52,7 +52,6 @@ sub get_root_objects{
     return(Utils::Db::cdb_get_root($self," WHERE name = 'catalog' "));
 };
 
-
 # END OF PACKAGE
 };
 

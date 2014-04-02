@@ -7,7 +7,7 @@
 
 <div class="form">
  <table class='colortable'>
- %= form_for add => (method => 'POST') => begin
+ %= form_for add => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
