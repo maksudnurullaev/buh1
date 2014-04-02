@@ -20,31 +20,13 @@ sub get_guides_path{
     return( Utils::get_root_path('db/guides') ) ;
 };
 
-sub validate_desc{
+sub add_file{
     my $self = shift;
-    my $description = $self->param('description');
-    return(0) if $description ~! /\p+/ ;
-    return(1) ;
-};
-
-sub validate_all{
-    my $self = shift;
-    return(0) if $self->req->is_limit_exceeded ;
-    if( validate_desc($self) ){
-        my $file = my $new_file = $self->param('new_file');
-        return(0) if !$file || !$file->size ) ;
-        return(0) if $file->filename !~ /csv$/i ;
-    }    
-};
-
-sub add_new{
-    my $self = shift;
-    my $id = $self->param('payload');
-
     return(0) if $self->req->is_limit_exceeded ;
 
 	my $new_file = $self->param('new_file');
-	return(0) if( !$new_file || !$new_file->size ) ;
+	return(0) if !$new_file ;
+    return(0) if $new_file->filename !~ /\.csv$/i ;
 
 	my $path      = get_guides_path();
 	system "mkdir -p '$path/'" if ! -d $path ;
@@ -53,7 +35,7 @@ sub add_new{
 	$new_file->move_to($path_file);
 	# save file name
     set_file_content($path_file . '.name', $new_file->filename) ;
-    my $file_description = $self->param('file.desc');
+    my $file_description = $self->param('description');
 	# save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
     return(1)
@@ -123,15 +105,15 @@ sub deploy{
 
 sub files_count{
     my($self,$id) = @_ ;
-    my $path = Utils::get_root_path(get_path($self,$id));
+	my $path       = get_guides_path();
     return(0) if ! -d $path;
     my @files = <"$path/*.name">;
     return(scalar(@files));
 };
 
-sub file_list4id{
-	my ($self,$id) = @_ ;
-	my $path = Utils::get_root_path(get_path($self,$id));
+sub get_list{
+    my ($self) = @_ ;
+	my $path       = get_guides_path();
 	if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;

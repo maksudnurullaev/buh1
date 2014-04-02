@@ -9,6 +9,7 @@ package Buh1::Guides; {
 =cut
 
 use Mojo::Base 'Mojolicious::Controller';
+use Utils::Guides ;
 use Utils::Files ;
 use Utils ;
 use Encode qw( encode decode_utf8 );
@@ -16,20 +17,25 @@ use Data::Dumper ;
 
 sub page{
     my $self = shift;
-    my $guides_path = get_guides_path($self);
-    my $guides = {};
-    my $dir ;
-    opendir($dir, $guides_path);
-    while( my $file = readdir($dir) ) {
-        next if ($file =~ m/^\./) || ($file =~ /desc$/);
-        $guides->{ $file } = {};
-        my $desc_path = "$guides_path/$file.desc" ;
-        $guides->{ $file }{desc} = Utils::Files::get_file_content($desc_path) ;
-        $guides->{ $file }{size} = ( -s  "$guides_path/$file") ;
-    }
-
-    $self->stash( guides_path => $guides_path );
+    $self->stash( guides => Utils::Guides::get_list($self) ) ;
 };
+
+sub add{
+    my $self = shift ;
+    if( !$self->is_admin ){
+        $self->redirect_to('/guides/page');
+        return;
+    }
+    if ( $self->req->method =~ /POST/ ){
+        if( Utils::Guides::add_file($self) ){
+            $self->stash(success => 1);
+            $self->redirect_to('/guides/page');
+        } else {
+            $self->stash(error => 1);
+        }
+	}
+};
+
 
 # END OF PACKAGE
 
