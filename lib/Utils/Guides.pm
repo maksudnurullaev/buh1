@@ -20,6 +20,28 @@ sub get_guides_path{
     return( Utils::get_root_path('db/guides') ) ;
 };
 
+sub get_list{
+    my ($self) = @_ ;
+	my $path       = get_guides_path();
+	if( ! -d $path ){
+        system "mkdir -p '$path/'" ;
+        return ;
+    }
+    
+    my $dir;
+    opendir($dir, $path);
+	my $result = {};
+    while (my $fileid = readdir($dir)) {
+        next if ($fileid =~ m/^\./) || ($fileid =~ /[desc|name]$/);
+		$result->{ $fileid } = {};
+        $result->{ $fileid }{file_name} = get_file_content("$path/$fileid" . '.name') ;
+        $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
+    }
+    closedir($dir);
+	return($result);
+};
+
+
 sub add_file{
     my $self = shift;
     return(0) if $self->req->is_limit_exceeded ;
@@ -109,27 +131,6 @@ sub files_count{
     return(0) if ! -d $path;
     my @files = <"$path/*.name">;
     return(scalar(@files));
-};
-
-sub get_list{
-    my ($self) = @_ ;
-	my $path       = get_guides_path();
-	if( ! -d $path ){
-        system "mkdir -p '$path/'" ;
-        return ;
-    }
-    
-    my $dir;
-    opendir($dir, $path);
-	my $result = {};
-    while (my $fileid = readdir($dir)) {
-        next if ($fileid =~ m/^\./) || ($fileid =~ /[desc|name]$/);
-		$result->{ $fileid } = {};
-        $result->{ $fileid }{name} = get_file_content("$path/$fileid" . '.name') ;
-        $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
-    }
-    closedir($dir);
-	return($result);
 };
 
 sub set_file_content{

@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml('Guides') . ' | ' . ml('Add') %></h2>
+<h2><%= ml('Guides') . ' | ' . ml('Edit') %></h2>
 %= include 'success_error' ;
 <div class="toolbar">
  %= link_to ml('Back') => 'page' ; 
@@ -13,7 +13,7 @@
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area description => '', class => (stash 'description_class') 
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
    </td>
   </tr>
   <tr><td>&nbsp;</td>
