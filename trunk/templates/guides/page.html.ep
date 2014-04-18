@@ -6,7 +6,18 @@
   %= link_to ml('Add') => 'add' ; 
  </div>
 % } 
-<ul>
- <li><%= dumper stash('guides_path') %></li>
- <li><%= dumper stash('guides') %></li>
-</li> 
+% $guides = stash('guides') ;
+% if( $guides ){
+ <ul>
+  % for my $key (sort keys %{$guides}) {
+   <li>
+    <%= link_to $guides->{$key}{file_name} => "edit/$key" %>
+    % if( exists $guides->{$key}{desc} && $guides->{$key}{desc} ){
+     <ul><li><i><%= $guides->{$key}{desc} %></i></li></ul>
+    % } 
+   </li>
+  % }
+ </ul> 
+% } else {
+ <div class="footer"><%= ml 'No data!' %></div>
+% }
