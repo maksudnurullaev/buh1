@@ -2,12 +2,20 @@
 <h2><%= ml('Guides') . ' | ' . ml('Add') %></h2>
 %= include 'success_error' ;
 <div class="toolbar">
- %= link_to ml('Back') => 'page' ; 
+ %= link_to ml('Back') => '/guides/page' ; 
 </div>
 
 <div class="form">
  <table class='colortable'>
  %= form_for add => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+  <tr>
+   <td class="tar">
+    %= ml 'Number' ;
+   </td>
+   <td>
+    %= text_field 'number' => '', class => (stash 'number_class')
+   </td>
+  </tr>
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
@@ -24,7 +32,7 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | <%= link_to 'page' => begin %><%= ml 'Cancel' %><% end %>
+    | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
    </td>
   </tr>
  % end
