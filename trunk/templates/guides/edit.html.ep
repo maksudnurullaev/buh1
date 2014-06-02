@@ -2,7 +2,7 @@
 <h2><%= ml('Guides') . ' | ' . ml('Edit') %></h2>
 %= include 'success_error' ;
 <div class="toolbar">
- %= link_to ml('Back') => 'page' ; 
+ %= link_to ml('Back') => '/guides/page' ; 
 </div>
 
 <div class="form">
@@ -24,7 +24,7 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | <%= link_to 'page' => begin %><%= ml 'Cancel' %><% end %>
+    | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
    </td>
   </tr>
  % end
