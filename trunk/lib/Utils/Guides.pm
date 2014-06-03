@@ -15,14 +15,17 @@ use utf8;
 use Utils;
 use Data::Dumper;
 
-
 sub get_guides_path{
+    my $id = shift;
+    if( $id ){
+        return( Utils::get_root_path("db/guides/$id") ) ;
+    }
     return( Utils::get_root_path('db/guides') ) ;
 };
 
 sub get_list{
     my ($self) = @_ ;
-	my $path       = get_guides_path();
+	my $path   = get_guides_path();
 	if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;
@@ -40,7 +43,6 @@ sub get_list{
     closedir($dir);
 	return($result);
 };
-
 
 sub add_file{
     my $self = shift;

@@ -29,4 +29,7 @@
   </tr>
  % end
  </table>
+ <hr />
+ %= dumper $csv_data ;
+ %= dumper $csv_file_path ;
 </div>
