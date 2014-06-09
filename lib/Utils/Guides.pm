@@ -35,7 +35,7 @@ sub get_list{
     opendir($dir, $path);
 	my $result = {};
     while (my $fileid = readdir($dir)) {
-        next if ($fileid =~ m/^\./) || ($fileid =~ /[desc|name]$/);
+        next if ($fileid =~ m/^\./) || ($fileid =~ /desc$/);
 		$result->{ $fileid } = {};
         $result->{ $fileid }{file_name} = get_file_content("$path/$fileid" . '.name') ;
         $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
@@ -44,26 +44,56 @@ sub get_list{
 	return($result);
 };
 
-sub add_file{
+sub add_guide{
     my $self = shift;
-    return(0) if $self->req->is_limit_exceeded ;
+    $self->stash(error => 0);
 
-	my $new_file = $self->param('new_file');
-	return(0) if !$new_file ;
-    return(0) if $new_file->filename !~ /\.csv$/i ;
+    my $guide_number      = $self->param('number');
+    my $guide_description = $self->param('description');
+    my $guide_content     = $self->param('content');
+	my $path              = get_guides_path();
+    my $path_file         = "$path/$guide_number";
 
-	my $path      = get_guides_path();
 	system "mkdir -p '$path/'" if ! -d $path ;
-    # save file
-	my $path_file = "$path/" . Utils::get_date_uuid() ;
-	$new_file->move_to($path_file);
-	# save file name
-    set_file_content($path_file . '.name', $new_file->filename) ;
-    my $file_description = $self->param('description');
-	# save file description
-    set_file_content($path_file . '.desc', $file_description) if $file_description ;
-    return(1)
+    if( ( -e $path_file) || ($guide_number !~ /^\d+$/) ){
+        $self->stash(error => 1);
+        $self->stash(number_class => 'error');
+    }
+
+    if( !$guide_content ){
+        $self->stash(error => 1);
+        $self->stash(content_class => 'error');
+    }
+    # Final 
+    if( !$self->stash('error') ){
+	    # save file name
+        set_file_content($path_file, $guide_content) ;
+	    # save file description
+        set_file_content($path_file . '.desc', $guide_description) if $guide_description ;
+        return($guide_number);
+    }
+    return(0);
 };
+
+sub deploy_guide{
+    my $self         = shift;
+    my $guide_number = shift;
+    my $guide_file_path      = Utils::Guides::get_guides_path($guide_number);
+    my $guide_file_desc_path = $guide_file_path . '.desc';
+    warn $guide_file_path;
+    warn $guide_file_desc_path;
+    if( ! -e $guide_file_path ){
+        $self->redirect_to('guides/page');
+        return(0);
+    }
+
+    $self->param( number  => $guide_number ) ;
+    $self->param( content =>
+        Utils::Guides::get_file_content($guide_file_path) );
+    $self->param( description => 
+        Utils::Guides::get_file_content($guide_file_desc_path) );
+    return(1);
+}
 
 sub del_file{
     my $self = shift;

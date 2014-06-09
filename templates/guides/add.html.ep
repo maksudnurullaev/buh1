@@ -5,36 +5,4 @@
  %= link_to ml('Back') => '/guides/page' ; 
 </div>
 
-<div class="form">
- <table class='colortable'>
- %= form_for add => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
-  <tr>
-   <td class="tar">
-    %= ml 'Number' ;
-   </td>
-   <td>
-    %= text_field 'number' => '', class => (stash 'number_class')
-   </td>
-  </tr>
-  <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
-   <td>
-    %= text_area description => '', class => (stash 'description_class') 
-   </td>
-  </tr>
-  <tr><td>&nbsp;</td>
-   <td>
-    %= file_field 'new_file'
-   </td>
-  </tr> 
-  <tr><td>&nbsp;</td>
-   <td>
-    %= submit_button ml('Save') ;
-    | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
-   </td>
-  </tr>
- % end
- </table>
-</div>
+%= include 'guides/form' if is_admin ;
