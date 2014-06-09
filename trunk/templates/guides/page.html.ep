@@ -11,9 +11,9 @@
  <ul>
   % for my $key (sort keys %{$guides}) {
    <li>
-    <%= link_to $guides->{$key}{file_name} => "edit/$key" %>
+    <%= link_to $key => "edit/$key" %>
     % if( exists $guides->{$key}{desc} && $guides->{$key}{desc} ){
-     <ul><li><i><%= $guides->{$key}{desc} %></i></li></ul>
+     <sup><%= $guides->{$key}{desc} %></sup>
     % } 
    </li>
   % }
@@ -21,3 +21,4 @@
 % } else {
  <div class="footer"><%= ml 'No data!' %></div>
 % }
+

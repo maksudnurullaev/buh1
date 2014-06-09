@@ -1,0 +1,42 @@
+<div class="form">
+ <table class='colortable'>
+ % my $path = 'add';
+ % $path = "edit/$payload" if $action ne 'add' ; 
+ %= form_for $path => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+  <tr>
+   <td class="tar">
+    %= ml 'Number' ;
+   </td>
+   <td>
+    %if( $action eq 'add' ){
+     %= text_field 'number' => '', class => (stash 'number_class')
+    %} else {
+     %= text_field 'number' => '', class => (stash 'number_class'), disabled => 'on'
+    %}
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => '', class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Content' 
+   </td>
+   <td>
+    %= text_area content => '', class => (stash 'content_class'), style=>'width: 500px; height: 200px;' 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+    | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+ % end
+ </table>
+</div>

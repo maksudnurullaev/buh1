@@ -35,9 +35,9 @@ sub add{
     return if !is_editor($self);
 
     if ( $self->req->method =~ /POST/ ){
-        if( Utils::Guides::add_file($self) ){
+        if( my $guide_number = Utils::Guides::add_guide($self) ){
             $self->stash(success => 1);
-            $self->redirect_to('/guides/page');
+            $self->redirect_to("/guides/edit/$guide_number");
         } else {
             $self->stash(error => 1);
         }
@@ -45,14 +45,20 @@ sub add{
 };
 
 sub edit{
-    my $self = shift;
-    return if !is_editor($self);
+    my $self                 = shift;
+    my $guide_number         = $self->param('payload');
 
-    my $csv_file_path = Utils::Guides::get_guides_path($self->param('payload'));
-    my $csv_data = csv (in => $csv_file_path);
-    $self->stash(csv_data => $csv_data);
-    $self->stash(csv_file_path => $csv_file_path);
-    
+    if ( $self->req->method =~ /POST/ ){
+        if( Utils::Guides::update_guide($self) ){
+            $self->stash(success => 1);
+            $self->redirect_to("/guides/edit/$guide_number");
+        } else {
+            $self->stash(error => 1);
+            return;
+        }
+	}
+    #Final
+    Utils::Guides::deploy_guide($self,$guide_number);
 };
 
 
