@@ -46,12 +46,12 @@ sub add{
 
 sub edit{
     my $self                 = shift;
-    my $guide_number         = $self->param('payload');
+    return if !is_editor($self);
 
-    if ( $self->req->method =~ /POST/ ){
+    my $guide_number        = $self->param('payload');
+    if( $self->req->method =~ /POST/ ){
         if( Utils::Guides::update_guide($self) ){
             $self->stash(success => 1);
-            $self->redirect_to("/guides/edit/$guide_number");
         } else {
             $self->stash(error => 1);
             return;
@@ -61,6 +61,29 @@ sub edit{
     Utils::Guides::deploy_guide($self,$guide_number);
 };
 
+sub view{
+    my $self            = shift;
+    my $guide_number    = $self->param('payload');
+    my $guide_file_path = Utils::Guides::get_guides_path($guide_number);
+    my $content = Utils::Guides::get_file_content($guide_file_path) ;
+    $self->stash( guide_data => Utils::Guides::encode_guide_content($content) );
+    #Final
+    Utils::Guides::deploy_guide($self,$guide_number);
+};
+
+sub del{
+    my $self = shift ;
+    return if !is_editor($self);
+
+    my $guide_number      = $self->param('payload');
+    my $path              = Utils::Guides::get_guides_path();
+    my $path_file         = "$path/$guide_number";
+    warn $path_file;
+    warn ($path_file . '.desc') if -e ($path_file . '.desc');
+    unlink $path_file;
+    unlink ($path_file . '.desc') if -e ($path_file . '.desc');
+    $self->redirect_to('/guides/page');
+};
 
 # END OF PACKAGE
 

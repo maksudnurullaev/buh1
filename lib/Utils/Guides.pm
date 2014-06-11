@@ -60,7 +60,7 @@ sub add_guide{
         $self->stash(number_class => 'error');
     }
 
-    if( !$guide_content ){
+    if( !validate_content($guide_content) ){
         $self->stash(error => 1);
         $self->stash(content_class => 'error');
     }
@@ -75,95 +75,92 @@ sub add_guide{
     return(0);
 };
 
+sub validate_content{
+    my $guide_content = shift;
+    return( $guide_content && ($guide_content =~ m/^[,;]\W/m) );
+};
+
+sub update_guide{
+    my $self = shift;
+    $self->stash(error => 0);
+
+    my $guide_number      = $self->param('number');
+    warn "Number: " . $guide_number ;
+    my $guide_description = $self->param('description');
+    my $guide_content     = $self->param('content');
+	my $path              = get_guides_path();
+    my $path_file         = "$path/$guide_number";
+
+    if( !validate_content($guide_content) ){
+        $self->stash(error => 1);
+        $self->stash(content_class => 'error');
+    }
+    # Final 
+    if( !$self->stash('error') ){
+	    # save file name
+        set_file_content($path_file, $guide_content) ;
+	    # save file description
+        if( $guide_description ){
+            set_file_content($path_file . '.desc', $guide_description);
+        } else {
+            unlink ($path_file . '.desc') if -e ($path_file . '.desc');
+        }
+        return($guide_number);
+    }
+    return(0);
+};
+
+sub encode_guide_content{
+    my $content = shift;
+    my @rows = split /^/, $content ;
+    return(0) if(scalar(@rows) <= 2);
+    my $splitter;
+    my $result = {};
+    for my $index (0 .. $#rows){
+        if(!$index){
+            if( $rows[$index] =~ /^(\W)/ ){
+                $splitter = $1;
+                $result->{splitter} = $splitter;
+            } else {
+                return(0);
+            }
+        } elsif($index == 1){
+            my $row = $rows[$index]; 
+            $row =~ s/[\r\n]+//g;
+            if( $row ){
+                my @row = split(/$splitter/,$row);
+                $result->{header} = [@row] ;
+            }
+        } else {
+            my $row = $rows[$index]; 
+            $row =~ s/[\r\n]+//g;
+            $result->{data} = {} if !exists $result->{data};
+            if( $row ){
+                my @row = split(/$splitter/,$row);
+                $result->{data}{$index} = [@row] ;
+            }
+        }
+    }
+    return $result ;
+};
+
 sub deploy_guide{
     my $self         = shift;
     my $guide_number = shift;
     my $guide_file_path      = Utils::Guides::get_guides_path($guide_number);
     my $guide_file_desc_path = $guide_file_path . '.desc';
-    warn $guide_file_path;
-    warn $guide_file_desc_path;
     if( ! -e $guide_file_path ){
         $self->redirect_to('guides/page');
         return(0);
     }
 
     $self->param( number  => $guide_number ) ;
-    $self->param( content =>
-        Utils::Guides::get_file_content($guide_file_path) );
+    my $content = Utils::Guides::get_file_content($guide_file_path) ;
+    $self->param( content => $content );
     $self->param( description => 
         Utils::Guides::get_file_content($guide_file_desc_path) );
     return(1);
 }
-
-sub del_file{
-    my $self = shift;
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-
-	my $path       = Utils::get_root_path(get_path($self,$id));
-	my $path_file  = "$path/$fileid" ;
-	
-	unlink $path_file ;
-    unlink ($path_file . '.name') ;
-    unlink ($path_file . '.desc') ;
-};
-
-sub update_file{
-    my $self = shift;
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-
-    return(0) if $self->req->is_limit_exceeded ;
-
-	my $new_file = $self->param('new_file');
-	return(0) if( !$new_file || !$new_file->size ) ;
-
-	my $path      = Utils::get_root_path(get_path($self,$id));
-	my $path_file = "$path/$fileid" ;
-	$new_file->move_to($path_file) ;
-    set_file_content($path_file . '.name', $new_file->filename) ;
-    return(1)
-};
-
-sub update_desc{
-    my $self = shift;
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-    my $file_description = $self->param('file.desc');
-
-	my $path      = Utils::get_root_path(get_path($self,$id));
-	my $path_file = "$path/$fileid" . '.desc' ;
-    set_file_content($path_file, $file_description) ;
-};
-
-sub get_path{
-	my($self,$id) = @_ ;
-	my $controller = $self->stash('controller') ;
-	if( $controller =~ /[templates|files]/i ){ # admin actions
-		return( "db/main/$id") ;
-	} 
-    my $company_id = $self->session('company id') ;
-    return( "db/clients/$company_id/$id" ) ;
-};
-
-sub deploy{
-    my($self,$id,$fileid) = @_ ;
-    my $path = Utils::get_root_path(get_path($self,$id));
-    my $file_path = "$path/$fileid" ;
-    return if ! -e $file_path ;
-    $self->stash( 'file_name' => get_file_content($file_path . '.name') )
-        if -e ($file_path . '.name');
-    $self->stash( 'file_desc' => get_file_content($file_path . '.desc') )
-        if -e ($file_path . '.desc');
-};
-
-sub files_count{
-    my($self,$id) = @_ ;
-	my $path       = get_guides_path();
-    return(0) if ! -d $path;
-    my @files = <"$path/*.name">;
-    return(scalar(@files));
-};
 
 sub set_file_content{
     my($file_path,$content) = @_ ;

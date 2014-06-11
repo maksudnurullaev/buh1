@@ -1,7 +1,7 @@
 <div class="form">
  <table class='colortable'>
- % my $path = 'add';
- % $path = "edit/$payload" if $action ne 'add' ; 
+ % my $path = '/guides/add';
+ % $path = "/guides/edit/$payload" if $action ne 'add' ; 
  %= form_for $path => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
   <tr>
    <td class="tar">
@@ -11,7 +11,8 @@
     %if( $action eq 'add' ){
      %= text_field 'number' => '', class => (stash 'number_class')
     %} else {
-     %= text_field 'number' => '', class => (stash 'number_class'), disabled => 'on'
+     <strong><%= $payload %></strong>
+     %= hidden_field 'number' => $payload ;
     %}
    </td>
   </tr>
@@ -35,6 +36,10 @@
    <td>
     %= submit_button ml('Save') ;
     | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
+    % if( $action eq 'edit' ){
+     |
+     %= link_to ml('Delete') => "/$controller/del/$payload"
+    % }
    </td>
   </tr>
  % end
