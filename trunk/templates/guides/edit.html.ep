@@ -3,6 +3,8 @@
 %= include 'success_error' ;
 <div class="toolbar">
  %= link_to ml('Back') => '/guides/page' ; 
+ |
+ %= link_to ml('View') => "/guides/view/$payload" ;
 </div>
 
 %= include 'guides/form' if is_admin ;

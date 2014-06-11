@@ -11,7 +11,7 @@
  <ul>
   % for my $key (sort keys %{$guides}) {
    <li>
-    <%= link_to $key => "edit/$key" %>
+    <%= link_to $key => "/guides/view/$key" %>
     % if( exists $guides->{$key}{desc} && $guides->{$key}{desc} ){
      <sup><%= $guides->{$key}{desc} %></sup>
     % } 

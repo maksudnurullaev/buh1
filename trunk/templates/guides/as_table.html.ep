@@ -1,0 +1,24 @@
+<div style="padding: 1em;">
+% if( param('description') ){
+ <strong><%= param('description') %></strong> 
+ <br />&nbsp;
+% } 
+<table border='1'>
+ <tr>
+  % for (@{$guide_data->{header}}){
+   <th><%= $_ %></th>
+  % }
+ </tr>
+ 
+ % foreach ( sort {$a<=>$b} keys %{$guide_data->{data}} ){
+   % if( $_ =~ /^\d+/ ){
+    <tr>
+    % for my $val (@{$guide_data->{data}{$_}}){
+     <td><%= $val %></td>
+    % }
+    </tr>
+   % }
+ % }
+</table>
+</div>
+
