@@ -110,8 +110,11 @@ sub update_guide{
     return(0);
 };
 
-sub encode_guide_content{
-    my $content = shift;
+sub decode_guide_content{
+    my $guide_number = shift;
+    return(undef) if ! defined($guide_number) ;
+    my $guide_file_path = Utils::Guides::get_guides_path($guide_number);
+    my $content = Utils::Guides::get_file_content($guide_file_path) ;
     my @rows = split /^/, $content ;
     return(0) if(scalar(@rows) <= 2);
     my $splitter;

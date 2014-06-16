@@ -9,9 +9,9 @@ package Buh1::Guides; {
 =cut
 
 use Mojo::Base 'Mojolicious::Controller';
-use Utils::Guides ;
 use Utils::Files ;
 use Utils ;
+use Utils::Guides;
 use Encode qw( encode decode_utf8 );
 use Data::Dumper ;
 use Text::CSV_XS qw( csv );
@@ -64,9 +64,7 @@ sub edit{
 sub view{
     my $self            = shift;
     my $guide_number    = $self->param('payload');
-    my $guide_file_path = Utils::Guides::get_guides_path($guide_number);
-    my $content = Utils::Guides::get_file_content($guide_file_path) ;
-    $self->stash( guide_data => Utils::Guides::encode_guide_content($content) );
+    $self->stash( guide_data => Utils::Guides::decode_guide_content($guide_number) );
     #Final
     Utils::Guides::deploy_guide($self,$guide_number);
 };

@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use utf8;
 use Utils::Db;
+use Utils::Guides ;
 use Data::Dumper;
 
 sub form2data_fields{
@@ -55,6 +56,40 @@ sub deploy_result{
     } else {    
         $self->stash( result_error => $eval_string );
     }
+};
+
+sub spravka{
+    my($guide_num,$col2search,$val2search,$col2return,$default_result) = @_;
+    if(!(defined($guide_num) && defined($col2search) && defined($val2search) && defined($col2return))){
+        $guide_num  = $guide_num  || 'NaN';
+        $col2search = $col2search || 'NaN';
+        $val2search = $val2search || 'NaN';
+        $col2return = $col2return || 'NaN';
+        warn "spravka($guide_num,$col2search,$val2search,$col2return)?";
+        return("spravka($guide_num,$col2search,$val2search,$col2return)?"); 
+    }
+    # 1. find guide
+    $default_result = $default_result || 'NaN';
+    my $guide_map = Utils::Guides::decode_guide_content($guide_num);
+    for my $key(keys %{$guide_map->{data}}){
+        my $row = $guide_map->{data}{$key};
+        my $row_length = scalar(@{$row});
+        continue if $col2search > $row_length;
+        if( $val2search =~ /^\d+/ ){
+            if( $row->[($col2search - 1)] == $val2search ){
+                if($col2return < $row_length){
+                    return($row->[($col2return - 1)]);
+                }
+            }
+        } else {
+            if( $row->[($col2search - 1)] eq $val2search ){
+                if($col2return < $row_length){
+                    return($row->[($col2return - 1)]);
+                }
+            }
+        }    
+    }
+    return($default_result);
 };
 
 sub db_calculate{
@@ -112,7 +147,7 @@ sub calculate{
     my $eval_string = shift ;
     return(undef) if !$eval_string ;
     my $result = eval($eval_string) ;
-    if( $@ ) { # some error in eval
+    if( $@ ) { # some eror in eval
         warn $@ ;
         return(undef);
     }

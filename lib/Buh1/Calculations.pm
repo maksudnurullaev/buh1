@@ -11,6 +11,7 @@ package Buh1::Calculations; {
 use Mojo::Base 'Mojolicious::Controller' ;
 use Utils::Calculations ;
 use Utils::Db ;
+use Utils::Guides ;
 use Data::Dumper ;
 
 sub auth{
