@@ -15,7 +15,10 @@ use Data::Dumper ;
 
 sub add{
     my $self = shift;
-    return if !$self->is_admin();
+    if( !$self->is_admin ){
+        $self->redirect_to('/templates/list');
+        return(0);
+    }
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -38,7 +41,7 @@ sub edit{
     my $id   = $self->param('payload');
     if( !$self->is_admin() ){
         $self->redirect_to("templates/files/$id");
-        return;
+        return(0);
     }
     
     my $method = $self->req->method ;
@@ -54,7 +57,10 @@ sub edit{
 
 sub del{
     my $self = shift;
-    return if !$self->is_admin();
+    if( !$self->is_admin ){
+        $self->redirect_to('/templates/list');
+        return(0);
+    }
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -69,7 +75,10 @@ sub del{
 
 sub files_update{
     my $self = shift;
-    # return if !$self->is_admin();
+    if( !$self->is_admin ){
+        $self->redirect_to('/templates/list');
+        return(0);
+    }
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');

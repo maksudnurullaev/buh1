@@ -20,9 +20,9 @@ sub download{
     my $fileid     = $self->param('fileid');
 	my $path       = Utils::get_root_path(Utils::Files::get_path($self,$id));
     my $file_path  = "$path/$fileid" ;
-    my $file_name  = Utils::Files::get_file_content("$path/$fileid" . '.name') ;
+    warn $file_path ;
+    my $file_name  = Utils::Files::get_file_content($file_path . '.name') ;
 
-    $self->stash( 'file.name' => $file_name );
     $self->render_file('filepath' => $file_path, 'filename' => $file_name);
 };
 

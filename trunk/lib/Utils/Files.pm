@@ -81,8 +81,10 @@ sub update_desc{
 
 sub get_path{
 	my($self,$id) = @_ ;
-	my $controller = $self->stash('controller') ;
-	if( $controller =~ /[templates|files]/i ){ # admin actions
+    my $controller = $self->param('prefix') || $self->stash('controller');
+    warn $controller ;
+	#my $controller = $self->stash('controller') ;
+	if( $controller =~ /templates/i ){ # admin actions
 		return( "db/main/$id") ;
 	} 
     my $company_id = $self->session('company id') ;
@@ -151,6 +153,20 @@ sub get_file_content{
 		return($content)
 	}
 	return(undef);
+};
+
+sub is_file_writer{
+    my $self = shift;
+    my $controller = $self->stash('prefix') || $self->stash('controller');
+    if( $controller ){
+        if( $controller =~ /^templates/i ){
+            return Utils::is_admin($self);
+        } else {
+            my $user_role = Utils::user_role2company($self);
+            return ( $user_role && $user_role =~ /[admin|write]/i ) ;
+        }
+    }
+    return(0);
 };
 
 # END OF PACKAGE
