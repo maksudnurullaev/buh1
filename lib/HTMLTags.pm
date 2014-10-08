@@ -54,6 +54,7 @@ sub register {
     $app->helper( calcs_count => sub { Utils::Calculations::count (@_); } );
     $app->helper( cdb_calculate => sub { Utils::Calculations::cdb_calculate (@_); } );
     $app->helper( db_calculate => sub { Utils::Calculations::db_calculate (@_); } );
+    $app->helper( is_file_writer => sub { Utils::Files::is_file_writer (@_); } );
 };
 
 };

@@ -25,7 +25,7 @@
     %= ml 'Upload' 
    </td>
    <td>
-    <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$fileid" %>'><%= stash 'file_name' %></a></strong>
+    <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$fileid&prefix=$controller" %>'><%= stash 'file_name' %></a></strong>
    </td>
   </tr> 
   <tr><td>&nbsp;</td>
@@ -49,4 +49,4 @@
    </td>
   </tr>
  </table>
-/div>
+</div>

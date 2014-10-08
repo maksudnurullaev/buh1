@@ -3,10 +3,10 @@
  <ul>
   % for my $file (reverse sort keys %{$files}){
    <li>
-    % if( is_admin || user_role2company =~ /write|admin/i ){
+    % if( is_file_writer ){
      <%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?fileid=$file" %>
     % } else {
-     <%= link_to $files->{$file}{name} => "/files/download/$payload?fileid=$file" %>
+     <%= link_to $files->{$file}{name} => "/files/download/$payload?fileid=$file&prefix=$controller" %>
     % }
     % if( $files->{$file}{desc} ){
      <br /><small><%= $files->{$file}{desc} %></small>
