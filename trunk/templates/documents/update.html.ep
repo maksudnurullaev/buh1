@@ -1,5 +1,4 @@
 % layout 'default';
-%= user_role2company ;
 % my $isReadOnly = ( user_role2company =~ /^read/i );
 % my $docid = param 'docid' ;
 % if( $docid ){
