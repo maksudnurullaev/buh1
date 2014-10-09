@@ -1,4 +1,6 @@
 % layout 'default';
+%= user_role2company ;
+% my $isReadOnly = ( user_role2company =~ /^read/i );
 % my $docid = param 'docid' ;
 % if( $docid ){
  <h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>
@@ -14,7 +16,7 @@
  <legend><%= ml 'Business operation' %></legend>
  %= include 'documents/header' if $isValid ;
  % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
- % if( $isValid ){
+ % if( $isValid && !$isReadOnly ){
   % if( my $bt = stash 'bt' ){
    % if( $docid ){
     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";
@@ -22,8 +24,7 @@
     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";
    % }
   % }
- % } else {
-  %= ml 'No data!';
- % }
+ % } 
+ %= ml 'No data!' if !$isValid ;
 </fieldset>
 %= include 'documents/form' if $isValid;
