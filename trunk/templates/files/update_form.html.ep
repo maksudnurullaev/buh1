@@ -1,3 +1,4 @@
+% my $isReadOnly = ( user_role2company =~ /^read/i );
 <div class="toolbar">
  % my $fileid = param 'fileid' ;
  %= form_for "/$controller/files_update_desc/$payload?fileid=$fileid"  => ( method => 'POST') => begin
@@ -11,23 +12,24 @@
     %= text_area 'file.desc' => stash('file_desc') ;
    </td>
   </tr> 
+ % if( !$isReadOnly ){ 
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml 'Update'
    </td>
   </tr>
+ % } 
  % end
  %= form_for "/$controller/files_update_file/$payload?fileid=$fileid" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
  %= hidden_field "redirect_to" => "/$controller/files_update/$payload?fileid=$fileid"
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
-   <td class='tar'> 
-    %= ml 'Upload' 
-   </td>
+   <td class='tar'><%= ml 'File' %></td>
    <td>
     <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$fileid&prefix=$controller" %>'><%= stash 'file_name' %></a></strong>
    </td>
   </tr> 
+ % if( !$isReadOnly ){ 
   <tr><td>&nbsp;</td>
    <td>
     %= file_field 'new_file'
@@ -38,6 +40,7 @@
     %= submit_button ml 'Update'
    </td>
   </tr>
+ % } 
  % end
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
@@ -45,7 +48,11 @@
     <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Cancel' %><% end %>
    </td>
    <td class='tar'>
-    %= link_to ml('Delete') => "/$controller/files_del/$payload?fileid=$fileid"
+    % if( !$isReadOnly ){ 
+     %= link_to ml('Delete') => "/$controller/files_del/$payload?fileid=$fileid" ;
+    % } else {
+     &nbsp;
+    % }
    </td>
   </tr>
  </table>

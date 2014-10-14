@@ -1,13 +1,17 @@
 <div class="toolbar">
- % if( $action eq 'files_add_new' ){
-  <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
-  |
-  <%= ml 'New' %>  
- % } elsif( $action eq 'files_update' ) {
-  <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+ % if( user_role2company =~ /^read/i ){
+  <%= ml 'Files' %>:
  % } else {
-  <%= ml 'Files' %>  
-  |
-  <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
- % }
+  % if( $action eq 'files_add_new' ){
+   <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+   |
+   <%= ml 'New' %>  
+  % } elsif( $action eq 'files_update' ) {
+   <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+  % } else {
+   <%= ml 'Files' %>  
+   |
+   <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
+  % }
+ % } 
 </div>
