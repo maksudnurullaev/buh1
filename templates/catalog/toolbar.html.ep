@@ -1,6 +1,9 @@
+% my $isReadOnly = ( user_role2company =~ /^read/i );
 % my $files_count = files_count($payload) ;
 % my $calcs_count = calcs_count($payload) ;
+
 <div class="toolbar">
+% if( !$isReadOnly ){ 
  % if ( !stash('CHILDREN') && !$files_count && !$calcs_count ){
   <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
  % } else {
@@ -16,6 +19,9 @@
  % } else {
   <strong><%= ml 'Move' %></strong>
  % }
+% } else {
+   %= ml('Delete') . ' | ' . ml("Move") ;  
+% }
  |
   <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
  (<%= $files_count %>)

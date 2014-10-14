@@ -19,7 +19,6 @@ sub auth{
     my ($self,$access) = @_;
     if( !defined($self->user_role2company) 
 		|| $self->user_role2company !~ /$access/i ){
-        $self->redirect_to('user/login');
 		return;
     }
     return(1);

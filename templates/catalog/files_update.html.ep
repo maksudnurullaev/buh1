@@ -1,3 +1,4 @@
+% my $isReadOnly = ( user_role2company =~ /^read/i );
 % layout "default";
 %= include "success_error" ;
 <h2><%= ml "Catalog" %> | <%= ml "Files" %> | <%= ml "Update" %></h2>
@@ -8,6 +9,5 @@
  <h3><%= stash "description" %></h3>
 </div>
 
-%= include "$controller/files_toolbar" ;
 %= include "files/update_form" ;
 

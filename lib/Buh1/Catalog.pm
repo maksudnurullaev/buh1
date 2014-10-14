@@ -37,18 +37,19 @@ sub list{
 
 sub edit{
     my $self = shift;
-    return if( !Utils::Catalog::auth($self,'write|admin') );
-    
-    my $method = $self->req->method ;
-    if( $method eq 'POST' ){
-        my $data = Utils::Catalog::form2data($self);
-        $self->stash(success => 1);
-        Utils::Db::cdb_insert_or_update($self,$data);
+    warn 'First';
+    if( Utils::Catalog::auth($self,'write|admin') ){
+        if( $self->req->method eq 'POST' ){
+            my $data = Utils::Catalog::form2data($self);
+            $self->stash(success => 1);
+            Utils::Db::cdb_insert_or_update($self,$data);
+        }
     }
     # final action
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
+    warn 'Last';
 };
 
 sub del{
@@ -101,7 +102,7 @@ sub make_root{
 
 sub files_update{
     my $self = shift;
-    return if( !Utils::Catalog::auth($self,'write|admin') );
+#    return if( !Utils::Catalog::auth($self,'write|admin') );
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -173,7 +174,6 @@ sub files_add_new{
 
 sub files{
     my $self = shift;
-    return if( !Utils::Catalog::auth($self,'write|admin') );
 
     my $id         = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
