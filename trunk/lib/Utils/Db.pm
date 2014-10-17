@@ -59,6 +59,8 @@ sub cdb_deploy{
 
 sub deploy{
     my ($self,$dbc,$id,$prefix) = @_ ;
+    return(0) if !$dbc || !$id ;
+
     my $objects = $dbc->get_objects( { id => [$id] } );
     if( $objects && exists($objects->{$id}) ){
         my $object = $objects->{$id};

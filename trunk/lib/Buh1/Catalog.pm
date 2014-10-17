@@ -14,6 +14,15 @@ use Utils::Files ;
 use Utils::Calculations ;
 use Data::Dumper ;
 
+sub valid_session{
+    my $self = shift;
+    if( !Utils::validate_session_company($self) ){
+        $self->redirect_to('/');
+        return(0);
+    }
+    return(1)
+};
+
 sub add{
     my $self = shift;
     return if( !Utils::Catalog::auth($self,'write|admin') );
@@ -30,6 +39,7 @@ sub add{
 
 sub list{
     my $self = shift;
+    return if ! valid_session($self);
     return if( !Utils::Catalog::auth($self,'read|write|admin') );
 
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
@@ -37,7 +47,8 @@ sub list{
 
 sub edit{
     my $self = shift;
-    warn 'First';
+    return if ! valid_session($self);
+
     if( Utils::Catalog::auth($self,'write|admin') ){
         if( $self->req->method eq 'POST' ){
             my $data = Utils::Catalog::form2data($self);
@@ -49,7 +60,6 @@ sub edit{
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
-    warn 'Last';
 };
 
 sub del{
@@ -174,8 +184,10 @@ sub files_add_new{
 
 sub files{
     my $self = shift;
+    return if ! valid_session($self);
 
-    my $id         = $self->param('payload');
+    my $id   = $self->param('payload');
+
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
 
     Utils::Db::cdb_deploy($self,$id);
@@ -231,7 +243,6 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
-    return if( !Utils::Catalog::auth($self,'write|admin') );
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 

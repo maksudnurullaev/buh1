@@ -177,6 +177,7 @@ sub get_list_as_select_data{
 sub count{
     my($self,$id) = @_ ;
     my $dbc = Utils::Db::client($self);
+    return(0) if !$dbc ;
     my $calculations = $dbc->get_links($id,'calculation',['description']);
 	return(0) if !$calculations ;
 	return(scalar(keys(%{$calculations}))) ;

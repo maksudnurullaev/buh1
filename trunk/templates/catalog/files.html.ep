@@ -1,15 +1,8 @@
 % layout "default";
 %= include "success_error" ;
-<h2><%= ml "Catalog" %> | <%= ml "Files" %></h2>
-
-%= include "$controller/toolbar" ;
-
-<div class="toolbar">
- <%= ml "Name" %>:
- <strong>
-  %= link_to stash("description") => "/$controller/edit/$payload" 
- </strong>
-</div>
-
-%= include "$controller/files_toolbar" ;
-%= include "files/list" ;
+%# at least should be exists stash('description') - file name, for current file
+% if( stash('description') ){
+ %= include "$controller/files_header" ;
+ %= include "$controller/files_toolbar" ;
+ %= include "files/list" ;
+% } 

@@ -154,6 +154,12 @@ sub validate_email{
     return;
 };
 
+sub validate_session_company{
+    my $self = shift;
+    return(0) if !$self;
+    return $self->session('company id') ;
+};
+
 sub get_paginator{
     my ($self,$prefix,$items_count) = @_;
     my $page = $self->session->{"$prefix/filter/page"} || 1;

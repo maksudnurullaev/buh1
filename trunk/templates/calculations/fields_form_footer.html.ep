@@ -12,5 +12,5 @@
    <td>
     %= submit_button ml('Save') ;
    </td>
-  </tr>
+ </tr>
 
