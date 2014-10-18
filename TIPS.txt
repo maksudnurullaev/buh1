@@ -1,3 +1,12 @@
 [find some text]
 find templates/ -type f -print | xargs grep "is_admin"
 
+[dump sqlte database files between servers]
+echo '.dump' | sqlite3 db/main.db | gzip -c > db/dump/main.db.dump.gz
+zcat db/dump/main.db.dump.gz | sqlite3 db/main.db
+
+echo '.dump' | sqlite3 db/clients/2013.05.08\ 15\:52\:30\ C36993F0.db | gzip -c > db/dump/2013.05.08\ 15\:52\:30\ C36993F0.db.dump.gz
+echo '.dump' | sqlite3 db/clients/2013.05.08\ 15\:48\:32\ 359B6B84.db | gzip -c > db/dump/2013.05.08\ 15\:48\:32\ 359B6B84.db.dump.gz
+
+zcat db/dump/2013.05.08\ 15\:52\:30\ C36993F0.db.dump.gz | sqlite3 db/clients/2013.05.08\ 15\:52\:30\ C36993F0.db
+zcat db/dump/2013.05.08\ 15\:48\:32\ 359B6B84.db.dump.gz | sqlite3 db/clients/2013.05.08\ 15\:48\:32\ 359B6B84.db
