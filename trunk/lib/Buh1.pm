@@ -19,6 +19,7 @@ sub startup {
   $self->plugin('HTMLTags');
   $self->plugin('RenderFile');
   $self->app->secrets(['Nkjlkj344!!!#4jkj;l','Hl53gfsgd;-l=rtw45@#']);
+  $self->app->mode('development');
 #  $self->app->mode('production');
   $self->app->config(hypnotoad => {listen => ['http://*:3000']});
 
