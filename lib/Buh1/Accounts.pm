@@ -1,4 +1,4 @@
-5package Buh1::Accounts; {
+package Buh1::Accounts; {
 
 =encoding utf8
 
