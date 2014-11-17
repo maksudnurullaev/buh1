@@ -1,4 +1,4 @@
-package Buh1::Accounts; {
+5package Buh1::Accounts; {
 
 =encoding utf8
 
@@ -150,14 +150,13 @@ sub fix_subconto{
 
 sub fix_account{
     my $self = shift;
-
     my $idold = $self->param('payload');
     my $idnew = $self->param('idnew');
     my $sid   = $self->param('sid');
     my $aid   = $self->param('aid');
     if( $idold && $idnew && $sid && $aid ) { 
         my $db = Db->new();
-	    if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
+        if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
             $db->del_link($idold,$aid);
             $db->set_link('account',$idnew,'account section',$sid);
         }
