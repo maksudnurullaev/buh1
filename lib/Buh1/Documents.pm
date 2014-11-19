@@ -53,7 +53,7 @@ sub set_form_header{
             return;
         }
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     for my $key (keys %{$parameters}){
         my $id = $parameters->{$key};
         if( !$id ){

@@ -17,15 +17,15 @@ my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    my $data = Utils::Accounts::get_all_parts();
+    my $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
 
     for my $part_id (keys %{$data}){
-        my $sections = Utils::Accounts::get_sections($part_id);
+        my $sections = Utils::Accounts::get_sections($self,$part_id);
         $data->{$part_id}{sections} = $sections;
 
         for my $section_id (keys %{$sections}){
-            my $accounts = Utils::Accounts::get_accounts($section_id);
+            my $accounts = Utils::Accounts::get_accounts($self,$section_id);
             $sections->{$section_id}{accounts} = $accounts;
         }
     }
@@ -74,7 +74,7 @@ sub delete_bt{ #delete business transaction
         $self->redirect_to('/operations/list');
         return;
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     if( $db->del($bt_id) ){
         $db->del_link($account_id,$bt_id);
     }
@@ -91,7 +91,7 @@ sub add{
 
     my $method = $self->req->method;
     my ($data,$id);
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
@@ -126,7 +126,7 @@ sub edit{
         $self->redirect_to('/operations/list');
         return;
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $bt = $db->get_objects({id => [$bt_id]});
     my $account = $db->get_objects({id => [$account_id]});
     if ( !$bt || !$account ){
@@ -161,8 +161,8 @@ sub edit{
         $self->stash( $key => $bt->{$bt_id}{$key} );
     }
     my ($debets,$credits) = (
-        Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{debet}),
-        Utils::Accounts::get_account_by_numeric_id($bt->{$bt_id}{credit})
+        Utils::Accounts::get_account_by_numeric_id($self,$bt->{$bt_id}{debet}),
+        Utils::Accounts::get_account_by_numeric_id($self,$bt->{$bt_id}{credit})
         );
     Utils::Languages::generate_name($self,$debets);
     $self->stash( debets  => $debets );
@@ -178,7 +178,7 @@ sub account{
         return;
     }
 
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $account = $db->get_objects({id => [$account_id]});
     $self->stash( account => $account );
     $db->links_attach(

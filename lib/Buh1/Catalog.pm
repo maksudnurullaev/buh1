@@ -34,7 +34,7 @@ sub add{
             $self->stash(success => 1);
             $self->redirect_to('/catalog/list');
         }
-	}
+    }
 };
 
 sub list{
@@ -87,7 +87,7 @@ sub move{
     if( $method eq 'POST' ){
         my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
-		
+        
         if( !$new_parent || ($parent && $parent eq $new_parent) ){
             $self->stash( error => 1 );
         } else {
@@ -101,10 +101,10 @@ sub move{
 };
 
 sub make_root{
-	my $self = shift;
-	my $id   = $self->param('payload');
+    my $self = shift;
+    my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
-	$dbc->child_make_root($id);
+    $dbc->child_make_root($id);
     $self->redirect_to("/catalog/move/$id");
 };
 
@@ -128,9 +128,9 @@ sub files_update_desc{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         Utils::Files::update_desc($self);
-	}
+    }
     $self->redirect_to("/catalog/files_update/$id?fileid=$fileid");
 };
 
@@ -141,14 +141,14 @@ sub files_update_file{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( Utils::Files::update_file($self) ){
-    		$self->redirect_to("/catalog/files_update/$id?fileid=$fileid");
-			return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+            $self->redirect_to("/catalog/files_update/$id?fileid=$fileid");
+            return;
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 };
 
 sub files_del{
@@ -166,18 +166,18 @@ sub files_add_new{
 
     my $id = $self->param('payload');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( $self->req->error ){
             $self->stash( error => 1 );
             return;
         }
         if( Utils::Files::add_new($self) ){
-           	$self->redirect_to("/catalog/files/$id");
+               $self->redirect_to("/catalog/files/$id");
             return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 
     Utils::Db::cdb_deploy($self,$id);
 };
@@ -213,18 +213,18 @@ sub calculations_add{
     if ( $self->req->method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-	    	if( defined $self->param('use_template') ){
-				my $cid = $self->param('calculation_template');
-				my $db = Utils::Db::main();
-				my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
-				delete $template->{id} ;
-				delete $template->{description} ;
-				delete $template->{creator} ;
-				delete $template->{object_name} ;
-				for my $key (keys %{$template}){
-					$data->{$key} = $template->{$key} ;
-				}
-			}
+            if( defined $self->param('use_template') ){
+                my $cid = $self->param('calculation_template');
+                my $db = Utils::Db::main($self);
+                my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
+                delete $template->{id} ;
+                delete $template->{description} ;
+                delete $template->{creator} ;
+                delete $template->{object_name} ;
+                for my $key (keys %{$template}){
+                    $data->{$key} = $template->{$key} ;
+                }
+            }
             my $dbc = Utils::Db::client($self);
             my $cid = $dbc->insert($data);
             $dbc->set_link('catalog',$id,'calculation',$cid);
@@ -250,21 +250,21 @@ sub calculations_edit{
     if ( $method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-    	   	if( defined $self->param('make_copy') ){
-	    		my $dbc = Utils::Db::client($self);
-		    	my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
-			    delete $data->{id} ;
-			    delete $template->{id} ;
-			    delete $template->{description} ;
-	    		for my $key (keys %{$template}){
-		    		$data->{$key} = $template->{$key} if $key !~ /^_/ ;
-			    }
+               if( defined $self->param('make_copy') ){
+                my $dbc = Utils::Db::client($self);
+                my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
+                delete $data->{id} ;
+                delete $template->{id} ;
+                delete $template->{description} ;
+                for my $key (keys %{$template}){
+                    $data->{$key} = $template->{$key} if $key !~ /^_/ ;
+                }
                 warn Dumper $data ;
                 my $new_cid = $dbc->insert($data);
                 $dbc->set_link('catalog',$id,'calculation',$new_cid);
                 $self->redirect_to("/catalog/calculations/$id");
                 return;
-	    	} else {
+            } else {
                 Utils::Db::cdb_insert_or_update($self,$data);
                 $self->stash(success => 1);
             }
@@ -301,8 +301,8 @@ sub calculations_delete{
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
     my $dbc = Utils::Db::client($self);
-	$dbc->del_link($id,$cid);
-	$dbc->del($cid);
+    $dbc->del_link($id,$cid);
+    $dbc->del($cid);
     $self->redirect_to("/catalog/calculations/$id") ;
 };
 

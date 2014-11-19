@@ -16,15 +16,15 @@ use parent 'Db';
 
 sub new {
     my $class = shift;
-    my $file = shift;
-    my $self = { file => $file };
+    my $mojo  = shift;
+    my $self = { mojo => $mojo, file => $mojo->session('company id') };
     bless $self, $class;
     return($self);
 };
 
 sub get_db_path{
     my $self = shift;
-    return Utils::get_root_path('db/clients', "$self->{file}.db");
+    return $self->{'mojo'}->app->home->rel_file("db/clients/$self->{file}.db");
 };
 
 };

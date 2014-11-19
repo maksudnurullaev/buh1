@@ -64,7 +64,7 @@ sub edit{
 sub view{
     my $self            = shift;
     my $guide_number    = $self->param('payload');
-    $self->stash( guide_data => Utils::Guides::decode_guide_content($guide_number) );
+    $self->stash( guide_data => Utils::Guides::decode_guide_content($self, $guide_number) );
     #Final
     Utils::Guides::deploy_guide($self,$guide_number);
 };
@@ -74,7 +74,7 @@ sub del{
     return if !is_editor($self);
 
     my $guide_number      = $self->param('payload');
-    my $path              = Utils::Guides::get_guides_path();
+    my $path              = Utils::Guides::get_guides_path($self);
     my $path_file         = "$path/$guide_number";
     warn $path_file;
     warn ($path_file . '.desc') if -e ($path_file . '.desc');

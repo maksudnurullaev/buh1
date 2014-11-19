@@ -16,32 +16,32 @@ use Utils;
 use Data::Dumper;
 
 sub get_guides_path{
-    my $id = shift;
+    my ($self,$id) = @_ ;
     if( $id ){
-        return( Utils::get_root_path("db/guides/$id") ) ;
+        return( $self->app->home->rel_dir("db/guides/$id") ) ;
     }
-    return( Utils::get_root_path('db/guides') ) ;
+    return( $self->app->home->rel_dir('db/guides') ) ;
 };
 
 sub get_list{
     my ($self) = @_ ;
-	my $path   = get_guides_path();
-	if( ! -d $path ){
+    my $path   = get_guides_path($self);
+    if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;
     }
     
     my $dir;
     opendir($dir, $path);
-	my $result = {};
+    my $result = {};
     while (my $fileid = readdir($dir)) {
         next if ($fileid =~ m/^\./) || ($fileid =~ /desc$/);
-		$result->{ $fileid } = {};
+        $result->{ $fileid } = {};
         $result->{ $fileid }{file_name} = get_file_content("$path/$fileid" . '.name') ;
         $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
     }
     closedir($dir);
-	return($result);
+    return($result);
 };
 
 sub add_guide{
@@ -51,10 +51,10 @@ sub add_guide{
     my $guide_number      = $self->param('number');
     my $guide_description = $self->param('description');
     my $guide_content     = $self->param('content');
-	my $path              = get_guides_path();
+    my $path              = get_guides_path($self);
     my $path_file         = "$path/$guide_number";
 
-	system "mkdir -p '$path/'" if ! -d $path ;
+    system "mkdir -p '$path/'" if ! -d $path ;
     if( ( -e $path_file) || ($guide_number !~ /^\d+$/) ){
         $self->stash(error => 1);
         $self->stash(number_class => 'error');
@@ -66,9 +66,9 @@ sub add_guide{
     }
     # Final 
     if( !$self->stash('error') ){
-	    # save file name
+        # save file name
         set_file_content($path_file, $guide_content) ;
-	    # save file description
+        # save file description
         set_file_content($path_file . '.desc', $guide_description) if $guide_description ;
         return($guide_number);
     }
@@ -88,7 +88,7 @@ sub update_guide{
     warn "Number: " . $guide_number ;
     my $guide_description = $self->param('description');
     my $guide_content     = $self->param('content');
-	my $path              = get_guides_path();
+    my $path              = get_guides_path($self);
     my $path_file         = "$path/$guide_number";
 
     if( !validate_content($guide_content) ){
@@ -97,9 +97,9 @@ sub update_guide{
     }
     # Final 
     if( !$self->stash('error') ){
-	    # save file name
+        # save file name
         set_file_content($path_file, $guide_content) ;
-	    # save file description
+        # save file description
         if( $guide_description ){
             set_file_content($path_file . '.desc', $guide_description);
         } else {
@@ -111,9 +111,10 @@ sub update_guide{
 };
 
 sub decode_guide_content{
+    my $self = shift;
     my $guide_number = shift;
     return(undef) if ! defined($guide_number) ;
-    my $guide_file_path = Utils::Guides::get_guides_path($guide_number);
+    my $guide_file_path = Utils::Guides::get_guides_path($self, $guide_number);
     my $content = Utils::Guides::get_file_content($guide_file_path) ;
     my @rows = split /^/, $content ;
     return(0) if(scalar(@rows) <= 2);
@@ -150,7 +151,7 @@ sub decode_guide_content{
 sub deploy_guide{
     my $self         = shift;
     my $guide_number = shift;
-    my $guide_file_path      = Utils::Guides::get_guides_path($guide_number);
+    my $guide_file_path = Utils::Guides::get_guides_path($self, $guide_number);
     my $guide_file_desc_path = $guide_file_path . '.desc';
     if( ! -e $guide_file_path ){
         $self->redirect_to('guides/page');
@@ -167,7 +168,7 @@ sub deploy_guide{
 
 sub set_file_content{
     my($file_path,$content) = @_ ;
-	return(undef) if !$file_path || !$content ;
+    return(undef) if !$file_path || !$content ;
     my $fh;
     if( open($fh, "> :encoding(UTF-8)", $file_path) ){
         warn  "Cannot write to $file_path: $!" if ! (print $fh $content) ;
@@ -176,17 +177,17 @@ sub set_file_content{
 };
 
 sub get_file_content{
-	my $file_path = shift;
-	return(undef) if !$file_path ;
-	my($fh,$content) = (undef,undef);
-	if( -e $file_path ){
-		if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
-		    $content = do { local $/; <$fh> }; 
+    my $file_path = shift;
+    return(undef) if !$file_path ;
+    my($fh,$content) = (undef,undef);
+    if( -e $file_path ){
+        if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
+            $content = do { local $/; <$fh> }; 
             warn "Cannot close $file_path: $!" if !close($fh) ;
         } else { warn "Cannot open $file_path: $!" } ;
-		return($content)
-	}
-	return(undef);
+        return($content)
+    }
+    return(undef);
 };
 
 # END OF PACKAGE

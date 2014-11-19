@@ -20,7 +20,7 @@ sub add_part{
     # 1. Test for payload - parents account!
     my $parent_id = $self->param('payload');
     my ($parents, $object_name4form);
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $parent_id ){
         $parents = $db->get_objects({id=>[$parent_id]});
         if( !$parents ){
@@ -28,7 +28,7 @@ sub add_part{
             $self->redirect_to('/accounts/list');
             return;
         }
-        $object_name4form = Utils::Accounts::get_child_name_by_id($parent_id)
+        $object_name4form = Utils::Accounts::get_child_name_by_id($self, $parent_id)
             || Utils::Accounts::get_part_name();
     } else {
         $object_name4form = Utils::Accounts::get_part_name();
@@ -76,19 +76,19 @@ sub add_part{
 sub list{
     my $self = shift;
 
-    my $data = Utils::Accounts::get_all_parts();
+    my $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
 
     for my $part_id (keys %{$data}){
-        my $sections = Utils::Accounts::get_sections($part_id);
+        my $sections = Utils::Accounts::get_sections($self,$part_id);
         $data->{$part_id}{sections} = $sections;
 
         for my $section_id (keys %{$sections}){
-            my $accounts = Utils::Accounts::get_accounts($section_id);
+            my $accounts = Utils::Accounts::get_accounts($self, $section_id);
             $sections->{$section_id}{accounts} = $accounts;
             for my $account_id (keys %{$accounts}){
                 my $account = $sections->{$section_id}{accounts}{$account_id};
-                $account->{subcontos} = Utils::Accounts::get_subcontos($account_id);
+                $account->{subcontos} = Utils::Accounts::get_subcontos($self,$account_id);
             }
         }
     }
@@ -104,7 +104,7 @@ sub validate4add_part{
         warn "Accounts:validate4add_part: id is not numeric!";
     } else {
         my $parent_id = "$data->{object_name} $data->{id}";
-        my $db = Db->new();
+        my $db = Db->new($self);
         if( $db->get_objects({id => [$parent_id]}) ){
             $data->{error} = 1 ;
             warn "Accounts:validate4add_part: such object already exists!";
@@ -136,7 +136,7 @@ sub fix_subconto{
 
     my $id = $self->param('payload');
     my $pnew = $self->param('pnew');
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $parent_new = $db->get_objects({id=>[$pnew]});
     my $pold = $self->param('pold');
     if( $pnew && $id && $pnew && $pold ) { 
@@ -155,7 +155,7 @@ sub fix_account{
     my $sid   = $self->param('sid');
     my $aid   = $self->param('aid');
     if( $idold && $idnew && $sid && $aid ) { 
-        my $db = Db->new();
+        my $db = Db->new($self);
         if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
             $db->del_link($idold,$aid);
             $db->set_link('account',$idnew,'account section',$sid);
@@ -177,7 +177,7 @@ sub delete_subconto{
         return;
     }
 
-    my $db = Db->new();
+    my $db = Db->new($self);
     $db->del_link($id,$parent);
     $db->del($id);
     $self->redirect_to("/accounts/list");
@@ -194,7 +194,7 @@ sub edit{
     }
 
     my $method = $self->req->method;
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $method =~ /POST/ ){
         my $data = validate( $self, ['rus'], ['eng','uzb','type'] );
         if( !exists($data->{error}) ){

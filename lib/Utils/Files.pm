@@ -22,18 +22,18 @@ sub add_new{
 
     return(0) if $self->req->is_limit_exceeded ;
 
-	my $new_file = $self->param('new_file');
-	return(0) if( !$new_file || !$new_file->size ) ;
+    my $new_file = $self->param('new_file');
+    return(0) if( !$new_file || !$new_file->size ) ;
 
-	my $path      = Utils::get_root_path(get_path($self,$id));
-	system "mkdir -p '$path/'" if ! -d $path ;
+    my $path = get_path($self,$id);
+    system "mkdir -p '$path/'" if ! -d $path ;
     # save file
-	my $path_file = "$path/" . Utils::get_date_uuid() ;
-	$new_file->move_to($path_file);
-	# save file name
+    my $path_file = "$path/" . Utils::get_date_uuid() ;
+    $new_file->move_to($path_file);
+    # save file name
     set_file_content($path_file . '.name', $new_file->filename) ;
     my $file_description = $self->param('file.desc');
-	# save file description
+    # save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
     return(1)
 };
@@ -43,10 +43,10 @@ sub del_file{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	my $path       = Utils::get_root_path(get_path($self,$id));
-	my $path_file  = "$path/$fileid" ;
-	
-	unlink $path_file ;
+    my $path       = get_path($self,$id);
+    my $path_file  = "$path/$fileid" ;
+    
+    unlink $path_file ;
     unlink ($path_file . '.name') ;
     unlink ($path_file . '.desc') ;
 };
@@ -58,12 +58,12 @@ sub update_file{
 
     return(0) if $self->req->is_limit_exceeded ;
 
-	my $new_file = $self->param('new_file');
-	return(0) if( !$new_file || !$new_file->size ) ;
+    my $new_file = $self->param('new_file');
+    return(0) if( !$new_file || !$new_file->size ) ;
 
-	my $path      = Utils::get_root_path(get_path($self,$id));
-	my $path_file = "$path/$fileid" ;
-	$new_file->move_to($path_file) ;
+    my $path      = get_path($self,$id);
+    my $path_file = "$path/$fileid" ;
+    $new_file->move_to($path_file) ;
     set_file_content($path_file . '.name', $new_file->filename) ;
     return(1)
 };
@@ -74,24 +74,24 @@ sub update_desc{
     my $fileid = $self->param('fileid');
     my $file_description = $self->param('file.desc');
 
-	my $path      = Utils::get_root_path(get_path($self,$id));
-	my $path_file = "$path/$fileid" . '.desc' ;
+    my $path      = get_path($self,$id);
+    my $path_file = "$path/$fileid" . '.desc' ;
     set_file_content($path_file, $file_description) ;
 };
 
 sub get_path{
-	my($self,$id) = @_ ;
+    my($self,$id) = @_ ;
     my $controller = $self->param('prefix') || $self->stash('controller');
-	if( $controller =~ /templates/i ){ # admin actions
-		return( "db/main/$id") ;
-	} 
+    if( $controller =~ /templates/i ){ # admin actions
+        return( $self->app->home->rel_dir("db/main/$id") ) ;
+    } 
     my $company_id = $self->session('company id') ;
-    return( "db/clients/$company_id/$id" ) ;
+    return( $self->app->home->rel_dir("db/clients/$company_id/$id") ) ;
 };
 
 sub deploy{
     my($self,$id,$fileid) = @_ ;
-    my $path = Utils::get_root_path(get_path($self,$id));
+    my $path = get_path($self,$id);
     my $file_path = "$path/$fileid" ;
     return if ! -e $file_path ;
     $self->stash( 'file_name' => get_file_content($file_path . '.name') )
@@ -102,36 +102,36 @@ sub deploy{
 
 sub files_count{
     my($self,$id) = @_ ;
-    my $path = Utils::get_root_path(get_path($self,$id));
+    my $path = get_path($self,$id);
     return(0) if ! -d $path;
     my @files = <"$path/*.name">;
     return(scalar(@files));
 };
 
 sub file_list4id{
-	my ($self,$id) = @_ ;
-	my $path = Utils::get_root_path(get_path($self,$id));
-	if( ! -d $path ){
+    my ($self,$id) = @_ ;
+    my $path = get_path($self,$id);
+    if( ! -d $path ){
         system "mkdir -p '$path/'" ;
         return ;
     }
     
     my $dir;
     opendir($dir, $path);
-	my $result = {};
+    my $result = {};
     while (my $fileid = readdir($dir)) {
         next if ($fileid =~ m/^\./) || ($fileid =~ /[desc|name]$/);
-		$result->{ $fileid } = {};
+        $result->{ $fileid } = {};
         $result->{ $fileid }{name} = get_file_content("$path/$fileid" . '.name') ;
         $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
     }
     closedir($dir);
-	return($result);
+    return($result);
 };
 
 sub set_file_content{
     my($file_path,$content) = @_ ;
-	return(undef) if !$file_path || !$content ;
+    return(undef) if !$file_path || !$content ;
     my $fh;
     if( open($fh, "> :encoding(UTF-8)", $file_path) ){
         warn  "Cannot write to $file_path: $!" if ! (print $fh $content) ;
@@ -140,17 +140,17 @@ sub set_file_content{
 };
 
 sub get_file_content{
-	my $file_path = shift;
-	return(undef) if !$file_path ;
-	my($fh,$content) = (undef,undef);
-	if( -e $file_path ){
-		if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
-		    $content = do { local $/; <$fh> }; 
+    my $file_path = shift;
+    return(undef) if !$file_path ;
+    my($fh,$content) = (undef,undef);
+    if( -e $file_path ){
+        if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
+            $content = do { local $/; <$fh> }; 
             warn "Cannot close $file_path: $!" if !close($fh) ;
         } else { warn "Cannot open $file_path: $!" } ;
-		return($content)
-	}
-	return(undef);
+        return($content)
+    }
+    return(undef);
 };
 
 sub is_file_writer{

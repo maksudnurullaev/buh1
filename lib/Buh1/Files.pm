@@ -18,9 +18,8 @@ sub download{
     my $self = shift;
     my $id         = $self->param('payload');
     my $fileid     = $self->param('fileid');
-	my $path       = Utils::get_root_path(Utils::Files::get_path($self,$id));
+    my $path       = Utils::Files::get_path($self,$id)
     my $file_path  = "$path/$fileid" ;
-    warn $file_path ;
     my $file_name  = Utils::Files::get_file_content($file_path . '.name') ;
 
     $self->render_file('filepath' => $file_path, 'filename' => $file_name);

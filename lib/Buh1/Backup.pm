@@ -90,7 +90,7 @@ sub update_desc{
 
 sub make_list{
     my $self = shift ;
-    my $root_path = Utils::get_root_path ;
+    my $root_path = $self->app->home->to_string();
     chdir $root_path ;
     my $archives_path = get_client_archives_path($self); 
     if( ! -d $archives_path ){
@@ -113,7 +113,7 @@ sub make_list{
 sub make_new_archive{
     my ($self) = @_ ;
 
-    my $root_path = Utils::get_root_path ;
+    my $root_path = $self->app->home->to_string();
     chdir $root_path ;
     my $archives_path = get_client_archives_path($self);
     my $archive_name = Utils::get_date_uuid();

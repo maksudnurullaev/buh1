@@ -13,7 +13,7 @@ sub redirect2list_or_path{
         $self->redirect_to($self->param('path'));
         return;
     }
-    $self->redirect_to("$OBJECT_NAMES/list");
+    $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
 sub pagesize{
@@ -63,7 +63,7 @@ sub select_objects{
     my ($self,$name,$path) = @_;
 
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
@@ -95,12 +95,12 @@ sub restore{
     }
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "Companies:restore:error company id not defined!"; 
     }
-    $self->redirect_to('companies/deleted');
+    $self->redirect_to('/companies/deleted');
 };
 
 sub validate{
@@ -127,12 +127,12 @@ sub del{
     }
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "Companies:delete:error company id not defined!"; 
     }
-    $self->redirect_to('companies/list');
+    $self->redirect_to('/companies/list');
 };
 
 sub remove_user{
@@ -144,10 +144,10 @@ sub remove_user{
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
-    my $db = Db->new();
+    my $db = Db->new($self);
     $db->del_link($id,$user_id);
     $db->del_linked_value('access',$id,$user_id);
-    $self->redirect_to("companies/edit/$id");
+    $self->redirect_to("/companies/edit/$id");
 };
 
 sub add_user{
@@ -159,9 +159,9 @@ sub add_user{
 
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
-    my $db = Db->new();
+    my $db = Db->new($self);
     $db->set_link($OBJECT_NAME,$id,'user',$user_id);
-    $self->redirect_to("companies/edit/$id");
+    $self->redirect_to("/companies/edit/$id");
 };
 
 sub change_access{
@@ -174,10 +174,10 @@ sub change_access{
     my $id          = $self->param('payload');
     my $user_id     = $self->param('user_id');
     my $user_access = $self->param('user_access');
-    my $db = Db->new();
+    my $db = Db->new($self);
     $db->del_linked_value('access',$id,$user_id); # delete all old linkes
     $db->set_linked_value('access',$id,$user_id,$user_access);
-    $self->redirect_to("companies/edit/$id");
+    $self->redirect_to("/companies/edit/$id");
 };
 
 sub edit{
@@ -192,11 +192,11 @@ sub edit{
     my $data;
     my $id = $self->param('payload');
     if( !$id) { 
-        $self->redirect_to('companies/list'); 
+        $self->redirect_to('/companies/list'); 
         warn "Companies:edit:error company id not defined!";
         return; 
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
@@ -232,7 +232,7 @@ sub edit{
             $self->stash($key => $data->{$id}->{$key});
         }
     } else {
-        redirect_to('companies/list');
+        redirect_to('/companies/list');
     }
     $self->render('companies/add');
 };
@@ -250,9 +250,9 @@ sub add{
         my $data = validate( $self );
         # add
         if( !exists($data->{error}) ){
-            my $db = Db->new();
+            my $db = Db->new($self);
             if( $db->insert($data) ){
-                $self->redirect_to('companies/list');
+                $self->redirect_to('/companies/list');
             } else {
                 $self->stash(error => 1);
                 warn 'Companies:add:ERROR: could not add new company!';

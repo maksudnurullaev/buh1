@@ -23,7 +23,7 @@ sub user_role2company{
     my $self = shift;
     my ($user_id,$company_id) = ($self->session->{'user id'}, $self->session->{'company id'});
     return if !$user_id || !$company_id ;
-    my $db = Db->new();
+    my $db = Db->new($self);
     return($db->get_linked_value('access',$user_id,$company_id));
 };
 
@@ -46,20 +46,6 @@ sub get_uuid{
 sub get_date_uuid{
     my $result= Time::Piece->new->strftime('%Y.%m.%d %T ');
     return($result . get_uuid());
-};
-
-sub get_root_path{
-    my $path = shift;
-    if($path){
-        my $file = shift;
-        if($file){
-            return(File::Spec->catfile((cwd(), $path), $file));
-        } else {
-            return(File::Spec->catdir(cwd(), $path));
-        }
-    } else {
-        return(cwd());
-    }
 };
 
 sub if_defined{

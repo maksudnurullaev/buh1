@@ -21,7 +21,6 @@ my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
 my $DB_CURRENT_TYPE = $DB_SQLite_TYPE;
 
-my $SQLITE_FILE = Utils::get_root_path("db", "main.db");
 my $LINK_OBJECT_NAME = '_link_';
 
 my $_production_mode = 1;
@@ -30,13 +29,14 @@ sub get_production_mode{ $_production_mode; };
 
 sub new {
     my $class = shift;
-    my $self = { file => $SQLITE_FILE };
+    my $mojo  = shift;
+    my $self = { mojo => $mojo, file => $mojo->app->home->rel_file('db/main.db') };
     return(bless $self, $class);
 };
 
 sub get_db_path{
     my $self = shift;
-    return($SQLITE_FILE);
+    return($self->{'file'});
 };
 
 sub warn_if{

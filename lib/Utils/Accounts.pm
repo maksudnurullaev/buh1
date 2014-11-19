@@ -45,9 +45,10 @@ sub get_types4select{
 };
 
 sub get_child_name_by_id{
-    my $id = shift;
+    my $self = shift;
+    my $id   = shift;
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         my $objects = $db->get_objects({id=>[$id]});
         return get_child_name($objects->{$id}{object_name}) if $objects;
     }
@@ -73,37 +74,41 @@ sub get_parent_name{
 };
 
 sub get_all_parts{
-    my $db = Db->new();
+    my $db = Db->new(shift);
     return($db->get_objects( { name =>  [$ACCOUNT_PART] } ));
 };
 
 sub get_sections{
+    my $self    = shift;
     my $part_id = shift;
     return(undef) if !$part_id;
-    my $db = Db->new();
+    my $db = Db->new($self);
     return($db->get_links($part_id,$ACCOUNT_SECTION,['rus','eng','uzb']));
 };
 
 sub get_accounts{
+    my $self       = shift;
     my $section_id = shift;
     return(undef) if !$section_id;
-    my $db = Db->new();
+    my $db = Db->new($self);
     return($db->get_links($section_id,$ACCOUNT));
 };
 
 sub get_subcontos{
+    my $self       = shift;
     my $account_id = shift;
     if( $account_id ) {
-        my $db = Db->new();
+        my $db = Db->new($self);
         return($db->get_links($account_id,$ACCOUNT_SUBCONTO,['rus','eng','uzb']));
     }
 };
 
 sub get_account_by_numeric_id{
+    my $self             = shift;
     my $parameter_string = shift;
     return(undef) if( !$parameter_string );
     my $id_selection;
-    my $db = Db->new();
+    my $db = Db->new($self);
     if( $parameter_string =~ /,/  && $parameter_string !~ /-/ ){
         $id_selection = [map { "account subconto $_" } split /,/,$parameter_string];
     }elsif( $parameter_string =~ /,/  && $parameter_string =~ /-/ ){

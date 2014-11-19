@@ -14,7 +14,7 @@ sub redirect2list_or_path{
         $self->redirect_to($self->param('path'));
         return;
     }
-    $self->redirect_to("$OBJECT_NAMES/list");
+    $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
 sub pagesize{
@@ -45,7 +45,7 @@ sub select_objects{
     my ($self,$name,$path) = @_;
 
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
@@ -96,12 +96,12 @@ sub restore{
     }
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "Users:restore:error user id not defined!"; 
     }
-    $self->redirect_to('users/deleted');
+    $self->redirect_to('/users/deleted');
 };
 
 sub validate_passwords{
@@ -119,9 +119,9 @@ sub validate_passwords{
 };
 
 sub validate_email{
-    my $email = shift;
+    my ($self,$email) = @_ ;
     return(0) if ( !$email || !Utils::validate_email($email) );
-    my $db = Db->new();
+    my $db = Db->new($self);
     return(0) if ( $db->get_user($email) );
     return(1);
 };
@@ -136,7 +136,7 @@ sub validate{
     };
     if( !$edit_mode ) {
         $data->{email} = Utils::trim $self->param('email');
-        if( !validate_email($data->{email}) ){
+        if( !validate_email($self,$data->{email}) ){
             $data->{error} = 1;
             $self->stash(email_class => "error");
         }
@@ -162,12 +162,12 @@ sub del{
     }
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "Users:delete:error user id not defined!"; 
     }
-    $self->redirect_to('users/list');
+    $self->redirect_to('/users/list');
 };
 
 sub remove_company{
@@ -179,7 +179,7 @@ sub remove_company{
 
     my $user_id      = $self->param('payload');
     my $id = $self->param('company');
-    my $db = Db->new();
+    my $db = Db->new($self);
     db->del_link($id,$user_id);
     db->del_linked_value('access',$id,$user_id);
     $self->redirect_to("/users/edit/$user_id");
@@ -197,11 +197,11 @@ sub edit{
     my $data;
     my $id = $self->param('payload');
     if( !$id) { 
-        $self->redirect_to('users/list'); 
+        $self->redirect_to('/users/list'); 
         warn "Users:edit:error user id not defined!";
         return; 
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $method =~ /POST/ ){
         $data = validate( $self, 1 );
         if( !exists($data->{error}) ){
@@ -223,9 +223,9 @@ sub edit{
             $self->stash($key => $data->{$id}->{$key});
         }
     } else {
-        redirect_to('users/list');
+        redirect_to('/users/list');
     }
-    $self->render('users/add');
+    $self->render('/users/add');
 };
 
 sub add{
@@ -241,9 +241,9 @@ sub add{
         my $data = validate( $self, 0 );
         # add
         if( !exists($data->{error}) ){
-            my $db = Db->new();
+            my $db = Db->new($self);
             if( $db->insert($data) ){
-                $self->redirect_to('users/list');
+                $self->redirect_to('/users/list');
             } else {
                 $self->stash(error => 1);
                 warn 'Users:add:error: could not add new user!';
