@@ -31,19 +31,14 @@ sub page{
 
 sub nofilter{
     my ($self,$nofilter4) = @_;
-    if( $nofilter4 ){
-        my $path   = Utils::trim $self->param('path');
-        delete $self->session->{$nofilter4};
-    }
+    delete $self->session->{$nofilter4} if $nofilter4 ;
 };
 
 sub filter{
     my ($self,$filter4) = @_;
     my $filter_path = "$filter4/filter";
     my $filter_value = Utils::trim $self->param('filter');
-    if( $filter_value ){
-        $self->session->{$filter_path} = $filter_value;
-    }
+    $self->session->{$filter_path} = $filter_value if $filter_value ;
 };
 
 # END OF PACKAGE

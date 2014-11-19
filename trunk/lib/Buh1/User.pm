@@ -12,7 +12,7 @@ sub login{
         my $password = Utils::trim $self->param('password');
         if ( !$password || $password =~ /[^\x00-\xFF]/ ) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
-            if ( my $user = Auth::login($email, $password) ){ 
+            if ( my $user = Auth::login($self, $email, $password) ){ 
                 $self->session->{'user email'} = $email;
                 if( $email =~ /^admin$/i ){
                     $self->session->{'user id'} = $user;
@@ -60,13 +60,13 @@ sub password{
             $self->stash(password2_class => "error");
         }
         # check for email and password
-        if ( !Auth::login($email, $password) ){ 
+        if ( !Auth::login($self, $email, $password) ){ 
             $error_found = 1; 
             $self->stash(password_class => "error")
         }
         # change password
         if( !$error_found ){
-            if(Auth::set_password($email,$password1)){
+            if(Auth::set_password($self,$email,$password1)){
                 $self->stash(success => 1);
             } else {
                 $error_found = 1;

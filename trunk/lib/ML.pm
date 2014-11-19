@@ -35,7 +35,7 @@ our $DIR_NAME    = 'ML';
 sub process_string {
     my $self = shift;
     my $key = shift;
-    my $value = get_value($key, Utils::Languages::current($self));
+    my $value = get_value($self,$key, Utils::Languages::current($self));
     return(Mojo::ByteStream->new($value));
 };
 
@@ -46,21 +46,22 @@ sub process_block {
     }
     my $value = $block->();
     my $current_language = Utils::Languages::current($self);
-    my $values = load_from_file();
+    my $values = load_from_file($self);
     if( exists($values->{$key}) && exists($values->{$key}{$current_language}) ){
         $value = $values->{$key}{$current_language};
     } else {
         if( $base_language eq $current_language ){
-            $value = set_value($key, $current_language, $value);
+            $value = set_value($self, $key, $current_language, $value);
         } else {
-            $value = set_value($key, $current_language, "[+$base_language]$value");
+            $value = set_value($self, $key, $current_language, "[+$base_language]$value");
         }
     }
     return(Mojo::ByteStream->new($value));
 };
 
 sub make_my_dir{
-    my $dir = Utils::get_root_path($DIR_NAME);
+    my $self = shift;
+    my $dir = $self->app->home->rel_dir($DIR_NAME);
     until( -d $dir ){
         make_path ( $dir ) || die "Could not create $dir directory";
     }
@@ -68,12 +69,12 @@ sub make_my_dir{
 };
 
 sub get_value{
-    my ($key, $language) = @_;
+    my ($self, $key, $language) = @_;
     if(!$key || !$language){
         return("<font color=red>ERROR:ML: Invalid ML block!</font>");
     }
     my $value;
-    my $values = load_from_file();
+    my $values = load_from_file($self);
     if( exists($values->{$key}) && exists($values->{$key}{$language}) ){
         $value = $values->{$key}{$language};
     } else {
@@ -88,10 +89,10 @@ sub get_value{
 };
 
 sub set_value{
-    my ($key1, $key2, $value) = @_;
-    my $values = load_from_file();
+    my ($self, $key1, $key2, $value) = @_;
+    my $values = load_from_file($self);
     gentle_add($key1, $key2, $value, $values);
-    save_to_file($values);
+    save_to_file($self, $values);
     return($value);
 };
 
@@ -106,14 +107,15 @@ sub gentle_add{
 };
 
 sub save_to_file{
-    make_my_dir();
+    my $self = shift;
+    make_my_dir($self);
     my $values = shift;
     if(!$values){
         #Nothing to save!
         return("");
     }
     my $file_name = shift || $FILE_NAME;
-    my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
+    my $file_path = $self->app->home->rel_file("$DIR_NAME/$file_name");
     my ($f);
     open($f, ">:encoding(UTF-8)", $file_path) || die("Can't open $file_path to write: $!");
     while(my ($key1, $v) = each %{$values} ){
@@ -126,10 +128,11 @@ sub save_to_file{
 };
 
 sub load_from_file{
-    make_my_dir();
+    my $self = shift ;
+    make_my_dir($self);
     my $values = {};
     my $file_name = shift || $FILE_NAME;
-    my $file_path = Utils::get_root_path($DIR_NAME, $file_name);
+    my $file_path = $self->app->home->rel_file("$DIR_NAME/$file_name");
     my ($f);
     if( -e $file_path ){
         open(my($f), "<:encoding(UTF-8)", $file_path) || die("Can't open $file_path to read: $!");

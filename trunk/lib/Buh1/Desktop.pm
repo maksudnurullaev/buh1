@@ -27,7 +27,7 @@ sub select_company{
 
     my $cid = $self->param('payload');
     if( $cid ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         my $company = $db->get_objects({id => [$cid], field => ['name']});
         deploy_client_company($self,$cid,$company->{$cid}{name}) if $company && $company->{$cid};
     }
@@ -38,7 +38,7 @@ sub select_company{
 sub deploy_client_company{
     my ($self,$cid,$cname) = @_;
 
-    my $db_client = new DbClient($cid);
+    my $db_client = new DbClient($self);
     if( $db_client->is_valid ){
         $self->session->{'company id'} = $cid;
         $self->session->{'company name'} = $cname;
@@ -47,7 +47,7 @@ sub deploy_client_company{
 
 sub deploy_client_companies{
     my $self = shift;
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $user_id = $self->session('user id');
     my $companies = $db->get_links( $user_id, 'company', ['name'] );
 

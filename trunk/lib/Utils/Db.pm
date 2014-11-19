@@ -18,21 +18,19 @@ use Db;
 
 sub client{
     my $self = shift;
-    if ( $self && $self->session('company id') ){
-		my $db_client = new DbClient($self->session('company id'));
-        return($db_client) if $db_client->is_valid ;
-    }
+    my $db_client = new DbClient($self);
+    return($db_client) if $db_client->is_valid ;
     return(undef);
 };    
 
 sub main{
-    return(Db->new());
+    return(Db->new(shift));
 };
 
 sub db_get_objects{
     my $self = shift;
     my $params = shift;
-    my $db = new Db;
+    my $db = new Db($self);
     return($db->get_objects($params));
 };
 
@@ -46,7 +44,7 @@ sub cdb_get_objects{
 sub db_deploy{
     my ($self,$id,$prefix) = @_ ;
     return if !$id ;
-    my $dbc = Db->new();
+    my $dbc = Db->new($self);
     return(deploy($self,$dbc,$id,$prefix));
 };
 
@@ -77,28 +75,28 @@ sub deploy{
 };
 
 sub cdb_execute_sql{
-	my($self,$sql) = @_ ;
-	return if !$sql ;
-	my $dbc = client($self);
-	$dbc->get_from_sql($sql);
+    my($self,$sql) = @_ ;
+    return if !$sql ;
+    my $dbc = client($self);
+    $dbc->get_from_sql($sql);
 };
 
 sub db_execute_sql{
-	my($sels,$sql) = @_ ;
-	return if !$sql ;
-	my $dbc = Db->new();
-	$dbc->get_from_sql($sql);
+    my($self,$sql) = @_ ;
+    return if !$sql ;
+    my $dbc = Db->new($self);
+    $dbc->get_from_sql($sql);
 };
 
 sub db_insert_or_update{
     my ($self,$data) = @_ ;
-	my $dbc = Db->new() ;
+    my $dbc = Db->new($self) ;
     insert_or_update($dbc,$data);
 };
 
 sub cdb_insert_or_update{
     my ($self,$data) = @_ ;
-	my $dbc = client($self) ;
+    my $dbc = client($self) ;
     insert_or_update($dbc,$data);
 };
 
@@ -114,7 +112,7 @@ sub insert_or_update{
 sub db_get_root{
     my ($self,$sql_where) = @_ ;
     return(undef) if !$sql_where ;
-    my $db = Db->new() ;
+    my $db = Db->new($self) ;
     return(get_root($db,$sql_where));
 };
 

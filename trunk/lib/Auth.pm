@@ -33,13 +33,14 @@ sub salted_password{
 };
 
 sub get_admin_password_file_path{
-    return(Utils::get_root_path('config','admin.login'));
+    return(shift->app->home->rel_file('config/admin.login'));
 };
 
 sub set_admin_password{
+    my $self = shift;
     my $password = shift;
     if(defined($password) && $password){
-        my ($file,$f) = (get_admin_password_file_path(), undef);
+        my ($file,$f) = (get_admin_password_file_path($self), undef);
         my $salt = salted_password($password);
         open($f, ">", $file) || die("Can't open $file to write: $!");
         print $f $salt;
@@ -50,8 +51,9 @@ sub set_admin_password{
 };
 
 sub get_admin_password{
-    my $file = get_admin_password_file_path();
-    if(! -e $file){ return(set_admin_password('admin')); }
+    my $self = shift;
+    my $file = get_admin_password_file_path($self);
+    if(! -e $file){ return(set_admin_password($self, 'admin')); }
     my ($f,$salt) = (undef,undef);
     open($f, "<", $file) || die("Can't open $file to read: $!");
     $salt = <$f>; # get just first line
@@ -60,16 +62,16 @@ sub get_admin_password{
 };
 
 sub login{
-    my($email,$password) = @_;
+    my($self,$email,$password) = @_;
     $email = lc $email; # email string should be case insensative!!!
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
-        return(1) if salted_password($password,get_admin_password);
+        return(1) if salted_password($password,get_admin_password($self));
         warn "Admin's password invalid!";
         return(0);
     }
     # 2. Is email exists
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $user = $db->get_user($email);
     return(0) if !$user ;
     my $salt = $user->{password};
@@ -79,12 +81,12 @@ sub login{
 };
 
 sub set_password{
-    my ($email, $password) = @_;
+    my ($self, $email, $password) = @_;
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
-        return(set_admin_password($password));
+        return(set_admin_password($self, $password));
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $user = $db->get_user($email);
     return(0) if !$user || 
             !exists($user->{id});

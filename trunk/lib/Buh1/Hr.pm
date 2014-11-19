@@ -201,7 +201,7 @@ sub calculations_add{
         if( Utils::Calculations::validate($self,$data) ){
 	    	if( defined $self->param('use_template') ){
 				my $cid = $self->param('calculation_template');
-				my $db = Utils::Db::main();
+				my $db = Utils::Db::main($self);
 				my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
 				delete $template->{id} ;
 				delete $template->{description} ;

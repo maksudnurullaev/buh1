@@ -14,7 +14,7 @@ sub redirect2list_or_path{
         $self->redirect_to($self->param('path'));
         return;
     }
-    $self->redirect_to("$OBJECT_NAMES/list");
+    $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
 sub pagesize{
@@ -62,7 +62,7 @@ sub deleted{
 sub select_objects{
     my ($self,$name,$path) = @_;
 
-    my $db = Db->new();
+    my $db = Db->new($self);
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
     my $objects = $db->get_filtered_objects({
             self          => $self,
@@ -86,12 +86,12 @@ sub restore{
 
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($OBJECT_NAME, $id);
     } else {
         warn "$OBJECT_NAMES:restore:error $OBJECT_NAME id not defined!"; 
     }
-    $self->redirect_to("$OBJECT_NAMES/deleted");
+    $self->redirect_to("/$OBJECT_NAMES/deleted");
 };
 
 sub validate{
@@ -125,12 +125,12 @@ sub del{
 
     my $id = $self->param('payload');
     if( $id ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
         warn "$OBJECT_NAMES:delete:error $OBJECT_NAME id not defined!"; 
     }
-    $self->redirect_to("$OBJECT_NAMES/list");
+    $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
 sub edit{
@@ -145,11 +145,11 @@ sub edit{
     my $data;
     my $id = $self->param('payload');
     if( !$id) { 
-        $self->redirect_to("$OBJECT_NAMES/list"); 
+        $self->redirect_to("/$OBJECT_NAMES/list"); 
         warn "$OBJECT_NAMES:edit:error $OBJECT_NAME id not defined!";
         return; 
     }
-    my $db = Db->new();
+    my $db = Db->new($self);
     if ( $method =~ /POST/ ){
         $data = validate( $self );
         if( !exists($data->{error}) ){
@@ -171,7 +171,7 @@ sub edit{
             $self->stash($key => $data->{$id}->{$key});
         }
     } else {
-        redirect_to("$OBJECT_NAMES/list");
+        redirect_to("/$OBJECT_NAMES/list");
     }
     $self->render("$OBJECT_NAMES/add");
 };
@@ -185,7 +185,7 @@ sub add{
         my $data = validate( $self );
         # add
         if( !exists($data->{error}) ){
-            my $db = Db->new();
+            my $db = Db->new($self);
             if( $db->insert($data) ){
                 $self->stash(success => 1);
             } else {

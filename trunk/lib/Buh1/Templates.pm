@@ -28,7 +28,7 @@ sub add{
             $self->stash(success => 1);
             $self->redirect_to('/templates/list');
         }
-	}
+    }
 };
 
 sub list{
@@ -65,7 +65,7 @@ sub del{
     my $method = $self->req->method ;
     my $id = $self->param('payload');
     if( uc($method) eq 'POST' ){
-        my $dbc = Utils::Db::main() ;
+        my $dbc = Utils::Db::main($self) ;
         $dbc->del($id);
         $self->redirect_to('/templates/list');
     }
@@ -94,9 +94,9 @@ sub files_update_desc{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         Utils::Files::update_desc($self);
-	}
+    }
     $self->redirect_to("/templates/files_update/$id?fileid=$fileid");
 };
 
@@ -107,14 +107,14 @@ sub files_update_file{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( Utils::Files::update_file($self) ){
-    		$self->redirect_to("/templates/files_update/$id?fileid=$fileid");
-			return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+            $self->redirect_to("/templates/files_update/$id?fileid=$fileid");
+            return;
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 }
 ;
 
@@ -133,18 +133,18 @@ sub files_add_new{
 
     my $id = $self->param('payload');
 
-	if( $self->req->method  eq 'POST' ){
+    if( $self->req->method  eq 'POST' ){
         if( $self->req->error ){
             $self->stash( error => 1 );
             return;
         }
         if( Utils::Files::add_new($self) ){
-           	$self->redirect_to("/templates/files/$id");
+               $self->redirect_to("/templates/files/$id");
             return;
-		} else {
-         	$self->stash( error => 1 );
-		}
-	}
+        } else {
+             $self->stash( error => 1 );
+        }
+    }
 
     Utils::Db::db_deploy($self,$id);
 };
@@ -168,11 +168,11 @@ sub move{
     if( $method eq 'POST' ){
         my $new_parent = $self->param('new_parent');
         my $parent = $self->param('parent');
-		
+        
         if( !$new_parent || ($parent && $parent eq $new_parent) ){
             $self->stash( error => 1 );
         } else {
-            my $dbc = Utils::Db::main();
+            my $dbc = Utils::Db::main($self);
             $dbc->child_set_parent($id,$new_parent);
         }
     }
@@ -182,12 +182,12 @@ sub move{
 };
 
 sub make_root{
-	my $self = shift;
+    my $self = shift;
     return if !$self->is_admin();
 
-	my $id   = $self->param('payload');
-    my $dbc = Utils::Db::main();
-	$dbc->child_make_root($id);
+    my $id   = $self->param('payload');
+    my $dbc = Utils::Db::main($self);
+    $dbc->child_make_root($id);
     $self->redirect_to("/templates/move/$id");
 };
 

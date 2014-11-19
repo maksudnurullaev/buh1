@@ -31,7 +31,7 @@ CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
 CREATE INDEX i_objects ON objects (name, id, field);
 
 === Packages to install ===
-cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile
+cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile Hash::Merge::Simple Text::CSV_XS
 
 === Documents and business transactions ===
 Documents contains sum ammont

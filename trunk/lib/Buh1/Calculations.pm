@@ -86,7 +86,7 @@ sub delete{
     return if !auth($self) ;
 
     my $id = $self->param('payload') ;
-	my $db = Utils::Db::main() ;
+	my $db = Utils::Db::main($self) ;
 	$db->del($id);
 	$self->redirect_to("/calculations/list");
 };

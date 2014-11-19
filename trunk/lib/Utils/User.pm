@@ -48,7 +48,7 @@ sub is_editor{
     return(1) if is_admin($self);
     # is editor
     if( $email ){
-        my $db = Db->new();
+        my $db = Db->new($self);
         my $user = $db->get_user($email);
         return(1) if $user 
              && exists($user->{extended_right})
