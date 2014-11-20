@@ -34,25 +34,20 @@ sub new {
     return(bless $self, $class);
 };
 
-sub get_db_path{
-    my $self = shift;
-    return($self->{'file'});
-};
-
 sub warn_if{
     warn shift if get_production_mode ;
 };
 
 sub is_valid{
     my $self = shift;
-    return( $self->initialize ) if ! -e $self->get_db_path();
+    return( $self->initialize ) if ! -e $self->{'file'};
     return (1);
 };
 
 sub get_db_connection{
     my $self = shift;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
-        my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->get_db_path();
+        my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->{'file'};
         my $dbh = DBI->connect($dbi_connection_string,undef,undef, 
                    {sqlite_unicode => 1, AutoCommit => 1});
         if(!defined($dbh)){
@@ -72,7 +67,7 @@ sub get_db_connection{
 
 sub initialize{
     my $self = shift;
-    return(1) if( -e $self->get_db_path() );
+    return(1) if( -e $self->{'file'} );
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $connection = $self->get_db_connection() || die "Could not connect to SQLite database";
         if(defined($connection)){
@@ -120,8 +115,7 @@ sub change_id{
 };
 
 sub del{
-    my $self = shift;
-    my $id = shift;
+    my ($self,$id) = @_ ;
     return if !$id;
     my $dbh = $self->get_db_connection() || return;
     my $scope = $self->get_objects({id => [$id], field => ['PARENT']});

@@ -42,7 +42,7 @@ sub add_part{
             # set new id
             $data->{id} = "$object_name $data->{id}";
             if( $id = $db->insert($data) ){
-                warn $db->set_link(
+                $db->set_link(
                     $parents->{$parent_id}{object_name},
                     $parent_id,
                     $object_name,
