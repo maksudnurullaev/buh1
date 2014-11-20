@@ -17,14 +17,12 @@ use parent 'Db';
 sub new {
     my $class = shift;
     my $mojo  = shift;
-    my $self = { mojo => $mojo, file => $mojo->session('company id') };
+    my $file_name = $mojo->session('company id') . '.db';
+    my $file_path = $mojo->app->home->rel_file("db/clients/$file_name");
+    my $self = { mojo => $mojo, 
+                 file => $file_path };
     bless $self, $class;
     return($self);
-};
-
-sub get_db_path{
-    my $self = shift;
-    return $self->{'mojo'}->app->home->rel_file("db/clients/$self->{file}.db");
 };
 
 };

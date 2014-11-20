@@ -2,6 +2,7 @@ package Buh1;
 use Mojo::Base 'Mojolicious';
 use Auth;
 use Db;
+use Mojolicious::Plugin;
 
 # This method will run once at server start
 sub startup {
@@ -15,6 +16,9 @@ sub startup {
   # setup plugins
   $self->plugin('HTMLTags');
   $self->plugin('RenderFile');
+  $self->plugin('Cacher' 
+    => { actions => [qw/list VACANT_ACTION_1 VACANT_ACTION_2/] }
+   );
 
   $self->app->secrets(['Nkjlkj344!!!#4jkj;l','Hl53gfsgd;-l=rtw45@#']);
   # production or development

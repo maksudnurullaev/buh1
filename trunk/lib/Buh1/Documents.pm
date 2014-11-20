@@ -90,7 +90,7 @@ sub redirect2list_or_path{
         $self->redirect_to($self->param('path'));
         return;
     }
-    $self->redirect_to("$OBJECT_NAMES/list");
+    $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
 sub pagesize{
