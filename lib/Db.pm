@@ -15,6 +15,7 @@ use utf8;
 use Utils;
 use DBI;
 use DBD::SQLite;
+use Data::Dumper;
 
 my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
@@ -33,14 +34,10 @@ sub new {
     return(bless $self, $class);
 };
 
-sub warn_if{
-    warn shift if get_production_mode ;
-};
-
 sub is_valid{
     my $self = shift;
     return( $self->initialize ) if ! -e $self->{'file'};
-    return (1);
+    return ( -e $self->{'file'} );
 };
 
 sub get_db_connection{
@@ -50,16 +47,16 @@ sub get_db_connection{
         my $dbh = DBI->connect($dbi_connection_string,undef,undef, 
                    {sqlite_unicode => 1, AutoCommit => 1});
         if(!defined($dbh)){
-            warn_if $DBI::errstr;
+            warn $DBI::errstr;
             return(undef);
         }
         $dbh->do("PRAGMA synchronous = OFF");
         return($dbh);
     } elsif ($DB_CURRENT_TYPE == $DB_Pg_TYPE) {
-        warn_if "Error:Pg: Not implemeted yet!";
+        warn "Error:Pg: Not implemeted yet!";
         return(undef);
     } else {
-        warn_if "Error:DB: Unknown db type!";
+        warn "Error:DB: Unknown db type!";
         return(undef);
     }
 };
@@ -81,7 +78,7 @@ sub initialize{
             return(1);   
         } 
     } else {
-        warn_if "Error:DB: Unknown db type!";
+        warn "Error:DB: Unknown db type!";
         return(undef);
     }
 };
@@ -137,11 +134,11 @@ sub update{
         delete $hashref->{id}; 
         delete $hashref->{object_name};
     } else {
-        warn_if "Error:Db:Update: No object or object name or Id!";
+        warn "Error:Db:Update: No object or object name or Id!";
         return(undef);
     }
     if(scalar( keys %{$hashref}) == 0){
-        warn_if "Error:Db:Insert: No data!";
+        warn "Error:Db:Insert: No data!";
         return(undef);
     }
     my $dbh = $self->get_db_connection()  || return;
@@ -167,11 +164,11 @@ sub insert{
         $object_name = $hashref->{object_name};
         delete $hashref->{object_name}; 
     } else {
-        warn_if "Error:Db:Insert: No object or object name!";
+        warn "Error:Db:Insert: No object or object name!";
         return(undef);
     }
     if(scalar( keys %{$hashref}) == 0){
-        warn_if "Error:Db:Insert: No data!";
+        warn "Error:Db:Insert: No data!";
         return(undef);
     }
     my $id = $hashref->{id} || Utils::get_date_uuid();
@@ -231,11 +228,11 @@ sub get_from_sql{
     if( scalar(@_) ){
         if( $sth->execute(@_) ){
             return($sth);
-        } else { warn_if $DBI::errstr; }
+        } else { warn $DBI::errstr; }
     } else {
         if( $sth->execute ){
             return($sth);
-        } else { warn_if $DBI::errstr; }
+        } else { warn $DBI::errstr; }
     }
     return(undef);
 };
@@ -313,7 +310,7 @@ sub get_objects{
     $sth = $dbh->prepare($sql_string);
     if( $sth->execute ){
         return($self->format_statement2hash_objects($sth));
-    } else { warn_if $DBI::errstr; }
+    } else { warn $DBI::errstr; }
     return;
 };
 
@@ -440,7 +437,7 @@ sub get_linked_value{
         }
         return(undef);
     } 
-    warn_if $DBI::errstr; 
+    warn $DBI::errstr; 
     return(undef); # some error happens
 };
 
@@ -491,7 +488,7 @@ sub exists_link{
         my($count) = $sth->fetchrow_array;
         return $count; 
     } 
-    warn_if $DBI::errstr; 
+    warn $DBI::errstr; 
     return(undef); # some error happens
 };
 
@@ -541,7 +538,7 @@ sub get_links{
                 : $self->get_objects({id=>[$link_id]}));
             $result->{$link_id} = $object->{$link_id} if $object;
         }
-    } else { warn_if $DBI::errstr; }
+    } else { warn $DBI::errstr; }
     return($result) if scalar keys %{$result};
     return(undef);
 };

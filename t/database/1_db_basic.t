@@ -1,28 +1,25 @@
 use Test::More;
-use Test::Mojo;
-use DBD::SQLite;
-use Data::Dumper;
-use Db;
-use DBI;
+use Test::Warn;
+use t::database::Base;
+my $db = $t::database::Base::test_db;
 
-my $db = Db->new();
-BEGIN {
-    use_ok('Db');
-    require_ok('Db');
-    my $db = Db->new();
-    ok($db->initialize(), "Test for initialize script!");
-    $db->set_production_mode(0);
-};
-
-ok($db->get_db_connection(), "Get proper db connection (SQLITE)!");
+# -= TESTS BEGIN =-
+my $object_name = 'test object';
 
 # -= check for invalid hash =-
-ok(!defined($db->insert({})));
-ok(!defined($db->insert({object_name => "test object"})));
+my $invalid_object;
+warnings_like
+ { $invalid_object = $db->insert({}) } [qr/Error:Db:Insert: No object or object name/],
+ 'Expected warning!';
+ok(!defined($invalid_object)); 
+warnings_like
+ { $invalid_object = $db->insert({object_name => $object_name}) } [qr/Error:Db:Insert: No data/],
+ 'Expected warning!';
+ok(!defined($invalid_object)); 
 
 # -= check for single insertrion =-
 my $id_1 = $db->insert({
-    object_name => "test object",
+    object_name => $object_name,
     field1      => "value1",
     field2      => "value2"});
 ok($id_1);
@@ -35,7 +32,7 @@ ok("value1" eq $hash_ref->{$id_1}{field1}, "Check for value #1");
 ok("value2" eq $hash_ref->{$id_1}{field2}, "Check for value #2");
 
 # -= check for single with many fields =-
-my $many_fields_data = { object_name => "test object" };
+my $many_fields_data = { object_name => $object_name };
 for(my $i=1;$i<=100;$i++){
     $many_fields_data->{ "field$i" } = ("value" x $i); 
 }
@@ -49,7 +46,7 @@ for(my $i=1;$i<=100;$i++){
 
 ### -= FINISH =-
 END{
-    my $dbh = $db->get_db_connection();
-    $dbh->do("DELETE FROM objects WHERE name = 'test object'");
+    unlink $db->{'file'};
 };
+
 done_testing();
