@@ -15,7 +15,6 @@ use utf8;
 use Utils;
 use DBI;
 use DBD::SQLite;
-use Data::Dumper; #for debug
 
 my $DB_SQLite_TYPE  = 0;
 my $DB_Pg_TYPE      = 2;
