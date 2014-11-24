@@ -1,7 +1,7 @@
 use Test::More;
 use Test::Warn;
 use t::database::Base;
-my $db = $t::database::Base::test_db;
+my $db = t::database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 my $object_name = 'test object';

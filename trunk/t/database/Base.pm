@@ -4,7 +4,7 @@ package t::database::Base; {
 
 =head1 NAME
 
-    Different utilites 
+    Database test utilites 
 
 =cut
 
@@ -14,20 +14,23 @@ use warnings;
 use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo;
+use t::Base;
+
 use DbTest;
 use File::Temp;
 
 use_ok('DbTest');
 require_ok('DbTest');
 
-my $test_mojo = Test::Mojo->new('Buh1');
-my $db_test_file 
-             = File::Temp::tempnam( $test_mojo->app->home->rel_dir('t/database'), 'db_test_' ); 
-our $test_db = DbTest->new($test_mojo);
-$test_db->{'file'} = $db_test_file;
-
-ok( $test_db->initialize(), 'Test for initialize script!');
-ok( $test_db->is_valid, 'Check database' );
+sub get_test_db{
+    my $test_mojo = t::Base::get_test_mojo();
+    my $test_db   = DbTest->new( $test_mojo );
+    $test_db->{'file'} 
+                  = File::Temp::tempnam( $test_mojo->app->home->rel_dir('t/database'), 'db_test_' ); 
+    ok( $test_db->initialize(), 'Test for initialize script!' );
+    ok( $test_db->is_valid, 'Check database' );
+    return( $test_db );
+}
 
 # END OF PACKAGE
 };

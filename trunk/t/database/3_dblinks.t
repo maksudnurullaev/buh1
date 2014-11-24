@@ -1,19 +1,8 @@
 use Test::More;
-use Test::Mojo;
-use DBD::SQLite;
-use Data::Dumper;
-use Db;
-use DBI;
+use t::database::Base;
+my $db = t::database::Base::get_test_db() ;
 
-my $db = Db->new();
-BEGIN {
-    use_ok('Db');
-    require_ok('Db');
-    my $db = Db->new();
-    ok($db->initialize(), "Test for initialize script!");
-    $db->set_production_mode(0);
-};
-
+# -= TESTS BEGIN =-
 # -= test for some non-existed link =-
 ok(!$db->exists_link('invalid id #1', 'invalid id #2'), "test non-existed link");
 
@@ -52,9 +41,9 @@ $result = $db->get_links($id2,$name1);
 ok(!exists($result->{$id1}), "Test NOT for existance of #1 for #12");
 
 ### -= FINISH =-
-END{
-    my $dbh = $db->get_db_connection();
-    $dbh->do("DELETE FROM objects WHERE name='_link_' AND field LIKE 'test%' ; ");
-    $dbh->do("DELETE FROM objects WHERE name LIKE 'test object%' ; ");
-};
 done_testing();
+END{
+    unlink $db->{'file'};
+};
+
+

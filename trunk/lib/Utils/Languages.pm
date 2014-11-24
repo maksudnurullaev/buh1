@@ -22,8 +22,12 @@ sub get{
 
 sub current{
     my $self = shift;
-    my $current_lang = $self->session->{'lang'} || $DEFAULT_LANG;
-    return($current_lang);
+    if( defined($self)
+            && defined($self->session)
+            && exists($self->session->{'lang'}) ){
+        return ( $self->session->{'lang'} || $DEFAULT_LANG ) ;
+    }
+    return($DEFAULT_LANG);
 };
 
 sub bar{
