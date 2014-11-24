@@ -16,6 +16,7 @@ BEGIN {
     $ML::MOJO      = $test_mojo;
     $ML::FILE_NAME = 'MLTest.INI';
     $ml_file_path  = $test_mojo->app->home->rel_file("$ML::DIR_NAME/$ML::FILE_NAME");
+    die "Tests going to work with actual(production) ML.INI file" if $ml_file_path =~ /ML\.INI$/ ;
     if( -e $ml_file_path ){
         unlink( $ml_file_path );
     }

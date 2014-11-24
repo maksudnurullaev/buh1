@@ -131,7 +131,7 @@ sub save_to_file{
     open($f, ">:encoding(UTF-8)", $file_path) || die("Can't open $file_path to write: $!");
     while(my ($key1, $v) = each %{$VALUES} ){
         while(my ($key2,$value) = each %{$v}){
-            print $f "$key1:$key2:$value\n"; 
+            print $f "$key1:$key2:$value\n";
         }
     }
     close($f);
@@ -151,7 +151,6 @@ sub load_from_file{
             $LAST_MODIFY_TIME != $last_modify_time ){
             $LAST_MODIFY_TIME = $last_modify_time;
             my ($key1, $key2, $value, $line_order);
-            my $values = {};
             while( <$f> ){
                 if(/(^[[:print:]]+):([[:print:]]+):(.*)/){
                     if( $key1 && $key2 ){   # insert new prefix-key-value
@@ -166,7 +165,6 @@ sub load_from_file{
             if($key1 && $key2){            #final assinment
                 gentle_add($key1, $key2, $value);
             }
-            $VALUES = $values;
         }    
         close($f);
     }
