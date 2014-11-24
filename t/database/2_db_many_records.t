@@ -1,6 +1,6 @@
 use Test::More;
 use t::database::Base;
-my $db = $t::database::Base::test_db;
+my $db = t::database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 my $object_name = 'test object';
@@ -26,9 +26,8 @@ ok(scalar(keys(%{$hashref})) == 1, 'Test disctinct selection size!');
 $hashref = $db->get_objects({name => [$object_name], field => ['between','field32','field33']});
 ok(scalar(keys(%{$hashref})) == 2, 'Test between operator');
 
-done_testing();
-
 ### -= FINISH =-
+done_testing();
 END{
     unlink $db->{'file'};
 };
