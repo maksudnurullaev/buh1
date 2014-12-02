@@ -11,7 +11,7 @@ package Buh1::Accounts; {
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Accounts;
 use Data::Dumper;
-use Mojolicious::Plugin::Cacher;
+use Utils::Cacher;
 
 sub add_part{
     my $self = shift;
@@ -49,6 +49,7 @@ sub add_part{
                     $object_name,
                     $id) if $parents ;
                 $self->redirect_to("/accounts/edit/$id");
+                clear_cache($self);
                 return;
             } else {
                 $self->stash(error => 1);
@@ -76,7 +77,7 @@ sub add_part{
 
 sub list{
     my $self = shift;
-    return if Mojolicious::Plugin::Cacher::cache_it($self) ;
+    return if cache_it($self) ;
 
     my $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
@@ -144,6 +145,7 @@ sub fix_subconto{
     if( $pnew && $id && $pnew && $pold ) { 
         $db->del_link($id,$pold);
         $db->set_link('account',$pnew,'account subconto',$id);
+        clear_cache($self);
     } else {
         warn "Accounts:fix_subconto:error parameters are not properly defined!";
     }
@@ -161,6 +163,7 @@ sub fix_account{
         if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
             $db->del_link($idold,$aid);
             $db->set_link('account',$idnew,'account section',$sid);
+            clear_cache($self);
         }
     } else {
         warn "Accounts:fix_account:error parameters are not properly defined!";
@@ -182,6 +185,7 @@ sub delete_subconto{
     my $db = Db->new($self);
     $db->del_link($id,$parent);
     $db->del($id);
+    clear_cache($self);
     $self->redirect_to("/accounts/list");
 };
 
@@ -203,6 +207,7 @@ sub edit{
             $data->{id} = $id;
             if( $db->update($data) ){
                 $self->stash(success => 1);
+                clear_cache($self);
             } else {
                 $self->stash(error => 1);
                 warn 'Accounts:edit:ERROR: could not update!';

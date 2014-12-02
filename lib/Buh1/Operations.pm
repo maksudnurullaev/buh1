@@ -12,13 +12,13 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Accounts;
 use Utils::Documents;
-use Mojolicious::Plugin::Cacher;
+use Utils::Cacher;
 
 my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    return if Mojolicious::Plugin::Cacher::cache_it($self) ;
+    return if cache_it($self) ;
 
     my $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
