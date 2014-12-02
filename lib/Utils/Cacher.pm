@@ -27,7 +27,8 @@ use Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(cache_it is_cachable get_cache set_cache clear_cache);
 
-my $cache;
+our $cache;
+
 sub get_cache{ return($cache); } ;
 sub set_cache{ $cache = shift; } ;
 
