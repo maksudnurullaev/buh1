@@ -53,25 +53,54 @@ sub register {
     }
 
     $app->hook(
-        'before_dispatch' => sub {
-            my  $c = shift ;
-            my $path = $c->tx->req->url->path;
-            return if $path !~ /\/list$/ ;
+        'after_dispatch' => sub {
+            my ( $c ) = @_;
+            my $cache_path = is_cachable($c);
+            return if !$cache_path;
+ 
+            ## - has to be GET request
+            return if $c->req->method ne 'GET';
+ 
+            ## - only successful response
+            return if $c->res->code != 200;
+            return if !$c->stash('from_cache');
+            return if $c->stash('from_cache') != -1 ;
 
-            my $lang = Utils::Languages::current($c);
-            my $unique_path = "$path/$lang";
-            warn $unique_path;
-#            $app->log->debug( ref $path );
-#            if ( $cache->is_valid($path) ) {
-#                $app->log->debug("serving from cache for $path");
-#                my $data = $cache->get($path);
-#                $c->res->code( $data->{code} );
-#                $c->res->headers( $data->{headers} );
-#                $c->res->body( $data->{body} );
-#                $c->stash( 'from_cache' => 1 );
-#            }
+            $cache->set(
+                $cache_path,
+                {   body    => $c->res->body,
+                    headers => $c->res->headers,
+                    code    => $c->res->code
+                }
+            );
         }
     );
+};
+
+sub cache_it{
+    my $c = shift ;
+    my $cache_path = is_cachable($c);
+    return if !$cache_path;
+    if( $cache->is_valid($cache_path) ){
+        my $data = $cache->get($cache_path);
+        $c->res->code( $data->{code} );
+        $c->res->headers( $data->{headers} );
+        $c->res->body( $data->{body} );
+        $c->rendered ;
+        return(1);
+    }
+    $c->stash( from_cache => -1 );
+    return(0);
+};
+
+
+sub is_cachable{
+    my $c = shift;
+    return if !$c;
+    my $path = $c->tx->req->url->path->to_string();
+    return if $path !~ /list\/?$/ ;
+    my $lang = Utils::Languages::current($c);
+    return( $path =~ /\/$/ ? ($path . $lang) : "$path/$lang" );
 };
 
 };
