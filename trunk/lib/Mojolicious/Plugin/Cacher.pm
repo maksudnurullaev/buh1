@@ -22,16 +22,16 @@ use File::Path qw/make_path/;
 use Carp;
 use CHI;
 use Utils::Languages;
-use Data::Dumper;
+use Utils::Cacher;
 
-my $actions;
-my $cache;
+my $actions; # useless awhile
 my @cache_conf_defaults = ('driver' => 'Memory', global => 1);
 
 sub register {
     my ($self,$app, $conf) = @_;
+    my $cache = get_cache();
     
-    if ( defined $conf->{actions} ) {
+    if ( defined $conf->{actions} ) { # useless awhile
         $actions = { map { $_ => 1 } @{ $conf->{actions} } };
     }
 
@@ -40,10 +40,10 @@ sub register {
         if ( defined $conf->{options} ) {
             my $opt = $conf->{options};
             $opt->{driver} = $self->driver if not defined $opt->{driver};
-            $cache = CHI->new(%$opt);
+            $cache = set_cache(CHI->new(%$opt));
         }
         else {
-            $cache = CHI->new( @cache_conf_defaults );
+            $cache = set_cache(CHI->new( @cache_conf_defaults ));
         }
     }
 
@@ -73,34 +73,9 @@ sub register {
                     code    => $c->res->code
                 }
             );
+            warn "CACHE <-- $cache_path";
         }
     );
-};
-
-sub cache_it{
-    my $c = shift ;
-    my $cache_path = is_cachable($c);
-    return if !$cache_path;
-    if( $cache->is_valid($cache_path) ){
-        my $data = $cache->get($cache_path);
-        $c->res->code( $data->{code} );
-        $c->res->headers( $data->{headers} );
-        $c->res->body( $data->{body} );
-        $c->rendered ;
-        return(1);
-    }
-    $c->stash( from_cache => -1 );
-    return(0);
-};
-
-
-sub is_cachable{
-    my $c = shift;
-    return if !$c;
-    my $path = $c->tx->req->url->path->to_string();
-    return if $path !~ /list\/?$/ ;
-    my $lang = Utils::Languages::current($c);
-    return( $path =~ /\/$/ ? ($path . $lang) : "$path/$lang" );
 };
 
 };
