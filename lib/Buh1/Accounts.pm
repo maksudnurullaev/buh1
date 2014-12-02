@@ -11,6 +11,7 @@ package Buh1::Accounts; {
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Accounts;
 use Data::Dumper;
+use Mojolicious::Plugin::Cacher;
 
 sub add_part{
     my $self = shift;
@@ -75,6 +76,7 @@ sub add_part{
 
 sub list{
     my $self = shift;
+    return if Mojolicious::Plugin::Cacher::cache_it($self) ;
 
     my $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
