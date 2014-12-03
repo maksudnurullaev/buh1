@@ -18,21 +18,28 @@ my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-    return if cache_it($self) ;
 
-    my $data = Utils::Accounts::get_all_parts($self);
+    my $data;
     $self->stash( parts => $data );
+    if( $data = is_cached($self,'data') ) {
+        warn 'USED CACHED VERSION OF DATA';
+    } else {
+        $data = Utils::Accounts::get_all_parts($self);
+        $self->stash( parts => $data );
 
-    for my $part_id (keys %{$data}){
-        my $sections = Utils::Accounts::get_sections($self,$part_id);
-        $data->{$part_id}{sections} = $sections;
+        for my $part_id (keys %{$data}){
+            my $sections = Utils::Accounts::get_sections($self,$part_id);
+            $data->{$part_id}{sections} = $sections;
 
-        for my $section_id (keys %{$sections}){
-            my $accounts = Utils::Accounts::get_accounts($self,$section_id);
-            $sections->{$section_id}{accounts} = $accounts;
+            for my $section_id (keys %{$sections}){
+                my $accounts = Utils::Accounts::get_accounts($self,$section_id);
+                $sections->{$section_id}{accounts} = $accounts;
+            }
         }
+        $self->cache->{data} = $data;
+        Utils::Languages::generate_name($self, $data);
+        cache_it($self,'data',$data);
     }
-    Utils::Languages::generate_name($self, $data);
 };
 
 sub validate{

@@ -25,50 +25,44 @@ use Utils::Languages;
 
 use Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(cache_it is_cachable get_cache set_cache clear_cache);
+our @EXPORT = qw(cache_it is_cached clear_cache);
+
+my @cache_conf_defaults = ('driver' => 'Memory', global => 1);
 
 our $cache;
+our $cacher = {};
 
-sub get_cache{ return($cache); } ;
-sub set_cache{ $cache = shift; } ;
-
-sub cache_it{
-    my $c = shift ;
-    my $cache_path = is_cachable($c);
-    return if !$cache_path;
-    if( $cache->is_valid($cache_path) ){
-        my $data = $cache->get($cache_path);
-        $c->res->code( $data->{code} );
-        $c->res->headers( $data->{headers} );
-        $c->res->body( $data->{body} );
-        $c->rendered ;
-        warn "CACHE --> $cache_path";
-        return(1);
-    }
-    $c->stash( from_cache => -1 );
-    return(0);
+sub get_cache{ 
+    my $cache_namespace = shift;
+    return $cacher->{$cache_namespace} if exists $cacher->{$cache_namespace};
+    $cacher->{$cache_namespace} = CHI->new( @cache_conf_defaults );
+    return $cacher->{$cache_namespace}; 
 };
 
-sub is_cachable{
-    my $c = shift;
-    return if !$c;
-    my $path = $c->tx->req->url->path->to_string();
-    return if $path !~ /list\/?$/ ;
-    my $lang = Utils::Languages::current($c);
-    return( $path =~ /\/$/ ? ($path . $lang) : "$path/$lang" );
+sub cache_it{
+    my ($c,$name,$value) = @_ ;
+    my $cache_namespace = $c->stash('controller') ;
+    my $cache = get_cache $cache_namespace;
+    $cache->set($name, $value);
+    warn "CACHE <-- ($cache_namespace,$name)";
+};
+
+sub is_cached{
+    my ($c,$name) = @_ ;
+    my $cache_namespace = $c->stash('controller') ;
+    my $cache = get_cache $cache_namespace;
+    warn "namespace = $cache_namespace, name = $name";
+    warn "CACHE --> ($cache_namespace,$name)" if $cache->is_valid($name);
+    return $cache->get($name);
 };
 
 sub clear_cache{
-    my $c = shift;
-    my $cache_path = '/' . $c->stash('controller') . '/list/' 
-            . Utils::Languages::current($c);
-    warn "CACHE X> $cache_path";
-    if( $cache && 
-        $cache->is_valid($cache_path) ){
-        $cache->remove($cache_path);    
-        warn "CACHE XX> $cache_path";
-    }
-}
+    my $c = shift ;
+    my $cache_namespace = $c->stash('controller') ;
+    my $cache = get_cache $cache_namespace;
+    $cache->clear();
+    warn "CACHE >X< ($cache_namespace)" ;
+};
 
 };
 
