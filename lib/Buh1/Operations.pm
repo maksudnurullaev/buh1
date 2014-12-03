@@ -18,28 +18,25 @@ my $OBJECT_NAME = 'business transaction';
 
 sub list{
     my $self = shift;
-
     my $data;
+    return( $self->stash( parts => $data) ) if $data = is_cached($self,'data');
+
+    $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
-    if( $data = is_cached($self,'data') ) {
-        warn 'USED CACHED VERSION OF DATA';
-    } else {
-        $data = Utils::Accounts::get_all_parts($self);
-        $self->stash( parts => $data );
 
-        for my $part_id (keys %{$data}){
-            my $sections = Utils::Accounts::get_sections($self,$part_id);
-            $data->{$part_id}{sections} = $sections;
+    for my $part_id (keys %{$data}){
+        my $sections = Utils::Accounts::get_sections($self,$part_id);
+        $data->{$part_id}{sections} = $sections;
 
-            for my $section_id (keys %{$sections}){
-                my $accounts = Utils::Accounts::get_accounts($self,$section_id);
-                $sections->{$section_id}{accounts} = $accounts;
-            }
+        for my $section_id (keys %{$sections}){
+            my $accounts = Utils::Accounts::get_accounts($self,$section_id);
+            $sections->{$section_id}{accounts} = $accounts;
         }
-        $self->cache->{data} = $data;
-        Utils::Languages::generate_name($self, $data);
-        cache_it($self,'data',$data);
     }
+    Utils::Languages::generate_name($self, $data);
+
+    cache_it($self,'data',$data);
+    $self->stash( parts => $data );
 };
 
 sub validate{
@@ -88,6 +85,7 @@ sub delete_bt{ #delete business transaction
     if( $db->del($bt_id) ){
         $db->del_link($account_id,$bt_id);
     }
+    clear_cache($self);
     $self->redirect_to("/operations/account/$account_id");
 };
 
@@ -111,6 +109,7 @@ sub add{
                     $id,
                     Utils::Accounts::get_account_name(),
                     $account_id);
+                clear_cache($self);
                 $self->redirect_to("/operations/edit/$account_id?bt=$id");
                 return;
             } else {
@@ -151,10 +150,11 @@ sub edit{
         if( !exists($data->{error}) ){
             $data->{id} = $bt_id;
             if( $db->update($data) ){
-               $self->stash(success => 1);
+                $self->stash(success => 1);
+                clear_cache($self);
             } else {
-               $self->stash(error => 1);
-               warn "Operations:edit:ERROR: could not update!";
+                $self->stash(error => 1);
+                warn "Operations:edit:ERROR: could not update!";
             }
         } else {
             $self->stash(error => 1);

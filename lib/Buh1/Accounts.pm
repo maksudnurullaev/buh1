@@ -77,11 +77,10 @@ sub add_part{
 
 sub list{
     my $self = shift;
-    return if cache_it($self) ;
+    my $data;
+    return( $self->stash( parts => $data) ) if $data = is_cached($self,'data');
 
-    my $data = Utils::Accounts::get_all_parts($self);
-    $self->stash( parts => $data );
-
+    $data = Utils::Accounts::get_all_parts($self);
     for my $part_id (keys %{$data}){
         my $sections = Utils::Accounts::get_sections($self,$part_id);
         $data->{$part_id}{sections} = $sections;
@@ -96,6 +95,9 @@ sub list{
         }
     }
     Utils::Languages::generate_name($self, $data);
+
+    cache_it($self,'data',$data);
+    $self->stash( parts => $data );
 };
 
 sub validate4add_part{

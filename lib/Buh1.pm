@@ -17,10 +17,6 @@ sub startup {
   # setup plugins
   $self->plugin('HTMLTags');
   $self->plugin('RenderFile');
-#   $self->plugin('Cacher' 
-#     => { actions => [qw/list VACANT_ACTION_1 VACANT_ACTION_2/] }
-#    );
-
   $self->app->secrets(['Nkjlkj344!!!#4jkj;l','Hl53gfsgd;-l=rtw45@#']);
   # production or development
   $self->app->mode('development');
