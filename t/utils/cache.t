@@ -12,7 +12,6 @@ BEGIN { $t = t::Base::get_test_mojo_session(); }
 use_ok('Utils::Cacher');
 require_ok('Utils::Cacher');
 
-ok( !defined(Utils::User::current($self) ), "Non defined result with no parameters!");
 $t->get_ok('/initial/welcome')->status_is(200);
 
 ### -=FINISH=-
