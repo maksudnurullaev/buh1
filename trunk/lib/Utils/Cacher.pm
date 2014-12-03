@@ -25,7 +25,7 @@ use Utils::Languages;
 
 use Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(cache_it is_cached clear_cache);
+our @EXPORT = qw(get_cache cache_it is_cached clear_cache);
 
 my @cache_conf_defaults = ('driver' => 'Memory', global => 1);
 
@@ -41,7 +41,7 @@ sub get_cache{
 
 sub generate_key{
     my ($c,$name) = @_;
-    die "Could not generate cache key!" if !$name ;
+    die "Could not generate cache key!" if !$c || !$name ;
 
     my $key = 
         $c->stash('controller') 
