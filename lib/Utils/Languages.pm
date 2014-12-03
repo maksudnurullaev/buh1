@@ -23,8 +23,8 @@ sub get{
 sub current{
     my $self = shift;
     if( defined($self)
-            && defined($self->session)
-            && exists($self->session->{'lang'}) ){
+        && defined($self->session)
+        && exists($self->session->{'lang'}) ){
         return ( $self->session->{'lang'} || $DEFAULT_LANG ) ;
     }
     return($DEFAULT_LANG);
