@@ -9,14 +9,14 @@
   % for my $cid ( sort keys %{$companies}) {
    %if ( $companies->{$cid}{access} ) { 
     % if ($company && $company eq $companies->{$cid}{name} ){
-     <li><%= $companies->{$cid}{name} %></li>
+     <li><strong><%= $companies->{$cid}{name} %></strong></li>
     % } else {    
      <li><%= link_to $companies->{$cid}{name} => "/desktop/select_company/$cid" %></li>
     % } 
-    <ul><li><u><%= ml 'Access' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
+    <ul><li><u><%= ml 'Access level' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
    % } else {
     <li><%= $companies->{$cid}{name} %></li>  
-    <ul><li><u><%= ml 'Access' %>:</u> <%= ml 'No access' %></li></ul>   
+    <ul><li><u><%= ml 'Access level' %>:</u> <%= ml 'No access' %></li></ul>   
    % }
   % }    
   </ul>

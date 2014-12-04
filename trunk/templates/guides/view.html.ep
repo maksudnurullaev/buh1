@@ -1,5 +1,10 @@
 % layout 'default';
-<h2><%= ml('Guide') . ' ' . $payload %></h2>
+<h2>
+ %= ml('Guide') ;
+ <sup>
+ %= $payload ;
+ </sup>
+</h2>
 %= include 'success_error' ;
 <div class="toolbar">
  %= link_to ml('Back') => '/guides/page' ; 

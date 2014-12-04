@@ -3,8 +3,19 @@
 %= include 'success_error' ;
 %= include 'calculations/toolbar', add_path => '/calculations/add' if is_admin ;
 
-% if( is_admin() ) {
- %= include 'calculations/list_page', link_path_prefix => "/$controller/edit/" ;
+% my $calcs = stash 'calculations' ;
+% my $link_path_prefix = ("/$controller/" . ( is_admin() ? 'edit/' : 'test/')) ;
+
+% if( scalar keys %{$calcs} ) {
+ <ul>
+  % for my $key (reverse sort keys %{$calcs}){
+   <li>
+    %# admin or user part
+    % my $result = ($controller eq 'calculations') ? db_calculate($key) : cdb_calculate($key) ;
+    %= $result ? currency_format($result) : '(?)' ;
+    %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
+   </li>
+  % }
 % } else {
- %= include 'calculations/list_page', link_path_prefix => "/$controller/test/" ;
+ <br /><%= ml 'No data!' %>
 % }

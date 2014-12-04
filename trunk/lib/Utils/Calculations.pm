@@ -99,6 +99,8 @@ sub db_calculate{
         my $data = $objects->{$id} ;
         my $eval_string = $data->{calculation} ;
         $eval_string = encode_eval_string($self, $data, $eval_string) ;
+        $self->stash( eval_string => $eval_string );
+        warn $eval_string;
         return( calculate($eval_string) );
     }
     return(undef);
