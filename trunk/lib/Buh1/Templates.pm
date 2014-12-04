@@ -39,11 +39,6 @@ sub list{
 sub edit{
     my $self = shift;
     my $id   = $self->param('payload');
-    if( !$self->is_admin() ){
-        $self->redirect_to("templates/files/$id");
-        return(0);
-    }
-    
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
         my $data = Utils::Templates::form2data($self);
@@ -115,8 +110,7 @@ sub files_update_file{
              $self->stash( error => 1 );
         }
     }
-}
-;
+};
 
 sub files_del{
     my $self = shift;
@@ -150,12 +144,11 @@ sub files_add_new{
 };
 sub files{
     my $self = shift;
-
-    my $id         = $self->param('payload');
+    my $id   = $self->param('payload');
 
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
-
     Utils::Db::db_deploy($self,$id);
+    $self->stash( resources_root => Utils::Templates::get_root_objects($self) );
 };
 
 sub move{

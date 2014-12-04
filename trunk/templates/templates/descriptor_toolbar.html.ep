@@ -1,5 +1,6 @@
 % my $files_count = files_count($payload) ;
 <div class="toolbar">
+% if ( is_admin ) {
  % if ( !stash('CHILDREN') && !$files_count ){
   <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
  % } else {
@@ -16,10 +17,11 @@
   <strong><%= ml 'Move' %></strong>
  % }
  |
- % if( stash('action') !~ /files/ ){
-  <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %>(<%= $files_count %>)<% end %>
- % } else {
-  <strong><%= ml 'Files' %>(<%= $files_count %>)</strong>
- % }
+% }  
+% if( stash('action') !~ /files/ ){
+   <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %>(<%= $files_count %>)<% end %>
+% } else {
+   <strong><%= ml 'Files' %>(<%= $files_count %>)</strong>
+% }
 </div>
 

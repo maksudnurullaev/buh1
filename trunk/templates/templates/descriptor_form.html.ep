@@ -20,6 +20,7 @@
     % }
    </td>
   </tr>
+  % if ( is_admin ){
   <tr><td>&nbsp;</td>
    <td>
      % if( $action eq 'del' ){
@@ -31,6 +32,7 @@
      % } 
    </td>
   </tr>
+  % }
  </table>
  % end
 </div>
