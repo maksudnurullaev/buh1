@@ -21,7 +21,7 @@
     % if($companies->{$id}{users}) {
      % my $users = $companies->{$id}->{users};
      <ul><li><u><%= ml 'Users' %>:</u>
-     % for my $userid (keys %{$users}) {
+     % for my $userid (reverse sort keys %{$users}) {
       % my $email = $users->{$userid}->{email};
       <ul><li>
       %= link_to $email => "/users/edit/$userid" ;

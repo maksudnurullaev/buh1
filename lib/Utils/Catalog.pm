@@ -15,15 +15,6 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
-sub auth{
-    my ($self,$access) = @_;
-    if( !defined($self->user_role2company) 
-		|| $self->user_role2company !~ /$access/i ){
-		return;
-    }
-    return(1);
-};
-
 sub form2data{
     my $self = shift;
     my $data = { 

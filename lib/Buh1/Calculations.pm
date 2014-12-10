@@ -23,7 +23,7 @@ sub auth{
     return(1);
 };
 
-sub list{
+sub page{
     my $self = shift;
     $self->stash( calculations => Utils::Calculations::get_db_list($self));
 };

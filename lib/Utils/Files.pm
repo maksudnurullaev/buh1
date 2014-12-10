@@ -160,8 +160,8 @@ sub is_file_writer{
         if( $controller =~ /^templates/i ){
             return Utils::is_admin($self);
         } else {
-            my $user_role = Utils::user_role2company($self);
-            return ( $user_role && $user_role =~ /[admin|write]/i ) ;
+            my $company_access = $self->session->{'company access'};
+            return ( $company_access && $company_access =~ /^(admin|write)/i ) ;
         }
     }
     return(0);

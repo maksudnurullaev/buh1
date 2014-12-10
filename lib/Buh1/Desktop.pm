@@ -36,12 +36,17 @@ sub select_company{
 };
 
 sub deploy_client_company{
-    my ($self,$cid,$cname) = @_;
+    my ($self,$company_id,$company_name) = @_ ;
+    my $user_id = $self->session->{'user id'} ;
+    return if !$user_id || !$company_id ;
 
     my $db_client = new DbClient($self);
     if( $db_client->is_valid ){
-        $self->session->{'company id'} = $cid;
-        $self->session->{'company name'} = $cname;
+        $self->session->{'company id'} = $company_id;
+        $self->session->{'company name'} = $company_name;
+        my $db = Db->new($self);
+        $self->session->{'company access'} = 
+            $db->get_linked_value('access',$user_id,$company_id) ;
     }
 };
 

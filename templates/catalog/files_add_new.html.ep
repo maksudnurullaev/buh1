@@ -1,16 +1,9 @@
 % layout "default";
 %= include "success_error" ;
-<h2><%= ml "Catalog" %> | <%= ml "Files" %> | <%= ml "New" %></h2>
+<h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 
-%= include "$controller/toolbar" ;
-
-<div class="toolbar">
- <%= ml "Name" %>:
- <strong>
-  %= link_to stash("description") => "/$controller/edit/$payload" 
- </strong>
-</div>
-
-%= include "$controller/files_toolbar" ;
+%= include "common/toolbar_type1" ;
+%= include "common/files_header_type1" ;
+%= include "common/files_toolbar_type1" if is_editor ;
 %= include "files/add_new_form" ;
 

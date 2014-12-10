@@ -8,11 +8,7 @@
     % } else {
      %= text_field $name => $value ;
     % }
-    % if( $name =~ /value/ && $value =~ /_\d+/ ) {
-     % if( stash("f_calculated_value_$index") ) {
-      <strong> = <%= stash "f_calculated_value_$index" %> </strong>
-     % } else {
-      <strong style="color: red"> = <%= $value %> </strong>
-     % }
+    % if( $name =~ /^f_value/ && stash("f_calculated_value_$index") ) {
+      = <%= stash "f_calculated_value_$index" %>
     % } 
   </td></tr>

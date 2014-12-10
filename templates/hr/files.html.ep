@@ -1,15 +1,8 @@
-% layout 'default';
-%= include 'success_error' ;
-<h2><%= ml 'Human Resource' %> | <%= ml 'Files' %></h2>
-
-%= include 'hr/toolbar' ;
-
-<div class="toolbar">
- <%= ml 'Name' %>:
- <strong>
-  %= link_to stash('description') => "/hr/edit/$payload" 
- </strong>
-</div>
-
-%= include 'hr/files_toolbar' ;
-%= include 'files/list' ;
+% layout "default";
+%= include "success_error" ;
+%# at least should be exists stash('description') - file name, for current file
+% if( stash('description') ){
+ %= include "utils/files_header_type1" ;
+ %= include "utils/files_toolbar_type1" ;
+ %= include "files/list" ;
+% } 

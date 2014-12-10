@@ -12,11 +12,12 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
 use Utils::Files ;
 use Utils::Calculations ;
-use Data::Dumper ;
+use Utils::AccessChecker ;
 
 sub add{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
+
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         my $data = Utils::Hr::form2data($self);
@@ -30,17 +31,19 @@ sub add{
 
 sub list{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'read|write|admin') );
+    return if !ac_is_authorized($self,'read|write|admin');
 
     $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
 };
 
 sub edit{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'read|write|admin');
     
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
+        return if !ac_is_authorized($self,'write|admin');
+
         my $data = Utils::Hr::form2data($self);
         $self->stash(success => 1);
         Utils::Db::cdb_insert_or_update($self,$data);
@@ -53,7 +56,7 @@ sub edit{
 
 sub del{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -68,7 +71,7 @@ sub del{
 
 sub move{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -91,6 +94,8 @@ sub move{
 
 sub make_root{
     my $self = shift;
+    return if !ac_is_authorized($self,'write|admin');
+
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
     $dbc->child_make_root($id);
@@ -100,7 +105,7 @@ sub make_root{
 # files part
 sub files{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'read|write|admin');
 
     my $id = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
@@ -109,7 +114,7 @@ sub files{
 
 sub files_update{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -120,7 +125,7 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -133,7 +138,7 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -150,7 +155,7 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
@@ -159,7 +164,7 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
-    return if( !Utils::Hr::auth($self,'write|admin') );
+    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
 

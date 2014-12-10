@@ -4,9 +4,12 @@ use Auth;
 use Db;
 use Mojolicious::Plugin;
 
+our $my_self ;
+
 # This method will run once at server start
 sub startup {
-  my $self = shift;
+  my $self = shift ;
+  $my_self = $self ;
 
   $self->helper(cache => sub { state $cache = {} });
   # Set up password for administrator

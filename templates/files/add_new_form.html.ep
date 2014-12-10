@@ -18,6 +18,8 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml 'Upload'
+    |
+    %= link_to ml('Cancel') => "/$controller/files/$id" ;
    </td>
   </tr>
  </table>

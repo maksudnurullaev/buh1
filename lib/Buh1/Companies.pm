@@ -62,8 +62,8 @@ sub deleted{
 sub select_objects{
     my ($self,$name,$path) = @_;
 
-    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
-    my $db = Db->new($self);
+    my $filter  = $self->session->{"$OBJECT_NAMES/filter"};
+    my $db      = Db->new($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,

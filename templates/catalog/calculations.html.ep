@@ -1,15 +1,10 @@
-% layout 'default';
-%= include 'success_error' ;
-<h2><%= ml 'Catalog' %> | <%= ml 'Calculations' %></h2>
+% layout "default";
+%= include "success_error" ;
+%# at least should be exists stash('description') - file name, for current file
+% if( stash('description') ){
+ %= include "utils/files_header_type1" ;
 
-%= include 'catalog/toolbar' ;
-
-<div class="toolbar">
- <%= ml 'Name' %>:
- <strong>
-  %= link_to stash('description') => "/catalog/edit/$payload" 
- </strong>
-</div>
-
-%= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" if user_role2company =~ /write|admin/i ;
-%= include 'calculations/list_page', link_path_prefix => "/$controller/calculations_edit/$payload?id=" ;
+ %= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" if is_editor ;
+ % my $link_path_prefix = "/$controller/calculations_edit/$payload?id=" ;
+ %= include 'calculations/list', isClientPart => 1, link_path_prefix => $link_path_prefix ;
+% } 

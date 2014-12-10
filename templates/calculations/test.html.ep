@@ -2,13 +2,4 @@
 <h2><%= ml('Calculations') . ' | ' . ml('Test') %></h2>
 %= include 'success_error' ;
 
-<div class="form">
- <table class='colortable'>
-  <tr><td>&nbsp;</td>
-   <td>
-    <strong><%= stash 'description' %></strong>
-   </td>
-  </tr>
-  %= include 'calculations/fields_form_test' ;
- </table>
-</div>
+%= include 'calculations/fields_form_test' ;
