@@ -1,0 +1,6 @@
+<div class="toolbar">
+ <%= ml "Name" %>:
+ <strong>
+  %= link_to stash("description") => "/$controller/edit/$payload" 
+ </strong>
+</div>

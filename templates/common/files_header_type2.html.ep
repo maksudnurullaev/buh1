@@ -1,0 +1,13 @@
+<div class="form">
+  <table class="colortable">
+   <tr>
+    <td class="tar"> 
+     %= ml "Description" 
+    </td>
+    <td>
+     <strong><%= stash "description" %></strong>
+    </td>
+   </tr>
+  </table>
+</div>
+

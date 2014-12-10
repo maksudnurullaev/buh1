@@ -1,0 +1,19 @@
+<div>
+ <ul>
+ % for my $id (sort keys %{$temp_hash}) {
+  <li>
+   % my $files_count = files_count($id) ;
+   % my $calcs_count = calcs_count($id) ;
+   (<%= link_to $files_count => "/$controller/files/$id" %> | <%= link_to $calcs_count => "/$controller/calculations/$id" %>)
+   % if( stash('id') && stash('id') eq $id ){
+    <strong><%= $temp_hash->{$id}{description} %></strong>
+   % } else {
+    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => "/$controller/edit/$id" %></dfn>
+   % }
+   % if( exists $temp_hash->{$id}{CHILDREN} ){
+    %= include "common/list_resources_type1", temp_hash => $temp_hash->{$id}{CHILDREN} ;
+   % }
+  </li>
+ % }    
+ </ul>
+</div>
