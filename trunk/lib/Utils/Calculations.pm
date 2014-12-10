@@ -49,7 +49,7 @@ sub validate{
 sub deploy_result{
     my ($self,$data) = @_ ;
     my $eval_string = $data->{calculation} ;
-    $eval_string = encode_eval_string($self, $data, $eval_string);
+    $eval_string = decode_eval_string($self, $data, $eval_string);
     my $result = calculate($eval_string);
     if( $result ){
         $self->stash( result => $result );
@@ -70,7 +70,7 @@ sub spravka{
     }
     # 1. find guide
     $default_result = $default_result || 'NaN';
-    my $guide_map = Utils::Guides::decode_guide_content($guide_num);
+    my $guide_map = Utils::Guides::decode_guide_content($Buh1::my_self, $guide_num);
     for my $key(keys %{$guide_map->{data}}){
         my $row = $guide_map->{data}{$key};
         my $row_length = scalar(@{$row});
@@ -98,9 +98,8 @@ sub db_calculate{
     if( $objects ){
         my $data = $objects->{$id} ;
         my $eval_string = $data->{calculation} ;
-        $eval_string = encode_eval_string($self, $data, $eval_string) ;
+        $eval_string = decode_eval_string($self, $data, $eval_string) ;
         $self->stash( eval_string => $eval_string );
-        warn $eval_string;
         return( calculate($eval_string) );
     }
     return(undef);
@@ -112,13 +111,13 @@ sub cdb_calculate{
     if( $objects ){
         my $data = $objects->{$id} ;
         my $eval_string = $data->{calculation} ;
-        $eval_string = encode_eval_string($self, $data, $eval_string) ;
+        $eval_string = decode_eval_string($self, $data, $eval_string) ;
         return( calculate($eval_string) );
     }
     return(undef);
 };
 
-sub encode_eval_string{
+sub decode_eval_string{
     my $self        = shift ;
     my $data        = shift ;
     my $eval_string = shift ;
@@ -129,18 +128,13 @@ sub encode_eval_string{
 
     for ( $eval_string =~ m/(_\d+)/g ){
         if( exists($data->{"f_value$_"}) && $data->{"f_value$_"} ){ 
-            my $value = $data->{"f_value$_"} ;
-            if( $value =~ /_\d+/ ){
-                $value = encode_eval_string($self,$data,$value,++$recursion);
-                $eval_string =~ s/$_/$value/g;
-                if( !exists($data->{"f_calculated_value$_"}) ){
-                    $self->stash("f_calculated_value$_" => calculate($value)) ;
-                }
-            } else {
-                $eval_string =~ s/$_\b/$value/g;
-            }
+            my $value = $self->stash("f_calculated_value_$_") || $data->{"f_value$_"} ;
+            $eval_string =~ s/$_\b/$value/g;
         }
     }
+   if( $eval_string =~ /_\d/ ){
+        $eval_string = decode_eval_string($self,$data,$eval_string,++$recursion);
+   }
     --$recursion ;
 	return("( $eval_string )" ) ;
 };
@@ -196,4 +190,4 @@ __END__
 
  M.Nurullaev <maksud.nurullaev@gmail.com>
 
-=cut
+

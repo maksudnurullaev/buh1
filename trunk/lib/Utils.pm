@@ -19,13 +19,7 @@ use File::Spec;
 use File::Path qw(make_path);
 use Locale::Currency::Format;
 
-sub user_role2company{
-    my $self = shift;
-    my ($user_id,$company_id) = ($self->session->{'user id'}, $self->session->{'company id'});
-    return if !$user_id || !$company_id ;
-    my $db = Db->new($self);
-    return($db->get_linked_value('access',$user_id,$company_id));
-};
+sub user_role2company{ shift->session->{'company access'}; };
 
 sub trim{
     my $string = $_[0];
@@ -97,8 +91,8 @@ sub is_user{
 
 sub is_editor{
     my $self = shift;
-    return 1 if Utils::User::is_editor($self);
-    return;
+    return( user_role2company($self) 
+         && user_role2company($self) =~ /write|admin/i );
 };
 
 sub get_date{
@@ -149,7 +143,7 @@ sub validate_session_company{
 sub get_paginator{
     my ($self,$prefix,$items_count) = @_;
     my $page = $self->session->{"$prefix/filter/page"} || 1;
-    my $pagesize = $self->session->{"$prefix/filter/pagesize"} || 2;
+    my $pagesize = $self->session->{"$prefix/filter/pagesize"} || 5;
     my $pages;
 
     if( $pagesize >= $items_count){

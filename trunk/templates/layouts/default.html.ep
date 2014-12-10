@@ -29,6 +29,9 @@
       % if ( $company ) {
        <br /><br />
        <span><small><u><%= $company %></u></small></span>
+       %if ( user_role2company ){
+        <sup><%=  ml user_role2company %></sup>   
+       % }
       % } 
     </div>
   </div>
@@ -61,7 +64,7 @@
                <ul><li><a href="/operations/list"><%= ml 'Business transactions' %></a></li></ul>
                <ul><li><a href="/templates/list"><%= ml 'Templates' %></a></li></ul>
                <ul><li><a href="/guides/page"><%= ml 'Guides' %></a></li></ul>
-               <ul><li><a href="/calculations/list"><%= ml 'Calculations' %></a></li></ul>
+               <ul><li><a href="/calculations/page"><%= ml 'Calculations' %></a></li></ul>
               </li>
               % if( $user && !$admin ) {
                <li><%= ml 'Companies' %>

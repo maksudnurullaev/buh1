@@ -1,8 +1,10 @@
 % layout "default";
 %= include "success_error" ;
 %# at least should be exists stash('description') - file name, for current file
+<h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 % if( stash('description') ){
- %= include "$controller/files_header" ;
- %= include "$controller/files_toolbar" ;
+ %= include "common/toolbar_type1" ;
+ %= include "common/files_header_type1" ;
+ %= include "common/files_toolbar_type1" if is_editor ;
  %= include "files/list" ;
 % } 

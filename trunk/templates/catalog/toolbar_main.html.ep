@@ -1,4 +1,0 @@
- <div class="toolbar">
-  %= link_to ml('Add') => $add_path ; 
- </div>
-

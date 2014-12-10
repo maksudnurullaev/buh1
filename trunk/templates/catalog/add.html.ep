@@ -1,4 +1,5 @@
 % layout 'default';
 <h2><%= ml 'Catalog' %> | <%= ml 'Add' %></h2>
 %= include 'success_error' ;
-%= include "$controller/descriptor_form" ;
+
+%= include "common/description_form_type1" if is_editor ;

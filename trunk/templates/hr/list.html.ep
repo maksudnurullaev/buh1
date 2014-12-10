@@ -1,6 +1,10 @@
 % layout 'default';
-<h2><%= ml 'Human Resource' %></h2>
+<h2><%= ml ucfirst $controller %></h2>
 %= include 'success_error' ;
-%= include 'hr/toolbar_main', add_path => "/hr/add" if user_role2company =~ /write|admin/i ;
-%= include 'hr/list_resources', temp_hash => stash('resources_root') if stash('resources_root') ;
 
+%if( user_role2company =~ /write|admin/i ){
+ <div class="toolbar">
+  %= link_to ml('Add') => "/$controller/add" ; 
+ </div>
+%}
+%= include "utils/list_resources_type1", temp_hash => stash('resources_root') if stash('resources_root') ;

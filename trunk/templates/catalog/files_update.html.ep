@@ -1,13 +1,10 @@
-% my $isReadOnly = ( user_role2company =~ /^read/i );
 % layout "default";
 %= include "success_error" ;
-<h2><%= ml "Catalog" %> | <%= ml "Files" %> | <%= ml "Update" %></h2>
-
-%= include "$controller/toolbar" ;
-
-<div class="toolbar">
- <h3><%= stash "description" %></h3>
-</div>
-
-%= include "files/update_form" ;
-
+<h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
+%# at least should be exists stash('description') - file name, for current file
+% if( stash('description') ){
+ %= include "common/toolbar_type1" ;
+ %= include "common/files_header_type1" ;
+ %= include "common/files_toolbar_type1" if is_editor ;
+ %= include "files/update_form" ;
+% }

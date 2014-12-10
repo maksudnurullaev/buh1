@@ -22,7 +22,7 @@
      % } else {
       %= ml "Make root" ;
      % }
-     | <%= link_to "/$controller/list" => begin %><%= ml "Cancel" %><% end %>
+     | <%= link_to "/$controller/edit/$id" => begin %><%= ml "Cancel" %><% end %>
     </td>
    </tr>
   </table>

@@ -2,5 +2,5 @@
 %= include "success_error" ;
 <h2><%= ml "Catalog" %> | <%= ml "Move" %></h2>
 
-%= include "$controller/toolbar" ;
+%= include "common/toolbar_type1" ;
 %= include "$controller/descriptor_form_move" ;
