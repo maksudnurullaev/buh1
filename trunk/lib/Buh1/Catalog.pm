@@ -246,7 +246,7 @@ sub calculations_edit{
         return if !ac_is_authorized($self,'write|admin') ;
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-               if( defined $self->param('make_copy') ){
+            if( defined $self->param('make_copy') ){
                 my $dbc = Utils::Db::client($self);
                 my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
                 delete $data->{id} ;
@@ -255,7 +255,6 @@ sub calculations_edit{
                 for my $key (keys %{$template}){
                     $data->{$key} = $template->{$key} if $key !~ /^_/ ;
                 }
-                warn Dumper $data ;
                 my $new_cid = $dbc->insert($data);
                 $dbc->set_link('catalog',$id,'calculation',$new_cid);
                 $self->redirect_to("/catalog/calculations/$id");
