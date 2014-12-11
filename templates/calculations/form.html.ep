@@ -1,25 +1,23 @@
-% my $isReadOnly = ( !user_role2company || user_role2company =~ /^read/i );
- %= form_for $_path_post => (method => 'POST') => begin
- %= hidden_field oname => 'calculation' ;
- %= hidden_field id => stash('id') if stash('id') ;
-  <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
-   <td>
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
- % if( !$isReadOnly ){ 
-    <br />
-    %= check_box make_copy => 1, id => 'make_copy', style => 'width:auto;' ;
-    <label for="make_copy"><%= ml 'Make copy' %></label>
-   </td>
-  </tr>
-  <tr><td>&nbsp;</td>
-   <td>
-    %= submit_button ml('Save') ;
-    | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
- % } 
-   </td>
-  </tr>
- % end
-
+%= form_for $_path_post => (method => 'POST') => begin
+%= hidden_field oname => 'calculation' ;
+%= hidden_field id => stash('id') if stash('id') ;
+ <tr>
+  <td class='tar'> 
+   %= ml 'Description' 
+  </td>
+  <td>
+   %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   % if( $_clone ){ 
+   <br />
+   %= check_box make_copy => 1, id => 'make_copy', style => 'width:auto;' ;
+   <label for="make_copy"><%= ml 'Make copy' %></label>
+   % }
+  </td>
+ </tr>
+ <tr><td>&nbsp;</td>
+  <td>
+   %= submit_button ml('Save') ;
+   | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
+  </td>
+ </tr>
+% end

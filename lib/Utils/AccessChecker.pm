@@ -22,7 +22,7 @@ use Utils::User;
 
 use Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(ac_is_user ac_is_authorized);
+our @EXPORT = qw(ac_is_user ac_is_authorized ac_is_admin);
 
 
 sub ac_is_user{
@@ -45,7 +45,14 @@ sub ac_is_authorized{
     return(1);
 };
 
-
+sub ac_is_admin{
+    my $c = shift;
+    if( !Utils::User::is_admin($c) ){
+        $c->redirect_to('/user/login');
+        return(0);
+    }
+    return(1);
+};
 
 };
 

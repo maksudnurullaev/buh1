@@ -12,6 +12,7 @@ use Mojo::Base 'Mojolicious::Controller' ;
 use Utils::Calculations ;
 use Utils::Db ;
 use Utils::Guides ;
+use Utils::AccessChecker ;
 use Data::Dumper ;
 
 sub auth{
@@ -34,11 +35,12 @@ sub add{
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
+        return if !ac_is_admin($self);
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             Utils::Db::db_insert_or_update($self,$data);
             $self->stash(success => 1);
-            $self->redirect_to('/calculations/list');
+            $self->redirect_to('/calculations/page');
         } else {
            $self->stash('description_class' => 'error');
            $self->stash('error' => 1);
@@ -71,10 +73,25 @@ sub edit{
     my $id = $self->param('payload');
     my $method = $self->req->method;
     if( $method =~ /POST/ ){
+        return if !ac_is_admin($self);
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
-            Utils::Db::db_insert_or_update($self,$data);
-            $self->stash(success => 1);
+            if( defined $self->param('make_copy') ){
+                my $dbc = Utils::Db::main($self);
+                my $template = $dbc->get_objects({ id => [$id] })->{$id} ;
+                delete $data->{id} ;
+                delete $template->{id} ;
+                delete $template->{description} ;
+                for my $key (keys %{$template}){
+                    $data->{$key} = $template->{$key} if $key !~ /^_/ ;
+                }
+                my $new_id = $dbc->insert($data);
+                $self->redirect_to("/calculations/edit/$new_id");
+                return;
+            } else {
+                Utils::Db::db_insert_or_update($self,$data);
+                $self->stash(success => 1);
+            }
         }
     }
     my $data = Utils::Db::db_deploy($self,$id) ;
@@ -88,7 +105,7 @@ sub delete{
     my $id = $self->param('payload') ;
 	my $db = Utils::Db::main($self) ;
 	$db->del($id);
-	$self->redirect_to("/calculations/list");
+	$self->redirect_to("/calculations/page");
 };
 
 sub update_fields{
