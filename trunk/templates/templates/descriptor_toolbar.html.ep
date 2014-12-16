@@ -1,6 +1,6 @@
 % my $files_count = files_count($payload) ;
 <div class="toolbar">
-% if ( is_admin ) {
+% if ( who_is_global('admin') ) {
  % if ( !stash('CHILDREN') && !$files_count ){
   <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
  % } else {

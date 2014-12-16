@@ -2,13 +2,13 @@
 % my $calcs_count = calcs_count($payload) ;
 
 <div class="toolbar">
- % if ( is_editor && !stash('CHILDREN') && !$files_count && !$calcs_count ){
+ % if ( who_is_global('editor') && !stash('CHILDREN') && !$files_count && !$calcs_count ){
   <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
  % } else {
    %= ml('Delete') ;
  % }
  |
- % if ( is_editor ){
+ % if ( who_is_global('editor') ){
   <%= link_to ml("Move") => "/$controller/move/$payload" %>
  % } else {
    %= ml('Move') ;

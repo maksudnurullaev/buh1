@@ -5,4 +5,4 @@
  %= link_to ml('Back') => '/guides/page' ; 
 </div>
 
-%= include 'guides/form' if is_admin ;
+%= include 'guides/form' if who_is_global('admin') ;

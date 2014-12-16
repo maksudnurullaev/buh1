@@ -8,7 +8,7 @@
 <h2><%= ml 'Business operation' %></h2>
 <fieldset>
  <strong><%= stash('number') . '. ' . stash('name') %></strong>
- % if( is_editor ) {
+ % if( who_is_global 'editor' ) {
   %= include 'operations/form_bt';
  % } else {
   %= include 'operations/form4user';   

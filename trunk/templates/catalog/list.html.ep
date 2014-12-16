@@ -2,6 +2,6 @@
 <h2><%= ml ucfirst $controller %></h2>
 %= include 'success_error' ;
 
-%= include 'catalog/toolbar' if( is_editor ) ;
+%= include 'catalog/toolbar' if( who_is_global('editor') ) ;
 %= include "common/list_resources_type1", temp_hash => stash('resources_root') if stash('resources_root') ;
 

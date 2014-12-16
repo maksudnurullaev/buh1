@@ -1,6 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Templates' %></h2>
 %= include 'success_error' ;
-%= include "$controller/toolbar" if is_admin ;
+%= include "$controller/toolbar" if who_is_global('admin') ;
 %= include "$controller/list_resources", temp_hash => stash('resources_root') if stash('resources_root') ;
 

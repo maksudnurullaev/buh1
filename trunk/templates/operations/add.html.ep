@@ -10,7 +10,7 @@
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 
-% if( is_editor ){
+% if( who_is_global('editor') ){
 <div class="form">
  %= form_for "/operations/add/$payload" => (method => 'POST') => begin
  %= hidden_field object_name => 'business transaction'
