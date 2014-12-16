@@ -2,4 +2,5 @@
 <h2><%= ml('Calculations') . ' | ' . ml('Test') %></h2>
 %= include 'success_error' ;
 
+%= include 'calculations/toolbar4test' ; 
 %= include 'calculations/fields_form_test' ;

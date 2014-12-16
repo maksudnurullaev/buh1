@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Calculations' %></h2>
 %= include 'success_error' ;
-%= include 'calculations/toolbar', add_path => '/calculations/add' if is_admin ;
 
+%= include 'calculations/toolbar' if is_admin ;
 % my $link_path_prefix = ("/$controller/" . ( is_admin() ? 'edit/' : 'test/')) ;
 %= include 'calculations/list', isClientPart => 0, link_path_prefix => $link_path_prefix ;

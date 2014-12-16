@@ -83,6 +83,21 @@ sub is_admin{
     return;
 };
 
+sub is_admin_editor{
+    my $self = shift;
+    return(1) if is_admin($self);
+    my $email = Utils::User::current($self);
+    if( $email ){
+        my $db = Db->new();
+        my $user = $db->get_user($email);
+        return(1) if $user
+            && exists($user->{extended_right})
+            && $user->{extended_right}
+            && $user->{extended_right} =~ /editor/i ;
+    }
+    return(0);
+};
+
 sub is_user{
     my $self = shift;
     return 1 if Utils::User::current($self);

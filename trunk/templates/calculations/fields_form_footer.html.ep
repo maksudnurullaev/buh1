@@ -11,6 +11,7 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
+   | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
    </td>
  </tr>
 

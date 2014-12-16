@@ -10,28 +10,23 @@
 </head>
 
 <body>
+  %= include 'debug/access' ;
   <div id="headerSection">
     <a href="http://buh1.uz/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
     <div class="login_status">
-      <% my $user = check_for('user'); %>
-      <% my $admin = check_for('admin'); %>
-      <% my $company = check_for("company name"); %>
-      <%= ml 'You' %>: 
-      % if($user) {
-      <strong><%= $user %></strong>
-      <sup><a href="/user/logout"><%= ml 'Logout' %></a></sup>
+      % if( who_is_global 'user' ) {
+       <strong><%= session->{'user email'} %></strong>
+       <sup><a href="/user/logout"><%= ml 'Logout' %></a></sup>
       % } else {
-      <strong><%= ml 'Guest' %></strong>
-      <sup><a href="/user/login"><%= ml 'Login' %></a></sup>
+       <strong><%= ml 'Guest' %></strong>
+       <sup><a href="/user/login"><%= ml 'Login' %></a></sup>
       % }
       &nbsp;&nbsp;|||&nbsp;&nbsp;
       <%= languages_bar %>
-      % if ( $company ) {
+      % if( who_is_local 'reader' ) {
        <br /><br />
-       <span><small><u><%= $company %></u></small></span>
-       %if ( user_role2company ){
-        <sup><%=  ml user_role2company %></sup>   
-       % }
+       <span><small><u><%= session->{'company name'} %></u></small></span>
+       <sup><%=  ml session->{'company access'} %></sup>   
       % } 
     </div>
   </div>
@@ -43,19 +38,18 @@
             <ul id="leftnav">
               <li><%= ml 'Home' %>
                <ul><li><a href="/"><%= ml 'About us' %></a></li></ul>
-               % if(!$admin) {
+               % if( who_is_global('editor') ) {
+                <ul><li><a href="/feedbacks/list"><%= ml 'Feedbacks' %></a></li></ul>
+               % } else {
                 <ul><li><a href="/feedbacks/add"><%= ml 'Feedback' %></a></li></ul>
                % }
               </li>
-              % if($user) {
+              % if( who_is_global 'user' ){
                <li><%= ml 'Cabinet' %>
                 <ul><li><a href="/user/password"><%= ml 'Password' %></a></li></ul>
-                % if( $admin ) {
+                % if( who_is_global 'admin' ) {
                  <ul><li><a href="/users/list"><%= ml 'Users' %></a></li></ul>
                  <ul><li><a href="/companies/list"><%= ml 'Companies' %></a></li></ul>
-                % }
-                % if( $admin || is_editor ) {
-                 <ul><li><a href="/feedbacks/list"><%= ml 'Feedbacks' %></a></li></ul>
                 % }
                </li>
               % }              
@@ -66,18 +60,18 @@
                <ul><li><a href="/guides/page"><%= ml 'Guides' %></a></li></ul>
                <ul><li><a href="/calculations/page"><%= ml 'Calculations' %></a></li></ul>
               </li>
-              % if( $user && !$admin ) {
+              % if( !who_is_global('editor') ) {
                <li><%= ml 'Companies' %>
                 <ul><li><a href="/desktop/select_company"><%= ml 'Select' %></a></li></ul>
                </li>
               % }
-              % if( $company ) {
-               <li><u><%= $company %></u><!-- ml 'General ledger' %-->
+              % if( session->{'company name'} ) {
+               <li><u><%= session->{'company name'} %></u><!-- ml 'General ledger' %-->
                 <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
                 <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
                 <ul><li><a href="/catalog/list"><%= ml 'Catalog' %></a></li></ul>
                 <ul><li><a href="/hr/list"><%= ml 'Human Resource' %></a></li></ul>
-                % if( user_role2company =~ /write|admin/i ){
+                % if( who_is_local 'editor' ){
                     <ul><li><a href="/backup/list"><%= ml 'Backup/Restore' %></a></li></ul>
                 % }
                </li>
