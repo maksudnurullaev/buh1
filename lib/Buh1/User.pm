@@ -36,7 +36,7 @@ sub logout{
 
 sub password{
     my $self = shift;
-    if( !$self->is_user ){
+    if( !$self->who_is_global('user') ){
         $self->redirect_to('/user/login');
         return;
     }

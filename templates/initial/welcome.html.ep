@@ -6,7 +6,7 @@
 Данная программа разработана для бухгалтеров!<br />
 <% end %>
     </p>
-% if( !is_user ){    
+% if( !who_is_global('user') ){    
     <p>
 <%= mlm 'rus', 'Demo access block' => begin %>
 <u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!

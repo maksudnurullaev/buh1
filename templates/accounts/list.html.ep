@@ -1,6 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Chart of Accounts' %></h2>
-% if( is_editor ) {
+% if( who_is_global 'editor' ) {
 <div class="toolbar">
  <a href='/accounts/add_part'><%= ml 'Add' %></a>
 </div>
