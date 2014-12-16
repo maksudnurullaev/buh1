@@ -4,6 +4,6 @@
 
 %= include "common/toolbar_type1" ;
 %= include "common/files_header_type1" ;
-%= include "common/files_toolbar_type1" if is_editor ;
+%= include "common/files_toolbar_type1" if who_is_global('editor') ;
 %= include "files/add_new_form" ;
 

@@ -1,4 +1,4 @@
-% my $isEditor = ( is_admin || ( defined user_role2company && user_role2company !~ /^read/i) );
+% my $isEditor = ( who_is_global('admin') || ( defined user_role2company && user_role2company !~ /^read/i) );
 %= form_for $_path_post => (method => 'POST') => begin
  %= hidden_field oname => 'calculation' ;
  %= hidden_field id    => stash 'id' ;

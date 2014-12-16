@@ -20,7 +20,7 @@
     % }
    </td>
   </tr>
-  % if ( is_admin ){
+  % if ( who_is_global('admin') ){
   <tr><td>&nbsp;</td>
    <td>
      % if( $action eq 'del' ){

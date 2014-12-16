@@ -2,7 +2,7 @@
 <h2><%= ml 'Business transactions' %></h2>
 <div class="toolbar">
  <a href="/operations/list"><%= ml 'Back' %></a>
-% if ( is_editor ) {
+% if ( who_is_global 'editor' ) {
  | 
  %= link_to ml('Add') => "/operations/add/$payload";
 % }

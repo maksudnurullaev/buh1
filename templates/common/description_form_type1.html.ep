@@ -20,7 +20,7 @@
     % }
    </td>
   </tr>
-% if( is_editor ){  
+% if( who_is_global('editor') ){  
   <tr><td>&nbsp;</td>
    <td>
       %= submit_button ml($action eq 'del' ? 'Delete':'Save') ;

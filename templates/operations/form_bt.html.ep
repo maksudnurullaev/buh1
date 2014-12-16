@@ -15,14 +15,14 @@
    <td><%= text_area $field => (stash $field) , class => stash ($field . '_class') %></td>
   </tr>
  % }
- % if( is_editor ){  
+ % if( who_is_global 'editor' ){  
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save')
    </td>
   </tr>
  % }
- % if ( is_admin ) {
+ % if ( who_is_global 'admin' ) {
   <tr><td>&nbsp;</td>
    <td>
     <sup><%= link_to ml("Delete") => "/operations/delete_bt/$payload?bt=$bt" %></sup>

@@ -7,4 +7,4 @@
  %= link_to ml('View') => "/guides/view/$payload" ;
 </div>
 
-%= include 'guides/form' if is_admin ;
+%= include 'guides/form' if who_is_global('admin') ;

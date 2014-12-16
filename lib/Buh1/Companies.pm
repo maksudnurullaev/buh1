@@ -42,7 +42,7 @@ sub filter{
 
 sub list{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -51,7 +51,7 @@ sub list{
 
 sub deleted{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -89,7 +89,7 @@ sub select_objects{
 
 sub restore{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -121,7 +121,7 @@ sub validate{
 
 sub del{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -137,7 +137,7 @@ sub del{
 
 sub remove_user{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -152,7 +152,7 @@ sub remove_user{
 
 sub add_user{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_gloabl('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -166,7 +166,7 @@ sub add_user{
 
 sub change_access{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -182,7 +182,7 @@ sub change_access{
 
 sub edit{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
@@ -239,7 +239,7 @@ sub edit{
 
 sub add{
     my $self = shift;
-    if( !$self->is_admin ){
+    if( !$self->who_is_global('admin') ){
         $self->redirect_to("/user/login");
         return;
     }
