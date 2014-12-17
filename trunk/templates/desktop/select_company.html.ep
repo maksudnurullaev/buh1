@@ -2,7 +2,7 @@
 <h1><%= ml 'Companies' %></h1>
 % my $user      = stash 'user';
 % my $companies = stash 'companies';
-% my $company = check_for("company name");
+% my $company   = session->{'company name'};
 % if ( $companies ){
  <div>
   <ul>

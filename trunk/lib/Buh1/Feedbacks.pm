@@ -44,14 +44,12 @@ sub filter{
 
 sub list{
     my $self = shift;
-    return if  !ac_is_admin($self) ;
 
     select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-    return if !ac_is_admin($self) ;
 
     select_objects($self,$DELETED_OBJECT_NAME,"/$OBJECT_NAMES/deleted");
 };
@@ -76,7 +74,6 @@ sub select_objects{
 
 sub restore{
     my $self = shift;
-    return if !ac_is_admin($self) ;
 
     my $id = $self->param('payload');
     if( $id ){
@@ -112,7 +109,6 @@ sub validate{
 
 sub del{
     my $self = shift;
-    return if !ac_is_admin($self) ;
 
     my $id = $self->param('payload');
     if( $id ){
@@ -126,7 +122,6 @@ sub del{
 
 sub edit{
     my $self = shift;
-    return if !ac_is_admin($self) ;
 
     $self->stash(edit_mode => 1);
     my $method = $self->req->method;

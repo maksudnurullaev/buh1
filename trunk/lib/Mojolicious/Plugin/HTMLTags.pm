@@ -39,13 +39,6 @@ sub register {
     $app->helper( who_is_global  => sub { Utils::User::who_is_global(@_); } );
     $app->helper( who_is_local   => sub { Utils::User::who_is_local(@_); } );
 
-#    $app->helper( is_admin  => sub { Utils::is_admin (@_); } );
-#    $app->helper( is_admin_editor  => sub { Utils::is_admin_editor (@_); } );
-#    $app->helper( is_user   => sub { Utils::is_user (@_); } );
-#    $app->helper( is_editor => sub { Utils::is_editor (@_); } );
-#    $app->helper( user_role2company => sub { Utils::user_role2company (@_); } );
-#    $app->helper( is_file_writer    => sub { Utils::Files::is_file_writer (@_); } );
-
     $app->helper( get_document_number_last => sub { Utils::Documents::get_document_number_last (@_); } );
     $app->helper( generate_name   => sub { Utils::Languages::generate_name (@_); } );
     $app->helper( currency_format => sub { Utils::currency_format1 (@_); } );

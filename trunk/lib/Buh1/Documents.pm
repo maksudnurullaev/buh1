@@ -30,15 +30,6 @@ my @OBJECT_FIELDS = ('object_name','account','bt','debet','credit','type','docum
                      'details','executive','accounting manager');
 my @OBJECT_HEADER_FIELDS = ('docid','account','bt','debet','credit');
 
-sub isValidUser{
-    my $self = shift;
-    if( !$self->is_user ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-    return(1);
-};
-
 sub set_form_header{
     my $self = shift;
     my $parameters = {};
@@ -75,7 +66,6 @@ sub set_form_header{
 
 sub list{
     my $self = shift;
-    return if !isValidUser($self);
     my $db_client = Utils::Db::client($self);
     if( $db_client ){
         select_objects($self,$db_client,$OBJECT_NAME,'');
@@ -198,7 +188,6 @@ sub validate_document_header{
 
 sub update_document_header{
     my $self = shift;
-    return if !isValidUser($self);
 
     if( my $data = validate_document_header($self) ){
         my $db_client = Utils::Db::client($self);
@@ -216,7 +205,6 @@ sub update_document_header{
 
 sub cancel_update_document_header{
     my $self = shift;
-    return if !isValidUser($self);
 
     my $payload = $self->param("payload");
     my $docid = Utils::Documents::detach($self);
@@ -225,7 +213,6 @@ sub cancel_update_document_header{
 
 sub print{
     my $self = shift;
-    return if !isValidUser($self);
 
     my $docid = $self->param('payload');
     if( $docid ){
@@ -235,7 +222,6 @@ sub print{
 
 sub update{
     my $self = shift;
-    return if !isValidUser($self);
 
     my $isPost   = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id       = $self->param('docid');

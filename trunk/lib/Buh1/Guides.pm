@@ -21,18 +21,8 @@ sub page{
     $self->stash( guides => Utils::Guides::get_list($self) ) ;
 };
 
-sub is_editor{
-    my $self = shift ;
-    if( !$self->is_admin ){
-        $self->redirect_to('/guides/page');
-        return(0);
-    }
-    return(1);
-};
-
 sub add{
     my $self = shift ;
-    return if !is_editor($self);
 
     if ( $self->req->method =~ /POST/ ){
         if( my $guide_number = Utils::Guides::add_guide($self) ){
@@ -46,7 +36,6 @@ sub add{
 
 sub edit{
     my $self                 = shift;
-    return if !is_editor($self);
 
     my $guide_number        = $self->param('payload');
     if( $self->req->method =~ /POST/ ){
@@ -71,7 +60,6 @@ sub view{
 
 sub del{
     my $self = shift ;
-    return if !is_editor($self);
 
     my $guide_number      = $self->param('payload');
     my $path              = Utils::Guides::get_guides_path($self);

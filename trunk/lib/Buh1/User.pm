@@ -36,10 +36,6 @@ sub logout{
 
 sub password{
     my $self = shift;
-    if( !$self->who_is_global('user') ){
-        $self->redirect_to('/user/login');
-        return;
-    }
     my $email = Utils::User::current($self);
     my $method = $self->req->method;
     my $error_found = 0;

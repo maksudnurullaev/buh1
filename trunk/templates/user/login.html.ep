@@ -1,6 +1,5 @@
 % layout 'default';
-<% my $user = check_for('user'); %>
-% if ( $user ) { 
+% if ( who_is_global('user') ) { 
  <h1><%= ml 'Access denied' %>!</h1>
 % } else {
  <h2><%= ml 'Login' %></h2>

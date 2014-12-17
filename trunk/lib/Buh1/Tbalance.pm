@@ -3,15 +3,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Documents;
 use Data::Dumper;
 
-sub isValidUser{
-    my $self = shift;
-    if( !$self->is_user ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-    return(1);
-};
-
 sub validate{
     my $self = shift;
     my $data = {};
@@ -46,7 +37,6 @@ sub validate_dates{
 
 sub page {
     my $self = shift;
-    return if !isValidUser($self);
     my $isPost  = ($self->req->method =~ /POST/);
 
     if( my $data = validate($self) ){

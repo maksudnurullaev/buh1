@@ -1,6 +1,6 @@
  % my $debets  = stash 'debets';
  % my $credits = stash 'credits';
- % my $company = check_for("company name");
+ % my $company = session->{'company name'};
  % my $skd     = scalar(keys(%{$debets}));
  % my $skc     = scalar(keys(%{$credits}));
  % my $bt      = param 'bt';

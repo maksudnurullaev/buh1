@@ -153,20 +153,6 @@ sub get_file_content{
     return(undef);
 };
 
-sub is_file_writer{
-    my $self = shift;
-    my $controller = $self->stash('prefix') || $self->stash('controller');
-    if( $controller ){
-        if( $controller =~ /^templates/i ){
-            return Utils::is_admin($self);
-        } else {
-            my $company_access = $self->session->{'company access'};
-            return ( $company_access && $company_access =~ /^(admin|write)/i ) ;
-        }
-    }
-    return(0);
-};
-
 # END OF PACKAGE
 };
 
