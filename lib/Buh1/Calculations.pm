@@ -15,15 +15,6 @@ use Utils::Guides ;
 use Utils::AccessChecker ;
 use Data::Dumper ;
 
-sub auth{
-    my $self = shift;
-    if( !$self->is_user() ){ 
-        $self->redirect_to('/user/login'); 
-        return ; 
-    }
-    return(1);
-};
-
 sub page{
     my $self = shift;
     $self->stash( calculations => Utils::Calculations::get_db_list($self));
@@ -31,11 +22,9 @@ sub page{
 
 sub add{
     my $self = shift;
-    return if !auth($self) ;
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
-        return if !ac_is_admin($self);
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             Utils::Db::db_insert_or_update($self,$data);
@@ -68,12 +57,10 @@ sub test{
 
 sub edit{
     my $self = shift;
-    return if !auth($self) ;
 
     my $id = $self->param('payload');
     my $method = $self->req->method;
     if( $method =~ /POST/ ){
-        return if !ac_is_admin($self);
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             if( defined $self->param('make_copy') ){
@@ -100,8 +87,6 @@ sub edit{
 
 sub delete{
     my $self = shift;
-    return if !auth($self) ;
-
     my $id = $self->param('payload') ;
 	my $db = Utils::Db::main($self) ;
 	$db->del($id);
@@ -110,8 +95,6 @@ sub delete{
 
 sub update_fields{
     my $self = shift;
-    return if !auth($self) ;
-
     my $id = $self->param('payload');
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){

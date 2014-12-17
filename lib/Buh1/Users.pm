@@ -72,28 +72,16 @@ sub select_objects{
 
 sub list{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
     select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
     select_objects($self,$DELETED_OBJECT_NAME,'/users/deleted');
 };
 
 sub restore{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
     my $id = $self->param('payload');
     if( $id ){
         my $db = Db->new($self);
@@ -156,10 +144,6 @@ sub validate{
 
 sub del{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
     my $id = $self->param('payload');
     if( $id ){
         my $db = Db->new($self);
@@ -172,11 +156,6 @@ sub del{
 
 sub remove_company{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
-
     my $user_id      = $self->param('payload');
     my $id = $self->param('company');
     my $db = Db->new($self);
@@ -187,11 +166,6 @@ sub remove_company{
 
 sub edit{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
-
     $self->stash(edit_mode => 1);
     my $method = $self->req->method;
     my $data;
@@ -230,11 +204,6 @@ sub edit{
 
 sub add{
     my $self = shift;
-    if( !$self->who_is_global('admin') ){
-        $self->redirect_to("/user/login");
-        return;
-    }
-
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         # check values

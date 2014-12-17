@@ -1,7 +1,7 @@
 <div>
  %= form_for '/feedbacks/add' => (method => 'POST') => begin
  <table class='colortable'>
-  % my $user = check_for('user');
+  % my $user = session->{'user email'};
   % if( !$user ) {
    <tr><td class='tar'><%= ml 'Your name' %></td>
     <td><%= text_field 'user', class => stash 'user_class' %> </td>

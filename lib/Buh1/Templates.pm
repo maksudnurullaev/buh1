@@ -15,11 +15,6 @@ use Data::Dumper ;
 
 sub add{
     my $self = shift;
-    if( !$self->is_admin ){
-        $self->redirect_to('/templates/list');
-        return(0);
-    }
-
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         my $data = Utils::Templates::form2data($self);
@@ -52,11 +47,6 @@ sub edit{
 
 sub del{
     my $self = shift;
-    if( !$self->is_admin ){
-        $self->redirect_to('/templates/list');
-        return(0);
-    }
-
     my $method = $self->req->method ;
     my $id = $self->param('payload');
     if( uc($method) eq 'POST' ){
@@ -70,11 +60,6 @@ sub del{
 
 sub files_update{
     my $self = shift;
-    if( !$self->is_admin ){
-        $self->redirect_to('/templates/list');
-        return(0);
-    }
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -84,8 +69,6 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -97,8 +80,6 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -114,8 +95,6 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
     $self->redirect_to("/templates/files/$id");
@@ -123,8 +102,6 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $id = $self->param('payload');
 
     if( $self->req->method  eq 'POST' ){
@@ -153,8 +130,6 @@ sub files{
 
 sub move{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $method = $self->req->method ;
     my $id = $self->param('payload');
 
@@ -176,8 +151,6 @@ sub move{
 
 sub make_root{
     my $self = shift;
-    return if !$self->is_admin();
-
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::main($self);
     $dbc->child_make_root($id);

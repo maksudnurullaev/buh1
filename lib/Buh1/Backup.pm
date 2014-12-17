@@ -13,19 +13,8 @@ use Utils::Files ;
 use Utils ;
 use Data::Dumper ;
 
-sub auth{
-    my $self = shift;
-    if( !$self->is_user() ){ 
-        $self->redirect_to('/user/login'); 
-        return ; 
-    }
-    return(1);
-};
-
 sub list{
     my $self = shift;
-    return if !auth($self) ;
-
     my $action = $self->param('payload');
 
 	if( $self->req->method  eq 'POST' && $action eq 'add' ){
@@ -141,16 +130,12 @@ sub restore{
 
 sub get_client_archives_path{
 	my $self = shift ;
-    return if !auth($self) ;
-
     my $company_id = $self->session('company id') ;
     return( "db/archives/$company_id" ) ;
 };
 
 sub get_client_files_path{
 	my $self = shift ;
-    return if !auth($self) ;
-
     my $company_id = $self->session('company id') ;
     return( "db/clients/$company_id" ) ;
 };

@@ -20,11 +20,6 @@ use Utils::Documents;
 
 sub select_company{
     my $self = shift;
-    if( !$self->who_is_global('user') ){
-        $self->redirect_to('/user/login');
-        return;
-    }
-
     my $cid = $self->param('payload');
     if( $cid ){
         my $db = Db->new($self);

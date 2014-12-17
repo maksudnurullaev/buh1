@@ -12,12 +12,10 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Catalog ;
 use Utils::Files ;
 use Utils::Calculations ;
-use Utils::AccessChecker ;
 use Data::Dumper ;
 
 sub add{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -32,16 +30,13 @@ sub add{
 
 sub list{
     my $self = shift;
-    return if !ac_is_authorized($self,'read|write|admin');
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
 };
 
 sub edit{
     my $self = shift;
-    return if !ac_is_authorized($self,'read|write|admin');
 
     if( $self->req->method eq 'POST' ){
-        return if !ac_is_authorized($self,'write|admin');
         my $data = Utils::Catalog::form2data($self);
         $self->stash(success => 1);
         Utils::Db::cdb_insert_or_update($self,$data);
@@ -55,8 +50,6 @@ sub edit{
 
 sub del{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $method = $self->req->method ;
     my $id = $self->param('payload');
     if( uc($method) eq 'POST' ){
@@ -70,8 +63,6 @@ sub del{
 
 sub move{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $method = $self->req->method ;
     my $id = $self->param('payload');
 
@@ -93,7 +84,6 @@ sub move{
 
 sub make_root{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
     $dbc->child_make_root($id);
@@ -104,8 +94,6 @@ sub make_root{
 
 sub files_update{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -115,8 +103,6 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -128,8 +114,6 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
@@ -145,8 +129,6 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
     $self->redirect_to("/catalog/files/$id");
@@ -154,7 +136,6 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
 
@@ -176,7 +157,6 @@ sub files_add_new{
 
 sub files{
     my $self = shift;
-    return if !ac_is_authorized($self,'read|write|admin');
 
     my $id   = $self->param('payload');
 
@@ -189,7 +169,6 @@ sub files{
 
 sub calculations{
     my $self = shift;
-    return if !ac_is_user($self);
 
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
@@ -200,7 +179,6 @@ sub calculations{
 
 sub calculations_add{
     my $self = shift ;
-    return if !ac_is_authorized($self,'write|admin');
 
     my $id = $self->param('payload');
     if ( $self->req->method =~ /POST/ ){
@@ -236,14 +214,12 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
-    return if !ac_is_authorized($self,'read|write|admin') ;
 
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
-        return if !ac_is_authorized($self,'write|admin') ;
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             if( defined $self->param('make_copy') ){
@@ -273,7 +249,6 @@ sub calculations_edit{
 
 sub calculations_update_fields{
     my $self = shift;
-    return if !ac_is_authorized($self,'read|write|admin');
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -291,8 +266,6 @@ sub calculations_update_fields{
 
 sub calculations_delete{
     my $self = shift;
-    return if !ac_is_authorized($self,'write|admin');
-
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
     my $dbc = Utils::Db::client($self);
