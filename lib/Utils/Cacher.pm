@@ -58,7 +58,7 @@ sub cache_it{
     $name = generate_key($c, $name);
     my $cache = get_cache ;
     $cache->set($name, $value);
-    warn "CACHE <-- ($name)";
+    # warn "CACHE <-- ($name)";
 };
 
 sub is_cached{
@@ -67,7 +67,7 @@ sub is_cached{
 
     $name = generate_key($c, $name);
     my $cache = get_cache ;
-    warn "CACHE --> ($name)" if $cache->is_valid($name);
+    # warn "CACHE --> ($name)" if $cache->is_valid($name);
     return $cache->get($name);
 };
 
@@ -80,7 +80,7 @@ sub clear_cache{
 
     push @del_keys, grep {/^$start_key/} $cache->get_keys();
     $cache->remove_multi(\@del_keys);
-    warn "CACHE >X< (@del_keys)" ;
+    # warn "CACHE >X< (@del_keys)" ;
 };
 
 };
