@@ -12,7 +12,6 @@ use Mojo::Base 'Mojolicious::Controller' ;
 use Utils::Calculations ;
 use Utils::Db ;
 use Utils::Guides ;
-use Utils::AccessChecker ;
 use Data::Dumper ;
 
 sub page{

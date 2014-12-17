@@ -60,7 +60,7 @@
                <ul><li><a href="/guides/page"><%= ml 'Guides' %></a></li></ul>
                <ul><li><a href="/calculations/page"><%= ml 'Calculations' %></a></li></ul>
               </li>
-              % if( !who_is_global('editor') ) {
+              % if( who_is_global('user') ) {
                <li><%= ml 'Companies' %>
                 <ul><li><a href="/desktop/select_company"><%= ml 'Select' %></a></li></ul>
                </li>
@@ -71,7 +71,7 @@
                 <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
                 <ul><li><a href="/catalog/list"><%= ml 'Catalog' %></a></li></ul>
                 <ul><li><a href="/hr/list"><%= ml 'Human Resource' %></a></li></ul>
-                % if( who_is_local 'editor' ){
+                % if( who_is_local 'writer' ){
                     <ul><li><a href="/backup/list"><%= ml 'Backup/Restore' %></a></li></ul>
                 % }
                </li>

@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious::Controller';
 use Auth;
 use Data::Dumper;
 use Utils::Filter;
-use Utils::AccessChecker;
 
 my $OBJECT_NAME         = 'feedback';
 my $OBJECT_NAMES        = 'feedbacks';
