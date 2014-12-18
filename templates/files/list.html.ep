@@ -3,7 +3,7 @@
  <ul>
   % for my $file (reverse sort keys %{$files}){
    <li>
-    % if( is_file_writer ){
+    % if( who_is_global('editor') ){
      <%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?fileid=$file" %>
     % } else {
      <%= link_to $files->{$file}{name} => "/files/download/$payload?fileid=$file&prefix=$controller" %>

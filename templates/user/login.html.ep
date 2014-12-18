@@ -1,12 +1,14 @@
 % layout 'default';
-% if ( who_is_global('user') ) { 
- <h1><%= ml 'Access denied' %>!</h1>
-% } else {
+% if ( param('warning') && param('warning') =~ /access/i ) { 
+ <h1 style='color: red'><%= ml 'Access denied' %>!</h1>
+% } 
+
+% if ( !who_is_global('user') ) {
  <h2><%= ml 'Login' %></h2>
  % if( defined stash( 'error' ) && length stash( 'error' ) ) { 
- <div class='alert error'>
- %= ml 'Error!' 
- </div>
+  <div class='alert error'>
+   %= ml 'Error!' 
+  </div>
  % } 
  <div>
   %= form_for '/user/login' => (method => 'POST') => begin
@@ -24,10 +26,10 @@
    </tr>
   </table>
   % end
-    <p>
-<%= mlm 'rus', 'Demo access block' => begin %>
-<u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!
-<% end %>
-    </p>
+  <p>
+   <%= mlm 'rus', 'Demo access block' => begin %>
+    <u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!
+   <% end %>
+  </p>
  </div>
 % }

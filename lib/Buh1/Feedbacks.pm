@@ -1,60 +1,53 @@
 package Buh1::Feedbacks; {
 use Mojo::Base 'Mojolicious::Controller';
 use Auth;
-use Data::Dumper;
+use Utils;
 use Utils::Filter;
+use Utils::Feedbacks;
 
 my $OBJECT_NAME         = 'feedback';
 my $OBJECT_NAMES        = 'feedbacks';
 my $DELETED_OBJECT_NAME = 'deleted feedbacks';
 
-sub redirect2list_or_path{
-    my $self = shift;
-    if ( $self->param('path') ){
-        $self->redirect_to($self->param('path'));
-        return;
-    }
-    $self->redirect_to("/$OBJECT_NAMES/list");
-};
-
 sub pagesize{
     my $self = shift;
     Utils::Filter::pagesize($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
+    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
 };
 
 sub page{
     my $self = shift;
     Utils::Filter::page($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
+    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
 };
 
 sub nofilter{
     my $self = shift;
     Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
-    redirect2list_or_path($self);
+    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
 };
 
 sub filter{
     my $self = shift;
     Utils::Filter::filter($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
+    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
 };
 
 sub list{
     my $self = shift;
-
+    return if !Utils::Feedbacks::authorized($self);
     select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-
+    return if !Utils::Feedbacks::authorized($self);
     select_objects($self,$DELETED_OBJECT_NAME,"/$OBJECT_NAMES/deleted");
 };
 
 sub select_objects{
     my ($self,$name,$path) = @_;
+    return if !Utils::Feedbacks::authorized($self);
 
     my $db = Db->new($self);
     my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
@@ -73,6 +66,7 @@ sub select_objects{
 
 sub restore{
     my $self = shift;
+    return if !Utils::Feedbacks::authorized($self);
 
     my $id = $self->param('payload');
     if( $id ){
@@ -108,6 +102,7 @@ sub validate{
 
 sub del{
     my $self = shift;
+    return if !Utils::Feedbacks::authorized($self);
 
     my $id = $self->param('payload');
     if( $id ){
@@ -119,48 +114,22 @@ sub del{
     $self->redirect_to("/$OBJECT_NAMES/list");
 };
 
-sub edit{
+sub del_final{
     my $self = shift;
+    return if !Utils::Feedbacks::authorized($self);
 
-    $self->stash(edit_mode => 1);
-    my $method = $self->req->method;
-    my $data;
     my $id = $self->param('payload');
-    if( !$id) { 
-        $self->redirect_to("/$OBJECT_NAMES/list"); 
-        warn "$OBJECT_NAMES:edit:error $OBJECT_NAME id not defined!";
-        return; 
-    }
-    my $db = Db->new($self);
-    if ( $method =~ /POST/ ){
-        $data = validate( $self );
-        if( !exists($data->{error}) ){
-            delete $data->{creator}; # creator already exists!
-            $data->{id} = $id;
-            if( $db->update($data) ){
-                $self->stash(success => 1);
-            } else {
-                $self->stash(error => 1);
-                warn "$OBJECT_NAMES:edit:ERROR: could not update $OBJECT_NAME!";
-            }
-        } else {
-            $self->stash(error => 1);
-        }
-    } 
-    $data = $db->get_objects({id=>[$id]});
-    if( $data ){
-        for my $key (keys %{$data->{$id}} ){
-            $self->stash($key => $data->{$id}->{$key});
-        }
+    if( $id ){
+        my $db = Db->new($self);
+        $db->del($id);
     } else {
-        redirect_to("/$OBJECT_NAMES/list");
+        warn "$OBJECT_NAMES:del_final:error $OBJECT_NAME id not defined!"; 
     }
-    $self->render("$OBJECT_NAMES/add");
+    $self->redirect_to("/$OBJECT_NAMES/deleted");
 };
 
 sub add{
     my $self = shift;
-
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         # check values

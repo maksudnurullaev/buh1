@@ -1,13 +1,13 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Users' %></h2>
+%= include 'feedbacks/toolbar' ;
 %= include 'filter'   , filter4    => 'feedbacks'
 %= include 'paginator', paginator4 => 'feedbacks'
 % my  $feedbacks = stash 'feedbacks';
 % if ( scalar(keys %{$feedbacks}) ) {
  <ul>
   % for my $id( reverse sort keys %{$feedbacks} ) {
-   <li><%= $feedbacks->{$id}{message} %><br />
-    <%= link_to "/feedbacks/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+   <li><%= $feedbacks->{$id}{message} %>
     % if($feedbacks->{$id}{user}) {
      <ul><li><%= ml 'User' %>:
       %= $feedbacks->{$id}{user}
@@ -19,6 +19,11 @@
      </li></ul>
     % }
    </li>
+   <sup>
+    <%= link_to "/feedbacks/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    | 
+    %= link_to ml('Delete') => "/feedbacks/del_final/$id" ;
+    </sup>
   % }
  </ul>
 % } else {

@@ -1,0 +1,9 @@
+<div class="toolbar">
+ % if( $action ne 'deleted' ) {
+  <a href='/feedbacks/add'><%= ml 'Add' %></a>
+  |
+  <a href='/feedbacks/deleted'><%= ml 'Deleted' %></a>
+ % } else {
+  <a href='/feedbacks/list'><%= ml 'Back' %></a>
+ % }
+</div>

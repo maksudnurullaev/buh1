@@ -107,6 +107,19 @@ sub validate_session_company{
     return $self->session('company id') ;
 };
 
+sub redirect2list_or_path{
+    my ($self,$object_names) = @_ ;
+    if( !$self || !$object_names){
+        warn 'Parameter(s) error!' ;
+        return;
+    }
+    if ( $self->param('path') ){
+        $self->redirect_to($self->param('path'));
+        return;
+    }
+    $self->redirect_to("/$object_names/list");
+};
+
 sub get_paginator{
     my ($self,$prefix,$items_count) = @_;
     my $page = $self->session->{"$prefix/filter/page"} || 1;
