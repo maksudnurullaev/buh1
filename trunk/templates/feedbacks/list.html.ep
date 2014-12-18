@@ -1,12 +1,8 @@
 % layout 'default';
 <h2><%= ml 'Feedbacks' %></h2>
-<div class="toolbar">
- <a href='/feedbacks/add'><%= ml 'Add' %></a>
- |
- <a href='/feedbacks/deleted'><%= ml 'Deleted' %></a>
-</div>
-%= include 'filter'   , filter4    => 'feedbacks'
-%= include 'paginator', paginator4 => 'feedbacks'
+%= include 'feedbacks/toolbar' ;
+%= include 'filter'   , filter4    => 'feedbacks' ;
+%= include 'paginator', paginator4 => 'feedbacks' ;
 % my  $feedbacks = stash 'feedbacks';
 % if ( scalar(keys %{$feedbacks}) ) {
  <ul>
