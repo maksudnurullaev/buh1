@@ -2,6 +2,16 @@ package Buh1::User; {
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
+sub authorized2password{
+    my $self = shift ;
+    if( $self->who_is_global('guest') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
+
 sub login{
     my $self = shift;
     my $method = $self->req->method;
@@ -36,21 +46,22 @@ sub logout{
 
 sub password{
     my $self = shift;
+    return if !authorized2password($self) ;
+
     my $email = Utils::User::current($self);
     my $method = $self->req->method;
     my $error_found = 0;
-    if ( $method =~ /POST/ ){
+    if ( $method =~ /post/i ){
         $self->stash(post => 1);
         # check for valid values
-        my $password = Utils::trim $self->param('password');
+        my $password = $self->param('password');
         if (!$password) { $error_found = 1; $self->stash(password_class => "error")};
-        my $password1 = Utils::trim $self->param('password1');
+        my $password1 = $self->param('password1');
         if (!$password1) { $error_found = 1; $self->stash(password1_class => "error")};
-        my $password2 = Utils::trim $self->param('password2');
+        my $password2 = $self->param('password2');
         if (!$password2) { $error_found = 1; $self->stash(password2_class => "error")};
-
         # check for password1 and password2 equality
-        if( !Utils::validate_passwords($password1, $password2) ){ 
+        if( !Utils::validate_passwords($password1, $password2, $password) ){ 
             $error_found = 1;
             $self->stash(password1_class => "error");
             $self->stash(password2_class => "error");
@@ -68,9 +79,14 @@ sub password{
                 $error_found = 1;
             }
         }
+        # prevent change password for demo@buh1.uz 
+        if( lc($email) eq 'demo@buh1.uz' ){
+            $error_found => 1;
+            $self->stash( error_message => $self->ml('You could not change password for demo@buh1.uz') );
+        }
+
     }
     $self->stash(error => 1) if $error_found ;
-    $self->render();
 };
 
 1;

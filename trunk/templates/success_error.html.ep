@@ -2,7 +2,10 @@
  <div class='alert success noaccess'>Ok</div>
 % } 
 % if( stash('error') || param('error') ) { 
- <div class='alert error noaccess'><%= ml 'Error!' %></div>
+ <div class='alert error noaccess'><%= uc ml 'Error!' %></div>
+% } 
+% if( stash('error_message') ) { 
+ <div class='alert error noaccess'><%= uc stash 'error_message' %></div>
 % } 
 % if( stash('noaccess') || param('noaccess') ) { 
  <div class='alert error noaccess'><%= ml 'No access' %>!</div>
