@@ -282,7 +282,7 @@ div.error{
 .success {
     background-color: green;
 }
-div.error{
+div.success{
     text-align: center;
 }
 input[name^="access"]{

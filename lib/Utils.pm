@@ -89,10 +89,11 @@ sub currency_format1{
 }
 
 sub validate_passwords{
-    my ($password1, $password2) = @_;
-    return(     $password1 
-            &&  $password2 
-            && ($password1 eq $password2) );
+    my ($password1, $password2, $old_password) = @_;
+    return(0) if ( length($password1) < 4 )
+        || ($password1 ne $password2) ;
+    return(1) if !$old_password ;
+    return( $old_password ne $password1 );
 };
 
 sub validate_email{
