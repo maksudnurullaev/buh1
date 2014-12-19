@@ -71,18 +71,18 @@ sub password{
             $error_found = 1; 
             $self->stash(password_class => "error")
         }
-        # change password
+        # prevent change password for demo@buh1.uz 
+        if( lc($email) eq 'demo@buh1.uz' ){
+            $error_found = 1;
+            $self->stash( error_message => $self->ml('You could not change password for demo@buh1.uz') );
+        }
+        # FINAL ACTION - change password if no errors
         if( !$error_found ){
             if(Auth::set_password($self,$email,$password1)){
                 $self->stash(success => 1);
             } else {
                 $error_found = 1;
             }
-        }
-        # prevent change password for demo@buh1.uz 
-        if( lc($email) eq 'demo@buh1.uz' ){
-            $error_found => 1;
-            $self->stash( error_message => $self->ml('You could not change password for demo@buh1.uz') );
         }
 
     }

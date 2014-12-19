@@ -129,11 +129,13 @@ sub save_to_file{
     my $file_path = get_file_path($mojo);
     my ($f);
     open($f, ">:encoding(UTF-8)", $file_path) || die("Can't open $file_path to write: $!");
-    while(my ($key1, $v) = each sort %{$VALUES} ){
-        while(my ($key2,$value) = each %{$v}){
+    for my $key1 (sort {lc $a cmp lc $b} keys  %{$VALUES} ){
+    # while(my ($key1, $v) = each sort keysO %{$VALUES} ){
+        while(my ($key2,$value) = each %{$VALUES->{$key1}}){
             print $f "$key1:$key2:$value\n";
         }
     }
+    warn '!!! DONE !!!' ;
     close($f);
     return($file_path);
 };
