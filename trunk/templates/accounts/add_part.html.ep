@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Chart of Accounts' %> | <%= ml 'Add' %></h2>
 <div class="toolbar">
- <a href='/accounts/list'><%= ml 'Back' %></a>
+ <a href="/accounts/list#$payload"><%= ml 'Back' %></a>
 </div>
 %= include 'success_error'
 %# parent account if exist

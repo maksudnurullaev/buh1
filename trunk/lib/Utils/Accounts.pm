@@ -30,6 +30,52 @@ sub get_account_name{
     return($ACCOUNT);
 };
 
+sub authorized2modify{
+    my $self = shift ;
+    if( !$self->who_is_global('editor') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
+sub validate4add_part{
+    my $self = shift;
+    my $data =  validate($self,['rus','id'],['eng','uzb','type']);
+    if ( $data->{id} !~ /^\d+$/ ){
+        $data->{error} = 1 ; 
+        $self->stash('id_class' => 'error');
+        warn "Accounts:validate4add_part: id is not numeric!";
+    } else {
+        my $parent_id = "$data->{object_name} $data->{id}";
+        my $db = Db->new($self);
+        if( $db->get_objects({id => [$parent_id]}) ){
+            $data->{error} = 1 ;
+            warn "Accounts:validate4add_part: such object already exists!";
+        }
+    }
+    return($data);
+};
+
+sub validate{
+    my ($self,$mandatories,$optionals) = @_;
+    my $data = { 
+        object_name => $self->param('object_name'),
+        updater => Utils::User::current($self) };
+    for my $field (@{$mandatories}){
+        $data->{$field} = Utils::trim $self->param($field);
+        if ( !$data->{$field} ){
+            $data->{error} = 1 ;
+            $self->stash(($field . '_class') => 'error');
+        }
+    }
+    for my $field (@{$optionals}){
+        $data->{$field} = $self->param($field) if $self->param($field);
+    }
+    return($data);
+};
+
+
 sub get_types4select{
     my $self = shift;
     my $selected_value = shift;
@@ -45,8 +91,7 @@ sub get_types4select{
 };
 
 sub get_child_name_by_id{
-    my $self = shift;
-    my $id   = shift;
+    my ($self, $id) = @_ ;
     if( $id ){
         my $db = Db->new($self);
         my $objects = $db->get_objects({id=>[$id]});
@@ -55,6 +100,11 @@ sub get_child_name_by_id{
     return(undef);
 };
 
+# PARENT <-> CHILD links
+# acount part 
+#  └-> account section 
+#       └-> account 
+#            └-> account subconto
 sub get_child_name{
     my $account_name = shift;
     return(undef) if !$account_name;
