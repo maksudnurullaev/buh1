@@ -15,8 +15,8 @@ use Utils::Cacher;
 
 sub add_part{
     my $self = shift;
+    return if !Utils::Accounts::authorized2modify( $self ) ;
 
-    my $method = $self->req->method;
     my ($data,$id);
     # 1. Test for payload - parents account!
     my $parent_id = $self->param('payload');
@@ -36,8 +36,9 @@ sub add_part{
     }
     $self->stash( object_name => $object_name4form );
     # 2. Process post if needs
+    my $method = $self->req->method;
     if ( $method =~ /POST/ ){
-        $data = validate4add_part($self);
+        $data = Utils::Accounts::validate4add_part($self);
         if( !exists($data->{error}) ){
             my $object_name = $data->{object_name};
             # set new id
@@ -95,49 +96,13 @@ sub list{
         }
     }
     Utils::Languages::generate_name($self, $data);
-
     cache_it($self,'data',$data);
     $self->stash( parts => $data );
 };
 
-sub validate4add_part{
-    my $self = shift;
-    my $data =  validate($self,['rus','id'],['eng','uzb','type']);
-    if ( $data->{id} !~ /^\d+$/ ){
-        $data->{error} = 1 ; 
-        $self->stash('id_class' => 'error');
-        warn "Accounts:validate4add_part: id is not numeric!";
-    } else {
-        my $parent_id = "$data->{object_name} $data->{id}";
-        my $db = Db->new($self);
-        if( $db->get_objects({id => [$parent_id]}) ){
-            $data->{error} = 1 ;
-            warn "Accounts:validate4add_part: such object already exists!";
-        }
-    }
-    return($data);
-};
-
-sub validate{
-    my ($self,$mandatories,$optionals) = @_;
-    my $data = { 
-        object_name => $self->param('object_name'),
-        updater => Utils::User::current($self) };
-    for my $field (@{$mandatories}){
-        $data->{$field} = Utils::trim $self->param($field);
-        if ( !$data->{$field} ){
-            $data->{error} = 1 ;
-            $self->stash(($field . '_class') => 'error');
-        }
-    }
-    for my $field (@{$optionals}){
-        $data->{$field} = $self->param($field) if $self->param($field);
-    }
-    return($data);
-};
-
 sub fix_subconto{
     my $self = shift;
+    return if !Utils::Accounts::authorized2modify( $self ) ;
 
     my $id = $self->param('payload');
     my $pnew = $self->param('pnew');
@@ -156,6 +121,8 @@ sub fix_subconto{
 
 sub fix_account{
     my $self = shift;
+    return if !Utils::Accounts::authorized2modify( $self ) ;
+
     my $idold = $self->param('payload');
     my $idnew = $self->param('idnew');
     my $sid   = $self->param('sid');
@@ -175,6 +142,7 @@ sub fix_account{
 
 sub delete_subconto{
     my $self = shift;
+    return if !Utils::Accounts::authorized2modify( $self ) ;
     
     my $id = $self->param('payload');
     my $parent = $self->param('parent');
@@ -204,7 +172,9 @@ sub edit{
     my $method = $self->req->method;
     my $db = Db->new($self);
     if ( $method =~ /POST/ ){
-        my $data = validate( $self, ['rus'], ['eng','uzb','type'] );
+        return if !Utils::Accounts::authorized2modify( $self ) ;
+
+        my $data = Utils::Accounts::validate( $self, ['rus'], ['eng','uzb','type'] );
         if( !exists($data->{error}) ){
             $data->{id} = $id;
             if( $db->update($data) ){
@@ -228,6 +198,9 @@ sub edit{
     my $child_name  = Utils::Accounts::get_child_name($data->{$id}{object_name});
     $db->links_attach($data,'PARENTS',$parent_name,['rus','eng','uzb']) if $parent_name;
     $db->links_attach($data,'CHILDS' ,$child_name,['rus','eng','uzb']) if $child_name;
+
+    $self->stash( has_child => $child_name ); # needs to 'add child' link in form
+
     if( $data->{$id}{object_name} eq 'account' ){ # attach bts
         $db->links_attach($data,
             'bts',

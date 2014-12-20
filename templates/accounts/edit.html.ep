@@ -22,7 +22,7 @@
  %# child accounts
  % my $CHILDS = stash 'CHILDS';
  <ul>
-  % if( who_is_global 'editor' ){
+  % if( who_is_global( 'editor' ) && stash('has_child') ){
    <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
   % }
   % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {

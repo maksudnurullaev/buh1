@@ -28,6 +28,7 @@
           <ul>
            % for my $subconto_id (sort keys %{$subcontos} ) {
             <li>
+            %= link_to ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' => 'color: red' if $subcontos->{$subconto_id}{name} =~ /delete/i
             % if ($subconto_id =~ /(\d{2})00$/){
              % my $idnew = "account " . $1 . "00";
              %= link_to ml("Error!") => "/accounts/fix_account/$subconto_id?aid=$aid&idnew=$idnew&sid=$sid", 'style' => 'color: red'
