@@ -151,7 +151,14 @@ sub shrink_if{
     return(undef) if !$string;
     return (substr($string,0,$length) . '...') if length($string) > (5+$length);
     return($string);
-}
+};
+
+sub merge2arr_ref{
+    my ($arr_ref, $value) = (shift,undef);
+    while($value = shift){ push @{$arr_ref}, $value; }
+    return($arr_ref);
+    
+};
 
 # END OF PACKAGE
 };

@@ -1,43 +1,31 @@
 % layout 'default';
 <h2><%= ml 'Chart of Accounts' %><%= (' | ' . ml('Edit')) if who_is_global 'editor' %></h2>
-<div class="toolbar">
- %= link_to ml('Back') => "/accounts/list#$payload"
-</div>
-% if( who_is_global 'editor' ){
- %= include 'success_error';
- %= include 'accounts/form';
+%# detect parent account
+% my ($parent, $parent_id) = (stash('PARENTS'), undef);
+% $parent_id = (keys  %{$parent})[0] if $parent ;
+%= include 'success_error';
+%= include 'accounts/toolbar', back_link => ($parent ? "/accounts/edit/$parent_id" : "/accounts/list#$payload") ;
+%= include 'accounts/form' if  who_is_global 'editor' ;
+% if ( $parent ) {
+ <ul class="nostyle">
+  <li><%= ml 'Parent account' %>:</li>
+  <li><%= link_to $parent->{$parent_id}{name} => "/accounts/edit/$parent_id" %></li>
 % }
-%# parent account
-% my $parents = stash 'PARENTS';
-% if ( $parents ) {
-    <ul>
-    <li><strong><%= ml 'Parent account' %>:</strong></li>
-    % for my $pid (keys %{$parents}) {
-        <li>
-        %= link_to $parents->{$pid}{name} => "/accounts/edit/$pid" 
-        </li>
-    % } 
-% }
-<ul><li><u><%= stash 'name' %></u></li>
- %# child accounts
- % my $CHILDS = stash 'CHILDS';
- <ul>
-  % if( who_is_global( 'editor' ) && stash('has_child') ){
-   <li><strong><%= ml 'Child accounts' %>:</strong> <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
-  % }
-  % if ( $CHILDS && stash('object_name') ne 'account subconto' ) {
-   % for my $cid (sort keys %{$CHILDS}) {
-    <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
-   % }    
-  % }
+<ul class="nostyle">
+ % if( stash 'FRIENDS' ){
+  <li><%= ml 'Child accounts' %>: 
+  %= include 'accounts/friends' if stash 'FRIENDS' ;
+ % } else {  
+  <li><strong><%= stash 'name' %></strong></li>
+  %= include 'accounts/childs' if stash 'CHILDS' ;
+ % } 
+</ul>
+%if ( $parent ) {
  </ul>
-</ul>
-%if ( $parents ) {
-</ul>
 % }
 % if( my $bts = stash 'bts' ){
-<fieldset>
- <h3><%= ml 'Business operations' %></h3>
- %= include 'operations/bts', bts => $bts;
-</fieldset> 
+ <fieldset>
+  <legend><%= ml 'Business operations' %></legend>
+  %= include 'operations/bts', bts => $bts;
+ </fieldset> 
 % }

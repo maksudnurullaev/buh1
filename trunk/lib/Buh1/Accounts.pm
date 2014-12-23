@@ -196,8 +196,17 @@ sub edit{
     }
     my $parent_name = Utils::Accounts::get_parent_name($data->{$id}{object_name});
     my $child_name  = Utils::Accounts::get_child_name($data->{$id}{object_name});
-    $db->links_attach($data,'PARENTS',$parent_name,['rus','eng','uzb']) if $parent_name;
-    $db->links_attach($data,'CHILDS' ,$child_name,['rus','eng','uzb']) if $child_name;
+    my $langs        = Utils::Languages::get();
+
+    $db->links_attach($data,'PARENTS',$parent_name,$langs) if $parent_name;
+    if( $child_name ){
+        $db->links_attach($data,'CHILDS' ,$child_name,$langs) if $child_name;
+    } elsif ( $parent_name ) {
+        my $parent_id = (keys %{$data->{$id}{'PARENTS'}})[0];
+        my $friends = { $parent_id => {} };
+        $db->links_attach($friends,'FRIENDS',$data->{$id}{'object_name'},$langs);
+        $data->{$id}{'FRIENDS'} = $friends->{$parent_id}{'FRIENDS'} ;
+    }
 
     $self->stash( has_child => $child_name ); # needs to 'add child' link in form
 
@@ -205,7 +214,7 @@ sub edit{
         $db->links_attach($data,
             'bts',
             'business transaction',
-            ['rus','eng','uzb','number','debet','credit']);
+            Utils::merge2arr_ref(Utils::Languages::get(),'number','debet','credit'));
     }
     if( $data ){
         Utils::Languages::generate_name($self,$data);

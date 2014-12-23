@@ -1,0 +1,10 @@
+% my $FRIENDS = stash 'FRIENDS';
+% if( $FRIENDS ){
+  % for my $cid (sort keys %{$FRIENDS}) {
+   % if ( $cid eq $payload ){
+    <li><strong><%= $FRIENDS->{$cid}{name} %></strong></li>
+   % } else {    
+    <li><%= link_to $FRIENDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
+   % } 
+  % }    
+% }

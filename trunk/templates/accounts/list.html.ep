@@ -8,7 +8,7 @@
 <div>
  % my $parts = stash 'parts';
  % for my $pid (sort keys %{$parts}) {
-  <ul>
+  <ul class="nostyle">
    <li><dfn id="<%= $pid %>"><%= link_to $parts->{$pid}{name} => "/accounts/edit/$pid" %></dfn></li>
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
