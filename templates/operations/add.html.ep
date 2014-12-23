@@ -1,12 +1,10 @@
 % layout 'default';
 <h2><%= ml 'Business operation' %></h2>
+%= include 'operations/toolbar';
 % my $parent_account = stash 'account';
 % if( $parent_account ) {
 %= include 'operations/paccount', account => $parent_account;
 % }
-<div class="toolbar">
- %= link_to ml('Back') => "/operations/account/$payload"
-</div>
 % if( stash 'error' ) { 
 <div class='alert error'><%= ml 'Error!' %></div>
 % } 

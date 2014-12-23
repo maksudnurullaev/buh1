@@ -1,17 +1,15 @@
 % layout 'default';
 <h2><%= ml 'Business operations' %></h2>
-% my $account = stash 'paccount';
-% if( $account ){
-%= include 'operations/paccount', account => $account;
-% }
+%= include 'operations/toolbar';
 %= include 'success_error'
-<h2><%= ml 'Business operation' %></h2>
+% my $account = stash 'paccount';
+%= include 'operations/paccount', account => $paccount if $paccount ;
 <fieldset>
  <strong><%= stash('number') . '. ' . stash('name') %></strong>
  % if( who_is_global 'editor' ) {
-  %= include 'operations/form_bt';
+  %= include 'operations/form4bt_global';
  % } else {
-  %= include 'operations/form4user';   
+  %= include 'operations/form4bt_local';   
  % }
 </fieldset>
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 

@@ -1,6 +1,10 @@
+% if( $account ){
+ <p>
  % for my $account_id (keys %{$account}){   
   %= link_to $account->{$account_id}{name} => "/operations/account/$payload"
   <sup>
   %= link_to ml('Chart of Accounts') => "/accounts/edit/$account_id"
   </sup>
  % }
+ </p>
+% }

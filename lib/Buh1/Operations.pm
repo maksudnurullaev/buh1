@@ -13,22 +13,22 @@ use Data::Dumper;
 use Utils::Accounts;
 use Utils::Documents;
 use Utils::Cacher;
-
-my $OBJECT_NAME = 'business transaction';
+use Utils::Operations;
 
 sub list{
     my $self = shift;
     my $data;
     return( $self->stash( parts => $data) ) if $data = is_cached($self,'data');
 
+    # Level 1 - get parts
     $data = Utils::Accounts::get_all_parts($self);
     $self->stash( parts => $data );
-
     for my $part_id (keys %{$data}){
+        # Level 2 - get sections
         my $sections = Utils::Accounts::get_sections($self,$part_id);
         $data->{$part_id}{sections} = $sections;
-
         for my $section_id (keys %{$sections}){
+            # Level 3 - get accounts
             my $accounts = Utils::Accounts::get_accounts($self,$section_id);
             $sections->{$section_id}{accounts} = $accounts;
         }
@@ -37,40 +37,6 @@ sub list{
 
     cache_it($self,'data',$data);
     $self->stash( parts => $data );
-};
-
-sub validate{
-    my $self = shift;
-    my $edit_mode = shift;
-    my $data = { 
-        object_name => $OBJECT_NAME,
-        account => $self->param('account'),
-        updater => Utils::User::current($self) };
-    my @fields4rule1 = ('number','rus','credit','debet');
-    for my $field (@fields4rule1){
-        $data->{$field} = Utils::trim $self->param($field);
-        if ( !$data->{$field} ){
-            $data->{error} = 1; 
-            $self->stash(($field . '_class') => 'error');
-        }
-    }
-    if( $data->{number} !~ /^[1-9][0-9]*\.?[0-9]*$/ ){
-        $data->{error} = 1;
-         $self->stash('number_class' => 'error');
-    }
-    my @fields4rule2 = ('credit','debet');
-    for my $field (@fields4rule2){
-        if( $data->{$field} !~ /^\d+[\d+|\d+,|\d+-]+$/ ){
-            $data->{error} = 1;
-            $self->stash(($field . '_class') => 'error');
-        }
-    }
-    my @optional_fields = ('eng','uzb');
-    for my $field (@optional_fields){
-        $data->{$field} = Utils::trim $self->param($field) 
-            if Utils::trim $self->param($field);
-    }
-    return($data);
 };
 
 sub delete_bt{ #delete business transaction
@@ -101,11 +67,11 @@ sub add{
     my ($data,$id);
     my $db = Db->new($self);
     if ( $method =~ /POST/ ){
-        $data = validate( $self );
+        $data = Utils::Operations::validate( $self );
         if( !exists($data->{error}) ){
             if( $id = $db->insert($data) ){
                 $db->set_link(
-                    $OBJECT_NAME,
+                    Utils::Operations::get_object_name(),
                     $id,
                     Utils::Accounts::get_account_name(),
                     $account_id);
@@ -122,7 +88,11 @@ sub add{
     } 
 
     my $account = $db->get_objects({id => [$account_id]});
-    $db->links_attach($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->links_attach(
+        $account,
+        'bts',
+        Utils::Operations::get_object_name(),
+        ['rus','eng','uzb','number','debet','credit']);
     $self->stash( account => $account );
     Utils::Languages::generate_name($self, $account);
 };
@@ -146,7 +116,7 @@ sub edit{
 
     my ($method,$data) = ($self->req->method,undef);
     if ( $method =~ /POST/ ){
-        $data = validate( $self );
+        $data = Utils::Operations::validate( $self );
         if( !exists($data->{error}) ){
             $data->{id} = $bt_id;
             if( $db->update($data) ){
@@ -161,7 +131,11 @@ sub edit{
         }
     } 
 
-    $db->links_attach($account,'bts',$OBJECT_NAME,['rus','eng','uzb','number','debet','credit']);
+    $db->links_attach(
+        $account,
+        'bts',
+        Utils::Operations::get_object_name(),
+        ['rus','eng','uzb','number','debet','credit']);
     Utils::Languages::generate_name($self, $account);
     $self->stash( paccount => $account );
 
@@ -194,7 +168,7 @@ sub account{
     $db->links_attach(
         $account,
         'bts',
-        $OBJECT_NAME,
+        Utils::Operations::get_object_name(),
         ['rus','eng','uzb','number','debet','credit']);
     Utils::Languages::generate_name($self,$account);
 };
