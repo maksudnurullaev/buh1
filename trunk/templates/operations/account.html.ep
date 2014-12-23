@@ -1,15 +1,9 @@
 % layout 'default';
 <h2><%= ml 'Business transactions' %></h2>
-<div class="toolbar">
- <a href="/operations/list"><%= ml 'Back' %></a>
-% if ( who_is_global 'editor' ) {
- | 
- %= link_to ml('Add') => "/operations/add/$payload";
-% }
-</div>
+%= include 'operations/toolbar' ;
+%= include 'operations/paccount' ;
 %# $account = stash 'account';
 % if ( exists($account->{$payload}) && exists($account->{$payload}{bts}) ){ 
 %# business transactions (bts)
 %= include 'operations/bts', bts => $account->{$payload}{bts};
 % }
-

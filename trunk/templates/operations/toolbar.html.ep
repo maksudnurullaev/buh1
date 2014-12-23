@@ -1,0 +1,12 @@
+<div class="toolbar">
+ % if( $action eq 'edit' ){
+  %= link_to ml('Back') => "/operations/account/$payload" ;
+ % } else {    
+  %= link_to ml('Back') => "/operations/list" ;
+ % } 
+ % if ( who_is_global('editor') && ($action eq 'account') ) {
+  | 
+  %= link_to ml('Add') => "/operations/add/$payload";
+ % }
+</div>
+
