@@ -1,0 +1,12 @@
+% my $CHILDS = stash 'CHILDS';
+% if( $CHILDS ){
+ <ul style="list-style: none;">
+  <li><%= ml 'Child accounts' %>: 
+  % if( who_is_global( 'editor' ) && stash('has_child') ){
+   <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+  % }
+  % for my $cid (sort keys %{$CHILDS}) {
+   <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
+  % }    
+ </ul>
+% }
