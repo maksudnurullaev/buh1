@@ -15,6 +15,8 @@ use Data::Dumper ;
 
 sub add{
     my $self = shift;
+    return if !Utils::Templates::authorized2edit($self);
+
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         my $data = Utils::Templates::form2data($self);
@@ -28,11 +30,13 @@ sub add{
 
 sub list{
     my $self = shift;
-    $self->stash( resources_root => Utils::Templates::get_root_objects($self) );
+    Utils::Templates::deploy_root_list($self);
 };
 
 sub edit{
     my $self = shift;
+    return if !Utils::Templates::authorized2edit($self);
+
     my $id   = $self->param('payload');
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
@@ -42,7 +46,7 @@ sub edit{
     }
     # final action
     Utils::Db::db_deploy($self,$id);
-    $self->stash( resources_root => Utils::Templates::get_root_objects($self) );
+    Utils::Templates::deploy_root_list($self);
 };
 
 sub del{
@@ -63,7 +67,7 @@ sub files_update{
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
 
-    warn Dumper Utils::Db::db_deploy($self,$id,'template');
+    Utils::Db::db_deploy($self,$id);
     Utils::Files::deploy($self,$id,$fileid);
 };
 
@@ -119,13 +123,15 @@ sub files_add_new{
 
     Utils::Db::db_deploy($self,$id);
 };
+
 sub files{
     my $self = shift;
-    my $id   = $self->param('payload');
+    return if !Utils::Templates::validate2payload($self);
 
+    my $id   = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
     Utils::Db::db_deploy($self,$id);
-    $self->stash( resources_root => Utils::Templates::get_root_objects($self) );
+    Utils::Templates::deploy_root_list($self);
 };
 
 sub move{
@@ -144,8 +150,8 @@ sub move{
             $dbc->child_set_parent($id,$new_parent);
         }
     }
-    $self->stash( resources_root => Utils::Templates::get_root_objects($self) );
     # final action
+    Utils::Templates::deploy_root_list($self);
     Utils::Db::db_deploy($self,$id);
 };
 

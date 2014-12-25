@@ -1,27 +1,28 @@
 % my $files_count = files_count($payload) ;
 <div class="toolbar">
-% if ( who_is_global('admin') ) {
- % if ( !stash('CHILDREN') && !$files_count ){
-  <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
- % } else {
-  % if ( stash('action') eq 'del' ){
-   <strong><%= ml('Delete') %></strong>
+ % if ( who_is_global('editor') ) {
+  % if ( $action ne 'edit' ) {
+   <%= link_to ml("Edit") => "/$controller/edit/$payload" %> | 
   % } else {
-   %= ml('Delete') 
+    <%= ml('Edit') %> |
   % }
- % }
- |
- % if( stash('action') ne 'move' ){
-  <%= link_to ml("Move") => "/$controller/move/$payload" %>
- % } else {
-  <strong><%= ml 'Move' %></strong>
- % }
- |
-% }  
-% if( stash('action') !~ /files/ ){
+  % if ( !stash('CHILDREN') && !$files_count ){
+   <%= link_to ml("Delete") => "/$controller/del/$payload" %> | 
+  % } else {
+   % if ( stash('action') eq 'del' ){
+    <%= ml('Delete') %> |
+   % } 
+  % }
+  % if( stash('action') ne 'move' ){
+   <%= link_to ml("Move") => "/$controller/move/$payload" %> |
+  % } else {
+   <%= ml 'Move' %> |
+  % }
+ % }  
+ % if( stash('action') ne 'files' ){
    <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %>(<%= $files_count %>)<% end %>
-% } else {
-   <strong><%= ml 'Files' %>(<%= $files_count %>)</strong>
-% }
+ % } else {
+  <%= ml 'Files' %>(<%= $files_count %>)
+ % }
 </div>
 

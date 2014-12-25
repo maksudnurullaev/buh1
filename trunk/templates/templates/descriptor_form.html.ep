@@ -1,39 +1,36 @@
-% my $id = stash('id') ;
-% my $action = stash('action') ;
-% my $path = "/$controller/$action" ;
-% $path .= "/$id" if $id ;
-
 <div class="form">
- %= form_for $path => (method => 'POST') => begin
+ %= form_for "/$controller/$action/$payload" => (method => 'POST') => begin
  %= hidden_field oname => 'template';
- %= hidden_field id    => $id if $id ;
+ %= hidden_field id    => $payload if $action eq 'edit' ;
  <table class='colortable'>
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
    </td>
    <td>
-    % if( $action =~ /add|edit/i ) {
-        %= text_area description => (stash 'description'), class => (stash 'description_class') 
-    % } else {
-        <strong><%= stash 'description' %></strong>
-    % }
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
    </td>
   </tr>
-  % if ( who_is_global('admin') ){
   <tr><td>&nbsp;</td>
    <td>
      % if( $action eq 'del' ){
       %= submit_button ml('Delete') ;
-      | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
-     % }  else {
+     % } elsif( $action eq 'edit' ) {
       %= submit_button ml('Save') ;
-      | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
+     % } elsif( $action eq 'add' ) {
+      %= submit_button ml('Save') ;
+       | <%= link_to ml('Cancel')  => "/$controller/list" %>
+     % } elsif( $action eq 'move' ){
+      %= submit_button ml('Move') ;
+       % if( stash 'PARENT' ) {
+        | <%= link_to ml('Make root') => "/$controller/make_root/$payload" if stash 'PARENT' %>
+       % }
      % } 
+   &nbsp;
    </td>
   </tr>
-  % }
  </table>
+ %= include "$controller/list_resources_radio", temp_hash => stash("resources_root") if stash("resources_root") && $action eq 'move' ;
  % end
 </div>
 

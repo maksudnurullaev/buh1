@@ -6,7 +6,8 @@
    % if( stash('id') && stash('id') eq $id ){
     <strong><%= $temp_hash->{$id}{description} %></strong>
    % } else {
-    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => "/$controller/edit/$id" %></dfn>
+    % my $temp_link = who_is_global('editor') ? "/$controller/edit/$id" : "/$controller/files/$id" ;
+    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => $temp_link %></dfn>
    % }
    <sup><%= link_to $files_count => "/$controller/files/$id" %></sup>
    % if( exists $temp_hash->{$id}{CHILDREN} ){

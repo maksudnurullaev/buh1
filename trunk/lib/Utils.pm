@@ -50,7 +50,7 @@ sub if_defined{
     return($self->stash($key));
 };
 
-sub isMobileBrowser {
+sub is_mobile_browser {
         # http://www.davekb.com/browse_programming_tips:detect_mobile_browser_in_perl:txt
         # http://detectmobilebrowser.com/mobile
         my $self = shift;
@@ -157,7 +157,6 @@ sub merge2arr_ref{
     my ($arr_ref, $value) = (shift,undef);
     while($value = shift){ push @{$arr_ref}, $value; }
     return($arr_ref);
-    
 };
 
 # END OF PACKAGE

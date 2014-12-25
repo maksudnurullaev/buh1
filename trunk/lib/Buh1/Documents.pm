@@ -286,7 +286,7 @@ sub set_new_data{
     my $number = Utils::Documents::get_document_number_next($self);
     $self->stash( 'document number' => $number );    
     # for demo quick filling
-    return if index($user,'maksud.nurullaev@gmail.com') == -1 && index($user,'demo@buh1.uz') == -1 ; 
+    return if $user !~ /demo\@buh1\.uz/i ; 
     $self->stash( 'permitter' => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"' );
     $self->stash( 'permitter debet' => '01234567890123456789' );
     $self->stash( 'permitter inn' => '123456789' ); 

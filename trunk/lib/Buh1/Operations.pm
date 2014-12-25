@@ -92,7 +92,7 @@ sub add{
         $account,
         'bts',
         Utils::Operations::get_object_name(),
-        ['rus','eng','uzb','number','debet','credit']);
+        Utils::merge2arr_ref(Utils::Languages::get(),'number','debet','credit'));
     $self->stash( account => $account );
     Utils::Languages::generate_name($self, $account);
 };
@@ -135,7 +135,7 @@ sub edit{
         $account,
         'bts',
         Utils::Operations::get_object_name(),
-        ['rus','eng','uzb','number','debet','credit']);
+        Utils::merge2arr_ref(Utils::Languages::get(),'number','debet','credit'));
     Utils::Languages::generate_name($self, $account);
     $self->stash( paccount => $account );
 
@@ -169,7 +169,7 @@ sub account{
         $account,
         'bts',
         Utils::Operations::get_object_name(),
-        ['rus','eng','uzb','number','debet','credit']);
+        Utils::merge2arr_ref(Utils::Languages::get(),'number','debet','credit'));
     Utils::Languages::generate_name($self,$account);
 };
 

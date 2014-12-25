@@ -35,7 +35,7 @@ sub deploy_client_company{
     my $user_id = $self->session->{'user id'} ;
     return if !$user_id || !$company_id ;
 
-    my $db_client = new DbClient($self);
+    my $db_client = new DbClient($self,$company_id);
     if( $db_client->is_valid ){
         $self->session->{'company id'} = $company_id;
         $self->session->{'company name'} = $company_name;

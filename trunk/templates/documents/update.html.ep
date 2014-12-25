@@ -1,5 +1,5 @@
 % layout 'default';
-% my $isReadOnly = ( user_role2company =~ /^read/i );
+% my $isReadOnly = !(who_is_local 'writer') ;
 % my $docid = param 'docid' ;
 % if( $docid ){
  <h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>

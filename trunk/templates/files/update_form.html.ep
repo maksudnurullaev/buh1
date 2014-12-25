@@ -1,4 +1,3 @@
-% my $isReadOnly = ( user_role2company =~ /^read/i );
 <div class="toolbar">
  % my $fileid = param 'fileid' ;
  %= form_for "/$controller/files_update_desc/$payload?fileid=$fileid"  => ( method => 'POST') => begin
@@ -12,7 +11,7 @@
     %= text_area 'file.desc' => stash('file_desc') ;
    </td>
   </tr> 
- % if( !$isReadOnly ){ 
+ % if( $is_editor ){ 
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml 'Update'
@@ -31,7 +30,7 @@
     <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$fileid&prefix=$controller" %>'><%= stash 'file_name' %></a></strong>
    </td>
   </tr> 
- % if( !$isReadOnly ){ 
+ % if( $is_editor ){ 
   <tr><td>&nbsp;</td>
    <td>
     %= file_field 'new_file'
@@ -51,7 +50,7 @@
    <td>
    </td>
    <td class='tar'>
-    % if( !$isReadOnly ){ 
+    % if( $is_editor ){ 
      %= link_to ml('Delete') => "/$controller/files_del/$payload?fileid=$fileid" ;
     % } else {
      &nbsp;

@@ -8,16 +8,16 @@
 <div>
  % my $parts = stash 'parts';
  % for my $pid (sort keys %{$parts}) {
-  <ul class="nostyle">
+  <ul class="nostyle" style="padding-left: 10px">
    <li><dfn id="<%= $pid %>"><%= link_to $parts->{$pid}{name} => "/accounts/edit/$pid" %></dfn></li>
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
-    <ul>
+    <ul class="nostyle" style="padding-left: 10px">
      % for my $sid(sort keys %{$sections}) {
       <li><dfn id="<%= $sid %>"><%= link_to $sections->{$sid}{name} => "/accounts/edit/$sid" %></dfn></li>
       % if ( exists $sections->{$sid}{accounts} ) {
        % my $accounts = $sections->{$sid}{accounts} ;
-       <ul>
+       <ul class="nostyle" style="padding-left: 10px">
         % for my $aid (sort keys %{$accounts}) {
          % my $account        = $accounts->{$aid} ;
          % my $account_prefix = $1 if $aid =~ /(\d{2})00$/ ;
@@ -25,7 +25,7 @@
          <li><dfn id="<%= $aid %>"><%= link_to $account->{name} => "/accounts/edit/$aid" %></dfn></li>
          % if( exists $account->{subcontos} ) {
           % my $subcontos = $account->{subcontos};
-          <ul>
+          <ul class="nostyle" style="padding-left: 10px">
            % for my $subconto_id (sort keys %{$subcontos} ) {
             <li>
             %= link_to ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' => 'color: red' if $subcontos->{$subconto_id}{name} =~ /delete/i
