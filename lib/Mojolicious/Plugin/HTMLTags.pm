@@ -31,6 +31,8 @@ sub register {
     $app->helper( ml  => sub { ML::process_string (@_); } ); 
     $app->helper( mlm => sub { ML::process_block (@_); } ); 
 
+    $app->helper( is_mobile_browser => sub { Utils::is_mobile_browser (@_); } );
+
     $app->helper( languages_bar => sub { Utils::Languages::bar (@_); } ); 
     $app->helper( check_for     => sub { Utils::check_for (@_); } ); 
 

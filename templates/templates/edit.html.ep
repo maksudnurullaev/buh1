@@ -4,4 +4,6 @@
 
 %= include "$controller/descriptor_toolbar" ;
 %= include "$controller/descriptor_form" ;
+
 %= include "$controller/list_resources", temp_hash => stash("resources_root") if stash("resources_root") ;
+

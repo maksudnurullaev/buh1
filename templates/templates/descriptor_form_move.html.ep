@@ -7,12 +7,13 @@
      %= ml "Description" 
     </td>
     <td>
-     <strong><%= stash "description" %></strong>
+     <textarea disabled><%= stash 'description' %></textarea>
     </td>
    </tr>
    <tr><td>&nbsp;</td>
     <td>
      %= submit_button ml("Move") ;
+     | <%= link_to "/$controller/edit/$payload" => begin %><%= ml "Cancel" %><% end %>
     </td>
    </tr>
    <tr><td>&nbsp;</td>
@@ -22,7 +23,6 @@
      % } else {
       %= ml "Make root" ;
      % }
-     | <%= link_to "/$controller/list" => begin %><%= ml "Cancel" %><% end %>
     </td>
    </tr>
   </table>

@@ -1,4 +1,6 @@
 % layout "default";
 <h2><%= ml "Catalog" %> | <%= ml "Delete" %></h2>
 %= include "$controller/descriptor_toolbar" ;
+<div class='alert error noaccess'><%= uc ml 'Are you sure' %>?</div>
 %= include "$controller/descriptor_form" ;
+

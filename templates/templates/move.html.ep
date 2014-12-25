@@ -3,4 +3,4 @@
 <h2><%= ml "Catalog" %> | <%= ml "Move" %></h2>
 
 %= include "$controller/descriptor_toolbar" ;
-%= include "$controller/descriptor_form_move" ;
+%= include "$controller/descriptor_form" ;

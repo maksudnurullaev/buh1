@@ -60,7 +60,7 @@
                <ul><li><a href="/guides/page"><%= ml 'Guides' %></a></li></ul>
                <ul><li><a href="/calculations/page"><%= ml 'Calculations' %></a></li></ul>
               </li>
-              % if( who_is_global('user') ) {
+              % if( who_is_global('user') && !who_is_global('editor') ) {
                <li><%= ml 'Companies' %>
                 <ul><li><a href="/desktop/select_company"><%= ml 'Select' %></a></li></ul>
                </li>

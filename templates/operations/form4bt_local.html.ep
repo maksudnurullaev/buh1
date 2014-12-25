@@ -1,30 +1,30 @@
- % my $debets  = stash 'debets';
- % my $credits = stash 'credits';
- % my $company = session->{'company name'};
- % my $skd     = scalar(keys(%{$debets}));
- % my $skc     = scalar(keys(%{$credits}));
- % my $bt      = param 'bt';
- % my $form    = $skd && $skc && $company && $bt;
- % if( $form ){
-  % my $docid = session->{docid};
-  % my $path = "/documents/update/$payload?bt=$bt&post=preliminary";
-  % $path = "/documents/update_document_header/$payload?bt=$bt&docid=$docid" if $docid ;
-  %= form_for $path => (method => 'POST') => begin
-  %= hidden_field account => $payload;
-  %= include 'operations/account_list', parameters => { title => 'debet', data => $debets, form => $company } if $skd ;
-  %= include 'operations/account_list', parameters => { title => 'credit', data => $credits, form => $company } if $skc ;
-  <div class='note'>
-   % if ( $docid ){
-    %= include 'document_header';
-    %= submit_button ml 'Update';
-    %= link_to ml('Cancel') => "/documents/cancel_update_document_header/$payload?docid=$docid";
-   % } else {
-    %= include 'documents/types'
-    %= submit_button ml('Create') if $skd && $skc && who_is_local('writer') ; 
-   % }
-  </div>
-  % end
- % } else {
-  %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets } if $skd ;
-  %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $skc ;
- % }
+% my $debets  = stash 'debets';
+% my $credits = stash 'credits';
+% my $company = session->{'company name'};
+% my $skd     = scalar(keys(%{$debets}));
+% my $skc     = scalar(keys(%{$credits}));
+% my $bt      = param 'bt';
+% my $form    = $skd && $skc && $company && $bt && who_is_local('writer');
+% if( $form ){
+ % my $docid = session->{docid};
+ % my $path = "/documents/update/$payload?bt=$bt&post=preliminary";
+ % $path = "/documents/update_document_header/$payload?bt=$bt&docid=$docid" if $docid ;
+ %= form_for $path => (method => 'POST') => begin
+ %= hidden_field account => $payload;
+ %= include 'operations/account_list', parameters => { title => 'debet', data => $debets, form => $company } if $skd ;
+ %= include 'operations/account_list', parameters => { title => 'credit', data => $credits, form => $company } if $skc ;
+ <div class='note'>
+  % if ( $docid ){
+   %= include 'document_header';
+   %= submit_button ml 'Update';
+   %= link_to ml('Cancel') => "/documents/cancel_update_document_header/$payload?docid=$docid";
+  % } else {
+   %= include 'documents/types'
+   %= submit_button ml('Create') if $skd && $skc && who_is_local('writer') ; 
+  % }
+ </div>
+ % end
+% } else {
+ %= include 'operations/account_list', parameters => { title => 'DEBET', data => $debets } if $skd ;
+ %= include 'operations/account_list', parameters => { title => 'CREDIT', data => $credits } if $skc ;
+% }

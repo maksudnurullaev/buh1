@@ -42,7 +42,7 @@ sub detach{
 sub get_document_number_next{
     my $self = shift;
     my $document_number_last = get_document_number_last($self);
-    return($document_number_last + 1) if $document_number_last && $document_number_last =~ /^\d+$/ ;
+    return($1 . ($2 + 1)) if( $document_number_last =~ /(.*)(\d+)$/ ) ;
     return("$document_number_last.1") if $document_number_last ;
     return('1');
 };

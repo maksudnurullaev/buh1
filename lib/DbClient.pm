@@ -17,10 +17,14 @@ use parent 'Db';
 sub new {
     my $class = shift;
     my $mojo  = shift;
-    my $file_name = $mojo->session('company id') . '.db';
+    my $file_name = ($mojo->session('company id') || shift );
+    if( !$file_name ){
+        warn 'DbClinet:new:error: Could not create db connection, company not defined!' ;
+        return(undef);
+    }
     my $file_path = $mojo->app->home->rel_file("db/clients/$file_name");
     my $self = { mojo => $mojo, 
-                 file => $file_path };
+                 file => ($file_path . '.db') };
     bless $self, $class;
     return($self);
 };

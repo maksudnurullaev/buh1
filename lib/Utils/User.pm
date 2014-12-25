@@ -16,6 +16,15 @@ use Data::Dumper;
 use ML;
 use Utils::Languages;
 
+sub authorized2password{
+    my $self = shift ;
+    if( $self->who_is_global('guest') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
 sub current{
     my $self = shift;
     if( $self && $self->session ){
@@ -42,10 +51,10 @@ sub who_global{
     # 3. Check for other extension
     my $db = Db->new($self);
     my $user = $db->get_user($email);
-    my $result = undef;
-    $result = lc($user->{extended_right}) if $user
-            && exists($user->{extended_right})
-            && $user->{extended_right} ;
+    my $result = 'no_rights';
+    if( exists($user->{extended_right}) ){
+       $result = $user->{extended_right} if $user->{extended_right} ;  
+    }
     return('g_' . who_normalize($result));
 };
 

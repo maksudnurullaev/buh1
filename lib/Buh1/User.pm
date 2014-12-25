@@ -2,16 +2,6 @@ package Buh1::User; {
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
-sub authorized2password{
-    my $self = shift ;
-    if( $self->who_is_global('guest') ){
-        $self->redirect_to('/user/login?warning=access');
-        return(0);
-    }
-    return(1);
-};
-
-
 sub login{
     my $self = shift;
     my $method = $self->req->method;
@@ -25,7 +15,7 @@ sub login{
             if ( my $user = Auth::login($self, $email, $password) ){ 
                 $self->session->{'user email'} = $email;
                 if( $email =~ /^admin$/i ){
-                    $self->session->{'user id'} = $user;
+                    $self->session->{'user id'} = 'admin';
                 } else {
                     $self->session->{'user id'} = $user->{id};
                 }
@@ -46,7 +36,7 @@ sub logout{
 
 sub password{
     my $self = shift;
-    return if !authorized2password($self) ;
+    return if !Utils::User::authorized2password($self) ;
 
     my $email = Utils::User::current($self);
     my $method = $self->req->method;

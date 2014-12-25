@@ -9,6 +9,7 @@
   Local who_is_local 'reader': <%= who_is_local 'reader' %><br />
   Local who_is_local 'writer': <%= who_is_local 'writer' %><br />
   Local who_is_local 'admin': <%= who_is_local 'admin' %><br />
-  Local company access:  <%= session->{'company access'} %>
+  Local company access:  <%= session->{'company access'} %><br />
+  Is mobile browser: <%= is_mobile_browser %> 
 </fieldset>
 

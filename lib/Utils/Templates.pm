@@ -13,7 +13,26 @@ use strict;
 use warnings;
 use utf8;
 use Utils::Db;
-use Data::Dumper;
+
+sub validate2payload{
+    my $self = shift;
+    my $id   = $self->param('payload');
+    my $dbc = Db->new($self);
+    if( !Utils::Db::is_object_exists($dbc,$id)){
+        $self->redirect_to('/user/login?warning=data_not_found');
+        return(0);
+    }
+    return(1);
+};
+
+sub authorized2edit{
+    my $self = shift ;
+    if( !$self->who_is_global('editor') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
 
 sub form2data{
     my $self = shift;
@@ -37,9 +56,10 @@ sub validate{
     return(1);
 };
 
-sub get_root_objects{
+sub deploy_root_list{
     my $self = shift ;
-    return(Utils::Db::db_get_root($self," WHERE name = 'template' "));
+    my $root_list = Utils::Db::db_get_root($self," WHERE name = 'template' ");
+    $self->stash( resources_root => $root_list );
 };
 
 

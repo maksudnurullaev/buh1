@@ -70,10 +70,11 @@ sub login{
         warn "Admin's password invalid!";
         return(0);
     }
-    # 2. Is email exists
+    # 2. Is user exists
     my $db = Db->new($self);
     my $user = $db->get_user($email);
     return(0) if !$user ;
+    # 3. Validate password
     my $salt = $user->{password};
     return($user) if salted_password($password,$salt);
     warn "User with mail '$email' exists but password is invalid!";

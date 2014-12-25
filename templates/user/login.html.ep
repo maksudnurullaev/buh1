@@ -1,35 +1,37 @@
 % layout 'default';
 % if ( param('warning') && param('warning') =~ /access/i ) { 
  <h1 style='color: red'><%= ml 'Access denied' %>!</h1>
-% } 
-
-% if ( !who_is_global('user') ) {
- <h2><%= ml 'Login' %></h2>
- % if( defined stash( 'error' ) && length stash( 'error' ) ) { 
-  <div class='alert error'>
-   %= ml 'Error!' 
+% } elsif( param('warning') ){
+ <h1 style='color: red'><%= ml param('warning') %>!</h1>
+% } else {
+ % if ( !who_is_global('user') ) {
+  <h2><%= ml 'Login' %></h2>
+  % if( defined stash( 'error' ) && length stash( 'error' ) ) { 
+   <div class='alert error'>
+    %= ml 'Error!' 
+   </div>
+  % } 
+  <div>
+   %= form_for '/user/login' => (method => 'POST') => begin
+   <table class='colortable'>
+    <tr><td class='tar'><u><%= ml 'Name' %></u></td>
+     <td><%= text_field 'email', class => stash 'email_class' %></td>
+    </tr>
+    <tr><td class='tar'><u><%= ml 'Password' %></u></td>
+     <td><%= password_field 'password', class => stash 'password_class' %></td>
+    </tr>
+    <tr><td>&nbsp;</td>
+     <td>
+      %= submit_button ml('Login')
+     </td>
+    </tr>
+   </table>
+   % end
+   <p>
+    <%= mlm 'rus', 'Demo access block' => begin %>
+     <u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!
+    <% end %>
+   </p>
   </div>
- % } 
- <div>
-  %= form_for '/user/login' => (method => 'POST') => begin
-  <table class='colortable'>
-   <tr><td class='tar'><u><%= ml 'Name' %></u></td>
-    <td><%= text_field 'email', class => stash 'email_class' %></td>
-   </tr>
-   <tr><td class='tar'><u><%= ml 'Password' %></u></td>
-    <td><%= password_field 'password', class => stash 'password_class' %></td>
-   </tr>
-   <tr><td>&nbsp;</td>
-    <td>
-     %= submit_button ml('Login')
-    </td>
-   </tr>
-  </table>
-  % end
-  <p>
-   <%= mlm 'rus', 'Demo access block' => begin %>
-    <u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!
-   <% end %>
-  </p>
- </div>
+ % }
 % }
