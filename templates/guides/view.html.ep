@@ -6,14 +6,7 @@
  </sup>
 </h2>
 %= include 'success_error' ;
-<div class="toolbar">
- %= link_to ml('Back') => '/guides/page' ; 
- % if( who_is_global('admin') ){
-  |
-  %= link_to ml('Edit') => "/guides/edit/$payload" ;
- % } 
-</div>
-
+%= include 'guides/toolbar' ;
 % if( $guide_data ){
  %= include 'guides/as_table' if $guide_data ;
 % } else {

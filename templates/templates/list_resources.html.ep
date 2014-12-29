@@ -1,5 +1,5 @@
 <div>
- <ul>
+ <ul class="nostyle" style="padding-left: 10px">
  % for my $id (sort keys %{$temp_hash}) {
   <li>
    % my $files_count = files_count($id) ;

@@ -1,8 +1,5 @@
 % layout 'default';
 <h2><%= ml('Guides') . ' | ' . ml('Add') %></h2>
 %= include 'success_error' ;
-<div class="toolbar">
- %= link_to ml('Back') => '/guides/page' ; 
-</div>
-
-%= include 'guides/form' if who_is_global('admin') ;
+%= include 'guides/toolbar' ;
+%= include 'guides/form' ;

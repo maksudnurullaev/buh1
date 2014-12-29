@@ -21,6 +21,7 @@ sub page{
 
 sub add{
     my $self = shift;
+    return if !Utils::Calculations::authorized2edit($self) ;
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -50,6 +51,10 @@ sub test{
         }
     } else {
         $data = Utils::Db::db_deploy($self,$id) ;
+        if( !$data ){
+            $self->redirect_to('/calculations/page');
+            return ;
+        }
     }
     Utils::Calculations::deploy_result($self, $data) ;
 };
@@ -60,6 +65,8 @@ sub edit{
     my $id = $self->param('payload');
     my $method = $self->req->method;
     if( $method =~ /POST/ ){
+        return if !Utils::Calculations::authorized2edit($self) ;
+
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
             if( defined $self->param('make_copy') ){
