@@ -15,6 +15,15 @@ use utf8;
 use Utils;
 use Data::Dumper;
 
+sub authorized2edit{
+    my $self = shift;
+    if( !$self->who_is_global('editor') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
 sub get_guides_path{
     my ($self,$id) = @_ ;
     if( $id ){

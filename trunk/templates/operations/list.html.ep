@@ -4,18 +4,18 @@
 <div>
  % my $parts = stash 'parts';
  % for my $pid (sort keys %{$parts}) {
-  <ul>
+  <ul class="nostyle" style="padding-left: 10px">
    <li><%= link_to $parts->{$pid}{name} => "/accounts/edit/$pid" %></li>
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
-    <ul>
+    <ul class="nostyle" style="padding-left: 10px">
     % for my $sid(sort keys %{$sections}) {
      <li>
      %= link_to $sections->{$sid}{name} => "/accounts/edit/$sid"
      </li>
      % if ( exists $sections->{$sid}{accounts} ) {
       % my $accounts = $sections->{$sid}{accounts} ;
-      <ul>
+      <ul class="nostyle" style="padding-left: 10px">
        % for my $aid (sort keys %{$accounts}) {
         % my $account = $accounts->{$aid} ;
          <li><%= ml "account type $account->{type}" if $account->{type} %></li>

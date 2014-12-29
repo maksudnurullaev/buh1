@@ -23,6 +23,7 @@ sub page{
 
 sub add{
     my $self = shift ;
+    return if !Utils::Guides::authorized2edit($self);
 
     if ( $self->req->method =~ /POST/ ){
         if( my $guide_number = Utils::Guides::add_guide($self) ){
@@ -35,7 +36,8 @@ sub add{
 };
 
 sub edit{
-    my $self                 = shift;
+    my $self = shift;
+    return if !Utils::Guides::authorized2edit($self);
 
     my $guide_number        = $self->param('payload');
     if( $self->req->method =~ /POST/ ){
@@ -60,6 +62,7 @@ sub view{
 
 sub del{
     my $self = shift ;
+    return if !Utils::Guides::authorized2edit($self);
 
     my $guide_number      = $self->param('payload');
     my $path              = Utils::Guides::get_guides_path($self);

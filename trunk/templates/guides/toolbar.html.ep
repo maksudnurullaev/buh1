@@ -1,0 +1,21 @@
+<div class="toolbar">
+ % if( $action eq 'page' ){
+  % if( who_is_global('editor') ) { 
+   <%= link_to ml('Add') => 'add' %> 
+  % } 
+ % } elsif( $action eq 'add' ) {
+   <%= link_to ml('Back') => '/guides/page' %> 
+ % } elsif( $action eq 'view' ) {
+   <%= link_to ml('Back') => '/guides/page' %> 
+  % if( who_is_global('editor') ) { 
+   | <%= link_to ml('Edit') => "/guides/edit/$payload" %>
+  % } 
+ % } elsif( $action eq 'edit' ) {
+   <%= link_to ml('Back') => '/guides/page' %> 
+  % if( who_is_global('editor') ) { 
+   | <%= link_to ml('View') => "/guides/view/$payload" %>
+  % } 
+ % } 
+</div>
+
+

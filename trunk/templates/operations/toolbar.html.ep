@@ -1,5 +1,5 @@
 <div class="toolbar">
- % if( $action eq 'edit' ){
+ % if( $action eq 'edit' || $action eq 'add' ) {
   %= link_to ml('Back') => "/operations/account/$payload" ;
  % } else {    
   %= link_to ml('Back') => "/operations/list" ;
