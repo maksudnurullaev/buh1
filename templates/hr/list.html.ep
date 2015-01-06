@@ -2,9 +2,9 @@
 <h2><%= ml ucfirst $controller %></h2>
 %= include 'success_error' ;
 
-%if( user_role2company =~ /write|admin/i ){
+%if( who_is_local('writer') ){
  <div class="toolbar">
   %= link_to ml('Add') => "/$controller/add" ; 
  </div>
 %}
-%= include "utils/list_resources_type1", temp_hash => stash('resources_root') if stash('resources_root') ;
+%= include "common/list_resources_type1", temp_hash => stash('resources_root') if stash('resources_root') ;

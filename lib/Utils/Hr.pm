@@ -15,6 +15,15 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
+sub authorized2edit{
+    my $self = shift;
+    if( !$self->who_is_local('writer') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
 sub form2data{
     my $self = shift;
     my $data = { 
@@ -39,7 +48,7 @@ sub validate{
 
 sub get_root_objects{
     my $self = shift ;
-    return(Utils::Db::cdb_get_root($self," WHERE name LIKE 'hr%' "));
+    return(Utils::Db::cdb_get_root($self," WHERE name = 'hr' "));
 };
 
 

@@ -1,13 +1,3 @@
 <div class="toolbar">
-  % if( $action ne 'files' ){
-   <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
-  % } else {
-   <%= ml 'Files' %>  
-  % }
-  |
-  % if( $action ne 'files_add_new' ){
-   <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
-  % } else {
-   <%= ml 'New' %>  
-  % } 
+   <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'Add' %><% end %>
 </div>

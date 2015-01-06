@@ -2,14 +2,10 @@
 %= include 'success_error' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Calculations' %></h2>
 
-%= include 'hr/toolbar' ;
+%= include "common/toolbar_type1" ;
+%= include 'common/description_form_type2', description_value => stash('description') ;
 
-<div class="toolbar">
- <%= ml 'Name' %>:
- <strong>
-  %= link_to stash('description') => "/hr/edit/$payload" 
- </strong>
-</div>
-
-%= include 'calculations/toolbar', add_path => "/$controller/calculations_add/$payload" if user_role2company =~ /write|admin/i ;
-%= include 'calculations/list_page', link_path_prefix => "/$controller/calculations_edit/$payload?id=" ;
+<p>
+%= include 'calculations/toolbar', add_link => "/$controller/calculations_add/$payload" ;
+%= include 'calculations/list', link_path_prefix => "/$controller/calculations_edit/$payload?id=", isClientPart => 1 ;
+</p>

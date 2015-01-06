@@ -12,16 +12,17 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Hr ;
 use Utils::Files ;
 use Utils::Calculations ;
+use Data::Dumper ;
 
 sub add{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         my $data = Utils::Hr::form2data($self);
         if( Utils::Hr::validate($self,$data) ){
             Utils::Db::cdb_insert_or_update($self,$data);
-            $self->stash(success => 1);
             $self->redirect_to('/hr/list');
         }
     }
@@ -31,10 +32,12 @@ sub list{
     my $self = shift;
 
     $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
+    warn Dumper $self->stash ;
 };
 
 sub edit{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
     
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
@@ -51,6 +54,7 @@ sub edit{
 
 sub del{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -65,6 +69,7 @@ sub del{
 
 sub move{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -87,6 +92,7 @@ sub move{
 
 sub make_root{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
@@ -105,6 +111,7 @@ sub files{
 
 sub files_update{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -115,6 +122,7 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -127,6 +135,7 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -143,6 +152,7 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
@@ -151,6 +161,7 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
 
@@ -183,6 +194,8 @@ sub calculations{
 
 sub calculations_add{
     my $self = shift ;
+    return if !Utils::Hr::authorized2edit($self);
+
     my $id = $self->param('payload');
 
     if ( $self->req->method =~ /POST/ ){
@@ -210,7 +223,7 @@ sub calculations_add{
         }
     }
     # finish
-    Utils::Db::cdb_deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id, 'hr');
     my $calculcation_templates_date = Utils::Calculations::get_list_as_select_data(
             $self, Utils::Calculations::get_db_list($self));
     $self->stash( calculation_templates => $calculcation_templates_date );
@@ -218,6 +231,7 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -253,6 +267,7 @@ sub calculations_edit{
 
 sub calculations_update_fields{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -270,6 +285,7 @@ sub calculations_update_fields{
 
 sub calculations_delete{
     my $self = shift;
+    return if !Utils::Hr::authorized2edit($self);
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 

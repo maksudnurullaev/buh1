@@ -1,16 +1,9 @@
 % layout 'default';
 %= include 'success_error' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Files' %> | <%= ml 'New' %></h2>
-
-%= include 'hr/toolbar' ;
-
-<div class="toolbar">
- <%= ml 'Name' %>:
- <strong>
-  %= link_to stash('description') => "/hr/edit/$payload" 
- </strong>
-</div>
-
-%= include 'hr/files_toolbar' ;
+%= include "common/toolbar_type1" ;
+%= include 'common/description_form_type2', description_value => stash('description') ;
+<p>
 %= include 'files/add_new_form' ;
+</p>
 

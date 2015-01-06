@@ -1,14 +1,14 @@
 % my $files_count = files_count($payload) ;
 % my $calcs_count = calcs_count($payload) ;
-
+% my $editor = ( who_is_global('editor') || who_is_local('writer') ) ;
 <div class="toolbar">
- % if ( who_is_global('editor') && !stash('CHILDREN') && !$files_count && !$calcs_count ){
+ % if ( $editor && !stash('CHILDREN') && !$files_count && !$calcs_count ){
   <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
  % } else {
    %= ml('Delete') ;
  % }
  |
- % if ( who_is_global('editor') ){
+ % if ( $editor && $action ne 'move' ){
   <%= link_to ml("Move") => "/$controller/move/$payload" %>
  % } else {
    %= ml('Move') ;
