@@ -1,5 +1,6 @@
 % layout 'default';
 %= include 'hr/header' ;
 <h2><%= ml 'Human Resource' %> | <%= ml 'Delete' %></h2>
-%= include 'hr/toolbar' ;
-%= include 'hr/descriptor_form' ;
+%= include "common/toolbar_type1" ;
+<div class='alert error noaccess'><%= uc ml 'Are you sure' %>?</div>
+%= include "common/description_form_type1" ;

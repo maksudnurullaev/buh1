@@ -7,7 +7,7 @@
      %= ml 'Description' 
     </td>
     <td>
-     <strong><%= stash 'description' %></strong>
+     %= text_area description => (stash 'description'), class => (stash 'description_class') 
     </td>
    </tr>
    <tr><td>&nbsp;</td>

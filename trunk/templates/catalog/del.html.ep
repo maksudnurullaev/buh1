@@ -2,4 +2,5 @@
 <h2><%= ml "Catalog" %> | <%= ml "Delete" %></h2>
 
 %= include "common/toolbar_type1" ;
+<div class='alert error noaccess'><%= uc ml 'Are you sure' %>?</div>
 %= include "common/description_form_type1" ;

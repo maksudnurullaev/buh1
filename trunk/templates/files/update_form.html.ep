@@ -1,5 +1,6 @@
 <div class="toolbar">
  % my $fileid = param 'fileid' ;
+ % my $is_editor = (who_is_global('editor') || who_is_local('writer')) ;
  %= form_for "/$controller/files_update_desc/$payload?fileid=$fileid"  => ( method => 'POST') => begin
  %= hidden_field "redirect_to" => "/$controller/files_update/$payload?fileid=$fileid"
  <table class='colortable'>

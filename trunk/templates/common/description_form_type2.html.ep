@@ -1,0 +1,14 @@
+<div class="form">
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area hr_description => $description_value ;
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td><td class='tar'><%= link_to ml('Cancel') => "/$controller/edit/$payload" %></td></tr>
+ </table>
+</div>
+

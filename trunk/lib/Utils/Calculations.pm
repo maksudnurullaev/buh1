@@ -25,15 +25,6 @@ sub authorized2edit{
     return(1);
 };
 
-sub authorized2edit{
-    my $self = shift;
-    if( !$self->who_is_global('editor') ){
-        $self->redirect_to('/user/login?warning=access');
-        return(0);
-    }
-    return(1);
-};
-
 sub form2data_fields{
     my $self = shift;
     my $data = { object_name => 'calculation',
