@@ -1,22 +1,17 @@
 % layout 'default';
 %= include 'success_error' ;
 <h2><%= ml 'Catalog' %> | <%= ml 'Calculations' %> | <%= ml 'Edit' %></h2>
+%= include "common/toolbar_type1" ;
+%= include 'common/description_form_type2', description_value => stash('catalog.description') ;
 
-%= include 'catalog/toolbar' ;
-
-<div class="toolbar">
- <%= ml 'Name' %>:
- <strong>
-  %= link_to stash('catalog.description') => "/catalog/edit/$payload" 
- </strong>
-</div>
-
-<div class="form">
+<p>
+<div class="form toolbar">
  <table class='colortable'>
-  %= include 'calculations/form', _path_post => "/catalog/calculations_edit/$payload?id=$id", _path_cancel => "/catalog/calculations/$payload" ;
+  %= include 'calculations/form', _path_post => "/catalog/calculations_edit/$payload?id=$id", _path_cancel => "/catalog/calculations/$payload", _clone => 0 ;
   %= include 'calculations/fields_form_splitter', title => 'Fields' ; 
-  %= include 'calculations/fields_form', _path_post => "/catalog/calculations_update_fields/$payload" ;
+  %= include 'calculations/fields_form', _path_post => "/catalog/calculations_update_fields/$payload", _path_cancel => "/catalog/calculations/$payload" ;
   %= include 'calculations/fields_form_splitter', title => '' ; 
   %= include 'form_delete_row', _path => "/catalog/calculations_delete/$payload?id=$id" ;
  </table>
 </div>
+</p>

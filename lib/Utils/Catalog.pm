@@ -15,6 +15,24 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
+sub authorized2read{
+    my $self = shift ;
+    if( !$self->who_is_local('reader') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
+sub authorized2edit{
+    my $self = shift ;
+    if( !$self->who_is_local('writer') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
 sub form2data{
     my $self = shift;
     my $data = { 
