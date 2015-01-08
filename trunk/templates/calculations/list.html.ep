@@ -9,6 +9,7 @@
     %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
    </li>
   % }
+  </ul>
 % } else {
  <br /><%= ml 'No data!' %>
 % }

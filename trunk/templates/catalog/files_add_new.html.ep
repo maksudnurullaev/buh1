@@ -3,7 +3,6 @@
 <h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 
 %= include "common/toolbar_type1" ;
-%= include "common/files_header_type1" ;
-%= include "common/files_toolbar_type1" if who_is_global('editor') ;
+%= include 'common/description_form_type2', description_value => stash('description') ;
 %= include "files/add_new_form" ;
 

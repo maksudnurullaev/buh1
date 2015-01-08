@@ -3,5 +3,4 @@
 <h2><%= ml 'Human Resource' %> | <%= ml 'Move' %></h2>
 
 %= include "common/toolbar_type1" ;
-%#= include 'hr/toolbar' ;
 %= include 'hr/descriptor_form_move' ;

@@ -19,7 +19,7 @@ use Db;
 sub client{
     my $self = shift;
     my $db_client = new DbClient($self);
-    return($db_client) if $db_client->is_valid ;
+    return($db_client) if $db_client && $db_client->is_valid ;
     return(undef);
 };    
 
