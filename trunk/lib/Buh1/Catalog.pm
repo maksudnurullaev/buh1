@@ -38,9 +38,9 @@ sub list{
 
 sub edit{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
 
     if( $self->req->method eq 'POST' ){
+        return if !Utils::Catalog::authorized2edit($self);
         my $data = Utils::Catalog::form2data($self);
         $self->stash(success => 1);
         Utils::Db::cdb_insert_or_update($self,$data);
@@ -265,6 +265,30 @@ sub calculations_edit{
     Utils::Db::cdb_deploy($self,$id, 'catalog');
     my $data = Utils::Db::cdb_deploy($self,$cid) ;
     Utils::Calculations::deploy_result($self, $data) if $data ;
+};
+
+sub calculations_test{
+    my $self = shift;
+    return if !Utils::Catalog::authorized2read($self);
+
+    my $id = $self->param('payload');
+    my $cid = $self->param('id') ; 
+    my $method = $self->req->method;
+    my $data = {} ;
+    if ( $method =~ /POST/ ){
+        my @param = $self->param ;
+        for my $key (@param){
+            $data->{$key} = $self->param($key);
+            $self->stash( $key => $self->param($key) ) ;
+        }
+    } else {
+        $data = Utils::Db::db_deploy($self,$id) ;
+        if( !$data ){
+            $self->stash(success => 1);
+            return ;
+        }
+    }
+    Utils::Calculations::deploy_result($self, $data) ;
 };
 
 sub calculations_update_fields{

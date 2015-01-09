@@ -6,11 +6,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>buh1 v0.0.1a</title>
   <link rel="stylesheet" type="text/css" href="/style.css" />
-
+  % my $debug_mode = 1 ;
 </head>
 
 <body>
-  %= include 'debug/access' ;
+  %= include 'debug/access' if $debug_mode ;
   <div id="headerSection">
     <a href="http://buh1.uz/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
     <div class="login_status">

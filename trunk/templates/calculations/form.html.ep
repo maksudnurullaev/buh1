@@ -14,10 +14,12 @@
    % }
   </td>
  </tr>
- <tr><td>&nbsp;</td>
-  <td>
-   %= submit_button ml('Save') ;
-   | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
-  </td>
- </tr>
+ % if( who_is_global('editor') || who_is_local('writer') ){
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+    | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
+ % }    
 % end

@@ -10,7 +10,11 @@
  </td></tr>
   <tr><td>&nbsp;</td>
    <td>
+   % if( who_is_global('editor') || who_is_local('writer') ){
     %= submit_button ml('Save') ;
+   % } else {
+    %= submit_button ml('Calculate') ;
+   % }
    | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
    </td>
  </tr>
