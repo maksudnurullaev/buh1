@@ -16,7 +16,7 @@ use Data::Dumper ;
 
 sub add{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -30,14 +30,14 @@ sub add{
 
 sub list{
     my $self = shift;
+    return if !$self->who_is('local', 'reader') ;
 
     $self->stash( resources_root => Utils::Hr::get_root_objects($self) );
-    warn Dumper $self->stash ;
 };
 
 sub edit{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local','writer') ;
     
     my $method = $self->req->method ;
     if( $method eq 'POST' ){
@@ -54,7 +54,7 @@ sub edit{
 
 sub del{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -69,7 +69,7 @@ sub del{
 
 sub move{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -92,7 +92,7 @@ sub move{
 
 sub make_root{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
@@ -103,6 +103,7 @@ sub make_root{
 # files part
 sub files{
     my $self = shift;
+    return if !$self->who_is('local', 'reader') ;
 
     my $id = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
@@ -111,7 +112,7 @@ sub files{
 
 sub files_update{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -122,7 +123,7 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -135,7 +136,7 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -152,7 +153,7 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
@@ -161,7 +162,7 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
 
@@ -185,6 +186,8 @@ sub files_add_new{
 
 sub calculations{
     my $self = shift;
+    return if !$self->who_is('local', 'reader') ;
+
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
     my $dbc = Utils::Db::client($self);
@@ -194,10 +197,9 @@ sub calculations{
 
 sub calculations_add{
     my $self = shift ;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
-
     if ( $self->req->method =~ /POST/ ){
         my $data = Utils::Calculations::form2data($self);
         if( Utils::Calculations::validate($self,$data) ){
@@ -231,35 +233,10 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
-    my $id = $self->param('payload');
-    my $cid = $self->param('id') ; 
-    my $method = $self->req->method;
-    if ( $method =~ /POST/ ){
-        my $data = Utils::Calculations::form2data($self);
-        if( Utils::Calculations::validate($self,$data) ){
-    	   	if( defined $self->param('make_copy') ){
-	    		my $dbc = Utils::Db::client($self);
-		    	my $template = $dbc->get_objects({ id => [$cid] })->{$cid} ;
-			    delete $data->{id} ;
-			    delete $template->{id} ;
-			    delete $template->{description} ;
-	    		for my $key (keys %{$template}){
-		    		$data->{$key} = $template->{$key} if $key !~ /^_/ ;
-			    }
-                warn Dumper $data ;
-                my $new_cid = $dbc->insert($data);
-                $dbc->set_link('hr descriptor',$id,'calculation',$new_cid);
-                $self->redirect_to("/hr/calculations/$id");
-                return;
-	    	} else {
-                Utils::Db::cdb_insert_or_update($self,$data);
-                $self->stash(success => 1);
-            }
-        }
-    }
-    # finish
+    my ($id,$cid,$method) = Utils::Hr::calculcation_edit_params($self); 
+    Utils::Hr::calculation_edit_post($self) if $method =~ /POST/ ;
     Utils::Db::cdb_deploy($self,$id, 'hr');
     my $data = Utils::Db::cdb_deploy($self,$cid) ;
     Utils::Calculations::deploy_result($self, $data) ;
@@ -267,7 +244,7 @@ sub calculations_edit{
 
 sub calculations_update_fields{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -285,7 +262,7 @@ sub calculations_update_fields{
 
 sub calculations_delete{
     my $self = shift;
-    return if !Utils::Hr::authorized2edit($self);
+    return if !$self->who_is('local', 'writer') ;
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 

@@ -40,6 +40,7 @@ sub register {
     $app->helper( who_local      => sub { Utils::User::who_local(@_); } );
     $app->helper( who_is_global  => sub { Utils::User::who_is_global(@_); } );
     $app->helper( who_is_local   => sub { Utils::User::who_is_local(@_); } );
+    $app->helper( who_is         => sub { Utils::User::who_is(@_); } );
 
     $app->helper( get_document_number_last => sub { Utils::Documents::get_document_number_last (@_); } );
     $app->helper( generate_name   => sub { Utils::Languages::generate_name (@_); } );
@@ -53,6 +54,7 @@ sub register {
     $app->helper( cdb_calculate => sub { Utils::Calculations::cdb_calculate (@_); } );
     $app->helper( db_calculate  => sub { Utils::Calculations::db_calculate (@_); } );
     $app->helper( get_date      => sub { Utils::get_date (@_); } );
+    $app->helper( full_url      => sub { Utils::get_full_url (@_); } );
 };
 
 };

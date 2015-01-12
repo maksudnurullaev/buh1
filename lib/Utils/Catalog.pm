@@ -15,22 +15,11 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
-sub authorized2read{
+sub get_params3{
     my $self = shift ;
-    if( !$self->who_is_local('reader') ){
-        $self->redirect_to('/user/login?warning=access');
-        return(0);
-    }
-    return(1);
-};
-
-sub authorized2edit{
-    my $self = shift ;
-    if( !$self->who_is_local('writer') ){
-        $self->redirect_to('/user/login?warning=access');
-        return(0);
-    }
-    return(1);
+    return($self->param('payload'),
+           $self->param('id'),
+           $self->req->method);
 };
 
 sub form2data{

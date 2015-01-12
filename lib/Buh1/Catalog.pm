@@ -16,7 +16,7 @@ use Data::Dumper ;
 
 sub add{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
@@ -31,7 +31,7 @@ sub add{
 
 sub list{
     my $self = shift;
-    return if !Utils::Catalog::authorized2read($self);
+    return if !$self->who_is('local','reader');
 
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
 };
@@ -40,7 +40,7 @@ sub edit{
     my $self = shift;
 
     if( $self->req->method eq 'POST' ){
-        return if !Utils::Catalog::authorized2edit($self);
+        return if !$self->who_is('local','writer');
         my $data = Utils::Catalog::form2data($self);
         $self->stash(success => 1);
         Utils::Db::cdb_insert_or_update($self,$data);
@@ -54,7 +54,7 @@ sub edit{
 
 sub del{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -69,7 +69,7 @@ sub del{
 
 sub move{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $method = $self->req->method ;
     my $id = $self->param('payload');
@@ -92,7 +92,7 @@ sub move{
 
 sub make_root{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id   = $self->param('payload');
     my $dbc = Utils::Db::client($self);
@@ -104,7 +104,7 @@ sub make_root{
 
 sub files_update{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -115,7 +115,7 @@ sub files_update{
 
 sub files_update_desc{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -128,7 +128,7 @@ sub files_update_desc{
 
 sub files_update_file{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $fileid = $self->param('fileid');
@@ -145,7 +145,7 @@ sub files_update_file{
 
 sub files_del{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     Utils::Files::del_file($self);
@@ -154,7 +154,7 @@ sub files_del{
 
 sub files_add_new{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
 
@@ -176,7 +176,7 @@ sub files_add_new{
 
 sub files{
     my $self = shift;
-    return if !Utils::Catalog::authorized2read($self);
+    return if !$self->who_is('local','reader');
 
     my $id   = $self->param('payload');
     $self->stash(files=>Utils::Files::file_list4id($self,$id));
@@ -187,7 +187,7 @@ sub files{
 
 sub calculations{
     my $self = shift;
-    return if !Utils::Catalog::authorized2read($self);
+    return if !$self->who_is('local','reader');
 
     my $id = $self->param('payload');
     Utils::Db::cdb_deploy($self,$id);
@@ -198,7 +198,7 @@ sub calculations{
 
 sub calculations_add{
     my $self = shift ;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     if ( $self->req->method =~ /POST/ ){
@@ -234,7 +234,7 @@ sub calculations_add{
 
 sub calculations_edit{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -269,11 +269,9 @@ sub calculations_edit{
 
 sub calculations_test{
     my $self = shift;
-    return if !Utils::Catalog::authorized2read($self);
+    return if !$self->who_is('local','reader');
 
-    my $id = $self->param('payload');
-    my $cid = $self->param('id') ; 
-    my $method = $self->req->method;
+    my ($id,$cid,$method) = Utils::Catalog::get_params3($self);
     my $data = {} ;
     if ( $method =~ /POST/ ){
         my @param = $self->param ;
@@ -282,18 +280,19 @@ sub calculations_test{
             $self->stash( $key => $self->param($key) ) ;
         }
     } else {
-        $data = Utils::Db::db_deploy($self,$id) ;
+        $data = Utils::Db::cdb_deploy($self,$cid) ;
         if( !$data ){
-            $self->stash(success => 1);
+            $self->stash(error => 1);
             return ;
         }
     }
-    Utils::Calculations::deploy_result($self, $data) ;
+    Utils::Db::cdb_deploy($self,$id, 'catalog');
+    Utils::Calculations::deploy_result($self, $data) if $data ;
 };
 
 sub calculations_update_fields{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 
@@ -311,7 +310,7 @@ sub calculations_update_fields{
 
 sub calculations_delete{
     my $self = shift;
-    return if !Utils::Catalog::authorized2edit($self);
+    return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
     my $cid = $self->param('id') ; 

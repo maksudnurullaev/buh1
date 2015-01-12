@@ -159,6 +159,13 @@ sub merge2arr_ref{
     return($arr_ref);
 };
 
+sub get_full_url{
+    my $self = shift ;
+    my $url_path = $self->req->url->path->to_string() ;
+    my $url_query = $self->req->url->query->to_string() ;
+    return ($url_query ? "$url_path?$url_query" : $url_path ) ;
+};
+
 # END OF PACKAGE
 };
 
