@@ -15,6 +15,34 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
+sub calculcation_edit_params{
+    my $self = shift ;
+    return($self->param('payload'),
+           $self->param('id'),
+           $self->req->method);
+};
+
+sub calculation_edit_post{
+    my $self = shift ;
+    my ($id,$cid) = calculcation_edit_params($self); 
+    my $data = Utils::Calculations::form2data($self);
+    if( Utils::Calculations::validate($self,$data) ){
+        Utils::Db::cdb_insert_or_update($self,$data);
+        $self->stash(success => 1);
+    } else {
+        $self->stash(error => 1);
+    }
+};
+
+sub authorized2read{
+    my $self = shift;
+    if( !$self->who_is_local('reader') ){
+        $self->redirect_to('/user/login?warning=access');
+        return(0);
+    }
+    return(1);
+};
+
 sub authorized2edit{
     my $self = shift;
     if( !$self->who_is_local('writer') ){

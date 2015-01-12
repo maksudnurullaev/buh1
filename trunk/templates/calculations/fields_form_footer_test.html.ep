@@ -12,7 +12,7 @@
    <td>
     %= submit_button ml('Calculate') ;
     |
-    %= link_to  ml('Reset') => "/$controller/$action/$payload" ;
+    %= link_to  ml('Reset') => full_url() ;
    </td>
   </tr>
 

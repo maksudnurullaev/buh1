@@ -101,12 +101,23 @@ sub who_is_local{
     return(undef) if !$self || !$level;
     if( lc($level) eq 'admin' ){
         return(1) if who_local($self) =~ /l_admin/i ;
-    } elsif( lc($level) eq 'writer' ){
+    } elsif( lc($level) eq 'writer' || lc($level) eq 'editor' ){
         return(1) if who_local($self) =~ /l_admin|l_write/i ;
     } elsif( lc($level) eq 'reader' ){
         return(1) if who_local($self) =~ /l_admin|l_write|l_read/i ;
     }
     return(0);
+};
+
+sub who_is{
+    my ($self,$part,$level) = @_ ;
+    my $result = 0 ;
+    if( $self && $part && $level ){
+        $result = who_is_global($self,$level) if lc($part) eq 'global' ;
+        $result = who_is_local($self,$level) if lc($part) eq 'local' ;
+    }
+    $self->redirect_to('/user/login?warning=access') if !$result ; # default actoin
+    return($result) ;
 };
 
 sub who_normalize{

@@ -6,7 +6,7 @@
    </td>
   </tr>
   %= include 'calculations/fields_form_splitter', title => 'Fields' ; 
-  %= form_for "/calculations/test/$payload" => (method => 'POST') => begin
+  %= form_for full_url() => (method => 'POST') => begin
   %= hidden_field 'description' => stash('description') ;
   % my $field_index = 1 ;
   % while( stash("f_description_$field_index") ){

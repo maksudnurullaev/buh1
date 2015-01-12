@@ -7,9 +7,9 @@
 <p>
 <div class="form toolbar">
  <table class='colortable'>
-  %= include 'calculations/form', _path_post => "/catalog/$action/$payload?id=$id", _path_cancel => "/catalog/calculations/$payload", _clone => 0 ;
-  %= include 'calculations/fields_form_splitter', title => 'Fields' ; 
-  %= include 'calculations/fields_form', _path_post => "/catalog/calculations_update_fields/$payload", _path_cancel => "/catalog/calculations/$payload" ;
+  %#= include 'calculations/form', _path_post => "/catalog/$action/$payload?id=$id", _path_cancel => "/catalog/calculations/$payload", _clone => 0 ;
+  %#= include 'calculations/fields_form_splitter', title => 'Fields' ; 
+  %= include 'calculations/fields_form_test', _path_post => "/catalog/calculations_update_fields/$payload", _path_cancel => "/catalog/calculations/$payload" ;
   % if( who_is_local('writer') ){
    %= include 'calculations/fields_form_splitter', title => '' ; 
    %= include 'form_delete_row', _path => "/catalog/calculations_delete/$payload?id=$id" ;
