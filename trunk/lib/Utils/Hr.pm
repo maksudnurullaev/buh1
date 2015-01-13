@@ -15,6 +15,13 @@ use utf8;
 use Utils::Db;
 use Data::Dumper;
 
+sub get_params3{
+    my $self = shift ;
+    return($self->param('payload'),
+           $self->param('id'),
+           $self->req->method);
+};
+
 sub calculcation_edit_params{
     my $self = shift ;
     return($self->param('payload'),

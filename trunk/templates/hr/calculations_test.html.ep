@@ -1,8 +1,8 @@
 % layout 'default';
 %= include 'success_error' ;
-<h2><%= ml 'Catalog' %> | <%= ml 'Calculations' %> | <%= ml 'Edit' %></h2>
+<h2><%= ml 'Hr' %> | <%= ml 'Calculations' %> | <%= ml 'Edit' %></h2>
 %= include "common/toolbar_type1" ;
-%= include 'common/description_form_type2', description_value => stash('catalog.description') ;
+%= include 'common/description_form_type2', description_value => stash('hr.description') ;
 
 <p>
 <div class="form toolbar">
