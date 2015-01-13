@@ -242,6 +242,29 @@ sub calculations_edit{
     Utils::Calculations::deploy_result($self, $data) ;
 };
 
+sub calculations_test{
+    my $self = shift;
+    return if !$self->who_is('local','reader');
+
+    my ($id,$cid,$method) = Utils::Hr::get_params3($self); # same action
+    my $data = {} ;
+    if ( $method =~ /POST/ ){
+        my @param = $self->param ;
+        for my $key (@param){
+            $data->{$key} = $self->param($key);
+            $self->stash( $key => $self->param($key) ) ;
+        }
+    } else {
+        $data = Utils::Db::cdb_deploy($self,$cid) ;
+        if( !$data ){
+            $self->stash(error => 1);
+            return ;
+        }
+    }
+    Utils::Db::cdb_deploy($self,$id, 'hr');
+    Utils::Calculations::deploy_result($self, $data) if $data ;
+};
+
 sub calculations_update_fields{
     my $self = shift;
     return if !$self->who_is('local', 'writer') ;

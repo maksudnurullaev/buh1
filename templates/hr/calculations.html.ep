@@ -7,5 +7,6 @@
 
 <p>
 %= include 'calculations/toolbar', add_link => "/$controller/calculations_add/$payload" ;
-%= include 'calculations/list', link_path_prefix => "/$controller/calculations_edit/$payload?id=", isClientPart => 1 ;
+% my $link_path_prefix = ( who_is_local('writer') ? "/$controller/calculations_edit/$payload?id=" : "/$controller/calculations_test/$payload?id=" ) ;
+%= include 'calculations/list', link_path_prefix => $link_path_prefix, isClientPart => 1 ;
 </p>
