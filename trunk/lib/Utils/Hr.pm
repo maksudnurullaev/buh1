@@ -24,9 +24,10 @@ sub get_params3{
 
 sub calculcation_edit_params{
     my $self = shift ;
-    return($self->param('payload'),
+    my @result = ($self->param('payload'),
            $self->param('id'),
            $self->req->method);
+    return(@result);
 };
 
 sub calculation_edit_post{
