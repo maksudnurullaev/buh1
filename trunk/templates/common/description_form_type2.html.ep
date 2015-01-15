@@ -1,14 +1,22 @@
-<div class="form">
+<div class="form toolbar">
+ %= form_for "/$controller/$action/$payload" => (method => 'POST') => begin
+ %= hidden_field oname => (stash('oname') || $controller) ;
+ %= hidden_field id => $payload if $payload ;
  <table class='colortable'>
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area hr_description => $description_value ;
+    %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
    </td>
   </tr>
-  <tr><td>&nbsp;</td><td class='tar'><%= link_to ml('Cancel') => "/$controller/edit/$payload" %></td></tr>
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml('Save') ;
+    | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
+   </td>
+  </tr>
  </table>
+ % end
 </div>
-

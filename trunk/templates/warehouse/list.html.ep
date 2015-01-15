@@ -1,0 +1,25 @@
+% layout 'default';
+<h2><%= ml ucfirst $controller %></h2>
+
+%= include 'warehouse/toolbar' if who_is_local('writer') ;
+
+%= include 'filter'   , filter4    => $controller ;
+%= include 'paginator', paginator4 => $controller ;
+% my $objects = stash 'objects' ;
+% if ( scalar(keys %{$objects}) ) {
+ <ol start="<%= calc_start4ol() %>">
+  % for my $id( reverse sort keys %{$objects} ) {
+   <li>
+    <%= link_to $objects->{$id}{description} => "/$controller/edit/$id" %>
+   </li>
+  % }
+ </ol>
+% } else {
+ %= ml 'No data!'
+% }
+%= include 'filter'   , filter4    => $controller ;
+%= include 'paginator', paginator4 => $controller ;
+
+<pre>
+%= dumper stash
+</pre>
