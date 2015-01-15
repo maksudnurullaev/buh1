@@ -4,7 +4,7 @@ package Utils::Hr; {
 
 =head1 NAME
 
-    Database utilites 
+    Utilites 
 
 =cut
 
