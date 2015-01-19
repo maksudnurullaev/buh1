@@ -50,15 +50,26 @@ sub cdb_get_links{
 };
 
 sub cdb_get_unique_field{
-    my ($self,$object_name,$field_name) = @_ ;
+    my ($self,$object_name,$field_name,$pid) = @_ ;
     my $sql = "SELECT DISTINCT $field_name FROM OBJECTS WHERE name = '$object_name' AND field = 'name' ORDER BY 1 ASC ;" ;
     my $db = client($self);
     my $sth = $db->get_from_sql( $sql ) ;
     my $value;
     $sth->bind_col(1, \$value);
     my $result = [] ;
-    while($sth->fetch){ push @{$result}, $value ; }
+    my $existance_links = $db->get_links($pid,$object_name,['name']) ;
+    while($sth->fetch){ 
+        push @{$result}, $value if !_exists_in($existance_links,$value) ; 
+    }
     return($result);
+};
+
+sub _exists_in{
+    my ($hash_arr,$value) = @_;
+    for my $key (keys %{$hash_arr}){
+        return(1) if $value eq $hash_arr->{$key}{'name'} ;
+    }
+    return(0);
 };
 
 sub db_deploy{
