@@ -11,6 +11,7 @@
   % for my $id( reverse sort keys %{$objects} ) {
    <li>
     <%= link_to $objects->{$id}{description} => "/$controller/edit/$id" %>
+    <%= include 'warehouse/tagger', pid=>$id, tag_name => 'warehouse object tag' %>
    </li>
   % }
  </ol>
@@ -20,6 +21,3 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
 
-<pre>
-%= dumper stash
-</pre>

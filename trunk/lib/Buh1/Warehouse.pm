@@ -12,6 +12,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Encode qw( encode decode_utf8 );
 use Utils::Warehouse ;
 use Utils::Filter ;
+use Utils::Tags ;
 
 my $OBJECT_NAME  = 'warehouse object' ;
 my $OBJECT_NAMES = 'warehouse objects' ;
@@ -30,6 +31,16 @@ sub add{
     Utils::Warehouse::add_edit_post($self) if $self->req->method eq 'POST' ;
 };
 
+sub add_tag{
+    my $self = shift ;
+    return if !$self->who_is('local','writer');
+    my $pid = $self->param('payload') ;
+    my $result1 = Utils::Tags::add($self);
+    my $result2 = Utils::Tags::add2($self);
+
+    $self->redirect_to("/warehouse/edit/$pid?" . (($result1 || $result2) ? "success=1" : "error=1" )) ;
+};
+
 sub edit{
     my $self = shift ;
     return if !Utils::Warehouse::validate2edit($self);
@@ -37,6 +48,7 @@ sub edit{
     my $id = $self->param('payload') ;
     Utils::Warehouse::add_edit_post($self) if $self->req->method eq 'POST' ;
     Utils::Db::cdb_deploy($self,$id,'object');
+
 };
 
 sub pagesize{

@@ -1,0 +1,2 @@
+<td class="<%= $cls %>"><%= input_tag $tag_name, class => stash($tag_name . '_class') %></td>
+

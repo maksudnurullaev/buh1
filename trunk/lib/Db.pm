@@ -494,6 +494,7 @@ sub exists_link{
 
 sub set_link{
     my ($self,$name,$id,$link_name,$link_id) = @_;
+    warn "($self,$name,$id,$link_name,$link_id)";
     return(0) if( !$self || !$name || !$id || !$link_name || !$link_id );
     return(1) if exists_link($id,$link_id);
 

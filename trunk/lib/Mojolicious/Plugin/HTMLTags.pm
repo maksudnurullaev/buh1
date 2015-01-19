@@ -45,8 +45,12 @@ sub register {
     $app->helper( get_document_number_last => sub { Utils::Documents::get_document_number_last (@_); } );
     $app->helper( generate_name   => sub { Utils::Languages::generate_name (@_); } );
     $app->helper( currency_format => sub { Utils::currency_format1 (@_); } );
+
     $app->helper( db_get_objects  => sub { Utils::Db::db_get_objects (@_) ; } );
     $app->helper( cdb_get_objects => sub { Utils::Db::cdb_get_objects (@_) ; } );
+    $app->helper( cdb_get_links   => sub { Utils::Db::cdb_get_links (@_) ; } );
+    $app->helper( cdb_get_unique_field => sub { Utils::Db::cdb_get_unique_field (@_) ; } );
+
     $app->helper( shrink_if     => sub { Utils::shrink_if (@_) ; } );
     $app->helper( tbalance_row  => sub { Utils::Documents::tbalance_row (@_); } );
     $app->helper( files_count   => sub { Utils::Files::files_count (@_); } );

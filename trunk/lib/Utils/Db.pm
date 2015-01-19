@@ -41,6 +41,26 @@ sub cdb_get_objects{
     return($db->get_objects($params));
 };
 
+sub cdb_get_links{
+    my ($self,$pid,$lname,$fields) = @_ ;
+    my $result = {} ;
+    return($result) if !$pid || !$lname ;
+    my $db = client($self);
+    return($db->get_links($pid,$lname,$fields));
+};
+
+sub cdb_get_unique_field{
+    my ($self,$object_name,$field_name) = @_ ;
+    my $sql = "SELECT DISTINCT $field_name FROM OBJECTS WHERE name = '$object_name' AND field = 'name' ORDER BY 1 ASC ;" ;
+    my $db = client($self);
+    my $sth = $db->get_from_sql( $sql ) ;
+    my $value;
+    $sth->bind_col(1, \$value);
+    my $result = [] ;
+    while($sth->fetch){ push @{$result}, $value ; }
+    return($result);
+};
+
 sub db_deploy{
     my ($self,$id,$prefix) = @_ ;
     return if !$id ;

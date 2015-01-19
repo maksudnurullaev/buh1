@@ -3,6 +3,4 @@
 %= include 'success_error' ;
 %= include 'common/description_form_type2', oname => "$controller object" ;
 
-<pre>
-%= dumper stash ;
-</pre>
+%= include 'warehouse/tags' ;

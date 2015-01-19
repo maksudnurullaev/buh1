@@ -18,6 +18,9 @@ use Data::Dumper;
 my $OBJECT_NAME  = 'warehouse object' ;
 my $OBJECT_NAMES = 'warehouse objects' ;
 
+sub object_name{ return($OBJECT_NAME); };
+sub object_names{ return($OBJECT_NAMES); };
+
 sub redirect2list_or_path{
     my $self = shift;
     if ( $self->param('path') ){
