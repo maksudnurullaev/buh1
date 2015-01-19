@@ -4,11 +4,13 @@
   %= include 'common/td_tag', tag_name => 'name', cls => 'tar' ;
   %= include 'common/td_tag', tag_name => 'value', cls => '' ;
  </tr>
+% if( my $selection = cdb_get_unique_field('warehouse object tag','value',$payload) ){ 
  <tr>
   <td class='tar'>
-   <%= select_field name2 => cdb_get_unique_field('warehouse object tag','value') %>
+   <%= select_field name2 => $selection %>
   </td> 
   %= include 'common/td_tag', tag_name => 'value2', cls => '' ;
- </tr
+ </tr>
+% } 
  <tr><td colspan="2"><%= submit_button ml('Add') %></td></tr>
  % end
