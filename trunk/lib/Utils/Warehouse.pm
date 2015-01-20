@@ -102,8 +102,10 @@ sub deploy_list_objects{
     } else {
         $objects = Utils::Db::get_filtered_objects2($self, {
                 name          => object_name(),
-                child_names   => [Utils::Tags::object_name(),]
+                child_names   => [Utils::Tags::object_name(),],
+                filter_value  => $filter,
             });
+        $self->stash( filter => $filter );
     }
     $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
     return($objects);
