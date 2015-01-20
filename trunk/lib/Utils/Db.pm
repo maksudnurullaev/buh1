@@ -172,6 +172,12 @@ sub get_root{
     return( $result );
 };
 
+sub get_filtered_objects2{
+    my $self = shift ;
+    warn Dumper @_ ;
+    my $result = {};
+    return($result);
+}
 
 # END OF PACKAGE
 };

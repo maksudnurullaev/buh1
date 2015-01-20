@@ -21,7 +21,7 @@ sub list{
     my $self = shift ;
     return if !$self->who_is('local','reader');
 
-    Utils::Warehouse::list_deploy($self);
+    Utils::Warehouse::deploy_list_objects($self);
 };
 
 sub add{
@@ -41,6 +41,30 @@ sub add_tag{
     $self->redirect_to("/warehouse/edit/$pid?" . (($result1 || $result2) ? "success=1" : "error=1" )) ;
 };
 
+sub update_tag{
+    my $self = shift ;
+    return if !$self->who_is('local','writer');
+    my $pid = $self->param('payload') ;
+    my $tagid = $self->param('tagid') ;
+    my $result = Utils::Tags::update($self);
+
+    $self->redirect_to("/warehouse/edit/$pid?tagid=$tagid&" . ($result ? "success=1" : "error=1" )) ;
+};
+
+sub del_tag{
+    my $self = shift ;
+    return if !$self->who_is('local','writer');
+    my $pid = $self->param('payload') ;
+    my $tagid = $self->param('tagid') ;
+    my $result = Utils::Tags::del($self);
+    
+    if( $result ){
+        $self->redirect_to("/warehouse/edit/$pid?success=1" ) ;
+    } else {
+        $self->redirect_to("/warehouse/edit/$pid?tagid=$tagid&error=1" ) ;
+    }
+};
+
 sub edit{
     my $self = shift ;
     return if !Utils::Warehouse::validate2edit($self);
@@ -48,7 +72,9 @@ sub edit{
     my $id = $self->param('payload') ;
     Utils::Warehouse::add_edit_post($self) if $self->req->method eq 'POST' ;
     Utils::Db::cdb_deploy($self,$id,'object');
-
+    if( my $tagid = $self->param('tagid') ){
+        Utils::Db::cdb_deploy($self,$tagid,'tag');
+    }
 };
 
 sub pagesize{
@@ -72,7 +98,7 @@ sub nofilter{
 sub filter{
     my $self = shift;
     Utils::Filter::filter($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
+    $self->redirect_to("/warehouse/list");
 };
 # END OF PACKAGE
 };

@@ -12,14 +12,16 @@ use 5.012000;
 use strict;
 use warnings;
 use utf8;
-use Utils::Db;
-use Data::Dumper;
+use Utils::Db ;
+use Data::Dumper ;
 
 my $OBJECT_NAME  = 'warehouse object' ;
 my $OBJECT_NAMES = 'warehouse objects' ;
 
 sub object_name{ return($OBJECT_NAME); };
 sub object_names{ return($OBJECT_NAMES); };
+sub tag_object_name{ return("$OBJECT_NAME tag"); };
+sub tag_object_names{ return("$OBJECT_NAMES tags"); };
 
 sub redirect2list_or_path{
     my $self = shift;
@@ -89,34 +91,36 @@ sub validate{
     return(1);
 };
 
-sub list_deploy{
+sub deploy_list_objects{
     my ($self,$name,$path) = @_;
 
     my $filter = $self->session->{"$OBJECT_NAMES/filter"};
     my $db = Utils::Db::client($self);
-    my $objects = $db->get_filtered_objects({
-            self          => $self,
-            name          => $OBJECT_NAME,
-            names         => $OBJECT_NAMES,
-            exist_field   => 'description',
-            filter_value  => $filter,
-            filter_prefix => " field='description' ",
-            result_fields => ['description',],
-            path          => '/warehouse/deleted'
-        });
-#    $self->stash(path  => $path);
-#    $self->stash(users => $objects) if $objects && scalar(keys %{$objects});
-#    $db->links_attach($objects,'companies','company',['name']);
-#    for my $uid (keys %{$objects}){
-#        if ( exists $objects->{$uid}{companies} ){
-#            my $companies = $objects->{$uid}{companies};
-#            for my $cid (keys %{$companies}){
-#                $companies->{$cid}{access} = $db->get_linked_value('access',$cid,$uid);
-#            }
-#        }
-#    }
+    my $objects ;
+    if( !$filter ){
+        $objects = get_all_objects($self) ;
+    } else {
+        $objects = Utils::Db::get_filtered_objects2($self, {
+                name          => object_name(),
+                child_names   => [Utils::Tags::object_name(),]
+            });
+    }
     $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
     return($objects);
+};
+
+sub get_all_objects{
+    my $self = shift ;
+    my $db = Utils::Db::client($self) ;
+    return $db->get_filtered_objects({
+            self          => $self,
+            name          => object_name(),
+            names         => object_names(),
+            exist_field   => 'description',
+            filter_value  => undef,
+            filter_prefix => " field='description' ",
+            result_fields => ['description',],
+        });
 };
 
 # END OF PACKAGE

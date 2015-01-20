@@ -166,7 +166,6 @@ sub get_full_url{
     return ($url_query ? "$url_path?$url_query" : $url_path ) ;
 };
 
-use Data::Dumper ;
 sub calc_start4ol{
     my $self = shift ;
     my $p = $self->stash('paginator');

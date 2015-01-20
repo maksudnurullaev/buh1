@@ -3,7 +3,7 @@
 <ul><li> 
 % for my $id ( sort keys %{ $links } ) {
    <span style="background:gray; margin-right: 2px;">
-    <span style="color: white;"><%= $links->{$id}{'name'} %>:</span>
+    <span style="color: bisque;"><%= $links->{$id}{'name'} %>:</span>
     <span><%= $links->{$id}{'value'} %></span>
    </span>
 % }

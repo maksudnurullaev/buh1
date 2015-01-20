@@ -4,7 +4,7 @@ package Db; {
 
 =head1 NAME
 
-Db - Database I<functions> package
+    Db - Database I<functions> package
 
 =cut
 
@@ -335,7 +335,7 @@ sub get_filtered_objects{
         }
         $result = $self->get_counts({name=>[$name], add_where=>$filter_where});
     } else {
-        $result = $self->get_counts({name=>[$name],field=>[$exist_field]}); 
+        $result = $self->get_counts({name=>[$name], field=>[$exist_field]}); 
     }
     return if !$result; # count is 0
     #paginator

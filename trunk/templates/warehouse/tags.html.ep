@@ -6,12 +6,23 @@
 %   if( $links->{$key} eq 'warehouse object tag' ) {    
 %    my $object = cdb_get_objects({ id => [$key] });
      <tr>
-      <td class="tar"><%= link_to $object->{$key}{'name'} => "/$controller/$action/$payload?tagid=$key" %></u>:</td>
+      <td class="tar">
+       % if( param('tagid') && param('tagid') eq $key ){
+        <u><%= $object->{$key}{'name'} %></u>
+       % } else {
+        <%= link_to $object->{$key}{'name'} => "/$controller/$action/$payload?tagid=$key" %>
+       % }
+       :
+      </td>
       <td><%= ($object->{$key}{'value'} =~ /^\d+$/ ? currency_format($object->{$key}{'value'}) : $object->{$key}{'value'}) %></td></tr>  
 %   }   
 %  }
 % } else {
 <br /><i><%= ml 'No data!' %></i>
 % }
-%= include 'warehouse/tag_new' ;
+% if( param('tagid') ){
+ %= include 'warehouse/tag_update' ;
+% } else {
+ %= include 'warehouse/tag_new' ;
+% }
 </table> 
