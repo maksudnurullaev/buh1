@@ -1,4 +1,4 @@
-% layout 'default';
+% layout 'default' ;
 <h2><%= ml ucfirst $controller %></h2>
 
 %= include 'warehouse/toolbar' if who_is_local('writer') ;
@@ -21,3 +21,6 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
 
+<pre>
+%= dumper stash
+</pre>

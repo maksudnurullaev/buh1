@@ -16,10 +16,8 @@ use Utils::Db ;
 use Utils::Warehouse ;
 use Data::Dumper ;
 
-my $OBJECT_NAME  = Utils::Warehouse::object_name() . ' tag' ;
-my $OBJECT_NAMES = Utils::Warehouse::object_name() . ' tags' ;
-sub object_name{ return($OBJECT_NAME); };
-sub object_names{ return($OBJECT_NAMES); };
+sub object_name{ return(Utils::Warehouse::tag_object_name()); };
+sub object_names{ return(Utils::Warehouse::tag_object_names()); };
 
 sub add{
     my $self = shift;
@@ -45,6 +43,22 @@ sub add2{
         object_name(), $id);
 };
 
+sub update{
+    my $self = shift;
+    my $pid = $self->param('payload') ;
+    my $data = form2data($self);
+    return(0) if !validate($self,$data);
+    return Utils::Db::cdb_insert_or_update($self,$data);
+};
+
+sub del{
+    my $self  = shift;
+    my $pid   = $self->param('payload') ;
+    my $tagid = $self->param('tagid') ;
+    my $db = Utils::Db::client($self);
+    return($db->del($tagid) && $db->del_link($pid,$tagid));
+};
+
 sub validate{
     my ($self,$data) = @_ ;
     my $result = 1;
@@ -59,6 +73,7 @@ sub form2data{
         object_name => object_name(),
         creator     => Utils::User::current($self),
         } ;
+    $data->{'id'} = $self->param('tagid') if $self->param('tagid') ;
     $data->{name} = Utils::trim $self->param('name')
         if Utils::trim $self->param('name');
     $data->{value} = Utils::trim $self->param('value')

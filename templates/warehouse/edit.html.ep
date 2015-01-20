@@ -4,3 +4,4 @@
 %= include 'common/description_form_type2', oname => "$controller object" ;
 
 %= include 'warehouse/tags' ;
+
