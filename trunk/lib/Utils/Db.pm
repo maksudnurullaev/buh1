@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use utf8;
 use Data::Dumper;
+use Utils;
 use DbClient;
 use Db;
 
@@ -173,11 +174,44 @@ sub get_root{
 };
 
 sub get_filtered_objects2{
-    my $self = shift ;
-    warn Dumper @_ ;
+    my ($self,$params) = @_ ;
     my $result = {};
+    # 1. Get filtered object ids
+    my $sql = sql4ids2filtered_objects2($params) ;
+    my $db  = Utils::Db::client($self);
+    my $sth = $db->get_from_sql($sql);
+    my $ids = [];
+    for my $id (@{$sth->fetchall_arrayref()}){
+        push @{$ids}, $id->[0] ;
+    }
+    return($result) if !scalar(@{$ids}) ;
+    my $paginator = Utils::get_paginator($self,$params->{object_names},scalar(@{$ids}));
+    $self->stash(paginator => $paginator);
+    my ($page,$pages,$pagesize) = @{$paginator} ;
+    my $start_index = ($page - 1) * $pagesize ;
+    my $end_index = $start_index + $pagesize - 1 ;
+    my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
+    $result = $db->get_objects({id => $rids});
     return($result);
-}
+};
+
+sub sql4ids2filtered_objects2{
+    my $params = shift;
+    return if !$params ;
+    my $child_names;
+    for my $child_name (@{$params->{child_names}}){
+        $child_names .= ',' if $child_names;
+        $child_names .= "'$child_name'" ;
+    }
+    return 
+        " SELECT DISTINCT id FROM OBJECTS " .
+        " WHERE name = '$params->{object_name}' " . 
+        " AND value LIKE '%$params->{filter_value}%' " . 
+        " UNION " .
+        " SELECT DISTINCT value AS id FROM objects WHERE name = '_link_' AND id IN ( " . 
+        "  SELECT DISTINCT id FROM objects WHERE name = '_link_' AND field = '$params->{object_name}' AND id IN ( " .
+        "   SELECT DISTINCT id FROM OBJECTS  WHERE name IN ($child_names) AND value LIKE '%$params->{filter_value}%')) ; " ;
+};
 
 # END OF PACKAGE
 };
