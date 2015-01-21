@@ -101,8 +101,9 @@ sub deploy_list_objects{
         $objects = get_all_objects($self) ;
     } else {
         $objects = Utils::Db::get_filtered_objects2($self, {
-                name          => object_name(),
-                child_names   => [Utils::Tags::object_name(),],
+                object_name   => object_name(),
+                object_names  => object_names(),
+                child_names   => [Utils::Tags::object_name(),'catalog'],
                 filter_value  => $filter,
             });
         $self->stash( filter => $filter );
