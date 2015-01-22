@@ -34,7 +34,6 @@ sub redirect2list_or_path{
 
 sub validate2edit{
     my $self = shift;
-    return if !$self->who_is('local','writer');
     my $id = $self->param('payload') ;
     if( !$id ){
         warn "Object not exists!";
@@ -103,6 +102,7 @@ sub deploy_list_objects{
         $objects = Utils::Db::get_filtered_objects2($self, {
                 object_name   => object_name(),
                 object_names  => object_names(),
+                fields        => ['description'],
                 child_names   => [Utils::Tags::object_name(),'catalog'],
                 filter_value  => $filter,
             });
@@ -124,6 +124,57 @@ sub get_all_objects{
             filter_prefix => " field='description' ",
             result_fields => ['description',],
         });
+};
+
+sub update_counting_field{
+    my $self = shift ;
+    my $pid = $self->param('payload') ;
+    my $counting_field = $self->param('counting_field');
+    if( !$counting_field ){
+        $self->redirect_to("/warehouse/edit/$pid?error=1&error_counting_field=error");
+        return;
+    }
+    warn "Counting field: " . $self->param('counting_field') ;
+    my $data = { 
+        id => $pid,
+        object_name   => object_name(),
+        counting_field => $counting_field,
+    } ;
+    Utils::Db::cdb_insert_or_update($self, $data) ;
+    warn Dumper Utils::Db::cdb_get_objects($self, { id => [$pid] });
+    $self->redirect_to("/warehouse/edit/$pid?success=1");
+};
+
+sub clone_object{
+    my $self = shift;
+    my $pid  = $self->param('payload') ;
+    # 1. Clone object
+    my ($object_clone,$links) = get_clear_db_object($self,$pid);
+    $object_clone->{description} = Utils::trim $self->param('description') 
+        if Utils::trim $self->param('description');
+    warn Dumper $object_clone ;
+    # 2. Clone tags
+    return if !$links ;
+    my $clone_tags = {};
+    for my $tagid (keys %{$links}){
+        if( $links->{$tagid} eq tag_object_name() ){
+            my($clone_tag,$clone_tag_links) = get_clear_db_object($self,$tagid) ;
+            $clone_tags->{$tagid} = $clone_tag;
+        }
+    }
+    warn Dumper $clone_tags ;
+    $self->redirect_to("/warehouse/edit/$pid");
+};
+
+sub get_clear_db_object{
+    my ($self,$id) = @_ ; 
+    my $objects = Utils::Db::cdb_get_objects($self, { id => [$id] });
+    my $object  = $objects->{$id} ;
+    my $clear_db_object = {};
+    for my $key (keys %{$object}){
+        $clear_db_object->{$key} = $object->{$key} if $key !~ /(^_|^id$)/ ;
+    };
+    return ($clear_db_object,(exists($object->{_link_}) ? $object->{_link_} : undef));
 };
 
 # END OF PACKAGE

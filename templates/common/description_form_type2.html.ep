@@ -9,6 +9,11 @@
    </td>
    <td>
     %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
+    % if( stash('make_clone') ){ 
+     <br />
+     %= check_box make_clone => 1, id => 'make_clone', style => 'width:auto;' ;
+     <label for="make_clone"><%= ml 'Make copy' %></label>
+    % }
    </td>
   </tr>
   <tr><td>&nbsp;</td>

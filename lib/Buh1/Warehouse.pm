@@ -65,12 +65,24 @@ sub del_tag{
     }
 };
 
+sub update_counting_field{
+    my $self = shift ;
+    return if !$self->who_is('local','writer');
+    my $pid = $self->param('payload') ;
+    Utils::Warehouse::update_counting_field($self);
+};
+
 sub edit{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     return if !Utils::Warehouse::validate2edit($self);
 
     my $id = $self->param('payload') ;
-    Utils::Warehouse::add_edit_post($self) if $self->req->method eq 'POST' ;
+    if( $self->param('make_clone') ){
+        Utils::Warehouse::clone_object($self) if $self->req->method eq 'POST' ;
+    } else {
+        Utils::Warehouse::add_edit_post($self) if $self->req->method eq 'POST' ;
+    }
     Utils::Db::cdb_deploy($self,$id,'object');
     if( my $tagid = $self->param('tagid') ){
         Utils::Db::cdb_deploy($self,$tagid,'tag');
@@ -100,6 +112,7 @@ sub filter{
     Utils::Filter::filter($self,$OBJECT_NAMES);
     $self->redirect_to("/warehouse/list");
 };
+
 # END OF PACKAGE
 };
 

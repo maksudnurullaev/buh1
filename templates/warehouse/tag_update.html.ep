@@ -1,13 +1,14 @@
 %= form_for "/$controller/update_tag/$payload" => (method => 'POST') => begin
 %= hidden_field tagid => param('tagid') ;
- <tr><td><u><%= ml 'Name' %></u></td><td><u><%= ml 'Value' %></u></td></tr>
+ <tr><th colspan="3"><%= ml 'Update' %></th></tr>
+ <tr><td><u><%= ml 'Name' %></u></td><td colspan="2"><u><%= ml 'Value' %></u></td></tr>
  <tr>
   <td><%= input_tag name =>  stash('tag.name'),  class => stash('tag.name_class') %></td>
-  <td><%= input_tag value => stash('tag.value'), class => stash('tag.value_class') %></td>
+  <td colspan="2"><%= input_tag value => stash('tag.value'), class => stash('tag.value_class') %></td>
  </tr>
  <tr>
   <td><%= submit_button ml('Update') %></td>
-  <td>
+  <td colspan="2">
    <%= link_to ml('Cancel') => ("/$controller/edit/$payload") %>
    |
    <%= link_to ml('Delete') => ("/$controller/del_tag/$payload?tagid=" . param('tagid')) %>

@@ -1,7 +1,12 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Edit' %></h2>
 %= include 'success_error' ;
-%= include 'common/description_form_type2', oname => "$controller object" ;
+%= include 'common/description_form_type2', oname => "$controller object", make_clone => 1 ;
 
 %= include 'warehouse/tags' ;
 
+<pre>
+%= dumper param ;
+===
+%= dumper stash ;
+</pre>

@@ -1,7 +1,10 @@
 <strong><%= ml 'Properties' %>:</strong>
-<table border=0>
+<table border="0">
 % my $links = stash('object._link_') ;
 % if ( scalar(keys %{$links}) ) {
+   <tr><td class="tar"><u><%= ml 'Name' %></u> :</td><td align="center"><u>+/-</u></td><td><u><%= ml 'Value' %></u></td></tr>
+%= form_for "/$controller/update_counting_field/$payload" =>(method => 'POST') => begin
+% my $has_counting_fields = 0;
 %  for my $key (sort keys %{$links}) {
 %   if( $links->{$key} eq 'warehouse object tag' ) {    
 %    my $object = cdb_get_objects({ id => [$key] });
@@ -14,9 +17,26 @@
        % }
        :
       </td>
-      <td><%= ($object->{$key}{'value'} =~ /^\d+$/ ? currency_format($object->{$key}{'value'}) : $object->{$key}{'value'}) %></td></tr>  
+      % if( $object->{$key}{'value'} =~ /^\d+$/ ) {
+       % $has_counting_fields = 1 ;   
+       <td align="center" class="<%= param('error_counting_field') %>">
+        % if( stash('object.counting_field') && stash('object.counting_field') eq $key ){
+         <%= radio_button counting_field => $key, style => "width:auto;", checked=>'checked' %>
+        % } else {
+         <%= radio_button counting_field => $key, style => "width:auto;" %>
+        % }
+       <td><%= currency_format($object->{$key}{'value'}) %></td>
+       </td>
+      % } else {
+       <td>&nbsp;</td><td><%= $object->{$key}{'value'} %></td>
+      % }
+      </tr>  
 %   }   
 %  }
+% if( $has_counting_fields ){
+ <tr class="tar"><td colspan="3"><%= submit_button ml('Update') %></td></tr>
+% }
+% end
 % } else {
 <br /><i><%= ml 'No data!' %></i>
 % }

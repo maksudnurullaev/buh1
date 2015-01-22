@@ -175,7 +175,6 @@ sub get_root{
 
 sub get_filtered_objects2{
     my ($self,$params) = @_ ;
-    my $result = {};
     # 1. Get filtered object ids
     my $sql = sql4ids2filtered_objects2($params) ;
     my $db  = Utils::Db::client($self);
@@ -184,15 +183,16 @@ sub get_filtered_objects2{
     for my $id (@{$sth->fetchall_arrayref()}){
         push @{$ids}, $id->[0] ;
     }
-    return($result) if !scalar(@{$ids}) ;
+    return({}) if !scalar(@{$ids}) ; # return empty hash ref
+    # 2. Setup paginator
     my $paginator = Utils::get_paginator($self,$params->{object_names},scalar(@{$ids}));
     $self->stash(paginator => $paginator);
     my ($page,$pages,$pagesize) = @{$paginator} ;
     my $start_index = ($page - 1) * $pagesize ;
     my $end_index = $start_index + $pagesize - 1 ;
+    # 3. Final actions
     my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
-    $result = $db->get_objects({id => $rids});
-    return($result);
+    return($db->get_objects({id => $rids, field => $params->{fields}}));
 };
 
 sub sql4ids2filtered_objects2{
