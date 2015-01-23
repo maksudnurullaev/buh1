@@ -176,12 +176,10 @@ sub get_root{
 sub get_filtered_objects2{
     my ($self,$params) = @_ ;
     # 1. Get filtered object ids
-    my $sql = sql4ids2filtered_objects2($params) ;
     my $db  = Utils::Db::client($self);
-    my $sth = $db->get_from_sql($sql);
     my $ids = [];
-    for my $id (@{$sth->fetchall_arrayref()}){
-        push @{$ids}, $id->[0] ;
+    for my $id (_get_filtered_ids($self,$params)){
+        push @{$ids}, $id ;
     }
     return({}) if !scalar(@{$ids}) ; # return empty hash ref
     # 2. Setup paginator
@@ -195,22 +193,49 @@ sub get_filtered_objects2{
     return($db->get_objects({id => $rids, field => $params->{fields}}));
 };
 
-sub sql4ids2filtered_objects2{
-    my $params = shift;
-    return if !$params ;
+sub _get_filtered_ids{
+    my ($self,$params) = @_ ;
+    my $temp_hash = {};
+    my $db  = Utils::Db::client($self);
+    # 1. Look in parent objects
+    my $sql = "SELECT id,value FROM objects WHERE name = '$params->{object_name}' AND field NOT IN ('creator','counting_field') ;";
+    my $sth = $db->get_from_sql($sql);
+    for my $id (@{$sth->fetchall_arrayref()}){
+        if( eval("'$id->[1]' =~ /$params->{filter_value}/i") ) {
+            $temp_hash->{$id->[0]} = { name => $params->{object_name} } ;
+        } else { warn $@ if $@ ; }
+    }
+    # 2. Look in child objects
+    my $child_names = _get_child_names_as_string($params->{child_names}) ;
+    return(keys %{$temp_hash}) if !$child_names ;
+    $sql = " SELECT c.id cid, p.value pid, c.name name,  c.value value FROM objects c "
+         . " JOIN objects p ON p.name = '_link_' AND p.field = '$params->{object_name}' AND c.id = p.id "
+         . " WHERE c.name IN($child_names) AND c.field != 'creator' ;" ;
+    $sth = $db->get_from_sql($sql);
+    for my $id (@{$sth->fetchall_arrayref()}){
+        if( eval("'$id->[3]' =~ /$params->{filter_value}/i") ) {
+            $temp_hash->{$id->[1]} = { name => $params->{object_name} }
+                if !exists $temp_hash->{$id->[1]} ;
+        } else { warn $@ if $@ ; }
+    }
+    # 3. Parse childs to linked parent object, if not existance
+    for  my $key (keys %{$temp_hash}){
+        if( $temp_hash->{$key}->{name} ne $params->{object_name} ){
+            warn $temp_hash->{$key}->{name};
+        }
+
+    }
+    return(keys $temp_hash);
+};
+
+sub _get_child_names_as_string{
+    my $params = shift ;
     my $child_names;
-    for my $child_name (@{$params->{child_names}}){
+    for my $child_name (@{$params}){
         $child_names .= ',' if $child_names;
         $child_names .= "'$child_name'" ;
     }
-    return 
-        " SELECT DISTINCT id FROM OBJECTS " .
-        " WHERE name = '$params->{object_name}' " . 
-        " AND value LIKE '%$params->{filter_value}%' " . 
-        " UNION " .
-        " SELECT DISTINCT value AS id FROM objects WHERE name = '_link_' AND id IN ( " . 
-        "  SELECT DISTINCT id FROM objects WHERE name = '_link_' AND field = '$params->{object_name}' AND id IN ( " .
-        "   SELECT DISTINCT id FROM OBJECTS  WHERE name IN ($child_names) AND value LIKE '%$params->{filter_value}%')) ; " ;
+    return($child_names)
 };
 
 # END OF PACKAGE

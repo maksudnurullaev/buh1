@@ -103,7 +103,7 @@ sub deploy_list_objects{
                 object_name   => object_name(),
                 object_names  => object_names(),
                 fields        => ['description'],
-                child_names   => [Utils::Tags::object_name(),'catalog'],
+                child_names   => [Utils::Tags::object_name()],
                 filter_value  => $filter,
             });
         $self->stash( filter => $filter );
