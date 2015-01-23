@@ -134,15 +134,18 @@ sub update_counting_field{
         $self->redirect_to("/warehouse/edit/$pid?error=1&error_counting_field=error");
         return;
     }
-    warn "Counting field: " . $self->param('counting_field') ;
+    set_counting_field($self,$pid,$counting_field);
+    $self->redirect_to("/warehouse/edit/$pid?success=1");
+};
+
+sub set_counting_field{
+    my ($self,$pid,$counting_field) = @_ ;
     my $data = { 
         id => $pid,
         object_name   => object_name(),
         counting_field => $counting_field,
     } ;
     Utils::Db::cdb_insert_or_update($self, $data) ;
-    warn Dumper Utils::Db::cdb_get_objects($self, { id => [$pid] });
-    $self->redirect_to("/warehouse/edit/$pid?success=1");
 };
 
 sub clone_object{
@@ -154,16 +157,51 @@ sub clone_object{
         if Utils::trim $self->param('description');
     warn Dumper $object_clone ;
     # 2. Clone tags
-    return if !$links ;
-    my $clone_tags = {};
-    for my $tagid (keys %{$links}){
-        if( $links->{$tagid} eq tag_object_name() ){
-            my($clone_tag,$clone_tag_links) = get_clear_db_object($self,$tagid) ;
-            $clone_tags->{$tagid} = $clone_tag;
+    my $tags_clone = {};
+    if( $links ){
+        for my $tagid (keys %{$links}){
+            if( $links->{$tagid} eq tag_object_name() ){
+                my($clone_tag,$clone_tag_links) = get_clear_db_object($self,$tagid) ;
+                $tags_clone->{$tagid} = $clone_tag;
+            }
         }
     }
-    warn Dumper $clone_tags ;
-    $self->redirect_to("/warehouse/edit/$pid");
+    warn Dumper $tags_clone ;
+    my $db = Utils::Db::client($self);
+    my $dbh = $db->get_db_connection();
+    $dbh->begin_work() ; # BEGIN TRANSACTION
+    $dbh->{RaiseError} = 1 ;
+    # 3.1 clone parent & tags
+    my $new_pid ; my $new_tags_clone = {};
+    eval {
+        $new_pid = $db->insert($object_clone);
+        # 3.2 clone tags
+        for my $tagid (keys %{$tags_clone}){
+            $new_tags_clone->{$tagid} = $db->insert($tags_clone->{$tagid});
+            # make links
+            $db->set_link(
+                object_name(), 
+                $new_pid, 
+                tag_object_name(), 
+                $new_tags_clone->{$tagid});
+
+        }
+        $dbh->commit();    # END TRANSACTION
+    };
+    if ($@) {
+        $self->redirect_to("/warehouse/edit/$pid?error=1");
+        warn "Transaction aborted because $@";
+        eval { $dbh->finish(); $dbh->rollback(); }; # ROLLBACK TRANSACTION
+    } else {
+        # 3.3 create new counting_field, if exists
+        if( scalar(keys(%{$tags_clone}))
+            && exists($object_clone->{counting_field}) ){
+            my $couting_tag_id = $object_clone->{counting_field} ;
+            set_counting_field($self,$new_pid,$new_tags_clone->{$couting_tag_id});
+        }
+        $self->redirect_to("/warehouse/edit/$new_pid?success=1");
+    }
+    $dbh->{RaiseError} = 0 ;
 };
 
 sub get_clear_db_object{
