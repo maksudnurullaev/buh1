@@ -42,6 +42,7 @@ sub is_valid{
 
 sub get_db_connection{
     my $self = shift;
+    return $self->{dbh} if exists($self->{dbh}) && defined($self->{dbh}) ;
     if($DB_CURRENT_TYPE == $DB_SQLite_TYPE){
         my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->{'file'};
         my $dbh = DBI->connect($dbi_connection_string,undef,undef, 
@@ -51,6 +52,7 @@ sub get_db_connection{
             return(undef);
         }
         $dbh->do("PRAGMA synchronous = OFF");
+        $self->{dbh} = $dbh ;
         return($dbh);
     } elsif ($DB_CURRENT_TYPE == $DB_Pg_TYPE) {
         warn "Error:Pg: Not implemeted yet!";

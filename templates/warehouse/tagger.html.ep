@@ -1,10 +1,11 @@
 % my $links = cdb_get_links( $pid, $tag_name, ['name','value'] ) ;
 % if( scalar keys %{ $links } ){
 <ul><li> 
-% for my $id ( sort keys %{ $links } ) {
+% use utf8 ;
+% for my $id ( sort { ord(substr(lc($links->{$a}{name}),0,1)) <=>  ord(substr(lc($links->{$b}{name}),0,1)) } keys %{ $links } ) {
    <span style="background:gray; margin-right: 2px;">
-    <span style="color: bisque;"><%= $links->{$id}{'name'} %>:</span>
-    <span><%= $links->{$id}{'value'} %></span>
+    <span style="color: bisque;"><%= $links->{$id}{name} %>:</span>
+    <span><%= $links->{$id}{value} %></span>
    </span>
 % }
 </li></ul>

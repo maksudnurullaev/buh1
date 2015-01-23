@@ -22,5 +22,5 @@
 %= include 'paginator', paginator4 => $controller ;
 
 <pre>
-%= dumper stash
+%#= dumper stash
 </pre>
