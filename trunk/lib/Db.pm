@@ -68,8 +68,8 @@ sub initialize{
         my $connection = $self->get_db_connection() || die "Could not connect to SQLite database";
         if(defined($connection)){
             my @SQLITE_INIT_SQLs = (
-                    "CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);'",
-                    "CREATE INDEX i_objects ON objects (name, id, field);",
+                    "CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT COLLATE NOCASE);",
+                    "CREATE INDEX i_objects ON objects (name, id, field COLLATE NOCASE);",
                 );
             for my $sql (@SQLITE_INIT_SQLs){
                 my $stmt = $connection->prepare($sql);
