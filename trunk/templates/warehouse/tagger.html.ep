@@ -3,9 +3,13 @@
 <ul><li> 
 % use utf8 ;
 % for my $id ( sort { ord(substr(lc($links->{$a}{name}),0,1)) <=>  ord(substr(lc($links->{$b}{name}),0,1)) } keys %{ $links } ) {
-   <span style="background:gray; margin-right: 2px;">
-    <span style="color: bisque;"><%= $links->{$id}{name} %>:</span>
-    <span><%= $links->{$id}{value} %></span>
+   % if( $counting_field && $counting_field eq $id) {
+    <span style="background:darkgoldenrod; margin-right: 2px;">
+   % } else {
+    <span style="background:gray; margin-right: 2px;">
+   % }
+    <span style="color: bisque;">&nbsp;<%= $links->{$id}{name} %>:</span>
+    <span><%= $links->{$id}{value} %>&nbsp;</span>
    </span>
 % }
 </li></ul>
