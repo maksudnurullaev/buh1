@@ -6,6 +6,5 @@
 %= include 'warehouse/tags' ;
 
 <pre>
-%#= dumper param ;
 %#= dumper stash ;
 </pre>

@@ -96,13 +96,14 @@ sub deploy_list_objects{
     my $filter = $self->session->{"$OBJECT_NAMES/filter"};
     my $db = Utils::Db::client($self);
     my $objects ;
+    my $fields = ['description','counting_field'] ;
     if( !$filter ){
-        $objects = get_all_objects($self) ;
+        $objects = get_all_objects($self,$fields) ;
     } else {
         $objects = Utils::Db::get_filtered_objects2($self, {
                 object_name   => object_name(),
                 object_names  => object_names(),
-                fields        => ['description'],
+                fields        => $fields,
                 child_names   => [Utils::Tags::object_name()],
                 filter_value  => $filter,
             });
@@ -113,7 +114,8 @@ sub deploy_list_objects{
 };
 
 sub get_all_objects{
-    my $self = shift ;
+    my $self   = shift ;
+    my $fields = shift ;
     my $db = Utils::Db::client($self) ;
     return $db->get_filtered_objects({
             self          => $self,
@@ -122,7 +124,7 @@ sub get_all_objects{
             exist_field   => 'description',
             filter_value  => undef,
             filter_prefix => " field='description' ",
-            result_fields => ['description',],
+            result_fields => $fields,
         });
 };
 
