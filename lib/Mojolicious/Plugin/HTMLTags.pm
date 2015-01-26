@@ -61,6 +61,8 @@ sub register {
     $app->helper( full_url      => sub { Utils::get_full_url (@_); } );
 
     $app->helper( calc_start4ol => sub { Utils::calc_start4ol (@_); } );
+
+    $app->helper( utf_compare   => sub { Utils::utf_compare (@_); } );
 };
 
 };

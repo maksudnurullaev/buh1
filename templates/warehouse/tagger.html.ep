@@ -2,7 +2,7 @@
 % if( scalar keys %{ $links } ){
 <ul><li> 
 % use utf8 ;
-% for my $id ( sort { ord(substr(lc($links->{$a}{name}),0,1)) <=> (ord(substr(lc($links->{$b}{name}),0,1)))} keys %{ $links } ) {
+% for my $id ( sort { utf_compare($links->{$a}{name}, $links->{$b}{name}) } keys %{ $links } ) {
    % if( $counting_field && $counting_field eq $id) {
     <span style="background:darkgoldenrod; margin-right: 2px;">
    % } else {
