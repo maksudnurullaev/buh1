@@ -13,6 +13,7 @@ use Encode qw( encode decode_utf8 );
 use Utils::Warehouse ;
 use Utils::Filter ;
 use Utils::Tags ;
+use Data::Dumper ;
 
 my $OBJECT_NAME  = 'warehouse object' ;
 my $OBJECT_NAMES = 'warehouse objects' ;
@@ -87,6 +88,7 @@ sub edit{
     if( my $tagid = $self->param('tagid') ){
         Utils::Db::cdb_deploy($self,$tagid,'tag');
     }
+    Utils::Warehouse::deploy_childs($self);
 };
 
 sub pagesize{

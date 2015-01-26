@@ -2,6 +2,7 @@
  %= form_for "/$controller/$action/$payload" => (method => 'POST') => begin
  %= hidden_field oname => (stash('oname') || $controller) ;
  %= hidden_field id => $payload if $payload ;
+ %= hidden_field counting_parent => stash('object.counting_parent') if stash('object.counting_parent') ;
  <table class='colortable'>
   <tr>
    <td class='tar'> 
@@ -9,11 +10,6 @@
    </td>
    <td>
     %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
-    % if( stash('make_clone') ){ 
-     <br />
-     %= check_box make_clone => 1, id => 'make_clone', style => 'width:auto;' ;
-     <label for="make_clone"><%= ml 'Make copy' %></label>
-    % }
    </td>
   </tr>
   <tr><td>&nbsp;</td>
