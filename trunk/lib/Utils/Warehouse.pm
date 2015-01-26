@@ -74,7 +74,10 @@ sub form2data{
         object_name => $self->param('oname'),
         creator     => Utils::User::current($self),
         } ;
-	$data->{id} = $self->param('id') if $self->param('id') ;
+    my @extra_fields = ('id','counting_direction') ;
+    for my $extra_field (@extra_fields){    
+    	$data->{$extra_field} = $self->param($extra_field) if $self->param($extra_field) ;
+    }
     $data->{description} = Utils::trim $self->param('description')
         if Utils::trim $self->param('description');
     return($data)
@@ -96,7 +99,7 @@ sub deploy_list_objects{
     my $filter = $self->session->{"$OBJECT_NAMES/filter"};
     my $db = Utils::Db::client($self);
     my $objects ;
-    my $fields = ['description','counting_field'] ;
+    my $fields = ['description','counting_field','counting_parent','counting_direction'] ;
     if( !$filter ){
         $objects = get_all_objects($self,$fields) ;
     } else {
@@ -131,21 +134,21 @@ sub get_all_objects{
 sub update_counting_field{
     my $self = shift ;
     my $pid = $self->param('payload') ;
-    my $counting_field = $self->param('counting_field');
-    if( !$counting_field ){
+    my $counting_field_value = $self->param('counting_field');
+    if( !$counting_field_value ){
         $self->redirect_to("/warehouse/edit/$pid?error=1&error_counting_field=error");
         return;
     }
-    set_counting_field($self,$pid,$counting_field);
+    set_field($self,$pid,'counting_field',$counting_field_value);
     $self->redirect_to("/warehouse/edit/$pid?success=1");
 };
 
-sub set_counting_field{
-    my ($self,$pid,$counting_field) = @_ ;
+sub set_field{
+    my ($self,$pid,$field_name,$field_value) = @_ ;
     my $data = { 
-        id => $pid,
-        object_name   => object_name(),
-        counting_field => $counting_field,
+        id          => $pid,
+        object_name => object_name(),
+        $field_name => $field_value,
     } ;
     Utils::Db::cdb_insert_or_update($self, $data) ;
 };
@@ -157,7 +160,6 @@ sub clone_object{
     my ($object_clone,$links) = get_clear_db_object($self,$pid);
     $object_clone->{description} = Utils::trim $self->param('description') 
         if Utils::trim $self->param('description');
-    warn Dumper $object_clone ;
     # 2. Clone tags
     my $tags_clone = {};
     if( $links ){
@@ -168,7 +170,6 @@ sub clone_object{
             }
         }
     }
-    warn Dumper $tags_clone ;
     my $db = Utils::Db::client($self);
     my $dbh = $db->get_db_connection();
     $dbh->begin_work() ; # BEGIN TRANSACTION
@@ -194,16 +195,20 @@ sub clone_object{
         $self->redirect_to("/warehouse/edit/$pid?error=1");
         warn "Transaction aborted because $@";
         eval { $dbh->finish(); $dbh->rollback(); }; # ROLLBACK TRANSACTION
+        return(undef);
     } else {
         # 3.3 create new counting_field, if exists
         if( scalar(keys(%{$tags_clone}))
             && exists($object_clone->{counting_field}) ){
             my $couting_tag_id = $object_clone->{counting_field} ;
-            set_counting_field($self,$new_pid,$new_tags_clone->{$couting_tag_id});
+            set_field($self,$new_pid,'counting_field'    ,$new_tags_clone->{$couting_tag_id});
+            set_field($self,$new_pid,'counting_direction','+');
+            set_field($self,$new_pid,'counting_parent'   ,$pid);
         }
         $self->redirect_to("/warehouse/edit/$new_pid?success=1");
     }
     $dbh->{RaiseError} = 0 ;
+    return($new_pid);
 };
 
 sub get_clear_db_object{
@@ -215,6 +220,32 @@ sub get_clear_db_object{
         $clear_db_object->{$key} = $object->{$key} if $key !~ /(^_|^id$)/ ;
     };
     return ($clear_db_object,(exists($object->{_link_}) ? $object->{_link_} : undef));
+};
+
+sub deploy_childs{
+    my $self = shift;
+    my $pid  = $self->param('pid') || $self->param('payload');
+    warn get_linked_field_value($self,$pid,'counting_field','value');
+};
+
+sub get_linked_field_value{
+    my ($self,$o1_id,$o1_o2_field_name,$o2_field_name) = @_ ;
+    my $o1_object = 
+         Utils::Db::cdb_get_objects(
+            $self, 
+            { id => [$o1_id], field =>[$o1_o2_field_name] });
+    return(undef) if !exists($o1_object->{$o1_id}) ||
+                     !exists($o1_object->{$o1_id}->{$o1_o2_field_name}) ;
+    my $o2_id = $o1_object->{$o1_id}->{$o1_o2_field_name};
+    return(undef) if !$o2_id ;
+    my $o2_object =
+         Utils::Db::cdb_get_objects(
+            $self, 
+            { id => [$o2_id], field =>[$o2_field_name] });
+
+    return(undef) if !exists($o2_object->{$o2_id}) ||
+                     !exists($o2_object->{$o2_id}->{$o2_field_name}) ;
+    return($o2_object->{$o2_id}->{$o2_field_name}) ;
 };
 
 # END OF PACKAGE

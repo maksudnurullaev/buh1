@@ -9,8 +9,10 @@
 % if ( scalar(keys %{$objects}) ) {
  <ol start="<%= calc_start4ol() %>">
   % for my $id( reverse sort keys %{$objects} ) {
-   <li>
-    <%= link_to $objects->{$id}{description} => "/$controller/edit/$id" %>
+   <li>(<%=  exists($objects->{$id}{counting_parent}) ?  $objects->{$id}{counting_direction} : 'O' %>)
+    % my $pid_if = exists($objects->{$id}{counting_parent}) ;
+    % my $pid    = $pid_if ? $objects->{$id}{counting_parent} : undef ;
+    <%= link_to $objects->{$id}{description} => ("/$controller/edit/$id" . ($pid_if ? "?pid=$pid" : '')) %>
     <%= include 'warehouse/tagger', pid=>$id, tag_name => 'warehouse object tag', counting_field => $objects->{$id}{counting_field} %>
    </li>
   % }
@@ -22,5 +24,5 @@
 %= include 'paginator', paginator4 => $controller ;
 
 <pre>
-%#= dumper stash
+%= dumper stash
 </pre>
