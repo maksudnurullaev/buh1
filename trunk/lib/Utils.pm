@@ -18,6 +18,7 @@ use Data::UUID;
 use File::Spec;
 use File::Path qw(make_path);
 use Locale::Currency::Format;
+use Data::Dumper;
 
 sub user_role2company{ shift->session->{'company access'}; };
 
@@ -171,6 +172,23 @@ sub calc_start4ol{
     my $p = $self->stash('paginator');
     return(1) if !$p ;
     return(($p->[0] - 1) * $p->[2] + 1);
+};
+
+sub utf_compare{
+    my($self,$a,$b) = @_ ;
+    if( !$self || !$a || !$b ){
+        warn "Parameters not defined properly to compare!";
+        return(0);
+    }
+    my @a = unpack('U*',$a);
+    my @b = unpack('U*',$b);
+    my ($a_length, $b_length) = (scalar(@a),scalar(@b));
+    my $min_length = ($a_length <= $b_length ? $a_length : $b_length) ;
+    return($a_length <=> $b_length) if !$min_length ;
+    for(my $i = 0; $i < $min_length; $i++){
+        return($a[$i] <=> $b[$i]) if $a[$i] != $b[$i];
+    }
+    return($a_length <=> $b_length);
 };
 
 # END OF PACKAGE
