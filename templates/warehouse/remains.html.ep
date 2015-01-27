@@ -1,0 +1,7 @@
+% layout 'default';
+<h2><%= ml 'Warehouse' %> | <%= ml 'Remains' %></h2>
+%= include 'success_error' ;
+
+<pre>
+%= dumper stash ;
+</pre>

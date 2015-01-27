@@ -5,18 +5,14 @@
  %= hidden_field counting_parent => stash('object.counting_parent') if stash('object.counting_parent') ;
  <table class='colortable'>
   <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
+   <td class='tar'><%= ml 'Description' %>:</td>
    <td>
     %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
    </td>
   </tr>
 % if( stash('object.counting_parent') ){   
   <tr>
-   <td class='tar'> 
-    %= ml 'Direction' 
-   </td>
+   <td class='tar'><%= ml 'Direction' %>:</td>
    <td style="font-family: courier ;">
     % if( stash('object.counting_direction') eq '+' ){
      <%= radio_button counting_direction => '+', id => 'cd_plus',  style => "width:auto;", checked=>'checked' %><%= label_for 'cd_plus'  => ml('Incoming') %><br />
@@ -28,7 +24,7 @@
    </td>
   </tr>
 % }
-  <tr><td><%= ml 'Cloning' %></td>
+  <tr><td class="tar"><%= ml 'Cloning' %>:</td>
    <td>
     %= check_box make_clone => 1, id => 'make_clone', style => 'width:auto;' ;
     <label for="make_clone"><%= ml 'Make copy' %></label>
