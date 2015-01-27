@@ -4,12 +4,13 @@
 % use utf8 ;
 % for my $id ( sort { utf_compare($links->{$a}{name}, $links->{$b}{name}) } keys %{ $links } ) {
    % if( $counting_field && $counting_field eq $id) {
-    <span style="background:darkgoldenrod; margin-right: 2px;">
+    <span style="background: darkgoldenrod; margin-right: 2px;">
    % } else {
-    <span style="background:gray; margin-right: 2px;">
+    <span style="background: gray; margin-right: 2px;">
    % }
     <span style="color: bisque;">&nbsp;<%= $links->{$id}{name} %>:</span>
-    <span><%= $links->{$id}{value} %>&nbsp;</span>
+    % my $value = $links->{$id}{value} ;
+    <span><%= ($value =~ /^\d+$/ ? currency_format($value) : $value ) %>&nbsp;</span>
    </span>
 % }
 </li></ul>

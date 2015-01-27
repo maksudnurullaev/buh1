@@ -202,8 +202,8 @@ sub clone_object{
             && exists($object_clone->{counting_field}) ){
             my $couting_tag_id = $object_clone->{counting_field} ;
             set_field($self,$new_pid,'counting_field'    ,$new_tags_clone->{$couting_tag_id});
-            set_field($self,$new_pid,'counting_direction','+');
-            set_field($self,$new_pid,'counting_parent'   ,$pid);
+            set_field($self,$new_pid,'counting_direction',$self->param('counting_direction') || '+');
+            set_field($self,$new_pid,'counting_parent'   ,$self->param('counting_parent')    || $pid);
         }
         $self->redirect_to("/warehouse/edit/$new_pid?success=1");
     }
@@ -222,14 +222,61 @@ sub get_clear_db_object{
     return ($clear_db_object,(exists($object->{_link_}) ? $object->{_link_} : undef));
 };
 
-sub deploy_childs{
+sub calculate_counting_fields{
     my $self = shift;
-    my $pid  = $self->param('pid') || $self->param('payload');
-    warn get_linked_field_value($self,$pid,'counting_field','value');
+    my $pid  = get_counting_parent($self, $self->param('payload'));
+    my $pid_cfv = get_linked_field_value($self,$pid,'counting_field','value');
+    return(undef) if !$pid_cfv;
+
+    my $childs = get_childs_by_counting_field($self,object_name(),'counting_parent',$pid);
+    my $childs_eval_str = get_childs_counting_eval_str($self,$childs);
+    my $result = eval "$pid_cfv$childs_eval_str" ;
+    $result = $@ if $@ ;
+    $self->stash(calculate_counting_fields => $result);
+};
+
+sub get_counting_parent{
+    my ($self,$id) = @_ ;
+    return(undef) if !$self || !$id ;
+    my $objects = Utils::Db::cdb_get_objects($self,{ id => [$id], field => ['counting_parent']});
+    return($objects->{$id}->{counting_parent}) 
+        if exists($objects->{$id}) && exists($objects->{$id}->{counting_parent}) ;
+    return $id;
+};
+
+sub get_childs_by_counting_field{
+    my ($self,$object_name,$field_name,$field_value) = @_ ;
+    return(undef) if !$self || !$object_name || !$field_name || !$field_value ;
+    my $sql = "SELECT DISTINCT id FROM objects where name = '$object_name' AND field = '$field_name' AND value = '$field_value' ; ";
+    my $db = Utils::Db::client($self);
+    my $sth = $db->get_from_sql( $sql ) ;
+    my $cid = undef;
+    $sth->bind_col(1, \$cid);
+    my $result = {};
+    while($sth->fetch){
+        my $childs = $db->get_objects({ id => [$cid], field => ['description','counting_field','counting_direction','counting_parent'] }) ;
+        if( $childs && exists($childs->{$cid}) 
+                    && exists($childs->{$cid}->{counting_direction}) 
+                    && exists($childs->{$cid}->{counting_field}) ){
+            $result->{$cid} = $childs->{$cid} ;
+        }
+    }
+    return($result);
+};
+
+sub get_childs_counting_eval_str{
+    my ($self,$childs) = @_ ;
+    return(undef) if !$self || !$childs || !scalar(keys(%{$childs})) ;
+    my $result = '';
+    for my $cid (keys %{$childs}){
+            $result .= "$childs->{$cid}->{counting_direction}" . get_linked_field_value($self,$cid,'counting_field','value');
+    }
+    return($result);
 };
 
 sub get_linked_field_value{
     my ($self,$o1_id,$o1_o2_field_name,$o2_field_name) = @_ ;
+    return(undef) if !$self || !$o1_id || !$o1_o2_field_name || !$o2_field_name ;
     my $o1_object = 
          Utils::Db::cdb_get_objects(
             $self, 
@@ -248,6 +295,14 @@ sub get_linked_field_value{
     return($o2_object->{$o2_id}->{$o2_field_name}) ;
 };
 
+sub deploy_remains{
+    my $self = shift ;
+    my $pid  = get_counting_parent($self, $self->param('payload')) ; 
+    warn $pid ;
+    my $result  = get_childs_by_counting_field($self,object_name(),'counting_parent',$pid);
+    $result->{$pid} = Utils::Db::cdb_get_objects($self,{id=>[$pid],field=>['description','counting_field','counting_direction','counting_parent']})->{$pid};
+    warn Dumper $result;
+};
 # END OF PACKAGE
 };
 

@@ -88,7 +88,14 @@ sub edit{
     if( my $tagid = $self->param('tagid') ){
         Utils::Db::cdb_deploy($self,$tagid,'tag');
     }
-    Utils::Warehouse::deploy_childs($self);
+    Utils::Warehouse::calculate_counting_fields($self);
+};
+
+sub remains{
+    my $self = shift;
+    return if !$self->who_is('local','reader');
+
+    Utils::Warehouse::deploy_remains($self);
 };
 
 sub pagesize{
