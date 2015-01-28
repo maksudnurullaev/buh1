@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Edit' %></h2>
 %= include 'success_error' ;
-
+%= link_to ml('Back') => "/warehouse/list" ;
 %= include 'warehouse/edit_form', oname => "$controller object"  ;
 %= include 'warehouse/tags' ;
 
