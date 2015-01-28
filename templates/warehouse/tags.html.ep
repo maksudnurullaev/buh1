@@ -41,16 +41,18 @@
       </tr>  
 %   }   
 %  }
-% if( $has_counting_fields ){
+% if( $has_counting_fields && who_is_local('writer') ){
  <tr class="tar"><td colspan="3"><%= submit_button ml('Update') %></td></tr>
 % }
 % end
 % } else {
 <br /><i><%= ml 'No data!' %></i>
 % }
-% if( param('tagid') ){
- %= include 'warehouse/tag_update' ;
-% } else {
- %= include 'warehouse/tag_new' ;
+% if( who_is_local('writer') ){
+ % if( param('tagid') ){
+  %= include 'warehouse/tag_update' ;
+ % } else {
+  %= include 'warehouse/tag_new' ;
+ % }
 % }
 </table> 

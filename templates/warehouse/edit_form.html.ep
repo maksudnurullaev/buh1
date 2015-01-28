@@ -24,6 +24,7 @@
    </td>
   </tr>
 % }
+% if( who_is_local('writer') ){
   <tr><td class="tar"><%= ml 'Cloning' %>:</td>
    <td>
     %= check_box make_clone => 1, id => 'make_clone', style => 'width:auto;' ;
@@ -36,6 +37,7 @@
     | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
    </td>
   </tr>
+% }
  </table>
  % end
 </div>

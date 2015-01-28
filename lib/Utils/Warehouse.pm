@@ -32,7 +32,7 @@ sub redirect2list_or_path{
     $self->redirect_to("/warehouse/list");
 };
 
-sub validate2edit{
+sub validate_id2edit{
     my $self = shift;
     my $id = $self->param('payload') ;
     if( !$id ){

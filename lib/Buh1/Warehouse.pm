@@ -75,8 +75,10 @@ sub update_counting_field{
 
 sub edit{
     my $self = shift ;
-    return if !$self->who_is('local','writer');
-    return if !Utils::Warehouse::validate2edit($self);
+    return if !Utils::Warehouse::validate_id2edit($self);
+    return if !$self->who_is('local','reader');
+    return if ($self->req->method eq 'POST') &&
+               !$self->who_is('local','writer');
 
     my $id = $self->param('payload') ;
     if( $self->param('make_clone') ){
