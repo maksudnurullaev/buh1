@@ -256,7 +256,10 @@ sub get_parent_and_counting_field_value{
         my $result = $objects->{$pid} ;
         $result->{counting_field_value} = get_linked_field_value($self,$pid,'counting_field','value') ;
         my $tagid = $result->{counting_field} ;
-        $result->{counting_field_object} = $db->get_objects({ id => [$tagid], field => ['name','value'] })->{$tagid};
+        my $tag_objects = $db->get_objects({ id => [$tagid], field => ['name','value'] }) ;
+        if( $tag_objects && exists($tag_objects->{$tagid}) ){
+            $result->{counting_field_object} = $tag_objects->{$tagid};
+        }
         return($result);
     }
     return(undef);
