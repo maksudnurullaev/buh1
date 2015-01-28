@@ -95,7 +95,10 @@ sub remains{
     my $self = shift;
     return if !$self->who_is('local','reader');
 
-    Utils::Warehouse::deploy_remains($self);
+    my($parent,$childs) = Utils::Warehouse::calculate_counting_fields($self);
+    $self->stash( remains_objects => { childs => $childs, parent => $parent } )
+        if $parent ;
+
 };
 
 sub pagesize{
