@@ -1,7 +1,41 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Remains' %></h2>
-%= include 'success_error' ;
+%= link_to ml('Back') => "/warehouse/edit/$payload" ;
+% my $hash_objects = stash('remains_objects');
+% my $parent       = $hash_objects->{parent};
+<p>
+ <table>
+  <tr>
+   <td>&nbsp;</td>
+   <td><u><%= ml 'Name' %></u></td>
+   <td>&nbsp;</td>
+   <td><u><%= $parent->{counting_field_object}->{name} %></u></td>
+  </tr>
+  <tr style="background-color: darkgray">
+   <th>(o)</th>
+   <td><%= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" %></td>
+   <td>&nbsp;</td>
+   <td class="tar"><%= $parent->{counting_field_value} %></td>
+  </tr>
+  % my $childs = $hash_objects->{childs} ;
+  % for my $cid (sort keys %{$childs}){
+   % my $direction     = $childs->{$cid}->{counting_direction} ;
+   % my $direction_str = ( $direction eq '+') ? 'Incoming' : 'Outgoing' ;
+   % my $row_color     = ( $direction eq '+') ? 'darkgray' : 'bisque' ;
+   <tr style="background-color: <%= $row_color %>">
+    <th><%= $childs->{$cid}->{counting_direction} %></th>
+    <td><%= link_to $childs->{$cid}->{description} => "/warehouse/edit/$cid" %></td>
+    <td><%= ml $direction_str %></td>
+    <td class="tar"><%= $childs->{$cid}->{counting_direction} %><%= $childs->{$cid}->{counting_field_value} %></td>
+   </tr>
+  % }
+  <tr>
+   <td class="tar" colspan="3"><%= ml('Remains') %>:</td>
+   <td class="tar"><u><%= stash('calculate_counting_fields') %></u></td>
+  </tr>
+ </table>
+</p>
 
 <pre>
-%= dumper stash ;
+%#= dumper stash('remains_objects') ;
 </pre>
