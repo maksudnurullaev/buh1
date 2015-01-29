@@ -7,13 +7,10 @@
 %= include 'paginator', paginator4 => $controller , path => '/warehouse/remains_all' ;
 </p>
 <p>
-%# if( $hash_objects && scalar(keys(%{$hash_objects})) ){ 
- % my $debug_mode = 1 ;
- % if( $debug_mode ){
 <pre>
-%#= dumper stash('remains_objects') ;
+%= dumper stash('remains_objects') ;
 </pre>
- % } else {   
+% if( 0 && $hash_objects && scalar(keys(%{$hash_objects})) ){ 
  <table>
   <tr>
    <td>&nbsp;</td>
@@ -38,10 +35,9 @@
    <td class="tar"><u><%= stash('calculate_counting_fields') %></u></td>
   </tr>
  </table>
- % }
-%# } else {
+% } else {
     <u><%= ml 'No data!' %></u>
-%# }
+% }
 </p>
 <p>
 %= include 'filter'   , filter4    => $controller ;
