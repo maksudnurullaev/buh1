@@ -25,7 +25,3 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
 </p>
-
-<pre>
-%= dumper stash
-</pre>

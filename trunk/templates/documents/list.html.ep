@@ -35,6 +35,3 @@
 %= include 'filter'   , filter4    => 'documents';
 </p>
 
-<pre>
-%= dumper session
-</pre>

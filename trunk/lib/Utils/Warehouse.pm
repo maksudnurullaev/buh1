@@ -113,7 +113,7 @@ sub deploy_list_objects{
 sub deploy_remains_objects{
     my ($self,$name,$path) = @_;
 
-#    my $filter = $self->session->{"$OBJECT_NAMES remains/filter"};
+    my $filter = Utils::Filter::get_filter($self);
     my $sql = " SELECT DISTINCT id FROM objects WHERE name = 'warehouse object' " 
               . " AND id NOT IN (SELECT DISTINCT id FROM objects " 
               . " WHERE name = 'warehouse object' AND field = 'counting_parent'); " ;
