@@ -2,9 +2,12 @@
 <h2><%= ml 'Documents' %></h2>
 % my $documents = stash 'documents';
 % my $count     = scalar(keys %{$documents});
- %= include 'filter'   , filter4    => 'documents';
-% if ( $count ) {
- %= include 'paginator', paginator4 => 'documents';
+
+<p>
+%= include 'filter'   , filter4    => 'documents';
+%= include 'paginator', paginator4 => 'documents' if $count ; 
+</p><p>
+% if( $count ) {
  <table border="1">
    <tr>   
     <th><%= ml 'document number' %></th>
@@ -24,8 +27,14 @@
    </tr>
   % }
  </table>
- %= include 'paginator', paginator4 => 'documents';
 % } else {
  %= ml 'No data!'
 % }
- %= include 'filter'   , filter4    => 'documents';
+</p><p>
+%= include 'paginator', paginator4 => 'documents' if $count ; 
+%= include 'filter'   , filter4    => 'documents';
+</p>
+
+<pre>
+%= dumper session
+</pre>

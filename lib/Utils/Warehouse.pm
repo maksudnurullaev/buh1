@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use utf8;
 use Utils::Db ;
+use Utils::Filter ;
 use Data::Dumper ;
 
 my $OBJECT_NAME  = 'warehouse object' ;
@@ -22,15 +23,8 @@ sub object_name{ return($OBJECT_NAME); };
 sub object_names{ return($OBJECT_NAMES); };
 sub tag_object_name{ return("$OBJECT_NAME tag"); };
 sub tag_object_names{ return("$OBJECT_NAMES tags"); };
-
-sub redirect2list_or_path{
-    my $self = shift;
-    if ( $self->param('path') ){
-        $self->redirect_to($self->param('path'));
-        return;
-    }
-    $self->redirect_to("/warehouse/list");
-};
+sub remain_object_name{ return("$OBJECT_NAME remain"); };
+sub remain_object_names{ return("$OBJECT_NAMES remains"); };
 
 sub validate_id2edit{
     my $self = shift;
@@ -96,7 +90,7 @@ sub validate{
 sub deploy_list_objects{
     my ($self,$name,$path) = @_;
 
-    my $filter = $self->session->{"$OBJECT_NAMES/filter"};
+    my $filter = Utils::Filter::get_filter($self);
     my $db = Utils::Db::client($self);
     my $objects ;
     my $fields = ['description','counting_field','counting_parent','counting_direction'] ;
@@ -114,6 +108,31 @@ sub deploy_list_objects{
     }
     $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
     return($objects);
+};
+
+sub deploy_remains_objects{
+    my ($self,$name,$path) = @_;
+
+#    my $filter = $self->session->{"$OBJECT_NAMES remains/filter"};
+    my $sql = " SELECT DISTINCT id FROM objects WHERE name = 'warehouse object' " 
+              . " AND id NOT IN (SELECT DISTINCT id FROM objects " 
+              . " WHERE name = 'warehouse object' AND field = 'counting_parent'); " ;
+    my $db = Utils::Db::client($self);
+    my $sth = $db->get_from_sql( $sql ) ;
+    my $ids = []; my $id = undef; $sth->bind_col(1, \$id);
+    while($sth->fetch){
+        push @{$ids}, $id ;
+        warn $id;
+    }
+    return({}) if !scalar(@{$ids}) ; # return empty hash ref
+    # 2. Setup paginator
+    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($self,scalar(@{$ids}));
+    my $start_index = ($page - 1) * $pagesize ;
+    my $end_index = $start_index + $pagesize - 1 ;
+    # 3. Final actions
+    my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
+    $self->stash( remains_objects => $rids ) if scalar(@{$rids});
+    return($rids);
 };
 
 sub get_all_objects{

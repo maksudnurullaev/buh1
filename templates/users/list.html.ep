@@ -5,8 +5,10 @@
  |
  <a href='/users/deleted'><%= ml 'Deleted' %></a>
 </div>
+<p>
 %= include 'filter'   , filter4    => 'users'
 %= include 'paginator', paginator4 => 'users'
+</p><p>
 % my  $users = stash 'users';
 % if ( scalar(keys %{$users}) ) {
  <ul>
@@ -32,5 +34,7 @@
 % } else {
  %= ml 'No data!'
 % }
+</p><p>
 %= include 'paginator', paginator4 => 'users'
 %= include 'filter'   , filter4    => 'users'
+</p>

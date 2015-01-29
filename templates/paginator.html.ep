@@ -1,31 +1,26 @@
- % my $paginator = stash 'paginator';
  % my @pagesizes = (5,10,20,40);
- % my $path = stash 'path';
- % if( $paginator && scalar(@{$paginator}) ){
+ % my $path = $self->req->url->path->to_string() ;
+ % my $pagesize_path = "$path/pagesize" ;
+ % my $pagesize = session($pagesize_path) || 5 ;
+ % my $pages_path = "$path/pages" ;
+ % my $pages = session($pages_path) || 1 ;
+ % my $page_path = "$path/page" ;
+ % my $page = session($page_path) || 1 ;
 <div>
   <%= ml 'Page size' %>:
-  % for my $pagesize ( @pagesizes ) {
-   % if ( $pagesize == $paginator->[2] ) {
-     <strong><u><%= $pagesize %></u></strong>
+  % for my $ps ( @pagesizes ) {
+   % if ( $ps == $pagesize) {
+     <strong><u><%= $ps %></u></strong>
    % } else {
-    % if ( $path ) {
-      %= link_to $pagesize => "/$paginator4/pagesize/$pagesize?path=$path"
-    % } else {    
-      %= link_to $pagesize => "/$paginator4/pagesize/$pagesize"
-    % }
+      %= link_to $ps => "/filter/pagesize/$ps?path=$path" ;
    % }
   % } 
   <br /><%= ml 'Pages' %>:
-  % for my $page (1 .. $paginator->[1]) {
-   % if ( $page == $paginator->[0] ) {
+  % for my $p (1 .. $pages) {
+   % if ( $p == $page ) {
     <strong><u><%= $page %></u></strong>
    % } else {
-    % if ( $path ) {
-      %= link_to $page => "/$paginator4/page/$page?path=$path"
-    % } else {    
-      %= link_to $page => "/$paginator4/page/$page"
-    % }
+    %= link_to $p => "/filter/page/$p?path=$path"
    % } 
   % }
 </div>
- % } 

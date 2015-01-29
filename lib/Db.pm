@@ -15,6 +15,7 @@ use utf8;
 use Utils;
 use DBI;
 use DBD::SQLite;
+use Utils::Filter;
 use Data::Dumper;
 
 my $DB_SQLite_TYPE  = 0;
@@ -340,11 +341,10 @@ sub get_filtered_objects{
         $result = $self->get_counts({name=>[$name], field=>[$exist_field]}); 
     }
     return if !$result; # count is 0
-    #paginator
-    my $paginator = Utils::get_paginator($app,$names,$result);
-    $app->stash(paginator => $paginator);        
-    my ($limit,$offset) = (" limit $paginator->[2] ",
-            $paginator->[2] * ($paginator->[0] - 1));
+    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($app,$result);
+    warn "$page,$pages,$pagesize" ;
+    my ($limit,$offset) = (" limit $pagesize ",
+            $pagesize * ($page - 1));
     $limit .= " offset $offset " if $offset ; 
     # find real records if exist
     if( $filter_value ) {

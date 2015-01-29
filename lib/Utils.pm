@@ -1,4 +1,4 @@
-package Utils; {
+ package Utils; {
 
 =encoding utf8
 
@@ -120,29 +120,6 @@ sub redirect2list_or_path{
         return;
     }
     $self->redirect_to("/$object_names/list");
-};
-
-sub get_paginator{
-    my ($self,$prefix,$items_count) = @_;
-    my $page = $self->session->{"$prefix/filter/page"} || 1;
-    my $pagesize = $self->session->{"$prefix/filter/pagesize"} || 5;
-    my $pages;
-
-    if( $pagesize >= $items_count){
-        $pages = 1;
-        $page = 1;
-        $self->session->{"$prefix/filter/page"} = 1;
-    }else {
-        $pages = $items_count % $pagesize; # tempo 
-        $pages = $pages ?
-            (($items_count - $pages)/$pagesize) + 1
-            : $items_count/$pagesize ;
-        if( $pages < $page ){
-            $page = $pages;
-            $self->session->{"$prefix/filter/page"} = $page;
-        }
-    }
-    return([$page,$pages,$pagesize]);
 };
 
 sub shrink_if{

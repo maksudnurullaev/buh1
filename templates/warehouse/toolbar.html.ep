@@ -1,3 +1,9 @@
 <div class="toolbar">
+% if( who_is_local('writer') ) {
  %= link_to ml('Add') => "/$controller/add" ; 
+ |
+% } 
+% if ( scalar(keys %{$objects}) ) {
+ %= link_to ml('Remains') => "/warehouse/remains_all" ;
+% }
 </div>
