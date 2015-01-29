@@ -103,28 +103,11 @@ sub remains{
 
 };
 
-sub pagesize{
+sub remains_all{
     my $self = shift;
-    Utils::Filter::pagesize($self,$OBJECT_NAMES);
-    Utils::Warehouse::redirect2list_or_path($self);
-};
+    return if !$self->who_is('local','reader');
 
-sub page{
-    my $self = shift;
-    Utils::Filter::page($self,$OBJECT_NAMES);
-    Utils::Warehouse::redirect2list_or_path($self);
-};
-
-sub nofilter{
-    my $self = shift;
-    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
-    Utils::Warehouse::redirect2list_or_path($self);
-};
-
-sub filter{
-    my $self = shift;
-    Utils::Filter::filter($self,$OBJECT_NAMES);
-    $self->redirect_to("/warehouse/list");
+    Utils::Warehouse::deploy_remains_objects($self);
 };
 
 # END OF PACKAGE

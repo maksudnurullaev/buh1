@@ -1,7 +1,9 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Companies' %></h2>
+<p>
 %= include 'filter'   , filter4    => 'companies'
 %= include 'paginator', paginator4 => 'companies'
+</p><p>
 % my  $companies = stash 'companies';
 % if ( scalar(keys %{$companies}) ) {
  <ul>
@@ -20,5 +22,7 @@
 % } else {
  %= ml 'No data!'
 % }
-%= include 'filter'   , filter4    => 'companies'
+</p><p>
 %= include 'paginator', paginator4 => 'companies'
+%= include 'filter'   , filter4    => 'companies'
+</p>

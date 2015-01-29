@@ -183,9 +183,7 @@ sub get_filtered_objects2{
     }
     return({}) if !scalar(@{$ids}) ; # return empty hash ref
     # 2. Setup paginator
-    my $paginator = Utils::get_paginator($self,$params->{object_names},scalar(@{$ids}));
-    $self->stash(paginator => $paginator);
-    my ($page,$pages,$pagesize) = @{$paginator} ;
+    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($self,scalar(@{$ids}));
     my $start_index = ($page - 1) * $pagesize ;
     my $end_index = $start_index + $pagesize - 1 ;
     # 3. Final actions

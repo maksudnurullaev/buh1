@@ -3,54 +3,31 @@ use Mojo::Base 'Mojolicious::Controller';
 use Auth;
 use Utils;
 use Utils::Filter;
-use Utils::Feedbacks;
 
 my $OBJECT_NAME         = 'feedback';
 my $OBJECT_NAMES        = 'feedbacks';
 my $DELETED_OBJECT_NAME = 'deleted feedbacks';
 
-sub pagesize{
-    my $self = shift;
-    Utils::Filter::pagesize($self,$OBJECT_NAMES);
-    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
-};
-
-sub page{
-    my $self = shift;
-    Utils::Filter::page($self,$OBJECT_NAMES);
-    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
-};
-
-sub nofilter{
-    my $self = shift;
-    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
-    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
-};
-
-sub filter{
-    my $self = shift;
-    Utils::Filter::filter($self,$OBJECT_NAMES);
-    Utils::redirect2list_or_path($self,$OBJECT_NAMES);
-};
-
 sub list{
     my $self = shift;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
+
     select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
+
     select_objects($self,$DELETED_OBJECT_NAME,"/$OBJECT_NAMES/deleted");
 };
 
 sub select_objects{
     my ($self,$name,$path) = @_;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
 
     my $db = Db->new($self);
-    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
+    my $filter    = Utils::Filter::get_filter($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
@@ -66,7 +43,7 @@ sub select_objects{
 
 sub restore{
     my $self = shift;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
 
     my $id = $self->param('payload');
     if( $id ){
@@ -102,7 +79,7 @@ sub validate{
 
 sub del{
     my $self = shift;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
 
     my $id = $self->param('payload');
     if( $id ){
@@ -116,7 +93,7 @@ sub del{
 
 sub del_final{
     my $self = shift;
-    return if !Utils::Feedbacks::authorized($self);
+    return if !$self->who_is('global','editor');
 
     my $id = $self->param('payload');
     if( $id ){

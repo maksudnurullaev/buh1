@@ -2,11 +2,13 @@
 <h2><%= ml ucfirst $controller %></h2>
 
 %= include 'warehouse/toolbar' if who_is_local('writer') ;
-
+<p>
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
+</p>
 % my $objects = stash 'objects' ;
 % if ( scalar(keys %{$objects}) ) {
+<p>
  <ol start="<%= calc_start4ol() %>">
   % for my $id( reverse sort keys %{$objects} ) {
    <li>(<%=  exists($objects->{$id}{counting_parent}) ?  $objects->{$id}{counting_direction} : 'O' %>)
@@ -16,11 +18,14 @@
   % }
  </ol>
 % } else {
- %= ml 'No data!'
+ <u><%= ml 'No data!' %></p>
 % }
+</p>
+<p>
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
+</p>
 
 <pre>
-%#= dumper stash
+%= dumper stash
 </pre>

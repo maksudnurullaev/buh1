@@ -7,54 +7,20 @@ my $OBJECT_NAME         = 'company';
 my $OBJECT_NAMES        = 'companies';
 my $DELETED_OBJECT_NAME = 'deleted company';
 
-sub redirect2list_or_path{
-    my $self = shift;
-    if ( $self->param('path') ){
-        $self->redirect_to($self->param('path'));
-        return;
-    }
-    $self->redirect_to("/$OBJECT_NAMES/list");
-};
-
-sub pagesize{
-    my $self = shift;
-    Utils::Filter::pagesize($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
-sub page{
-    my $self = shift;
-    Utils::Filter::page($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
-sub nofilter{
-    my $self = shift;
-    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
-    redirect2list_or_path($self);
-};
-
-sub filter{
-    my $self = shift;
-    Utils::Filter::filter($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
 sub list{
     my $self = shift;
-    select_objects($self,$OBJECT_NAME,'');
+    _select_objects($self,$OBJECT_NAME,'');
 };
 
 sub deleted{
     my $self = shift;
-    select_objects($self,$DELETED_OBJECT_NAME,'/companies/deleted');
+    _select_objects($self,$DELETED_OBJECT_NAME,'/companies/deleted');
 };
 
-
-sub select_objects{
+sub _select_objects{
     my ($self,$name,$path) = @_;
 
-    my $filter  = $self->session->{"$OBJECT_NAMES/filter"};
+    my $filter  = Utils::Filter::get_filter($self);
     my $db      = Db->new($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,

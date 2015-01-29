@@ -1,22 +1,25 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Remains' %></h2>
-%= link_to ml('Back') => "/warehouse/edit/$payload" ;
+%= link_to ml('Back') => "/warehouse/list" ;
 % my $hash_objects = stash('remains_objects');
 <p>
-% if( $hash_objects && scalar(keys(%{$hash_objects})) ){
- % my $parent       = $hash_objects->{parent};
+%= include 'filter'   , filter4    => $controller ;
+%= include 'paginator', paginator4 => $controller , path => '/warehouse/remains_all' ;
+</p>
+<p>
+%# if( $hash_objects && scalar(keys(%{$hash_objects})) ){ 
+ % my $debug_mode = 1 ;
+ % if( $debug_mode ){
+<pre>
+%#= dumper stash('remains_objects') ;
+</pre>
+ % } else {   
  <table>
   <tr>
    <td>&nbsp;</td>
    <td><u><%= ml 'Name' %></u></td>
    <td>&nbsp;</td>
-   <td><u><%= $parent->{counting_field_object}->{name} %></u></td>
-  </tr>
-  <tr style="background-color: darkgray">
-   <th>(o)</th>
-   <td><%= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" %></td>
-   <td>&nbsp;</td>
-   <td class="tar"><%= $parent->{counting_field_value} %></td>
+   <td><u><%= ml 'Remains' %></u></td>
   </tr>
   % my $childs = $hash_objects->{childs} ;
   % for my $cid (sort keys %{$childs}){
@@ -35,11 +38,16 @@
    <td class="tar"><u><%= stash('calculate_counting_fields') %></u></td>
   </tr>
  </table>
-% } else {
-    <%= ml('No data!') %> 
-% }
+ % }
+%# } else {
+    <u><%= ml 'No data!' %></u>
+%# }
+</p>
+<p>
+%= include 'filter'   , filter4    => $controller ;
+%= include 'paginator', paginator4 => $controller, path => '/warehouse/remains_all' ;
 </p>
 
 <pre>
-%#= dumper stash('remains_objects') ;
+%= dumper session ;
 </pre>

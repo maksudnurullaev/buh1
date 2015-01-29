@@ -8,14 +8,12 @@ package Buh1::Documents; {
 
 =cut
 
-
 use strict;
 use warnings;
 use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 use Utils::Db;
-use Utils::Filter;
 use Utils::Digital;
 use Utils::Documents;
 use Encode;
@@ -66,51 +64,20 @@ sub set_form_header{
 
 sub list{
     my $self = shift;
+    return if !$self->who_is('local','reader');
+
     my $db_client = Utils::Db::client($self);
     if( $db_client ){
-        select_objects($self,$db_client,$OBJECT_NAME,'');
+        _select_objects($self,$db_client,$OBJECT_NAME,'');
     } else {
         $self->reditect_to('desktop/select_company');
     }
 };
 
-sub redirect2list_or_path{
-    my $self = shift;
-    if ( $self->param('path') ){
-        $self->redirect_to($self->param('path'));
-        return;
-    }
-    $self->redirect_to("/$OBJECT_NAMES/list");
-};
-
-sub pagesize{
-    my $self = shift;
-    Utils::Filter::pagesize($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
-sub page{
-    my $self = shift;
-    Utils::Filter::page($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
-sub nofilter{
-    my $self = shift;
-    Utils::Filter::nofilter($self,"$OBJECT_NAMES/filter");
-    redirect2list_or_path($self);
-};
-
-sub filter{
-    my $self = shift;
-    Utils::Filter::filter($self,$OBJECT_NAMES);
-    redirect2list_or_path($self);
-};
-
-sub select_objects{
+sub _select_objects{
     my ($self,$db,$name,$path) = @_;
 
-    my $filter    = $self->session->{"$OBJECT_NAMES/filter"};
+    my $filter    = Utils::Filter::get_filter($self);
     my $objects = $db->get_filtered_objects({
             self          => $self,
             name          => $name,
@@ -213,6 +180,7 @@ sub cancel_update_document_header{
 
 sub print{
     my $self = shift;
+    return if !$self->who_is('local','reader');
 
     my $docid = $self->param('payload');
     if( $docid ){
@@ -222,6 +190,7 @@ sub print{
 
 sub update{
     my $self = shift;
+    return if !$self->who_is('local','writer');
 
     my $isPost   = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id       = $self->param('docid');
@@ -266,7 +235,9 @@ sub update{
 
 sub deploy_document{
     my ($self,$id) = @_;
+    return if !$self->who_is('local','writer');
     return if !$self || !$id;
+
     my $db_client = Utils::Db::client($self);
     if( $db_client ){
         my $objects = $db_client->get_objects({id=>[$id]});
@@ -281,8 +252,9 @@ sub deploy_document{
 
 sub set_new_data{
     my $self = shift || return;
+    return if !$self->who_is('local','reader');
+
     my $user = Utils::User::current($self);
-    return if !$user;
     my $number = Utils::Documents::get_document_number_next($self);
     $self->stash( 'document number' => $number );    
     # for demo quick filling
@@ -301,7 +273,6 @@ sub set_new_data{
     $self->stash( 'details' => 'Оплата за установку кронштейна!' );
     $self->stash( 'executive' => 'Петров И.У.' );
     $self->stash( 'accounting manager' => 'Камолова К.С.' );
-
 };
 
 1;
