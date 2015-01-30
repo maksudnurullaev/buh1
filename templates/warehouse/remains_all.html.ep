@@ -31,7 +31,3 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller, path => '/warehouse/remains_all' ;
 </p>
-
-<pre>
-%= dumper session ;
-</pre>
