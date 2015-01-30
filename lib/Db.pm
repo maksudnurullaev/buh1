@@ -342,7 +342,6 @@ sub get_filtered_objects{
     }
     return if !$result; # count is 0
     my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($app,$result);
-    warn "$page,$pages,$pagesize" ;
     my ($limit,$offset) = (" limit $pagesize ",
             $pagesize * ($page - 1));
     $limit .= " offset $offset " if $offset ; 

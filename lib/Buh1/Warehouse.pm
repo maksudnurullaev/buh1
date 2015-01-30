@@ -90,24 +90,27 @@ sub edit{
     if( my $tagid = $self->param('tagid') ){
         Utils::Db::cdb_deploy($self,$tagid,'tag');
     }
-    Utils::Warehouse::calculate_counting_fields($self);
+    my($parent,$childs,$caclulated_counting) 
+        = Utils::Warehouse::calculated_counting($self,$id);
+    $self->stash(calculated_counting => $caclulated_counting);
 };
 
 sub remains{
     my $self = shift;
     return if !$self->who_is('local','reader');
 
-    my($parent,$childs) = Utils::Warehouse::calculate_counting_fields($self);
-    $self->stash( remains_objects => { childs => $childs, parent => $parent } )
-        if $parent ;
-
+    my $id = $self->param('payload') ;
+    my($parent,$childs,$caclulated_counting) 
+        = Utils::Warehouse::calculated_counting($self,$id);
+    $self->stash(calculated_counting => $caclulated_counting);
+    $self->stash(remains_objects => {childs => $childs, parent => $parent}) if $parent;
 };
 
 sub remains_all{
     my $self = shift;
     return if !$self->who_is('local','reader');
 
-    Utils::Warehouse::deploy_remains_objects($self);
+    Utils::Warehouse::deploy_remains_all($self);
 };
 
 # END OF PACKAGE

@@ -26,7 +26,7 @@
          </td> 
          <td>
           <%= currency_format($object->{$key}{'value'}) %>
-          <sup><%= link_to ml('Remains') => "/warehouse/remains/$payload" %>: <%= stash('calculate_counting_fields') %></sup>
+          <sup><%= link_to ml('Remains') => "/warehouse/remains/$payload" %>: <%= stash('calculated_counting') %></sup>
          </td>
         % } else {
          <td align="center" class="<%= param('error_counting_field') %>">

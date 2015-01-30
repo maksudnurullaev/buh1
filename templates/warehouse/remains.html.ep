@@ -32,7 +32,7 @@
   % }
   <tr>
    <td class="tar" colspan="3"><%= ml('Remains') %>:</td>
-   <td class="tar"><u><%= stash('calculate_counting_fields') %></u></td>
+   <td class="tar"><u><%= stash('calculated_counting') %></u></td>
   </tr>
  </table>
 % } else {

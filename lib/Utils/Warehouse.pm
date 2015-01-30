@@ -110,19 +110,22 @@ sub deploy_list_objects{
     return($objects);
 };
 
-sub deploy_remains_objects{
+sub deploy_remains_all{
     my ($self,$name,$path) = @_;
 
     my $filter = Utils::Filter::get_filter($self);
-    my $sql = " SELECT DISTINCT id FROM objects WHERE name = 'warehouse object' " 
+    my $sql = " SELECT DISTINCT id, value desription "
+              . " FROM objects WHERE name = 'warehouse object' " 
+              . " AND field = 'description' AND field = 'description' "
               . " AND id NOT IN (SELECT DISTINCT id FROM objects " 
               . " WHERE name = 'warehouse object' AND field = 'counting_parent'); " ;
     my $db = Utils::Db::client($self);
     my $sth = $db->get_from_sql( $sql ) ;
-    my $ids = []; my $id = undef; $sth->bind_col(1, \$id);
+    my $ids = []; 
+    my ($id, $description);
+    $sth->bind_columns(\$id, \$description);
     while($sth->fetch){
-        push @{$ids}, $id ;
-        warn $id;
+        push @{$ids}, $id if !$filter || $description =~ /$filter/i ;
     }
     return({}) if !scalar(@{$ids}) ; # return empty hash ref
     # 2. Setup paginator
@@ -131,7 +134,20 @@ sub deploy_remains_objects{
     my $end_index = $start_index + $pagesize - 1 ;
     # 3. Final actions
     my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
-    $self->stash( remains_objects => $rids ) if scalar(@{$rids});
+    my $remains_objects = {};
+    for my $rid (@{$rids}) {
+        next if !$rid ;
+        my ($object,$links) = get_clear_db_object($self,$rid);
+        if( scalar(keys(%{$object})) ){
+            $remains_objects->{$rid} = $object ;
+            my($parent,$childs,$caclulated_counting) 
+                    = calculated_counting($self,$rid);
+             $remains_objects->{$rid}->{calculated_counting}
+                    = $caclulated_counting ;
+        }
+
+    }
+    $self->stash( remains_objects => $remains_objects ) if scalar(@{$rids});
     return($rids);
 };
 
@@ -232,6 +248,7 @@ sub clone_object{
 
 sub get_clear_db_object{
     my ($self,$id) = @_ ; 
+    return(undef) if !$self || !$id;
     my $objects = Utils::Db::cdb_get_objects($self, { id => [$id] });
     my $object  = $objects->{$id} ;
     my $clear_db_object = {};
@@ -241,20 +258,26 @@ sub get_clear_db_object{
     return ($clear_db_object,(exists($object->{_link_}) ? $object->{_link_} : undef));
 };
 
-sub calculate_counting_fields{
-    my $self = shift;
-    my $pid  = get_counting_parent_id($self, $self->param('payload'));
+sub calculated_counting{
+    my ($self,$id) = @_;
+    return(undef) if !$self || !$id ;
+    my $pid  = get_counting_parent_id($self, $id);
     my $db = Utils::Db::client($self);
     my $parent  = get_parent_and_counting_field_value($self,$pid);
     return(undef) if !$parent || !exists($parent->{counting_field_value}) ;
     my $pid_cfv = $parent->{counting_field_value} ;
 
     my $childs = get_childs_and_counting_field_value($self,object_name(),'counting_parent',$pid);
+    my $result ;
     my $childs_eval_str = get_childs_counting_eval_str($self,$childs);
-    my $result = eval "$pid_cfv$childs_eval_str" ;
-    $result = $@ if $@ ;
-    $self->stash(calculate_counting_fields => $result);
-    return(($parent,$childs));
+    my $eval_string;
+    if( $pid_cfv ){
+        $eval_string = "$pid_cfv" ;
+        $eval_string .= $childs_eval_str if $childs_eval_str ;
+        $result = eval $eval_string ;
+        warn $@ if $@ ;
+    }
+    return($parent,$childs,$result || 0);
 };
 
 sub get_counting_parent_id{
