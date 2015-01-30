@@ -104,9 +104,6 @@ sub setup_pages{
     my $pagesize   = get_pagesize($self);
     my $pages      = 1 ;
 
-    warn "get_page: " . get_page($self) ;
-    warn "get_page_path: " . get_page_path($self) ;
-    warn "get unique_path: " . get_unique_path($self,'/page') ;
     if( $pagesize >= $items_count){
         $pages = 1 ;
         $page  = 1 ;
@@ -120,7 +117,6 @@ sub setup_pages{
     }
     set_pages($self,$pages);
     set_page($self,$page);
-    warn "2: $page,$pages,$pagesize,$items_count" ;
     return(($page,$pages,$pagesize));
 };
 
