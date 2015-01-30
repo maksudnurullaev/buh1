@@ -144,6 +144,8 @@ sub deploy_remains_all{
                     = calculated_counting($self,$rid);
              $remains_objects->{$rid}->{calculated_counting}
                     = $caclulated_counting ;
+             $remains_objects->{$rid}->{calculated_childs_count}
+                    = $childs ? scalar(keys(%{$childs})) : 0 ;
         }
 
     }
