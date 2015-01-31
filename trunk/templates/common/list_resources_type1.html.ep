@@ -1,6 +1,6 @@
 <div>
  <ul class="nostyle" style="padding-left: 10px">
- % for my $id (sort keys %{$temp_hash}) {
+ % for my $id (reverse sort keys %{$temp_hash}) {
   <li>
    % my $files_count = files_count($id) ;
    % my $calcs_count = calcs_count($id) ;
