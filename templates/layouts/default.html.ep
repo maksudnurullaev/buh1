@@ -70,7 +70,6 @@
                 <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
                 <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
                 <ul><li><a href="/catalog/list"><%= ml 'Catalog' %></a></li></ul>
-                <ul><li><a href="/hr/list"><%= ml 'Human Resource' %></a></li></ul>
                 <ul><li><a href="/warehouse/list"><%= ml 'Warehouse' %></a></li></ul>
                 % if( who_is_local 'writer' ){
                     <ul><li><a href="/backup/list"><%= ml 'Backup/Restore' %></a></li></ul>
