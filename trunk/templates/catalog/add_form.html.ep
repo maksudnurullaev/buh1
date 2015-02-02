@@ -1,0 +1,22 @@
+<div class="form">
+ %= form_for "/$controller/$action" => (method => 'POST') => begin
+ %= hidden_field oname => $controller ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+   </td>
+  </tr>
+  <tr><td>&nbsp;</td>
+   <td>
+     %= submit_button ml('Add') ;
+     | 
+     %= link_to ml('Cancel') => "/$controller/list"
+   </td>
+  </tr>
+ </table>
+ % end
+</div>
