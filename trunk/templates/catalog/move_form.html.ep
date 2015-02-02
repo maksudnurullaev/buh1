@@ -7,7 +7,7 @@
      %= ml "Description" 
     </td>
     <td>
-     %= text_area description => (stash 'description'), class => (stash 'description_class') 
+     %= text_area description => (stash 'description'), disabled => 'disabled'
     </td>
    </tr>
    <tr><td>&nbsp;</td>
@@ -22,7 +22,8 @@
      % } else {
       %= ml "Make root" ;
      % }
-     | <%= link_to "/$controller/edit/$id" => begin %><%= ml "Cancel" %><% end %>
+     | 
+     %= link_to ml('Cancel') => "/$controller/edit/$id"
     </td>
    </tr>
   </table>

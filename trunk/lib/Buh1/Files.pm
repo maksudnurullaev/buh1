@@ -15,7 +15,7 @@ use Encode qw( encode decode_utf8 );
 use Data::Dumper ;
 
 sub download{
-    my $self = shift;
+    my $self       = shift;
     my $id         = $self->param('payload');
     my $fileid     = $self->param('fileid');
     my $path       = Utils::Files::get_path($self,$id);
@@ -27,11 +27,25 @@ sub download{
 
 sub update_desc{
     my $self = shift;
-    my $desc = $self->param('file.desc');
-    my $redirect_to = $self->param('redirect_to');
-
-
+    Utils::Files::update_desc($self);
 };
+
+sub update_file{
+    my $self = shift;
+    warn 'Z0'; 
+    Utils::Files::update_file($self);
+};
+
+sub add{
+    my $self = shift;
+    Utils::Files::add($self);
+};
+
+sub delete{
+    my $self = shift ;
+    Utils::Files::delete($self);
+};
+
 
 # END OF PACKAGE
 };

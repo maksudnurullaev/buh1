@@ -15,68 +15,83 @@ use utf8;
 use Utils;
 use Data::Dumper;
 
-
-sub add_new{
+sub validate_file{
     my $self = shift;
-    my $id = $self->param('payload');
+    my $fileid = $self->param('fileid') ;
+    if( $self->req->is_limit_exceeded 
+        || !$self->param('file.field')
+        || !$self->param('file.field')->size ){
+        $self->redirect_to( $self->param('path') . '?error=1' . ($fileid?"&fileid=$fileid":'') );
+        return(0);
+    }
+    return(1);
+};
 
-    return(0) if $self->req->is_limit_exceeded ;
+sub update_desc{
+    my $self   = shift;
+    my $fileid = $self->param('fileid');
+    my $pid = $self->param('pid');
+    my $file_description = $self->param('file.desc');
 
-    my $new_file = $self->param('new_file');
-    return(0) if( !$new_file || !$new_file->size ) ;
-
-    my $path = get_path($self,$id);
+    my $path = get_path($self,$pid);
     system "mkdir -p '$path/'" if ! -d $path ;
     # save file
-    my $path_file = "$path/" . Utils::get_date_uuid() ;
-    $new_file->move_to($path_file);
-    # save file name
-    set_file_content($path_file . '.name', $new_file->filename) ;
-    my $file_description = $self->param('file.desc');
+    my $path_file = "$path/$fileid" ;
     # save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
+    $self->redirect_to( $self->param('path') . "?fileid=$fileid&success=1" );
     return(1)
 };
 
-sub del_file{
+sub add{
     my $self = shift;
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
+    my $pid = $self->param('pid');
 
-    my $path       = get_path($self,$id);
+    return(0) if !validate_file($self) ;
+
+    my $file = $self->param('file.field');
+    my $path = get_path($self,$pid);
+    system "mkdir -p '$path/'" if ! -d $path ;
+    # save file
+    my $path_file = "$path/" . Utils::get_date_uuid() ;
+    $file->move_to($path_file);
+    # save file name
+    set_file_content($path_file . '.name', $file->filename) ;
+    my $file_description = $self->param('file.desc');
+    # save file description
+    set_file_content($path_file . '.desc', $file_description) if $file_description ;
+    $self->redirect_to( $self->param('return_path') . '?success=1' );
+    return(1)
+};
+
+sub delete{
+    my $self = shift;
+    my $fileid = $self->param('fileid');
+    my $pid = $self->param('pid');
+
+    my $path       = get_path($self,$pid);
     my $path_file  = "$path/$fileid" ;
     
     unlink $path_file ;
     unlink ($path_file . '.name') ;
     unlink ($path_file . '.desc') ;
+    $self->redirect_to( $self->param('path') . '?success=1' );
 };
 
 sub update_file{
     my $self = shift;
-    my $id = $self->param('payload');
+    my $pid = $self->param('pid');
     my $fileid = $self->param('fileid');
+    my $path   = $self->param('path');
+    return(0) if !validate_file($self) ;
 
-    return(0) if $self->req->is_limit_exceeded ;
-
-    my $new_file = $self->param('new_file');
-    return(0) if( !$new_file || !$new_file->size ) ;
-
-    my $path      = get_path($self,$id);
+    my $file = $self->param('file.field');
+    my $path      = get_path($self,$pid);
     my $path_file = "$path/$fileid" ;
-    $new_file->move_to($path_file) ;
-    set_file_content($path_file . '.name', $new_file->filename) ;
+    $file->move_to($path_file) ;
+    set_file_content($path_file . '.name', $file->filename) ;
+    $self->redirect_to( $self->param('path') . "?success=1&fileid=$fileid" );
     return(1)
-};
-
-sub update_desc{
-    my $self = shift;
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-    my $file_description = $self->param('file.desc');
-
-    my $path      = get_path($self,$id);
-    my $path_file = "$path/$fileid" . '.desc' ;
-    set_file_content($path_file, $file_description) ;
 };
 
 sub get_path{

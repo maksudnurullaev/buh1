@@ -1,0 +1,9 @@
+% layout "default";
+<h2><%= ml ucfirst $controller %> | <%= ml 'Files' %> | <%= ml 'Add' %></h2>
+
+%= include "common/toolbar_type1" ;
+<p>
+ %= include 'common/description_form_type2', _prefix => '', _text => stash('description') , _no_form => 1, _cancel_link => "/$controller/files/$payload" ;
+ %= include "success_error" ;
+ %= include "files/add", _pid => $payload, _return_path => "/$controller/files/$payload" ;
+</p>

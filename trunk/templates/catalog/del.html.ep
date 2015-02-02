@@ -3,4 +3,4 @@
 
 %= include "common/toolbar_type1" ;
 <div class='alert error noaccess'><%= uc ml 'Are you sure' %>?</div>
-%= include "common/description_form_type1" ;
+%= include ("$controller/$action" . '_form') if who_is 'local', 'editor' ;

@@ -1,15 +1,11 @@
 % layout "default";
-%= include "success_error" ;
 <h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 %= include "common/toolbar_type1" ;
 <p>
-%= include 'common/description_form_type2', description_value => stash('description') ;
+ %= include 'common/description_form_type2', _prefix => '', _text => stash('description'), _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
 </p>
 <p>
-%= include "common/files_toolbar_type1" if who_is_local('writer') ;
-%= include "files/list" ;
+ %= include "common/files_toolbar_type1" if who_is_local('writer') ;
+ %= include "success_error" ;
+ %= include "files/list" ;
 </p>
-
-<pre>
-%= dumper stash
-</pre>

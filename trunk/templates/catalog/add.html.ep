@@ -1,5 +1,5 @@
 % layout 'default';
-<h2><%= ml 'Catalog' %> | <%= ml 'Add' %></h2>
+<h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 %= include 'success_error' ;
 
-%= include "common/description_form_type1" if who_is 'local', 'editor' ;
+%= include ("$controller/$action" . '_form') if who_is 'local', 'editor' ;

@@ -25,7 +25,7 @@ sub add{
             Utils::Db::cdb_insert_or_update($self,$data);
             $self->stash(success => 1);
             $self->redirect_to('/catalog/list');
-        }
+        } else { $self->stash(error => 1) }
     }
 };
 
@@ -42,8 +42,11 @@ sub edit{
     if( $self->req->method eq 'POST' ){
         return if !$self->who_is('local','writer');
         my $data = Utils::Catalog::form2data($self);
-        $self->stash(success => 1);
-        Utils::Db::cdb_insert_or_update($self,$data);
+        if( Utils::Catalog::validate($self,$data) ){
+            Utils::Db::cdb_insert_or_update($self,$data);
+            $self->stash(success => 1);
+            $self->redirect_to('/catalog/list');
+        } else { $self->stash(error => 1) }
     }
 
     # final action
@@ -152,25 +155,11 @@ sub files_del{
     $self->redirect_to("/catalog/files/$id");
 };
 
-sub files_add_new{
+sub files_add{
     my $self = shift;
     return if !$self->who_is('local','writer');
 
     my $id = $self->param('payload');
-
-    if( $self->req->method  eq 'POST' ){
-        if( $self->req->error ){
-            $self->stash( error => 1 );
-            return;
-        }
-        if( Utils::Files::add_new($self) ){
-               $self->redirect_to("/catalog/files/$id");
-            return;
-        } else {
-             $self->stash( error => 1 );
-        }
-    }
-
     Utils::Db::cdb_deploy($self,$id);
 };
 
