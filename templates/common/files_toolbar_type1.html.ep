@@ -1,3 +1,3 @@
 <div class="toolbar">
-   <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'Add' %><% end %>
+   <%= link_to "/$controller/files_add/$payload" => begin %><%= ml 'Add' %><% end %>
 </div>

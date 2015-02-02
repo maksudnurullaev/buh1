@@ -3,5 +3,5 @@
 %= include "success_error" ;
 
 %= include "common/toolbar_type1" ;
-%= include "common/description_form_type1" ;
+%= include ("$controller/$action" . '_form') if who_is 'local', 'editor' ;
 %= include "common/list_resources_type1", temp_hash => stash("resources_root") if stash("resources_root") ;

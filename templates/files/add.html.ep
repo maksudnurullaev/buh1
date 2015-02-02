@@ -1,0 +1,29 @@
+<div class="toolbar">
+ %= form_for "/files/add/$_pid" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= hidden_field return_path => $_return_path ;
+ %= hidden_field path => $self->req->url->path->to_string() ;
+ %= hidden_field pid => $_pid ;
+ <table class='colortable'>
+  <tr>
+   <td class='tar'> 
+    %= ml 'Description' 
+   </td>
+   <td>
+    %= text_area 'file.desc', class => "file.desc_class" ;
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= file_field 'file.field', class => stash('file.field_class') ;
+   </td>
+  </tr> 
+  <tr><td>&nbsp;</td>
+   <td>
+    %= submit_button ml 'Upload'
+    |
+    %= link_to ml('Cancel') => $_return_path ;
+   </td>
+  </tr>
+ </table>
+ % end
+</div>

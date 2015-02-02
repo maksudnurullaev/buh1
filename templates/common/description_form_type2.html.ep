@@ -9,15 +9,31 @@
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
+    % my $_name   = ($_prefix . 'description') ;
+    % my $_name_class   = $_name . '_class' ;
+    % if( stash('_no_form') ){
+     %= text_area $_name => stash($_name), disabled => 'disabled' 
+    % } else {
+     %= text_area $_name => stash($_name), class => stash($_name_class)  
+    % }    
    </td>
   </tr>
+% my $_cancel_link = stash('_cancel_link') || "/$controller/list" ;
+% if( !stash('_no_form') ){
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
+    |
+    %= link_to ml('Cancel') => $_cancel_link ;
    </td>
   </tr>
+% } elsif( stash('_cancel_link') ){
+  <tr><td>&nbsp;</td>
+   <td class="tar">
+    %= link_to ml('Cancel') => $_cancel_link ;
+   </td>
+  </tr>
+% }
  </table>
  % end
 </div>

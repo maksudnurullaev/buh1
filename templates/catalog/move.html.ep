@@ -3,4 +3,4 @@
 <h2><%= ml "Catalog" %> | <%= ml "Move" %></h2>
 
 %= include "common/toolbar_type1" ;
-%= include "$controller/descriptor_form_move" ;
+%= include ("$controller/$action" . '_form') if who_is 'local', 'editor' ;
