@@ -38,6 +38,7 @@ sub list{
 
 sub edit{
     my $self = shift;
+    return if !$self->who_is('local','reader');
 
     if( $self->req->method eq 'POST' ){
         return if !$self->who_is('local','writer');
@@ -103,73 +104,10 @@ sub make_root{
     $self->redirect_to("/catalog/move/$id");
 };
 
-# files part
-
-sub files_update{
-    my $self = shift;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-
-    Utils::Db::cdb_deploy($self,$id);
-    Utils::Files::deploy($self,$id,$fileid);
-};
-
-sub files_update_desc{
-    my $self = shift;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-
-    if( $self->req->method  eq 'POST' ){
-        Utils::Files::update_desc($self);
-    }
-    $self->redirect_to("/catalog/files_update/$id?fileid=$fileid");
-};
-
-sub files_update_file{
-    my $self = shift;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    my $fileid = $self->param('fileid');
-
-    if( $self->req->method  eq 'POST' ){
-        if( Utils::Files::update_file($self) ){
-            $self->redirect_to("/catalog/files_update/$id?fileid=$fileid");
-            return;
-        } else {
-             $self->stash( error => 1 );
-        }
-    }
-};
-
-sub files_del{
-    my $self = shift;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    Utils::Files::del_file($self);
-    $self->redirect_to("/catalog/files/$id");
-};
-
-sub files_add{
-    my $self = shift;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    Utils::Db::cdb_deploy($self,$id);
-};
-
 sub files{
     my $self = shift;
     return if !$self->who_is('local','reader');
-
-    my $id   = $self->param('payload');
-    $self->stash(files=>Utils::Files::file_list4id($self,$id));
-    Utils::Db::cdb_deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$self->param('payload'));
 };
 
 # calculations part

@@ -1,15 +1,17 @@
-% my $files = stash 'files' ;
+% my $_path = $self->req->url->path->to_string() ;
+% use Utils::Files ;
+% my $files = Utils::Files::file_list4id($self,$_pid) ;
 % if( scalar keys %{$files} ){
  <ul>
-  % for my $file (reverse sort keys %{$files}){
+  % for my $fileid (reverse sort keys %{$files}){
    <li>
-    % if( who_is_global('editor') || who_is_local('writer') ){
-     <%= link_to $files->{$file}{name} => "/$controller/files_update/$payload?fileid=$file" %>
+    % if( !$_read_only ){
+     <%= link_to $files->{$fileid}{name} => ($_path . "?fileform=update&fileid=$fileid") %>
     % } else {
-     <%= link_to $files->{$file}{name} => "/files/download/$payload?fileid=$file&prefix=$controller" %>
+     <%= link_to $files->{$fileid}{name} => "/files/download/$payload?fileid=$fileid" %>
     % }
-    % if( $files->{$file}{desc} ){
-     <br /><small><%= $files->{$file}{desc} %></small>
+    % if( $files->{$fileid}{desc} ){
+     <br /><small><%= $files->{$fileid}{desc} %></small>
     % }
    </li>
   % }

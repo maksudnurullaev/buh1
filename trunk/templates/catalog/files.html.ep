@@ -1,11 +1,10 @@
 % layout "default";
+% my $_path = $self->req->url->path->to_string() ;
 <h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 %= include "common/toolbar_type1" ;
 <p>
  %= include 'common/description_form_type2', _prefix => '', _text => stash('description'), _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
 </p>
 <p>
- %= include "common/files_toolbar_type1" if who_is_local('writer') ;
- %= include "success_error" ;
- %= include "files/list" ;
+ %= include "files/filer", _pid => $payload, _read_only => !who_is_local('writer') ;
 </p>

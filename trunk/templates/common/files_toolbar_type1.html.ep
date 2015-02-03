@@ -1,3 +1,4 @@
+% my $_path = $self->req->url->path->to_string() ;
 <div class="toolbar">
-   <%= link_to "/$controller/files_add/$payload" => begin %><%= ml 'Add' %><% end %>
+   %= link_to ml('Add') => "$_path?fileform=add"
 </div>
