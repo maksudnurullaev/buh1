@@ -1,33 +1,39 @@
-<div class="form">
- %#= form_for ("/$controller/$action" . (stash('id')?('/' . stash('id')):'')) => (method => 'POST') => begin
+<div class="form toolbar">
  %= form_for "/$controller/$action/$payload" => (method => 'POST') => begin
- %= hidden_field oname => $controller ;
- %= hidden_field id    => $payload if $payload ;
+ %= hidden_field oname => (stash('oname') || $controller) ;
+ %= hidden_field id => $payload if $payload ;
+ %= hidden_field counting_parent => stash('object.counting_parent') if stash('object.counting_parent') ;
  <table class='colortable'>
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    % my $_name   = ($_prefix . 'description') ;
+    % my $_name_class   = $_name . '_class' ;
+    % if( stash('_no_form') ){
+     %= text_area $_name => stash($_name), disabled => 'disabled' 
+    % } else {
+     %= text_area $_name => stash($_name), class => stash($_name_class)  
+    % }    
    </td>
   </tr>
-% if( who_is_global('editor') || who_is_local('writer') ){  
+% my $_cancel_link = stash('_cancel_link') || "/$controller/list" ;
+% if( !stash('_no_form') ){
   <tr><td>&nbsp;</td>
    <td>
-    % if( $action eq 'edit' ) {
-     %= submit_button ml('Save') ;
-     | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
-    % } elsif ($action eq 'add') {
-     %= submit_button ml('Add') ;
-     | <%= link_to "/$controller/list" => begin %><%= ml 'Cancel' %><% end %>
-    % } elsif ($action eq 'del') {
-     %= submit_button ml('Delete') ;
-     | <%= link_to "/$controller/edit/$payload" => begin %><%= ml 'Cancel' %><% end %>
-    % }   
+    %= submit_button ml('Save') ;
+    |
+    %= link_to ml('Cancel') => $_cancel_link ;
    </td>
   </tr>
-% }  
+% } elsif( stash('_cancel_link') ){
+  <tr><td>&nbsp;</td>
+   <td class="tar">
+    %= link_to ml('Cancel') => $_cancel_link ;
+   </td>
+  </tr>
+% }
  </table>
  % end
 </div>
