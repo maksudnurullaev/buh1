@@ -39,7 +39,7 @@ sub update_desc{
     my $path_file = "$path/$fileid" ;
     # save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
-    $self->redirect_to( $self->param('path') . "?fileid=$fileid&success=1" );
+    $self->redirect_to( $self->param('path') . "?fileform=update&fileid=$fileid&success=1" );
     return(1)
 };
 
@@ -60,7 +60,7 @@ sub add{
     my $file_description = $self->param('file.desc');
     # save file description
     set_file_content($path_file . '.desc', $file_description) if $file_description ;
-    $self->redirect_to( $self->param('return_path') . '?success=1' );
+    $self->redirect_to( $self->param('path') . '?success=1' );
     return(1)
 };
 

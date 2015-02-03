@@ -1,8 +1,8 @@
-% my $_path = $self->req->url->path->to_string() ;
+% use Utils::Files ;
+% Utils::Files::deploy($self,$_pid,$_fileid);
 <div class="toolbar">
  %= form_for "/files/update_desc"  => ( method => 'POST') => begin
  %= hidden_field fileid => $_fileid ;
- %= hidden_field return_path => $_return_path ;
  %= hidden_field path => $_path ;
  %= hidden_field pid => $_pid ;
  <table class='colortable'>
@@ -14,19 +14,18 @@
     %= text_area 'file.desc' => stash('file_desc') ;
    </td>
   </tr> 
-% if( $_editor ) {  
+% if( !$_read_only ) {  
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml 'Update'
     |
-    %= link_to ml('Cancel') => $_return_path
+    %= link_to ml('Cancel') => $_path
    </td>
   </tr>
 % }
  % end
  %= form_for "/files/update_file" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
   %= hidden_field fileid => $_fileid ;
-  %= hidden_field return_path => $_return_path ;
   %= hidden_field path => $_path ;
   %= hidden_field pid => $_pid ;
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
@@ -36,7 +35,7 @@
     <strong><a target="_blank" href='<%= "/files/download/$payload?fileid=$_fileid&prefix=$controller" %>'><%= stash 'file_name' %></a></strong>
    </td>
   </tr> 
-% if( $_editor ) {  
+% if( !$_read_only ) {  
   <tr><td>&nbsp;</td>
    <td>
     %= file_field 'file.field'
@@ -46,18 +45,18 @@
    <td>
     %= submit_button ml 'Update'
     |
-    %= link_to ml('Cancel') => $_return_path
+    %= link_to ml('Cancel') => $_path
    </td>
   </tr>
 % }  
  % end
-% if( $_editor ) {  
+% if( !$_read_only ) {  
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td>
    </td>
    <td class='tar'>
-     %= link_to ml('Delete') => "/files/delete?pid=$_pid&fileid=$_fileid&path=$_return_path" ;
+     %= link_to ml('Delete') => "/files/delete?pid=$_pid&fileid=$_fileid&path=$_path" ;
    </td>
   </tr>
 % }  
