@@ -1,25 +1,25 @@
-%= form_for $_path_post => (method => 'POST') => begin
-%= hidden_field oname => 'calculation' ;
-%= hidden_field id => stash('id') if stash('id') ;
+%= form_for '/calculations/add' => (method => 'POST') => begin
+%= hidden_field path => $_return_path ;
+%= hidden_field id   => stash('calc.id') if stash('calc.id') ;
+%= hidden_field pid  => $_pid ;
  <tr>
   <td class='tar'> 
    %= ml 'Description' 
   </td>
   <td>
-   %= text_area description => (stash 'description'), class => (stash 'description_class') 
-   % if( $_clone ){ 
+   %= text_area description => (stash 'calc.description'), class => (stash 'calc.description_class') 
+   % if( !$_add ){ 
     <br />
     %= check_box make_copy => 1, id => 'make_copy', style => 'width:auto;' ;
     <label for="make_copy"><%= ml 'Make copy' %></label>
    % }
   </td>
  </tr>
- % if( who_is_global('editor') || who_is_local('writer') ){
-  <tr><td>&nbsp;</td>
-   <td>
-    %= submit_button ml('Save') ;
-    | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
-   </td>
-  </tr>
- % }    
+ <tr><td>&nbsp;</td>
+  <td>
+   %= submit_button ml($_add?'Add':'Save') ;
+   | 
+   %= link_to ml('Cancel') => $_return_path ;
+  </td>
+ </tr>
 % end

@@ -168,6 +168,14 @@ sub utf_compare{
     return($a_length <=> $b_length);
 };
 
+sub url_append{
+    my ($path,$value) = @_ ;
+    return(undef) if !$path ;
+    return($path) if !$value ;
+    return("$path&$value") if $path =~ /\?/ ;
+    return("$path?$value") ;
+};
+
 # END OF PACKAGE
 };
 

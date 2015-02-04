@@ -11,8 +11,6 @@ package Buh1::Calculations; {
 use Mojo::Base 'Mojolicious::Controller' ;
 use Utils::Calculations ;
 use Utils::Db ;
-use Utils::Guides ;
-use Data::Dumper ;
 
 sub page{
     my $self = shift;
@@ -21,20 +19,7 @@ sub page{
 
 sub add{
     my $self = shift;
-    return if !Utils::Calculations::authorized2edit($self) ;
-
-    my $method = $self->req->method;
-    if ( $method =~ /POST/ ){
-        my $data = Utils::Calculations::form2data($self);
-        if( Utils::Calculations::validate($self,$data) ){
-            Utils::Db::db_insert_or_update($self,$data);
-            $self->stash(success => 1);
-            $self->redirect_to('/calculations/page');
-        } else {
-           $self->stash('description_class' => 'error');
-           $self->stash('error' => 1);
-        }
-    }
+    Utils::Calculcation::add($self) if $self->req->method =~ /POST/; 
 };
 
 sub test{

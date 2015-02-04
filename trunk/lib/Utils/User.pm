@@ -67,14 +67,15 @@ sub who_global{
 sub who_is_global{
     my ($self,$level) = @_ ;
     return(undef) if !$self || !$level;
+    my $who_global = who_global($self);
     if( lc($level) eq 'admin' ){
-        return(1) if who_global($self) =~ /g_admin/i ;
-    } elsif( lc($level) eq 'editor' ){
-        return(1) if who_global($self) =~ /g_admin|g_editor/i ;
+        return(1) if $who_global =~ /g_admin/i ;
+    } elsif( lc($level) eq 'editor' || lc($level) eq 'writer' ){
+        return(1) if $who_global =~ /g_admin|g_editor/i ;
     } elsif( lc($level) eq 'user' ){
-        return(1) if who_global($self) =~ /g_admin|g_editor|g_registered/i ;
+        return(1) if $who_global =~ /g_admin|g_editor|g_registered/i ;
     } elsif( lc($level) eq 'guest' ){
-        return(1) if who_global($self) eq 'g_guest' ;
+        return(1) if $who_global eq 'g_guest' ;
     }
     return(0);
 };
@@ -99,12 +100,13 @@ sub who_local{
 sub who_is_local{
     my ($self,$level) = @_ ;
     return(undef) if !$self || !$level;
+    my $who_local = who_local($self);
     if( lc($level) eq 'admin' ){
-        return(1) if who_local($self) =~ /l_admin/i ;
+        return(1) if $who_local =~ /l_admin/i ;
     } elsif( lc($level) eq 'writer' || lc($level) eq 'editor' ){
-        return(1) if who_local($self) =~ /l_admin|l_write/i ;
+        return(1) if $who_local =~ /l_admin|l_write/i ;
     } elsif( lc($level) eq 'reader' ){
-        return(1) if who_local($self) =~ /l_admin|l_write|l_read/i ;
+        return(1) if $who_local =~ /l_admin|l_write|l_read/i ;
     }
     return(0);
 };

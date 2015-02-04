@@ -219,12 +219,7 @@ sub clone_object{
         for my $tagid (keys %{$tags_clone}){
             $new_tags_clone->{$tagid} = $db->insert($tags_clone->{$tagid});
             # make links
-            $db->set_link(
-                object_name(), 
-                $new_pid, 
-                tag_object_name(), 
-                $new_tags_clone->{$tagid});
-
+            $db->set_link($new_pid,$new_tags_clone->{$tagid});
         }
         $dbh->commit();    # END TRANSACTION
     };

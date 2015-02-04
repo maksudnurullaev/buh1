@@ -1,11 +1,16 @@
+% who_is 'local', 'reader' ;
+% use Utils::Db ;
+% Utils::Db::cdb_deploy($self,$payload);
 % layout "default";
 %= include "success_error" ;
 <h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 %= include "common/toolbar_type1" ;
-%= include 'common/description_form_type2', description_value => stash('description') ;
-
 <p>
-%= include 'calculations/toolbar', add_link => "/$controller/calculations_add/$payload" if who_is_local('writer') ;
-% my $link_path_prefix = ( who_is_local('writer') ? "/$controller/calculations_edit/$payload?id=" : "/$controller/calculations_test/$payload?id=" ) ;
-%= include 'calculations/list', link_path_prefix => $link_path_prefix, isClientPart => 1 ;
+ %= include 'common/description_form_type1', _prefix => '', _text => stash('description'), _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
 </p>
+<p>
+ %= include "calculations/calculator", _pid => $payload, _read_only => !who_is_local('writer') ;
+</p>
+<pre>
+%= dumper stash ;
+</pre>

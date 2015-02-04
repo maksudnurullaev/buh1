@@ -8,7 +8,7 @@
     %= include 'success_error' ;
     %= include '/files/update', _pid => $_pid, _fileid => $_fileid, _path => $_path, _read_only => $_read_only ;
 %}else {
-    %= include "common/files_toolbar_type1" if !$_read_only ;
+    %= include "files/toolbar" if !$_read_only ;
     %= include "success_error" ;
     %= include "files/list", _pid => $_pid, _read_only => $_read_only ;   
 %}

@@ -26,9 +26,7 @@ sub add{
     return(0) if !validate($self,$data);
     my $id = Utils::Db::cdb_insert_or_update($self,$data);
     my $db = Utils::Db::client($self);
-    return $db->set_link(
-        Utils::Warehouse::object_name(), $pid,
-        object_name(), $id);
+    return $db->set_link($pid,$id);
 };
 
 sub add2{
@@ -38,9 +36,7 @@ sub add2{
     return(0) if !validate($self,$data);
     my $id = Utils::Db::cdb_insert_or_update($self,$data);
     my $db = Utils::Db::client($self);
-    return $db->set_link(
-        Utils::Warehouse::object_name(), $pid,
-        object_name(), $id);
+    return $db->set_link($pid,$id);
 };
 
 sub update{

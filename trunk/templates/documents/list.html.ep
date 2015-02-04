@@ -34,4 +34,3 @@
 %= include 'paginator', paginator4 => 'documents' if $count ; 
 %= include 'filter'   , filter4    => 'documents';
 </p>
-

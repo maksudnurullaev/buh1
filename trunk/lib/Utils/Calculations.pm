@@ -16,13 +16,69 @@ use Utils::Db;
 use Utils::Guides ;
 use Data::Dumper;
 
-sub authorized2edit{
-    my $self = shift;
-    if( !$self->who_is_global('editor') ){
-        $self->redirect_to('/user/login?warning=access');
-        return(0);
+sub add{
+    my $self = shift ;
+    if( lc($self->param('controller')) ne 'calculatons' ){
+        return if !$self->who_is('local','writer');
+        return(add_client_calc($self));
+    } else {
+        return if !$self->who_is('global','editor');
+        return(add_global_calc($self));
     }
-    return(1);
+};
+
+sub add_global_calc{
+    my $self = shift ;
+    my $data = form2data($self);
+    my $path = $self->param('path');
+    if( validate($self,$data) ){
+        Utils::Db::db_insert_or_update($self,$data);
+        $self->redirect_to(Utils::url_append($path, 'success=1'));
+    } else {
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
+    }
+};
+
+sub add_client_calc{
+    my $self = shift ;
+    my $pid  = $self->param('pid');
+    my $path = $self->param('path');
+    if ( $self->req->method =~ /POST/ ){
+        my $data = form2data($self);
+        if( validate($self,$data) ){
+            if( defined $self->param('use_template') ){
+                my $cid = $self->param('calculation_template');
+                $data = merge_calcs($self,$data,$cid); 
+            }
+            my $dbc = Utils::Db::client($self);
+            my $cid = $dbc->insert($data);
+            $dbc->set_link($pid,$cid);
+            $self->redirect_to(Utils::url_append($path, 'success=1'));
+        } else {
+            $self->redirect_to(Utils::url_append($path, 'error=1'));
+        }
+    }
+};
+
+sub merge_calcs{
+    my ($self,$data,$cid) = @_;
+    return($data) if !$self || !$data || !$cid ;
+    my $db = Utils::Db::main($self);
+    my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
+    for my $del_key (qw/id description creator object_name/){
+        delete $template->{$del_key};
+    }
+    for my $key (keys %{$template}){
+        $data->{$key} = $template->{$key} ;
+    }
+    return($data);    
+};
+
+sub get_client_calcs{
+    my ($self,$pid) = @_;
+    return(undef) if !$self->who_is('local','reader');
+    my $dbc = Utils::Db::client($self);
+    return( $dbc->get_links($pid,'calculation',['description']) );
 };
 
 sub form2data_fields{

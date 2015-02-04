@@ -44,11 +44,7 @@ sub add_part{
             # set new id
             $data->{id} = "$object_name $data->{id}";
             if( $id = $db->insert($data) ){
-                $db->set_link(
-                    $parents->{$parent_id}{object_name},
-                    $parent_id,
-                    $object_name,
-                    $id) if $parents ;
+                $db->set_link($parent_id,$id) if $parents ;
                 $self->redirect_to("/accounts/edit/$id");
                 clear_cache($self);
                 return;
@@ -111,7 +107,7 @@ sub fix_subconto{
     my $pold = $self->param('pold');
     if( $pnew && $id && $pnew && $pold ) { 
         $db->del_link($id,$pold);
-        $db->set_link('account',$pnew,'account subconto',$id);
+        $db->set_link($pnew,$id);
         clear_cache($self);
     } else {
         warn "Accounts:fix_subconto:error parameters are not properly defined!";
@@ -131,7 +127,7 @@ sub fix_account{
         my $db = Db->new($self);
         if ( $db->change_id($idold,$idnew) && $db->change_name('account',$idnew) ){
             $db->del_link($idold,$aid);
-            $db->set_link('account',$idnew,'account section',$sid);
+            $db->set_link($idnew,$sid);
             clear_cache($self);
         }
     } else {
