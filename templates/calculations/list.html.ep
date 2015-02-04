@@ -1,12 +1,13 @@
-% my $calcs = stash 'calculations' ;
+% use Utils::Calculations;
+% my $calcs = Utils::Calculations::get_client_calcs($self,$payload) ;
 % if( scalar keys %{$calcs} ) {
  <ul>
   % for my $key (reverse sort keys %{$calcs}){
    <li>
     %# admin or user part
-    % my $result = $isClientPart ? cdb_calculate($key) : db_calculate($key) ;
+    % my $result = cdb_calculate($key) || db_calculate($key) ;
     %= $result ? currency_format($result) : '(?)' ;
-    %= link_to $calcs->{$key}{description} => ($link_path_prefix . $key) ;
+    %= link_to $calcs->{$key}{description} => $key ;
    </li>
   % }
   </ul>

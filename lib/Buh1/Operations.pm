@@ -70,11 +70,7 @@ sub add{
         $data = Utils::Operations::validate( $self );
         if( !exists($data->{error}) ){
             if( $id = $db->insert($data) ){
-                $db->set_link(
-                    Utils::Operations::get_object_name(),
-                    $id,
-                    Utils::Accounts::get_account_name(),
-                    $account_id);
+                $db->set_link( $id, $account_id);
                 clear_cache($self);
                 $self->redirect_to("/operations/edit/$account_id?bt=$id");
                 return;

@@ -162,7 +162,7 @@ sub update{
 
 sub insert{
     my $self = shift;
-    my ($hashref, $object_name) = (shift, undef);
+    my ($hashref, $object_name) = (shift, undef) ;
     if( defined($hashref) && defined($hashref->{object_name}) ){
         $object_name = $hashref->{object_name};
         delete $hashref->{object_name}; 
@@ -494,15 +494,19 @@ sub exists_link{
 };
 
 sub set_link{
-    my ($self,$name,$id,$link_name,$link_id) = @_;
-    return(0) if( !$self || !$name || !$id || !$link_name || !$link_id );
-    return(1) if exists_link($id,$link_id);
+    my ($self,$id1,$id2) = @_;
+    return(0) if( !$self || !$id1 || !$id2 );
+    return(1) if exists_link($id1,$id2);
+
+    my ($name1,$name2) = ($self->get_object_name_by_id($id1),
+                          $self->get_object_name_by_id($id2));
+    return(0) if !$name1 || !$name2 ;
 
     my $dbh = $self->get_db_connection() || return;
     my $sth = $dbh->prepare(
         'INSERT INTO objects (name,id,field,value) values(?,?,?,?);');
-    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id,$link_name,$link_id);
-    return(0) if !$sth->execute($LINK_OBJECT_NAME,$link_id,$name,$id);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id1,$name2,$id2);
+    return(0) if !$sth->execute($LINK_OBJECT_NAME,$id2,$name1,$id1);
     return(1);
 };
 
@@ -664,6 +668,17 @@ sub get_parent_childs{
         }
     }
     return($parent);
+};
+
+sub get_object_name_by_id{
+    my ($self,$id) = @_ ;
+    my $sql = " SELECT DISTINCT name FROM objects WHERE id = '$id' AND name NOT LIKE '\\_%' ESCAPE '\\' ; " ;
+    warn $sql ;
+    my $sth = $self->get_from_sql( $sql ) ;
+    my $name;
+    $sth->bind_col(1, \$name);
+    return($name) if $sth->fetch ;
+    return(undef);
 };
 
 };

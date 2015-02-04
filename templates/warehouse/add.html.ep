@@ -1,4 +1,8 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Add' %></h2>
 %= include 'success_error' ;
-%= include 'common/description_form_type2', oname => "$controller object" ;
+%= include 'common/description_form_type1', oname => "$controller object", _prefix => '' ;
+
+<pre>
+%= dumper stash ;
+</pre>

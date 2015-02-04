@@ -111,54 +111,6 @@ sub files{
 };
 
 # calculations part
-
-sub calculations{
-    my $self = shift;
-    return if !$self->who_is('local','reader');
-
-    my $id = $self->param('payload');
-    Utils::Db::cdb_deploy($self,$id);
-    my $dbc = Utils::Db::client($self);
-    my $calculations = $dbc->get_links($id,'calculation',['description']);
-    $self->stash( calculations => $calculations );
-};
-
-sub calculations_add{
-    my $self = shift ;
-    return if !$self->who_is('local','writer');
-
-    my $id = $self->param('payload');
-    if ( $self->req->method =~ /POST/ ){
-        my $data = Utils::Calculations::form2data($self);
-        if( Utils::Calculations::validate($self,$data) ){
-            if( defined $self->param('use_template') ){
-                my $cid = $self->param('calculation_template');
-                my $db = Utils::Db::main($self);
-                my $template = $db->get_objects({ id => [$cid] })->{$cid} ;
-                delete $template->{id} ;
-                delete $template->{description} ;
-                delete $template->{creator} ;
-                delete $template->{object_name} ;
-                for my $key (keys %{$template}){
-                    $data->{$key} = $template->{$key} ;
-                }
-            }
-            my $dbc = Utils::Db::client($self);
-            my $cid = $dbc->insert($data);
-            $dbc->set_link('catalog',$id,'calculation',$cid);
-            $self->redirect_to("/catalog/calculations_edit/$id?id=$cid");
-        } else {
-           $self->stash('description_class' => 'error');
-           $self->stash('error' => 1);
-        }
-    }
-    # finish
-    Utils::Db::cdb_deploy($self,$id,'catalog');
-    my $calculcation_templates_date = Utils::Calculations::get_list_as_select_data(
-            $self, Utils::Calculations::get_db_list($self));
-    $self->stash( calculation_templates => $calculcation_templates_date );
-};
-
 sub calculations_edit{
     my $self = shift;
     return if !$self->who_is('local','writer');
@@ -179,7 +131,7 @@ sub calculations_edit{
                     $data->{$key} = $template->{$key} if $key !~ /^_/ ;
                 }
                 my $new_cid = $dbc->insert($data);
-                $dbc->set_link('catalog',$id,'calculation',$new_cid);
+                $dbc->set_link($id,$new_cid);
                 $self->redirect_to("/catalog/calculations/$id");
                 return;
             } else {

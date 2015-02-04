@@ -100,7 +100,7 @@ sub add_user{
     my $id      = $self->param('payload');
     my $user_id = $self->param('user');
     my $db = Db->new($self);
-    $db->set_link($OBJECT_NAME,$id,'user',$user_id);
+    $db->set_link($id,$user_id);
     $self->redirect_to("/companies/edit/$id");
 };
 

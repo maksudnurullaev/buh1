@@ -95,7 +95,8 @@ sub _select_objects{
 sub validate{
     my $self = shift;
     my $id = shift;
-    my $data = { object_name => $OBJECT_NAME };
+    my $data = { object_name => $OBJECT_NAME,
+		         creator     => Utils::User::current($self) } ;
     my @fields = @OBJECT_FIELDS;
     push(@fields, 'id') if $id;
     for my $field (@fields){
@@ -116,6 +117,7 @@ sub validate{
             $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount);
             $self->stash('currency amount in words' => Utils::Digital::rur_in_words($currency_amount));
         }
+		$data->{updater} = Utils::User::current($self) ;
     } else {
         $data->{'currency amount in words'} =  Utils::Digital::rur_in_words($currency_amount) ;
         $self->param('currency amount in words' => Utils::Digital::rur_in_words($currency_amount)) ;
@@ -196,6 +198,7 @@ sub update{
     my $id       = $self->param('docid');
     my $payload  = $self->param('payload');
     my $bt       = $self->param('bt');
+    my $db = Utils::Db::client($self);
     if( $id ){
         deploy_document($self,$id);
     } else {

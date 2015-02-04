@@ -80,16 +80,13 @@ sub delete{
 
 sub update_file{
     my $self = shift;
+    return(0) if !validate_file($self) ;
     my $pid = $self->param('pid');
     my $fileid = $self->param('fileid');
-    my $path   = $self->param('path');
-    return(0) if !validate_file($self) ;
-
-    my $file = $self->param('file.field');
-    my $path      = get_path($self,$pid);
-    my $path_file = "$path/$fileid" ;
-    $file->move_to($path_file) ;
-    set_file_content($path_file . '.name', $file->filename) ;
+    my $file      = $self->param('file.field');
+    my $file_path = get_path($self,$pid) . '/' . $fileid ;
+    $file->move_to($file_path) ;
+    set_file_content($file_path . '.name', $file->filename) ;
     $self->redirect_to( $self->param('path') . "?success=1&fileid=$fileid" );
     return(1)
 };

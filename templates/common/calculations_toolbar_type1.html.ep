@@ -1,13 +1,5 @@
+% my $_path = $self->req->url->path->to_string() ;
 <div class="toolbar">
-  % if( $action ne 'calculations' ){
-   <%= link_to "/$controller/calculations/$payload" => begin %><%= ml 'Calculations' %><% end %>
-  % } else {
-   <%= ml 'Calculations' %>  
-  % }
-  |
-  % if( $action ne 'calculations_add_new' ){
-   <%= link_to "/$controller/calculations_add_new/$payload" => begin %><%= ml 'New' %><% end %>
-  % } else {
-   <%= ml 'New' %>  
-  % } 
+   %= link_to ml('Add') => "$_path?calcform=add"
 </div>
+
