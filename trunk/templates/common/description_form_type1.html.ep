@@ -9,8 +9,9 @@
     %= ml 'Description' 
    </td>
    <td>
-    % my $_name   = ($_prefix . 'description') ;
-    % my $_name_class   = $_name . '_class' ;
+    % my $_name = 'description' ;
+    % $_name = $_prefix . '.description' if $_prefix ;
+    % my $_name_class = $_name . '_class' ;
     % if( stash('_no_form') ){
      %= text_area $_name => stash($_name), disabled => 'disabled' 
     % } else {

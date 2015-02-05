@@ -1,9 +1,9 @@
 % my $_pid  = $_pid ;
 % my $_path = $self->req->url->path->to_string() ;
 % my $_form = param('fileform') ;
-%if( $_form eq 'add' ){
+%if( $_form && $_form eq 'add' ){
     %= include '/files/add', _pid => $_pid, _return_path => $_path ;
-%}elsif( $_form eq 'update' && param('fileid') ){
+%}elsif( $_form && $_form eq 'update' && param('fileid') ){
     % my $_fileid = param('fileid') ;
     %= include 'success_error' ;
     %= include '/files/update', _pid => $_pid, _fileid => $_fileid, _path => $_path, _read_only => $_read_only ;

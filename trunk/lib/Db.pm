@@ -195,14 +195,15 @@ sub object_valid{
 };
 
 sub format_statement2hash_objects{
-    my $self = shift;
-    my $sth = shift;
+    my ($self,$sth,$params) = @_ ;
     return {} if !$sth;
     my($name,$id,$field,$value,$result) = (undef,undef,undef,undef,{});
     $sth->bind_columns(\($name,$id,$field,$value));
+    my $_no_links = $params && exists($params->{no_links}) && $params->{no_links} ;
     while ($sth->fetch) {
         $result->{$id} = {} if !exists($result->{$id});
         if( $name =~ /^_/  ){ # extended field name!!!
+            next if $_no_links ;
             $result->{$id}{$name} = {} if !exists($result->{$id}->{$name});
             $result->{$id}{$name}{$value} = $field;
             if( exists $result->{$id}{$name}{$field} ) {
@@ -312,7 +313,7 @@ sub get_objects{
     my ($sth,$sql_string) = (undef, $self->format_sql_parameters($parameters));
     $sth = $dbh->prepare($sql_string);
     if( $sth->execute ){
-        return($self->format_statement2hash_objects($sth));
+        return($self->format_statement2hash_objects($sth,$parameters));
     } else { warn $DBI::errstr; }
     return;
 };

@@ -1,13 +1,13 @@
 <div class="form">
  %= form_for "/$controller/move/$payload" => (method => "POST") => begin
-  %= hidden_field id    => $payload if $payload ;
+  %= hidden_field id => $payload ;
   <table class="colortable">
    <tr>
     <td class="tar"> 
      %= ml "Description" 
     </td>
     <td>
-     %= text_area description => (stash 'description'), disabled => 'disabled'
+     %= text_area description => (stash 'catalog.description'), disabled => 'disabled'
     </td>
    </tr>
    <tr><td>&nbsp;</td>
@@ -17,17 +17,16 @@
    </tr>
    <tr><td>&nbsp;</td>
     <td>
-     % if( stash("PARENT") ) {
-      <%= link_to "/$controller/make_root/$payload" => begin %><%= ml "Make root" %><% end %>
+     % if( stash("catalog.PARENT") ) {
+      %= link_to ml('Make root') => "/$controller/make_root/$payload" ;
      % } else {
-      %= ml "Make root" ;
+      %= ml('Make root') ;
      % }
      | 
-     %= link_to ml('Cancel') => "/$controller/edit/$id"
+     %= link_to ml('Cancel') => "/$controller/edit/$payload"
     </td>
    </tr>
   </table>
   %= include "$controller/list_resources_radio", temp_hash => stash("resources_root") if stash("resources_root") ;
  % end
 </div>
-
