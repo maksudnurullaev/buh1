@@ -3,15 +3,15 @@
  %= hidden_field oname => 'calculation' ;
  %= hidden_field id    => stash 'id' ;
  % my $field_index = 1 ;
- % while( stash("f_description_$field_index") ){
-  %= include 'calculations/fields_form_row', disabled => (!$isEditor), index => $field_index, title => 'Name' , name => "f_description_$field_index", value => stash("f_description_$field_index") ;
-  %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "f_value_$field_index", value => stash("f_value_$field_index") ;
+ % while( stash("calc.f_description_$field_index") ){
+  %= include 'calculations/fields_form_row', disabled => (!$isEditor), index => $field_index, title => 'Name' , name => "calc.f_description_$field_index", value => stash("calc.f_description_$field_index") ;
+  %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "calc.f_value_$field_index", value => stash("calc.f_value_$field_index") ;
   % $field_index++ ; 
  % } 
 % if( $isEditor ){ 
  %# additional field for adding, to remove just make empty field's description
- %= include 'calculations/fields_form_row', index => $field_index, title => 'Name' , name => "f_description_$field_index", value => "" ;
- %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "f_value_$field_index", value => "" ;
+ %= include 'calculations/fields_form_row', index => $field_index, title => 'Name' , name => "calc.f_description_$field_index", value => "" ;
+ %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "calc.f_value_$field_index", value => "" ;
 % } 
  %= include 'calculations/fields_form_footer' ;
 % end

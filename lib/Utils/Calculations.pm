@@ -82,7 +82,7 @@ sub edit_global_calc{
     if( validate($self,$data) ){
         if( defined $self->param('make_copy') ){
             my $dbc = Utils::Db::main($self);
-            my $template = $dbc->get_objects({ id => [$id] })->{$id} ;
+            my $template = $dbc->get_objects({ id => [$id], no_links => 1 })->{$id} ;
             delete $data->{id} ;
             delete $template->{id} ;
             delete $template->{description} ;
@@ -158,9 +158,10 @@ sub deploy_result{
     $eval_string = decode_eval_string($self, $data, $eval_string);
     my $result = calculate($eval_string);
     if( $result ){
-        $self->stash( result => $result );
+        $self->stash( 'calc.result' => $result );
+
     } else {    
-        $self->stash( result_error => $eval_string );
+        $self->stash( 'calc.result_error' => $eval_string );
     }
 };
 

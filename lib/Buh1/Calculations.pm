@@ -47,7 +47,6 @@ sub test{
 sub edit{
     my $self = shift;
     Utils::Calculations::edit($self) if $self->req->method =~ /POST/; 
-
 };
 
 sub delete{

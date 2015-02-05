@@ -4,7 +4,7 @@
 % } 
 %= include 'success_error' ;
 
-<div class="form">
+<div class="form toolbar">
  <table class='colortable'>
   %= include 'calculations/form', _path_post => "/calculations/edit/$_calcid", _path_cancel => $_return_path, _clone => 1 ;
   %= include 'calculations/fields_form_splitter', title => '' ; 
