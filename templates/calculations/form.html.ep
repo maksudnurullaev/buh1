@@ -1,17 +1,19 @@
 %= form_for '/calculations/add' => (method => 'POST') => begin
 %= hidden_field path => $_return_path ;
 %= hidden_field id   => stash('calc.id') if stash('calc.id') ;
-%= hidden_field pid  => $_pid ;
+%= hidden_field pid  => stash('_pid') if stash('_pid') ;
  <tr>
   <td class='tar'> 
    %= ml 'Description' 
   </td>
   <td>
    %= text_area description => (stash 'calc.description'), class => (stash 'calc.description_class') 
-   % if( !$_add ){ 
+   % if( $_add ){ 
     <br />
-    %= check_box make_copy => 1, id => 'make_copy', style => 'width:auto;' ;
-    <label for="make_copy"><%= ml 'Make copy' %></label>
+    %= check_box merge_with => 1, id => 'merge_with', style => 'width:auto;' ;
+    <label for="merge_with"><%= ml 'Make copy' %></label>
+    <br />
+        %= select_field calculation_template => Utils::Calculations::get_list_as_select_data($self) ;
    % }
   </td>
  </tr>

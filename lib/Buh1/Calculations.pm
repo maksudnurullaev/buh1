@@ -19,15 +19,15 @@ sub page{
 
 sub add{
     my $self = shift;
-    Utils::Calculcation::add($self) if $self->req->method =~ /POST/; 
+    Utils::Calculations::add($self) if $self->req->method =~ /POST/; 
 };
 
 sub test{
     my $self = shift;
-
     my $id = $self->param('payload');
     my $method = $self->req->method;
     my $data = {} ;
+    
     if ( $method =~ /POST/ ){
         my @param = $self->param ;
         for my $key (@param){
@@ -46,34 +46,8 @@ sub test{
 
 sub edit{
     my $self = shift;
+    Utils::Calculations::edit($self) if $self->req->method =~ /POST/; 
 
-    my $id = $self->param('payload');
-    my $method = $self->req->method;
-    if( $method =~ /POST/ ){
-        return if !Utils::Calculations::authorized2edit($self) ;
-
-        my $data = Utils::Calculations::form2data($self);
-        if( Utils::Calculations::validate($self,$data) ){
-            if( defined $self->param('make_copy') ){
-                my $dbc = Utils::Db::main($self);
-                my $template = $dbc->get_objects({ id => [$id] })->{$id} ;
-                delete $data->{id} ;
-                delete $template->{id} ;
-                delete $template->{description} ;
-                for my $key (keys %{$template}){
-                    $data->{$key} = $template->{$key} if $key !~ /^_/ ;
-                }
-                my $new_id = $dbc->insert($data);
-                $self->redirect_to("/calculations/edit/$new_id");
-                return;
-            } else {
-                Utils::Db::db_insert_or_update($self,$data);
-                $self->stash(success => 1);
-            }
-        }
-    }
-    my $data = Utils::Db::db_deploy($self,$id) ;
-    Utils::Calculations::deploy_result($self, $data) ;
 };
 
 sub delete{

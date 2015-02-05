@@ -16,14 +16,19 @@ use Utils::Db;
 use Utils::Guides ;
 use Data::Dumper;
 
+sub is_global_part{
+    my $self = shift;
+    return(lc($self->stash('controller')) eq 'calculatons');
+};
+
 sub add{
     my $self = shift ;
-    if( lc($self->param('controller')) ne 'calculatons' ){
-        return if !$self->who_is('local','writer');
-        return(add_client_calc($self));
-    } else {
+    if( is_global_part($self) ){
         return if !$self->who_is('global','editor');
         return(add_global_calc($self));
+    } else {
+        return if !$self->who_is('local','writer');
+        return(add_client_calc($self));
     }
 };
 
@@ -32,7 +37,8 @@ sub add_global_calc{
     my $data = form2data($self);
     my $path = $self->param('path');
     if( validate($self,$data) ){
-        Utils::Db::db_insert_or_update($self,$data);
+#TODO        Utils::Db::db_insert_or_update($self,$data);
+        warn Dumper $data ;
         $self->redirect_to(Utils::url_append($path, 'success=1'));
     } else {
         $self->redirect_to(Utils::url_append($path, 'error=1'));
@@ -43,21 +49,56 @@ sub add_client_calc{
     my $self = shift ;
     my $pid  = $self->param('pid');
     my $path = $self->param('path');
-    if ( $self->req->method =~ /POST/ ){
-        my $data = form2data($self);
-        if( validate($self,$data) ){
-            if( defined $self->param('use_template') ){
-                my $cid = $self->param('calculation_template');
-                $data = merge_calcs($self,$data,$cid); 
+    my $data = form2data($self);
+    if( validate($self,$data) ){
+        if( defined $self->param('merge_with') ){
+            my $cid = $self->param('calculation_template');
+            $data = merge_calcs($self,$data,$cid); 
+        }
+        my $dbc = Utils::Db::client($self);
+        my $cid = $dbc->insert($data);
+        $dbc->set_link($pid,$cid);
+        $self->redirect_to(Utils::url_append($path, 'success=1'));
+    } else {
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
+    }
+};
+
+sub edit{
+    my $self = shift ;
+    if( is_global_part($self) ){
+        return if !$self->who_is('global','editor');
+        return(edit_global_calc($self));
+    } else {
+        return if !$self->who_is('local','writer');
+        return(edit_client_calc($self));
+    }
+};
+
+sub edit_global_calc{
+    my $self = shift ;
+    my $id = $self->param('payload');
+    my $data = form2data($self);
+    if( validate($self,$data) ){
+        if( defined $self->param('make_copy') ){
+            my $dbc = Utils::Db::main($self);
+            my $template = $dbc->get_objects({ id => [$id] })->{$id} ;
+            delete $data->{id} ;
+            delete $template->{id} ;
+            delete $template->{description} ;
+            for my $key (keys %{$template}){
+                $data->{$key} = $template->{$key} if $key !~ /^_/ ;
             }
-            my $dbc = Utils::Db::client($self);
-            my $cid = $dbc->insert($data);
-            $dbc->set_link($pid,$cid);
-            $self->redirect_to(Utils::url_append($path, 'success=1'));
+            my $new_id = $dbc->insert($data);
+            $self->redirect_to("/calculations/edit/$new_id");
+            return;
         } else {
-            $self->redirect_to(Utils::url_append($path, 'error=1'));
+            Utils::Db::db_insert_or_update($self,$data);
+            $self->stash(success => 1);
         }
     }
+#    my $data = Utils::Db::db_deploy($self,$id) ;
+#    Utils::Calculations::deploy_result($self, $data) ;
 };
 
 sub merge_calcs{
@@ -222,7 +263,7 @@ sub get_db_list{
 
 sub get_list_as_select_data{
     my $self = shift ;
-    my $data = shift ;
+    my $data = get_db_list($self) ;
 	return(undef) if !scalar(keys(%{$data})) ;
     my $result = [];
     for my $key (reverse sort keys %{$data}){

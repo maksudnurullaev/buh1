@@ -74,17 +74,17 @@ sub _exists_in{
 };
 
 sub db_deploy{
-    my ($self,$id,$prefix) = @_ ;
+    my ($self,$id,$prefix,$params) = @_ ;
     return if !$id ;
     my $dbc = Db->new($self);
-    return(deploy($self,$dbc,$id,$prefix));
+    return(deploy($self,$dbc,$id,$prefix,$params));
 };
 
 sub cdb_deploy{
-    my ($self,$id,$prefix) = @_ ;
+    my ($self,$id,$prefix,$params) = @_ ;
     return if !$id ;
     my $dbc = client($self);
-    return(deploy($self,$dbc,$id,$prefix));
+    return(deploy($self,$dbc,$id,$prefix,$params));
 };
 
 sub is_object_exists{
@@ -96,10 +96,16 @@ sub is_object_exists{
 };
 
 sub deploy{
-    my ($self,$dbc,$id,$prefix) = @_ ;
+    my ($self,$dbc,$id,$prefix,$params) = @_ ;
     return(0) if !$dbc || !$id ;
 
-    my $objects = $dbc->get_objects( { id => [$id] } );
+    my $_params = { id => [$id] };
+    if( $params ){
+        for my $key( keys %{$params} ){
+            $_params->{$key} = $params->{$key} ;
+        }
+    }
+    my $objects = $dbc->get_objects( $_params );
     if( $objects && exists($objects->{$id}) ){
         my $object = $objects->{$id};
         for my $key (keys %{$object}){

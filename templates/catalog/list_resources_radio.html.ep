@@ -2,7 +2,7 @@
  <ul class="nostyle">
   % for my $id (sort keys %{$temp_hash}) {
    <li>
-    % if( stash("id") && stash("id") eq $id ){
+    % if( stash("catalog.id") && stash("catalog.id") eq $id ){
      %= radio_button "new_parent" => $id, style => "width:auto;", id=>"label $id", disabled => 1 ;
      <strong><%= $temp_hash->{$id}{description} %></strong>
      % if( exists $temp_hash->{$id}{CHILDREN} ){

@@ -1,6 +1,11 @@
+% if( $controller eq 'calculations' ){
+ % layout 'default';
+ <h2><%= ml('Calculations') . ' | ' . ml('Add') %></h2>
+% } 
+
 %= include 'success_error' ;
 <div class="form toolbar">
  <table class='colortable'>
- %= include 'calculations/form', _pid => $_pid, _return_path => $_return_path, _add => 1 ;
+ %= include 'calculations/form', _pid => $_pid, _return_path => $_return_path, _add => $_add ;
  </table>
 </div>

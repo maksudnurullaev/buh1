@@ -1,7 +1,6 @@
 % layout "default";
 <h2><%= ml "Catalog" %> | <%= ml "Edit" %></h2>
 %= include "success_error" ;
-
 %= include "common/toolbar_type1" ;
 %= include ("$controller/$action" . '_form') if who_is 'local', 'editor' ;
 %= include "common/list_resources_type1", temp_hash => stash("resources_root") if stash("resources_root") ;

@@ -1,16 +1,16 @@
 % who_is 'local', 'reader' ;
 % use Utils::Db ;
-% Utils::Db::cdb_deploy($self,$payload);
+% Utils::Db::cdb_deploy($self,$payload,'catalog', {no_links => 1});
 % layout "default";
-%= include "success_error" ;
 <h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
 %= include "common/toolbar_type1" ;
 <p>
- %= include 'common/description_form_type1', _prefix => '', _text => stash('description'), _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
+ %= include 'common/description_form_type1', _prefix => 'catalog', _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
 </p>
 <p>
  %= include "calculations/calculator", _pid => $payload, _read_only => !who_is_local('writer') ;
 </p>
+
 <pre>
-%= dumper stash ;
+%= dumper stash;
 </pre>

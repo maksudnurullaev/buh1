@@ -8,6 +8,10 @@ package Buh1::Catalog; {
 
 =cut
 
+use 5.012000;
+use strict;
+use warnings;
+use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Catalog ;
 use Utils::Files ;
@@ -46,13 +50,12 @@ sub edit{
         if( Utils::Catalog::validate($self,$data) ){
             Utils::Db::cdb_insert_or_update($self,$data);
             $self->stash(success => 1);
-            $self->redirect_to('/catalog/list');
         } else { $self->stash(error => 1) }
     }
 
     # final action
     my $id = $self->param('payload');
-    Utils::Db::cdb_deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id,'catalog');
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
 };
 
@@ -68,7 +71,7 @@ sub del{
         $self->redirect_to('/catalog/list');
     }
     # final action
-    Utils::Db::cdb_deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id,'catalog');
 };
 
 sub move{
@@ -91,7 +94,7 @@ sub move{
     }
     $self->stash( resources_root => Utils::Catalog::get_root_objects($self) );
     # final action
-    Utils::Db::cdb_deploy($self,$id);
+    Utils::Db::cdb_deploy($self,$id,'catalog');
 };
 
 sub make_root{
@@ -102,12 +105,6 @@ sub make_root{
     my $dbc = Utils::Db::client($self);
     $dbc->child_make_root($id);
     $self->redirect_to("/catalog/move/$id");
-};
-
-sub files{
-    my $self = shift;
-    return if !$self->who_is('local','reader');
-    Utils::Db::cdb_deploy($self,$self->param('payload'));
 };
 
 # calculations part
