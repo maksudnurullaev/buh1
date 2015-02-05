@@ -1,11 +1,11 @@
  <tr><td>&nbsp;</td><td>
-  %= text_area "calculation" => stash('calculation') ;
+  %= text_area "calculation" => stash('calc.calculation') ;
  </td></tr>
  <tr><td class='tar'>&nbsp;</td><td>
- % if( stash 'result_error' ) {
-    <strong style="color: red;">= <%= ml 'Error' %>: <%= stash 'result_error' %></strong>
+ % if( stash 'calc.result_error' ) {
+    <strong style="color: red;">= <%= ml 'Error' %>: <%= stash 'calc.result_error' %></strong>
  % } else {
-    <strong>= <%= currency_format stash 'result' %></strong>
+    <strong>= <%= currency_format stash 'calc.result' %></strong>
  % }
  </td></tr>
   <tr><td>&nbsp;</td>
