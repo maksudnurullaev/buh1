@@ -1,6 +1,11 @@
   % my $disabled = stash 'disabled'  ;
-  <tr><td class='tar'>
-   %= ml($title) . ' _' . ($index) ;
+  % if( $index % 2 ){
+   <tr>   
+  % } else {
+   <tr style='background: silver;'>
+  % }
+   <td class='tar'>
+   %= ml($title) . " _$index" ;
    </td><td>
     % if( $disabled ) {
      <u><%= $value %></u>

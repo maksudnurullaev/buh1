@@ -51,10 +51,7 @@ sub edit{
 
 sub delete{
     my $self = shift;
-    my $id = $self->param('payload') ;
-	my $db = Utils::Db::main($self) ;
-	$db->del($id);
-	$self->redirect_to("/calculations/page");
+    Utils::Calculations::delete($self) ;
 };
 
 sub update_fields{

@@ -1,7 +1,6 @@
-%= form_for '/calculations/add' => (method => 'POST') => begin
-%= hidden_field path => $_return_path ;
-%= hidden_field id   => stash('calc.id') if stash('calc.id') ;
-%= hidden_field pid  => stash('_pid') if stash('_pid') ;
+% my $post_path = $_add ? '/calculations/add' : '/calculations/edit' ;
+%= form_for $post_path => (method => 'POST') => begin
+ %= include 'calculations/form_hidden_fields' ;
  <tr>
   <td class='tar'> 
    %= ml 'Description' 

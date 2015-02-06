@@ -15,7 +15,7 @@
    % } else {
     %= submit_button ml('Calculate') ;
    % }
-   | <%= link_to $_path_cancel => begin %><%= ml 'Cancel' %><% end %>
+   | <%= link_to $_return_path => begin %><%= ml 'Cancel' %><% end %>
    </td>
  </tr>
 

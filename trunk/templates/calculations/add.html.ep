@@ -2,7 +2,6 @@
  % layout 'default';
  <h2><%= ml('Calculations') . ' | ' . ml('Add') %></h2>
 % } 
-
 %= include 'success_error' ;
 <div class="form toolbar">
  <table class='colortable'>

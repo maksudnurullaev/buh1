@@ -7,14 +7,11 @@
 <p>
  %= include 'common/description_form_type1', _prefix => 'catalog', _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
 </p>
-<p>
- % if( param('calcid') ) {
- %  my $data = Utils::Db::cdb_deploy($self,param('calcid'),'calc',{no_links => 1}) if param('calcid') ;
- %  Utils::Calculations::deploy_result($self, $data) if $data ;
- % }
- %= include "calculations/calculator", _pid => $payload, _read_only => !who_is_local('writer') ;
-</p>
 
-<pre>
-%= dumper stash;
-</pre>
+% if( param('calcid') ) {
+%  my $data = Utils::Db::cdb_deploy($self,param('calcid'),'calc',{no_links => 1}) if param('calcid') ;
+%  Utils::Calculations::deploy_result($self, $data) if $data ;
+% }
+<p>
+ %= include "calculations/calculator", _part => 'local', _pid => $payload, _read_only => !who_is_local('writer') ;
+</p>

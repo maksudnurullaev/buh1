@@ -1,0 +1,6 @@
+%= hidden_field part => $_part ;
+%= hidden_field path => $_return_path ;
+%= hidden_field id   => stash('calc.id') if stash('calc.id') ;
+%= hidden_field pid  => stash('_pid') if stash('_pid') ;
+%= hidden_field success_path  => stash('_success_path') if stash('_success_path') ;
+

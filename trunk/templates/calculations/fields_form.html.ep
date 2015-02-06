@@ -1,14 +1,12 @@
-% my $isEditor = ( who_is_global('editor') || who_is_local('writer') );
-%= form_for $_path_post => (method => 'POST') => begin
- %= hidden_field oname => 'calculation' ;
- %= hidden_field id    => stash 'id' ;
+%= form_for '/calculations/update_fields' => (method => 'POST') => begin
+ %= include 'calculations/form_hidden_fields' ;
  % my $field_index = 1 ;
  % while( stash("calc.f_description_$field_index") ){
-  %= include 'calculations/fields_form_row', disabled => (!$isEditor), index => $field_index, title => 'Name' , name => "calc.f_description_$field_index", value => stash("calc.f_description_$field_index") ;
+  %= include 'calculations/fields_form_row', disabled => $_read_only, index => $field_index, title => 'Name' , name => "calc.f_description_$field_index", value => stash("calc.f_description_$field_index") ;
   %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "calc.f_value_$field_index", value => stash("calc.f_value_$field_index") ;
   % $field_index++ ; 
  % } 
-% if( $isEditor ){ 
+% if( !$_read_only ){ 
  %# additional field for adding, to remove just make empty field's description
  %= include 'calculations/fields_form_row', index => $field_index, title => 'Name' , name => "calc.f_description_$field_index", value => "" ;
  %= include 'calculations/fields_form_row', index => $field_index, title => 'Value', name => "calc.f_value_$field_index", value => "" ;
