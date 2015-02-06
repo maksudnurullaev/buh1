@@ -674,7 +674,6 @@ sub get_parent_childs{
 sub get_object_name_by_id{
     my ($self,$id) = @_ ;
     my $sql = " SELECT DISTINCT name FROM objects WHERE id = '$id' AND name NOT LIKE '\\_%' ESCAPE '\\' ; " ;
-    warn $sql ;
     my $sth = $self->get_from_sql( $sql ) ;
     my $name;
     $sth->bind_col(1, \$name);

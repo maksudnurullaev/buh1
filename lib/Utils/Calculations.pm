@@ -18,7 +18,12 @@ use Data::Dumper;
 
 sub is_global_part{
     my $self = shift;
-    return(lc($self->stash('controller')) eq 'calculatons');
+    return($self->param('part') eq 'global');
+};
+
+sub is_local_part{
+    my $self = shift;
+    return($self->param('part') eq 'local');
 };
 
 sub add{
@@ -26,9 +31,11 @@ sub add{
     if( is_global_part($self) ){
         return if !$self->who_is('global','editor');
         return(add_global_calc($self));
-    } else {
+    } elsif( is_local_part($self) ) {
         return if !$self->who_is('local','writer');
         return(add_client_calc($self));
+    } else {
+        warn 'ERROR:Calculation:Add: Part adding type not defined!' ;
     }
 };
 
@@ -77,28 +84,59 @@ sub edit{
 
 sub edit_global_calc{
     my $self = shift ;
-    my $id = $self->param('payload');
+    my $path = $self->param('success_path') || $self->param('path');
     my $data = form2data($self);
     if( validate($self,$data) ){
-        if( defined $self->param('make_copy') ){
-            my $dbc = Utils::Db::main($self);
-            my $template = $dbc->get_objects({ id => [$id], no_links => 1 })->{$id} ;
-            delete $data->{id} ;
-            delete $template->{id} ;
-            delete $template->{description} ;
-            for my $key (keys %{$template}){
-                $data->{$key} = $template->{$key} if $key !~ /^_/ ;
-            }
-            my $new_id = $dbc->insert($data);
-            $self->redirect_to("/calculations/edit/$new_id");
-            return;
-        } else {
-            Utils::Db::db_insert_or_update($self,$data);
-            $self->stash(success => 1);
-        }
+        Utils::Db::db_insert_or_update($self,$data);
+        $self->redirect_to(Utils::url_append($path, 'success=1'));
+    } else {
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
     }
-#    my $data = Utils::Db::db_deploy($self,$id) ;
-#    Utils::Calculations::deploy_result($self, $data) ;
+};
+
+sub edit_client_calc{
+    my $self = shift ;
+    my $path = $self->param('success_path') || $self->param('path');
+    my $data = form2data($self);
+    if( validate($self,$data) ){
+        Utils::Db::cdb_insert_or_update($self,$data);
+        $self->redirect_to(Utils::url_append($path, 'success=1'));
+    } else {
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
+    }
+};
+
+sub delete{
+    my $self = shift ;
+    my $return_path = $self->param('return_path');
+    if( !$return_path ){
+        warn "ERROR:Calculcation::delete: return_path not defined!" ;
+        return ;
+    }
+    if( is_global_part($self) ){
+        if( !$self->param('calcid') ){
+            warn "ERROR:Calculcation::delete: calcid not defined!" ;
+            $self->redirect_to(Utils::url_append($return_path, 'error=1'));
+        } else {
+            my $dbc = Utils::Db::main($self);
+            $dbc->del($self->param('calcid')) ;
+            $self->redirect_to(Utils::url_append($return_path, 'success=1'));
+        }
+    } elsif(is_local_part($self)) {
+        if( !$self->param('calcid') ||
+            !$self->param('pid') ){
+            warn "ERROR:Calculcation::delete: calcid or pid not defined!" ;
+            $self->redirect_to(Utils::url_append($return_path, 'error=1'));
+        } else {
+            my $dbc = Utils::Db::client($self);
+            $dbc->del($self->param('calcid'));
+            $dbc->del_link($self->param('calcid'),$self->param('pid'));
+            $self->redirect_to(Utils::url_append($return_path, 'success=1'));
+        }
+    } else {
+        warn "ERROR:Calculations:delete: part of deletion not defined!" ;
+        $self->redirect_to(Utils::url_append($return_path, 'error=1'));
+    }
 };
 
 sub merge_calcs{

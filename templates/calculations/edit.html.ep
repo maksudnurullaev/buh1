@@ -1,4 +1,4 @@
-% if( $controller eq 'calculations' ){
+% if( $_part eq 'global' ){
  % layout 'default';
  <h2><%= ml('Calculations') . ' | ' . ml('Edit') %></h2>
 % } 
@@ -6,10 +6,10 @@
 
 <div class="form toolbar">
  <table class='colortable'>
-  %= include 'calculations/form', _path_post => "/calculations/edit/$_calcid", _path_cancel => $_return_path, _clone => 1 ;
+  %= include 'calculations/form'
   %= include 'calculations/fields_form_splitter', title => '' ; 
-  %= include 'calculations/fields_form', _path_post => "/calculations/update_fields/$_calcid", _path_cancel => $_return_path ;
+  %= include 'calculations/fields_form'
   %= include 'calculations/fields_form_splitter', title => '' ; 
-  %= include 'form_delete_row', _path => "/calculations/delete/$_calcid?return_path=$_return_path" ;
+  %= include 'form_delete_row', _path => "/calculations/delete?part=$_part&return_path=$_return_path&calcid=$_calcid" . ( $_pid ? "&pid=$_pid" : '') ;
  </table>
 </div>
