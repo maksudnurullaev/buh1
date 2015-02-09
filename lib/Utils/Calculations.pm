@@ -226,12 +226,8 @@ sub deploy_result{
     my $eval_string = $data->{calculation} ;
     $eval_string = decode_eval_string($self, $data, $eval_string);
     my $result = calculate($eval_string);
-    if( $result ){
-        $self->stash( 'calc.result' => $result );
-
-    } else {    
-        $self->stash( 'calc.result_error' => $eval_string );
-    }
+    $self->stash( 'calc.result' => $result );
+    $self->stash( 'calc.eval_string' => $eval_string ) ;
 };
 
 sub spravka{
@@ -300,7 +296,10 @@ sub decode_eval_string{
     return(undef) if !$eval_string ;
 
     my $recursion   = shift || 0 ;
-    return "ERROR:RECURSION: $recursion" if $recursion > 10 ;
+    if( $recursion > 14 ) {
+        warn "ERROR:RECURSION: $recursion " ;
+        return( $eval_string ) ;
+    }
 
     for ( $eval_string =~ m/(_\d+)/g ){
         if( exists($data->{"f_value$_"}) && $data->{"f_value$_"} ){ 
@@ -312,7 +311,7 @@ sub decode_eval_string{
         $eval_string = decode_eval_string($self,$data,$eval_string,++$recursion);
    }
     --$recursion ;
-	return("( $eval_string )" ) ;
+	return($eval_string) ;
 };
 
 sub calculate{
