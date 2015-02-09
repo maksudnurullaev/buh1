@@ -35,7 +35,8 @@ sub add{
         return if !$self->who_is('local','writer');
         return(add_client_calc($self));
     } else {
-        warn 'ERROR:Calculation:Add: Part adding type not defined!' ;
+        my $path = $self->param('success_path') || $self->param('path');
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
     }
 };
 
@@ -73,12 +74,16 @@ sub add_client_calc{
 
 sub edit{
     my $self = shift ;
+    my $result ;
     if( is_global_part($self) ){
         return if !$self->who_is('global','editor');
-        return(edit_global_calc($self));
-    } else {
+        $result = edit_global_calc($self);
+    } elsif( is_local_part($self) ) {
         return if !$self->who_is('local','writer');
-        return(edit_client_calc($self));
+        $result = edit_client_calc($self);
+    } else {
+        my $path = $self->param('success_path') || $self->param('path');
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
     }
 };
 
@@ -87,7 +92,7 @@ sub edit_global_calc{
     my $path = $self->param('success_path') || $self->param('path');
     my $data = form2data($self);
     if( validate($self,$data) ){
-        Utils::Db::db_insert_or_update($self,$data);
+        return(Utils::Db::db_insert_or_update($self,$data));
         $self->redirect_to(Utils::url_append($path, 'success=1'));
     } else {
         $self->redirect_to(Utils::url_append($path, 'error=1'));
@@ -139,6 +144,32 @@ sub delete{
     }
 };
 
+sub update_fields{
+    my $self = shift ;
+    if( is_global_part($self) ){
+        return if !$self->who_is('global','editor');
+        my $cid  = $self->param('id') ; 
+        my $success_path = $self->param('success_path');
+        my $data = form2data_fields($self);
+        # delete all old definitions
+        Utils::Db::db_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
+        Utils::Db::db_insert_or_update($self,$data);
+        $self->redirect_to(Utils::url_append($success_path, 'success=1'));
+    } elsif( is_local_part($self) ) {
+        return if !$self->who_is('local','writer');
+        my $cid  = $self->param('id') ; 
+        my $success_path = $self->param('success_path');
+        my $data = form2data_fields($self);
+        # delete all old definitions
+        Utils::Db::cdb_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
+        Utils::Db::cdb_insert_or_update($self,$data);
+        $self->redirect_to(Utils::url_append($success_path, 'success=1'));
+    } else {
+        my $path = $self->param('success_path') || $self->param('path');
+        $self->redirect_to(Utils::url_append($path, 'error=1'));
+    }
+};
+
 sub merge_calcs{
     my ($self,$data,$cid) = @_;
     return($data) if !$self || !$data || !$cid ;
@@ -166,9 +197,9 @@ sub form2data_fields{
 				 id          => $self->param('id'),
 				 calculation => ($self->param('calculation') || '_1') } ;
     my $field_index = 1 ;
-    while( $self->param("f_description_$field_index") ){
- 		$data->{ "f_description_$field_index" } = $self->param("f_description_$field_index") ;
- 		$data->{ "f_value_$field_index" } = $self->param("f_value_$field_index") ;
+    while( $self->param("calc.f_description_$field_index") ){
+ 		$data->{ "f_description_$field_index" } = $self->param("calc.f_description_$field_index") ;
+ 		$data->{ "f_value_$field_index" } = $self->param("calc.f_value_$field_index") ;
  	    $field_index++ ;
     }
     return($data);

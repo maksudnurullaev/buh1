@@ -56,17 +56,7 @@ sub delete{
 
 sub update_fields{
     my $self = shift;
-    my $id = $self->param('payload');
-    my $method = $self->req->method;
-    if ( $method =~ /POST/ ){
-        my $data = Utils::Calculations::form2data_fields($self);
-        # delete all old definitions
-        Utils::Db::db_execute_sql($self, " delete from objects where id = '$id' and field like 'f_%' ; " ) ;
-        # insert new ones
-        Utils::Db::db_insert_or_update($self,$data);
-        $self->stash(success => 1);
-    }
-    $self->redirect_to("/calculations/edit/$id");
+    Utils::Calculations::update_fields($self) if $self->req->method =~ /POST/; 
 };
 
 # END OF PACKAGE
