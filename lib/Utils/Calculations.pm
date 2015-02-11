@@ -18,12 +18,7 @@ use Data::Dumper;
 
 sub is_global_part{
     my $self = shift;
-    return($self->param('part') eq 'global');
-};
-
-sub is_local_part{
-    my $self = shift;
-    return($self->param('part') eq 'local');
+    return(!$self->param('pid'));
 };
 
 sub add{
@@ -31,13 +26,9 @@ sub add{
     if( is_global_part($self) ){
         return if !$self->who_is('global','editor');
         return(add_global_calc($self));
-    } elsif( is_local_part($self) ) {
-        return if !$self->who_is('local','writer');
-        return(add_client_calc($self));
-    } else {
-        my $path = $self->param('success_path') || $self->param('path');
-        $self->redirect_to(Utils::url_append($path, 'error=1'));
-    }
+    } 
+    return if !$self->who_is('local','writer');
+    return(add_client_calc($self));
 };
 
 sub add_global_calc{
@@ -45,8 +36,12 @@ sub add_global_calc{
     my $data = form2data($self);
     my $path = $self->param('path');
     if( validate($self,$data) ){
-#TODO        Utils::Db::db_insert_or_update($self,$data);
-        warn Dumper $data ;
+        if( defined $self->param('merge_with') ){
+            my $cid = $self->param('calculation_template');
+            $data = merge_calcs($self,$data,$cid); 
+        }
+        my $dbc = Utils::Db::main($self);
+        my $cid = $dbc->insert($data);
         $self->redirect_to(Utils::url_append($path, 'success=1'));
     } else {
         $self->redirect_to(Utils::url_append($path, 'error=1'));
@@ -74,25 +69,19 @@ sub add_client_calc{
 
 sub edit{
     my $self = shift ;
-    my $result ;
     if( is_global_part($self) ){
         return if !$self->who_is('global','editor');
-        $result = edit_global_calc($self);
-    } elsif( is_local_part($self) ) {
-        return if !$self->who_is('local','writer');
-        $result = edit_client_calc($self);
-    } else {
-        my $path = $self->param('success_path') || $self->param('path');
-        $self->redirect_to(Utils::url_append($path, 'error=1'));
+        return edit_global_calc($self);
     }
+    return if !$self->who_is('local','writer');
+    return edit_client_calc($self);
 };
 
 sub edit_global_calc{
     my $self = shift ;
     my $path = $self->param('success_path') || $self->param('path');
     my $data = form2data($self);
-    if( validate($self,$data) ){
-        return(Utils::Db::db_insert_or_update($self,$data));
+    if( validate($self,$data) && Utils::Db::db_insert_or_update($self,$data) ){
         $self->redirect_to(Utils::url_append($path, 'success=1'));
     } else {
         $self->redirect_to(Utils::url_append($path, 'error=1'));
@@ -127,20 +116,17 @@ sub delete{
             $dbc->del($self->param('calcid')) ;
             $self->redirect_to(Utils::url_append($return_path, 'success=1'));
         }
-    } elsif(is_local_part($self)) {
-        if( !$self->param('calcid') ||
-            !$self->param('pid') ){
-            warn "ERROR:Calculcation::delete: calcid or pid not defined!" ;
-            $self->redirect_to(Utils::url_append($return_path, 'error=1'));
-        } else {
-            my $dbc = Utils::Db::client($self);
-            $dbc->del($self->param('calcid'));
-            $dbc->del_link($self->param('calcid'),$self->param('pid'));
-            $self->redirect_to(Utils::url_append($return_path, 'success=1'));
-        }
-    } else {
-        warn "ERROR:Calculations:delete: part of deletion not defined!" ;
+        return ;
+    } 
+    if( !$self->param('calcid') ||
+        !$self->param('pid') ){
+        warn "ERROR:Calculcation::delete: calcid or pid not defined!" ;
         $self->redirect_to(Utils::url_append($return_path, 'error=1'));
+    } else {
+        my $dbc = Utils::Db::client($self);
+        $dbc->del($self->param('calcid'));
+        $dbc->del_link($self->param('calcid'),$self->param('pid'));
+        $self->redirect_to(Utils::url_append($return_path, 'success=1'));
     }
 };
 
@@ -155,19 +141,26 @@ sub update_fields{
         Utils::Db::db_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
         Utils::Db::db_insert_or_update($self,$data);
         $self->redirect_to(Utils::url_append($success_path, 'success=1'));
-    } elsif( is_local_part($self) ) {
-        return if !$self->who_is('local','writer');
-        my $cid  = $self->param('id') ; 
-        my $success_path = $self->param('success_path');
-        my $data = form2data_fields($self);
-        # delete all old definitions
-        Utils::Db::cdb_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
-        Utils::Db::cdb_insert_or_update($self,$data);
-        $self->redirect_to(Utils::url_append($success_path, 'success=1'));
-    } else {
-        my $path = $self->param('success_path') || $self->param('path');
-        $self->redirect_to(Utils::url_append($path, 'error=1'));
+        return ;
+    } 
+    return if !$self->who_is('local','writer');
+    my $cid  = $self->param('id') ; 
+    my $success_path = $self->param('success_path');
+    my $data = form2data_fields($self);
+    # delete all old definitions
+    Utils::Db::cdb_execute_sql($self, " delete from objects where id = '$cid' and field like 'f_%' ; " ) ;
+    Utils::Db::cdb_insert_or_update($self,$data);
+    $self->redirect_to(Utils::url_append($success_path, 'success=1'));
+};
+
+sub test_merge{
+    my ($self,$data) = @_ ;
+    for my $key ($self->param){
+        if( $key =~ /^calc\./ ){
+         $data->{substr($key,5)} = $self->param($key);
+        }
     }
+    deploy_result($self, $data) ;
 };
 
 sub merge_calcs{
@@ -184,11 +177,16 @@ sub merge_calcs{
     return($data);    
 };
 
-sub get_client_calcs{
+sub get_local_calcs{
     my ($self,$pid) = @_;
     return(undef) if !$self->who_is('local','reader');
     my $dbc = Utils::Db::client($self);
     return( $dbc->get_links($pid,'calculation',['description']) );
+};
+
+sub get_global_calcs{
+    my $self = shift;
+    return(Utils::Db::db_get_objects($self,{name=>['calculation'], field => ['description']}));
 };
 
 sub form2data_fields{
@@ -325,14 +323,9 @@ sub calculate{
     return($result);
 };
 
-sub get_db_list{
-    my $self = shift;
-    return(Utils::Db::db_get_objects($self,{name=>['calculation'], field => ['description']}));
-};
-
 sub get_list_as_select_data{
     my $self = shift ;
-    my $data = get_db_list($self) ;
+    my $data = get_global_calcs($self) ;
 	return(undef) if !scalar(keys(%{$data})) ;
     my $result = [];
     for my $key (reverse sort keys %{$data}){

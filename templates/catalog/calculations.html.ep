@@ -2,7 +2,7 @@
 % use Utils::Db ;
 % Utils::Db::cdb_deploy($self,$payload,'catalog', {no_links => 1});
 % layout "default";
-<h2><%= ml ucfirst $controller %> | <%= ml ucfirst $action %></h2>
+<h2><%= ml ucfirst $controller %> </h2>
 %= include "common/toolbar_type1" ;
 <p>
  %= include 'common/description_form_type1', _prefix => 'catalog', _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
