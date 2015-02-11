@@ -1,6 +1,22 @@
-% layout 'default';
-<h2><%= ml('Calculations') . ' | ' . ml('Test') %></h2>
-%= include 'success_error' ;
-
-%= include 'calculations/toolbar4test' ; 
-%= include 'calculations/fields_form_test' ;
+% if( param('calcid') ) {
+%  if( param('pid')){ 
+%   my $data = Utils::Db::cdb_deploy($self,param('calcid'),'calc',{no_links => 1}) ;
+%   Utils::Calculations::test_merge($self,$data) if $self->req->method =~ /post/i ;
+%   Utils::Calculations::deploy_result($self, $data) if $data ;
+%  } else {
+%   my $data = Utils::Db::db_deploy($self,param('calcid'),'calc',{no_links => 1}) ;
+%   Utils::Calculations::test_merge($self,$data) if $self->req->method =~ /post/i ;
+%   Utils::Calculations::deploy_result($self, $data) if $data ;
+%  }
+% }
+<div class="form toolbar">
+ <table class='colortable'>
+  %= include 'calculations/form'
+  %= include 'calculations/fields_form_splitter', title => '' ; 
+  %= include 'calculations/fields_form'
+  % if( !$_read_only ){
+   %= include 'calculations/fields_form_splitter', title => '' ; 
+   %= include 'form_delete_row', _path => "/calculations/delete?return_path=$_return_path&calcid=$_calcid" . ( stash('_pid') ? "&pid=$_pid" : '') ;
+  % }
+ </table>
+</div>
