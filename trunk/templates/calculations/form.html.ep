@@ -1,4 +1,5 @@
 % my $post_path = $_add ? '/calculations/add' : '/calculations/edit' ;
+% $post_path = '/_read_only' if $_read_only ;
 %= form_for $post_path => (method => 'POST') => begin
  %= include 'calculations/form_hidden_fields' ;
  <tr>
@@ -6,21 +7,30 @@
    %= ml 'Description' 
   </td>
   <td>
-   %= text_area description => (stash 'calc.description'), class => (stash 'calc.description_class') 
-   % if( $_add ){ 
-    <br />
-    %= check_box merge_with => 1, id => 'merge_with', style => 'width:auto;' ;
-    <label for="merge_with"><%= ml 'Make copy' %></label>
-    <br />
-        %= select_field calculation_template => Utils::Calculations::get_list_as_select_data($self) ;
+   % if ( $_read_only ){
+    %= text_area description => (stash 'calc.description'), disabled => 'disabled' 
+   % } else {
+    %= text_area description => (stash 'calc.description'), class => (stash 'calc.description_class') 
+    % if( $_add ){ 
+     <br />
+     %= check_box merge_with => 1, id => 'merge_with', style => 'width:auto;' ;
+     <label for="merge_with"><%= ml 'Make copy' %></label>
+     <br />
+     %= select_field calculation_template => Utils::Calculations::get_list_as_select_data($self) ;
+    % }
    % }
   </td>
  </tr>
  <tr><td>&nbsp;</td>
-  <td>
-   %= submit_button ml($_add?'Add':'Save') ;
-   | 
-   %= link_to ml('Cancel') => $_return_path ;
-  </td>
+  % if ( $_read_only ){
+   <td class="tar">
+  % } else {
+   <td>
+    %= submit_button ml($_add?'Add':'Save') ;
+    | 
+  % }
+    %= link_to ml('Cancel') => $_return_path ;
+   </td>
  </tr>
 % end
+
