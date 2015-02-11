@@ -1,10 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Edit' %></h2>
+%= include 'warehouse/toolbar4edit' ;
 %= include 'success_error' ;
-%= link_to ml('Back') => "/warehouse/list" ;
-%= include 'warehouse/edit_form', oname => "$controller object"  ;
-%= include 'warehouse/tags' ;
-
-<pre>
-%#= dumper stash ;
-</pre>
+%= include 'warehouse/edit_form', oname => "$controller object", _is_writer => who_is_local('writer') ;
+%= include 'warehouse/tags', _is_writer => who_is_local('writer') ;

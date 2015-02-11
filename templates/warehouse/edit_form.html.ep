@@ -7,7 +7,11 @@
   <tr>
    <td class='tar'><%= ml 'Description' %>:</td>
    <td>
-    %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
+    % if( $_is_writer ){
+     %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
+    % } else {
+     %= text_area description => (stash 'object.description'), disabled => 'disabled' 
+    % }
    </td>
   </tr>
 % if( stash('object.counting_parent') ){   
@@ -24,7 +28,7 @@
    </td>
   </tr>
 % }
-% if( who_is_local('writer') ){
+% if( $_is_writer ){
   <tr><td class="tar"><%= ml 'Cloning' %>:</td>
    <td>
     %= check_box make_clone => 1, id => 'make_clone', style => 'width:auto;' ;

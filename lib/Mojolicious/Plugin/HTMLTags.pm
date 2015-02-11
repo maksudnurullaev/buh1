@@ -22,6 +22,8 @@ use warnings;
 use utf8;
 use base 'Mojolicious::Plugin';
 use Utils::User;
+use Utils::Files;
+use Utils::Calculations;
 use Utils::Languages;
 
 our $VERSION        = 'v0.0.1b';
