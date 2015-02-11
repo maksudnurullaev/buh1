@@ -1,13 +1,15 @@
 % use Utils::Calculations;
-% my $calcs = $_pid ? Utils::Calculations::get_client_calcs($self,$_pid) : Utils::Calculations::get_db_list($self) ;
+% my $calcs = $_pid ? Utils::Calculations::get_local_calcs($self,$_pid) : Utils::Calculations::get_global_calcs($self) ;
 % if( scalar keys %{$calcs} ) {
  <ul>
   % for my $key (reverse sort keys %{$calcs}){
    <li>
-    %# admin or user part
+    %# set up result of calculation
     % my $result = $_pid? cdb_calculate($key) : db_calculate($key) ;
     %= $result ? currency_format($result) : '(?)' ;
-    %= link_to $calcs->{$key}{description} => ($_pid ? "$_return_path?calcform=edit&calcid=$key" : $key) ;
+    %# set up link to calculcation
+    % my $form = $_read_only ? 'test' : 'edit' ;
+    %= link_to $calcs->{$key}{description} => "$_return_path?calcform=$form&calcid=$key" ;
    </li>
   % }
   </ul>

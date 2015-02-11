@@ -1,7 +1,4 @@
 % layout 'default';
-<h2><%= ml 'Calculations' %></h2>
-%= include 'success_error' ;
-
-%= include 'calculations/toolbar', add_link => '/calculations/add' if who_is_global('editor') ;
-% my $link_path_prefix = ("/$controller/" . ( who_is_global('editor') ? 'edit/' : 'test/')) ;
-%= include 'calculations/list', isClientPart => 0, link_path_prefix => $link_path_prefix ;
+<p>
+ %= include "calculations/calculator", _part => 'global', _pid => undef, _read_only => !who_is_global('editor') ;
+</p>

@@ -3,22 +3,19 @@
  </td></tr>
  <tr><td class='tar'>&nbsp;</td><td>
  % if( stash 'calc.result' ) {
-    <sup><small>= <%= stash 'calc.eval_string' %></small></sup><br />
+    <%= text_area 'calc.eval_string' => stash('calc.eval_string'), disabled => 'disabled' %><br />
     <strong>= <%= currency_format stash 'calc.result' %></strong>
  % } else {
-    <font color=red>
-     <sup>= <%= ml 'Error' %>: <%= stash 'calc.eval_string' %></sup>
-    </font>
+    <%= text_area 'calc.eval_string' => stash('calc.eval_string'), disabled => 'disabled', class => 'error' %><br />
  % }
  </td></tr>
   <tr><td>&nbsp;</td>
    <td>
-   % if( who_is_global('editor') || who_is_local('writer') ){
-    %= submit_button ml('Save') ;
+   % if( !$_read_only ){
+    <%= submit_button ml('Save') %> | <%= link_to ml('Cancel') => $_return_path %>
    % } else {
-    %= submit_button ml('Calculate') ;
+    <%= submit_button ml('Calculate') %> | <%= link_to ml('Reset') => $_success_path %> 
    % }
-   | <%= link_to $_return_path => begin %><%= ml 'Cancel' %><% end %>
    </td>
  </tr>
 
