@@ -1,5 +1,5 @@
 % layout 'default';
-% my $isReadOnly = !(who_is_local 'writer') ;
+% my $isReadOnly = !who_is_local('writer') ;
 % my $docid = param 'docid' ;
 % if( $docid ){
  <h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>
@@ -14,16 +14,18 @@
 <fieldset>
  <legend><%= ml 'Business operation' %></legend>
  %= include 'documents/header' if $isValid ;
- % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
- % if( $isValid && !$isReadOnly ){
-  % if( my $bt = stash 'bt' ){
-   % if( $docid ){
-    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";
-   % } else {
-    %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";
+ % if( !$isReadOnly ){
+  % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
+  % if( $isValid ){
+   % if( my $bt = stash 'bt' ){
+    % if( $docid ){
+     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";
+    % } else {
+     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";
+    % }
    % }
-  % }
- % } 
+  % } 
+ % }
  %= ml 'No data!' if !$isValid ;
 </fieldset>
 %= include 'documents/form' if $isValid;
