@@ -192,7 +192,7 @@ sub print{
 
 sub update{
     my $self = shift;
-    return if !$self->who_is('local','writer');
+    return if !$self->who_is('local','reader');
 
     my $isPost   = ($self->req->method =~ /POST/) && ( (!$self->param('post')) || ($self->param('post') !~ /^preliminary$/i) );
     my $id       = $self->param('docid');
@@ -211,6 +211,7 @@ sub update{
     }
     set_form_header($self);
     if( $isPost ){
+        #return if !$self->who_is('local','writer');
         my $data  = validate($self,$id);
         if( !exists($data->{error}) ){
             my $db_client = Utils::Db::client($self);
@@ -238,7 +239,7 @@ sub update{
 
 sub deploy_document{
     my ($self,$id) = @_;
-    return if !$self->who_is('local','writer');
+    return if !$self->who_is('local','reader');
     return if !$self || !$id;
 
     my $db_client = Utils::Db::client($self);
