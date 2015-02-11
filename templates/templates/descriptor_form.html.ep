@@ -8,7 +8,11 @@
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    % if( $action =~ /edit/i ){
+     %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    % } else {
+     %= text_area description => (stash 'description'), disabled => 'disabled'
+    % }
    </td>
   </tr>
   <tr><td>&nbsp;</td>
@@ -17,6 +21,7 @@
       %= submit_button ml('Delete') ;
      % } elsif( $action eq 'edit' ) {
       %= submit_button ml('Save') ;
+       | <%= link_to ml('Cancel')  => "/$controller/list" %>
      % } elsif( $action eq 'add' ) {
       %= submit_button ml('Save') ;
        | <%= link_to ml('Cancel')  => "/$controller/list" %>

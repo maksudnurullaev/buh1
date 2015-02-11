@@ -1,10 +1,16 @@
 % layout "default";
 %= include "success_error" ;
 <h2><%= ml "Templates" %> | <%= ml "Files" %></h2>
-
+<p>
 %= include "$controller/descriptor_toolbar" if who_is_global('editor') ;
-%= include "$controller/descriptor_form" 
-%= include "$controller/files_toolbar" if who_is_global('editor') ;
-%= include "files/list" ;
+<p>
+ %= include 'common/description_form_type1', _prefix => '', _no_form => 1, _cancel_link => "/$controller/list" ;
+</p>
+</p>
+<p>
+ %= include "files/filer", _pid => $payload, _read_only => !who_is_global('writer') ;
+</p>
 <hr />
+<p>
 %= include "$controller/list_resources", temp_hash => stash('resources_root') if stash('resources_root') ;
+</p>
