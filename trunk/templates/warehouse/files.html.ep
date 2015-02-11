@@ -1,0 +1,10 @@
+% layout 'default';
+<h2><%= ml 'Warehouse' %> | <%= ml 'Files' %></h2>
+%= include 'warehouse/toolbar4edit' ;
+% Utils::Db::cdb_deploy($self,$payload,'object',{no_links => 1, field => ['description']}) ;
+<p>
+ %= include 'common/description_form_type1', _prefix => 'object', _no_form => 1, _cancel_link => "/$controller/edit/$payload" ;
+</p>
+<p>
+ %= include "files/filer", _pid => $payload, _read_only => !who_is_local('writer') ;
+</p>

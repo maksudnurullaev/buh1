@@ -1,0 +1,9 @@
+<div class="toolbar">
+%= link_to ml('Back')         => "/warehouse/list" ;
+|
+%= link_to ml('Files')        => "/warehouse/files/$payload" ;
+<sup>(<%= files_count($payload) %>)</sup>
+|
+%= link_to ml('Calculations') => "/warehouse/calculations/$payload" ;
+<sup>(<%= calcs_count($payload) %>)</sup>
+</div>

@@ -1,5 +1,5 @@
 % if( param('calcid') ) {
-%  if( param('pid')){ 
+%  if( stash('_pid')){ 
 %   my $data = Utils::Db::cdb_deploy($self,param('calcid'),'calc',{no_links => 1}) ;
 %   Utils::Calculations::deploy_result($self, $data) if $data ;
 %  } else {

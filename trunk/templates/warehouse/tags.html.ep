@@ -22,17 +22,17 @@
        % $has_counting_fields = 1 ;   
         % if( stash('object.counting_field') && stash('object.counting_field') eq $key ){
          <td align="center" class="<%= param('error_counting_field') %>">
-          <%= radio_button counting_field => $key, style => "width:auto;", checked=>'checked' %>
+          <%= radio_button counting_field => $key, style => "width:auto;", id=>$key, checked=>'checked' %>
          </td> 
          <td>
-          <%= currency_format($object->{$key}{'value'}) %>
+          <%= label_for $key => currency_format($object->{$key}{'value'}) %>
           <sup><%= link_to ml('Remains') => "/warehouse/remains/$payload" %>: <%= stash('calculated_counting') %></sup>
          </td>
         % } else {
          <td align="center" class="<%= param('error_counting_field') %>">
-          <%= radio_button counting_field => $key, style => "width:auto;" %>
+          <%= radio_button counting_field => $key, style => "width:auto;", id=>$key %>
          </td> 
-         <td><%= currency_format($object->{$key}{'value'}) %></td>
+         <td><%= label_for $key => currency_format($object->{$key}{'value'}) %></td>
         % }
        </td>
       % } else {

@@ -2,17 +2,17 @@
 % my $_return_path = $self->req->url->path->to_string() ;
 % my $_success_path = $self->req->url->query([success => undef, error => undef ]);
 %= include 'success_error' ;
-%if( $_form && $_form eq 'add' && !$_read_only ){
+% if( $_form && $_form eq 'add' && !$_read_only ){
  <h2><%= ml('Calculations') . ' | ' . ml('Add') %></h2>
  %= include '/calculations/add', _pid => $_pid, _return_path => $_return_path, _add => 1;
-%} elsif ( $_form && $_form eq 'edit' && param('calcid') ){
+% } elsif ( $_form && $_form eq 'edit' && param('calcid') ){
  <h2><%= ml('Calculations') . ' | ' . ml('Edit') %></h2>
  %= include '/calculations/edit', _pid => $_pid, _calcid => param('calcid'), _success_path => $_success_path, _return_path => $_return_path, _add => 0, _read_only => $_read_only ;
-%} elsif ( $_form && $_form eq 'test' && param('calcid') ){
+% } elsif ( $_form && $_form eq 'test' && param('calcid') ){
  <h2><%= ml('Calculations') . ' | ' . ml('Test') %></h2>
  %= include '/calculations/test', _pid => $_pid, _calcid => param('calcid'), _success_path => $_success_path, _return_path => $_return_path, _add => 0, _read_only => 1 ;
-%} else {
+% } else {
  <h2><%= ml 'Calculations' %></h2>
  %= include "calculations/toolbar" if !$_read_only ;
  %= include "calculations/list", _pid => $_pid, _return_path => $_return_path, _read_only => $_read_only ;   
-%}
+% }
