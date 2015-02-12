@@ -1,0 +1,33 @@
+%= tag h1 => ml('Export') ;
+% my $headers = stash('headers') ;
+% my $objects = stash('objects') ;
+% if( scalar keys %{$headers} ){
+% my $ord_headers = {};
+% my $ord_int = 1 ;
+% for my $name ( sort { utf_compare($a,$b) } keys %{ $headers } ) {
+ % $ord_headers->{$ord_int++} = $name ;   
+% }
+%#= tag pre => dumper($ord_headers);
+<table border="1">
+ <tr><th><%= ml('Description') %></th>   
+  % for my $idx (sort {$a <=> $b} keys %{$ord_headers}){
+   <th><%= $ord_headers->{$idx} %></th>
+  % }
+ </tr>
+ % for my $pid (reverse sort keys %{$objects}){
+ <tr>
+  <td><%= $objects->{$pid}->{description} %></td>
+  % for my $idx (sort {$a <=> $b} keys %{$ord_headers}){
+   % my $name = $ord_headers->{$idx} ;   
+   % if( exists $objects->{$pid}->{tags}->{$name} ){
+    <td><%= $objects->{$pid}->{tags}->{$name} %></td>
+   % } else {
+    <td>&nbsp</td>
+   % }    
+  % }
+ </tr>
+ % }
+</table>
+%#= tag pre => dumper($ord_headers) ;
+% }
+%#= tag pre => dumper(stash('objects')) ;
