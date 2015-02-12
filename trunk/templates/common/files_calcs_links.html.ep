@@ -1,0 +1,3 @@
+% my $files_count = files_count($_id) ;
+% my $calcs_count = calcs_count($_id) ;
+<sup><%= link_to $files_count => "/$controller/files/$_id" %> | <%= link_to $calcs_count => "/$controller/calculations/$_id" %></sup>

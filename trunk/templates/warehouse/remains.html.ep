@@ -14,7 +14,9 @@
   </tr>
   <tr style="background-color: darkgray">
    <th>(o)</th>
-   <td><%= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" %></td>
+   <td>
+    %= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" ;
+   </td>
    <td>&nbsp;</td>
    <td class="tar"><%= $parent->{counting_field_value} %></td>
   </tr>

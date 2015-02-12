@@ -12,6 +12,7 @@
   % for my $id( reverse sort keys %{$objects} ) {
    <li>(<%=  exists($objects->{$id}{counting_parent}) ?  $objects->{$id}{counting_direction} : 'O' %>)
     <%= link_to $objects->{$id}{description} => "/$controller/edit/$id" %>
+    %= include 'common/files_calcs_links', _id => $id ;
     <%= include 'warehouse/tagger', pid=>$id, tag_name => 'warehouse object tag', counting_field => $objects->{$id}{counting_field} %>
    </li>
   % }
@@ -24,4 +25,3 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller ;
 </p>
-

@@ -19,7 +19,10 @@
   % for my $cid (reverse sort keys %{$hash_objects}){
    <tr style="background-color: <%= $row_num++ % 2 ? 'darkgray' : 'bisque' %>">
     <th>(O)</th>
-    <td><%= link_to $hash_objects->{$cid}->{description} => "/warehouse/remains/$cid" %></td>
+    <td>
+     %= link_to $hash_objects->{$cid}->{description} => "/warehouse/remains/$cid" ;
+     %= include 'common/files_calcs_links', _id => $cid ;
+    </td>
     <td class="tar"><%= $hash_objects->{$cid}->{calculated_childs_count} %></td>
     <td class="tar"><%= $hash_objects->{$cid}->{calculated_counting} %></td>
    </tr>
