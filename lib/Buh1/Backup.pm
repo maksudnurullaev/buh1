@@ -73,7 +73,7 @@ sub update_desc{
     my $archives_path = get_client_archives_path($self); 
     my $archive_file_desc = "$archives_path/$file.desc" ;
     my $description = $self->param("archive_desc");
-    utils::files::set_file_content($archive_file_desc,$description);
+    Utils::Files::set_file_content($archive_file_desc,$description);
     $self->redirect_to("/backup/edit/$file");
 };
 
@@ -109,7 +109,7 @@ sub make_new_archive{
     my $archive_file = "$archives_path/$archive_name.tar.gz" ;
     system "mkdir -p '$archives_path'" if ! -d $archives_path ;
 
-    my $client_path = get_client_files_path($self);
+    my $client_path = get_client_Files_path($self);
     my $company_id = $self->session('company id') ;
     
     system "tar czf '$archive_file' '$client_path' '$client_path.db'" ;
