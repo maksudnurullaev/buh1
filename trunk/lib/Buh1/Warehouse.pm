@@ -8,12 +8,14 @@ package Buh1::Warehouse; {
 
 =cut
 
-use Mojo::Base 'Mojolicious::Controller';
-use Encode qw( encode decode_utf8 );
+use Mojo::Base 'Mojolicious::Controller' ;
+use Encode qw( encode decode_utf8 ) ;
 use Utils::Warehouse ;
 use Utils::Filter ;
 use Utils::Tags ;
+use Utils::Excel ;
 use Data::Dumper ;
+use Utils::Files ;
 
 my $OBJECT_NAME  = 'warehouse object' ;
 my $OBJECT_NAMES = 'warehouse objects' ;
@@ -128,7 +130,6 @@ sub export_current{
             $objects->{$pid}{tags} = {} if !exists $objects->{$pid}{tags} ;
             $objects->{$pid}{tags}{$tags->{$tagid}{name}} = $tags->{$tagid}{value} ;
         }    
-            
     }
     # 2. Get all header tags
     my $headers = {};
@@ -143,8 +144,15 @@ sub export_current{
             }
         }
     }
-    $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
-    $self->stash( headers => $headers ) if scalar(keys(%{$headers}));
+    my ($file_path,$file_name) = Utils::Excel::warehouse_export_current($self,$objects,$headers);    
+    if($file_path && $file_name){
+        $self->render_file( filepath => $file_path, filename => $file_name);
+    } else {
+        $self->stash( file2download => $file_path);
+        $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
+        $self->stash( headers => $headers ) if scalar(keys(%{$headers}));
+        $self->render_file( filepath => $file_path, filename => $file_name);
+    }
 };
 
 # END OF PACKAGE

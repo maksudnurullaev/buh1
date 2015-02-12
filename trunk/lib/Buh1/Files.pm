@@ -32,7 +32,6 @@ sub update_desc{
 
 sub update_file{
     my $self = shift;
-    warn 'Z0'; 
     Utils::Files::update_file($self);
 };
 
