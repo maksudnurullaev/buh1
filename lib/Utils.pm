@@ -147,6 +147,7 @@ sub get_full_url{
 sub calc_start4ol{
     my $self = shift ;
     my $p = $self->stash('paginator');
+    warn Dumper $self->stash('paginator');
     return(1) if !$p ;
     return(($p->[0] - 1) * $p->[2] + 1);
 };
