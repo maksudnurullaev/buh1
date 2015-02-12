@@ -21,8 +21,8 @@ my $OBJECT_NAMES = 'warehouse objects' ;
 sub list{
     my $self = shift ;
     return if !$self->who_is('local','reader');
-
-    Utils::Warehouse::deploy_list_objects($self);
+    my $objects = Utils::Warehouse::current_list_objects($self);
+    $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
 };
 
 sub add{
@@ -111,6 +111,40 @@ sub remains_all{
     return if !$self->who_is('local','reader');
 
     Utils::Warehouse::deploy_remains_all($self);
+};
+
+sub export_current{
+    my $self = shift;
+    return if !$self->who_is('local','reader');
+    my $objects = Utils::Warehouse::current_list_objects($self);
+    # 1. Get all tags
+    for my $pid (keys %{$objects}){
+        my $tags = 
+            Utils::Db::cdb_get_links($self, 
+                $pid, 
+                Utils::Warehouse::tag_object_name(), 
+                ['name','value'] );
+        for my $tagid (keys %{$tags}){
+            $objects->{$pid}{tags} = {} if !exists $objects->{$pid}{tags} ;
+            $objects->{$pid}{tags}{$tags->{$tagid}{name}} = $tags->{$tagid}{value} ;
+        }    
+            
+    }
+    # 2. Get all header tags
+    my $headers = {};
+    for my $pid (keys %{$objects}){
+        my $tags  = $objects->{$pid}{tags};
+        next if !$tags;
+        for my $name (keys %{$tags}){
+            if( !exists($headers->{$name}) ) {
+                $headers->{$name} = 1 ;
+            } else {
+                $headers->{$name}++ ;
+            }
+        }
+    }
+    $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
+    $self->stash( headers => $headers ) if scalar(keys(%{$headers}));
 };
 
 # END OF PACKAGE

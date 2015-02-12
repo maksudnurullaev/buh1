@@ -87,7 +87,7 @@ sub validate{
     return(1);
 };
 
-sub deploy_list_objects{
+sub current_list_objects{
     my ($self,$name,$path) = @_;
 
     my $filter = Utils::Filter::get_filter($self);
@@ -106,7 +106,6 @@ sub deploy_list_objects{
             });
         $self->stash( filter => $filter );
     }
-    $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
     return($objects);
 };
 
