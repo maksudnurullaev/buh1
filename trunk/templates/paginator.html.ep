@@ -1,4 +1,4 @@
- % my @pagesizes = (5,10,20,40);
+ % my @pagesizes = (5,10,20,40,100);
  % my $path = $self->req->url->path->to_string() ;
  % my $pagesize_path = "$path/pagesize" ;
  % my $pagesize = session($pagesize_path) || 5 ;
