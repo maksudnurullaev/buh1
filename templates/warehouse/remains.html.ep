@@ -9,7 +9,7 @@
   <tr>
    <td>&nbsp;</td>
    <td><u><%= ml 'Name' %></u></td>
-   <td>&nbsp;</td>
+   <td><u><%= ml 'Document' %></u></td>
    <td><u><%= $parent->{counting_field_object}->{name} %></u></td>
   </tr>
   <tr style="background-color: darkgray">
@@ -17,7 +17,7 @@
    <td>
     %= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" ;
    </td>
-   <td>&nbsp;</td>
+   <td><%= ml 'Incoming' %></td>
    <td class="tar"><%= $parent->{counting_field_value} %></td>
   </tr>
   % my $childs = $hash_objects->{childs} ;

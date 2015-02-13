@@ -18,7 +18,7 @@
   % }
  </ol>
 % } else {
- <u><%= ml 'No data!' %></p>
+ <u><%= ml 'No data!' %></u>
 % }
 </p>
 <p>

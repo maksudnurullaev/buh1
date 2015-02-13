@@ -1,14 +1,14 @@
 % my $has_objects = stash('objects') && scalar(keys %{stash('objects')});
-<div class="toolbar">
-% if( who_is_local('writer') ) {
- %= link_to ml('Add') => "/$controller/add" ; 
- %= '|' if $has_objects ;
-% } 
-% if ( $has_objects ) {
- %= link_to ml('Remains') => '/warehouse/remains_all' ;
- | <%= ml 'Export' %>:
- %= link_to Excel => ('/warehouse/export_current?path=' . full_url()), target => '_blank'  ;
- |
- %= link_to ('Excel - ' . ml('All')) => '/warehouse/export_all', target => '_blank' ;
-% }
+<div>
+%= form_for '/warehouse/export?path=/warehouse/list' => (method => 'POST') => begin
+ %= link_to ml('Add') => "/$controller/add"  if who_is_local 'writer' ; 
+ % if( $has_objects ){
+ |    
+ %= link_to ml('Remains') => '/warehouse/remains_all'
+ |    
+ %= submit_button ml('Export'), style => 'width: auto;'
+ %= select_field scope => [[ml('Current list') => 'current'], [ml('All') => 'all']]
+ %= select_field type => [qw(.xls .zip .7z)]
+ % }
+% end
 </div>

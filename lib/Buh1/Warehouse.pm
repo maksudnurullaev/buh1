@@ -115,43 +115,18 @@ sub remains_all{
     Utils::Warehouse::deploy_remains_all($self);
 };
 
-sub export_current{
-    my $self = shift;
+sub export{
+    my $self = shift ;
     return if !$self->who_is('local','reader');
-    my $objects = Utils::Warehouse::current_list_objects($self);
-    # 1. Get all tags
-    for my $pid (keys %{$objects}){
-        my $tags = 
-            Utils::Db::cdb_get_links($self, 
-                $pid, 
-                Utils::Warehouse::tag_object_name(), 
-                ['name','value'] );
-        for my $tagid (keys %{$tags}){
-            $objects->{$pid}{tags} = {} if !exists $objects->{$pid}{tags} ;
-            $objects->{$pid}{tags}{$tags->{$tagid}{name}} = $tags->{$tagid}{value} ;
-        }    
-    }
-    # 2. Get all header tags
-    my $headers = {};
-    for my $pid (keys %{$objects}){
-        my $tags  = $objects->{$pid}{tags};
-        next if !$tags;
-        for my $name (keys %{$tags}){
-            if( !exists($headers->{$name}) ) {
-                $headers->{$name} = 1 ;
-            } else {
-                $headers->{$name}++ ;
-            }
-        }
-    }
-    my ($file_path,$file_name) = Utils::Excel::warehouse_export_current($self,$objects,$headers);    
+
+    my ($scope,$type) = ($self->param('scope'),$self->param('type'));
+    my ($file_path,$file_name,$objects,$headers) =
+        Utils::Excel::warehouse_export($self,$scope,$type);    
     if($file_path && $file_name){
         $self->render_file( filepath => $file_path, filename => $file_name);
     } else {
-        $self->stash( file2download => $file_path);
-        $self->stash( objects => $objects ) if scalar(keys(%{$objects}));
-        $self->stash( headers => $headers ) if scalar(keys(%{$headers}));
-        $self->render_file( filepath => $file_path, filename => $file_name);
+        $self->stash( headers => $headers );
+        $self->stash( objects => $objects );
     }
 };
 

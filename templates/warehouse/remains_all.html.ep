@@ -12,7 +12,7 @@
   <tr>
    <td>&nbsp;</td>
    <td><u><%= ml 'Name' %></u></td>
-   <td><u>(+/-)</u></td>
+   <td><u><%= ml 'Documents' %></u></td>
    <td><u><%= ml 'Remains' %></u></td>
   </tr>
   % my $row_num = 0 ;
@@ -23,7 +23,7 @@
      %= link_to $hash_objects->{$cid}->{description} => "/warehouse/remains/$cid" ;
      %= include 'common/files_calcs_links', _id => $cid ;
     </td>
-    <td class="tar"><%= $hash_objects->{$cid}->{calculated_childs_count} %></td>
+    <td class="tar"><%= ($hash_objects->{$cid}->{calculated_childs_count} + 1) %></td>
     <td class="tar"><%= $hash_objects->{$cid}->{calculated_counting} %></td>
    </tr>
   % }
@@ -36,7 +36,3 @@
 %= include 'filter'   , filter4    => $controller ;
 %= include 'paginator', paginator4 => $controller, path => '/warehouse/remains_all' ;
 </p>
-
-<pre>
-%#= dumper $hash_objects
-</pre>

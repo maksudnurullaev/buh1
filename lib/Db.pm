@@ -321,7 +321,6 @@ sub get_objects{
 sub get_filtered_objects{
     my $self          = shift;
     my $parameters    = shift;
-    my $app           = $parameters->{self};
     my $name          = $parameters->{name};
     my $names         = $parameters->{names};
     my $exist_field   = $parameters->{exist_field};
@@ -331,7 +330,7 @@ sub get_filtered_objects{
     my $filter_where;
     my $result;
     if( $filter_value ) {
-        $app->stash(filter => $filter_value) if $filter_value;
+        $self->{mojo}->stash(filter => $filter_value) if $filter_value;
         if( $filter_prefix ){
             $filter_where = " $filter_prefix AND value LIKE '%$filter_value%' escape '\\' ";
         } else {
@@ -342,8 +341,8 @@ sub get_filtered_objects{
         $result = $self->get_counts({name=>[$name], field=>[$exist_field]}); 
     }
     return if !$result; # count is 0
-    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($app,$result);
-    $app->stash( paginator => [$page,$pages,$pagesize] );
+    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($self->{mojo},$result);
+    $self->{mojo}->stash( paginator => [$page,$pages,$pagesize] );
     my ($limit,$offset) = (" limit $pagesize ",
             $pagesize * ($page - 1));
     $limit .= " offset $offset " if $offset ; 
@@ -680,6 +679,57 @@ sub get_object_name_by_id{
     $sth->bind_col(1, \$name);
     return($name) if $sth->fetch ;
     return(undef);
+};
+
+sub get_filtered_objects2{
+    my ($self,$params) = @_ ;
+    # 1. Get filtered object ids
+    my $ids = [];
+    for my $id ($self->get_filtered_ids($params)){
+        push @{$ids}, $id ;
+    }
+    return({}) if !scalar(@{$ids}) ; # return empty hash ref
+    # 2. Setup paginator
+    my ($page,$pages,$pagesize) = Utils::Filter::setup_pages($self->{mojo},scalar(@{$ids}));
+    my $start_index = ($page - 1) * $pagesize ;
+    my $end_index = $start_index + $pagesize - 1 ;
+    # 3. Final actions
+    my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
+    return($self->get_objects({id => $rids, field => $params->{fields}}));
+};
+
+sub get_filtered_ids{
+    my ($self,$params) = @_ ;
+    my $temp_hash = {};
+    # 1. Look in parent objects
+    my $sql = "SELECT id,value FROM objects WHERE name = '" . $params->{'object_name'} . "' AND field NOT IN ('creator','counting_field') ;";
+    my $sth = $self->get_from_sql($sql);
+    for my $id (@{$sth->fetchall_arrayref()}){
+        if( eval("'$id->[1]' =~ /$params->{filter_value}/i") ) {
+            $temp_hash->{$id->[0]} = { name => $params->{object_name} } ;
+        } else { warn $@ if $@ ; }
+    }
+    # 2. Look in child objects
+    my $child_names = join ',', map { qq/'$_'/ } @{$params->{child_names}} ;
+    return(keys %{$temp_hash}) if !$child_names ;
+    $sql = " SELECT c.id cid, p.value pid, c.name name,  c.value value FROM objects c "
+         . " JOIN objects p ON p.name = '_link_' AND p.field = '$params->{object_name}' AND c.id = p.id "
+         . " WHERE c.name IN($child_names) AND c.field != 'creator' ;" ;
+    $sth = $self->get_from_sql($sql);
+    for my $id (@{$sth->fetchall_arrayref()}){
+        if( eval("'$id->[3]' =~ /$params->{filter_value}/i") ) {
+            $temp_hash->{$id->[1]} = { name => $params->{object_name} }
+                if !exists $temp_hash->{$id->[1]} ;
+        } else { warn $@ if $@ ; }
+    }
+    # 3. Parse childs to linked parent object, if not existance
+    for  my $key (keys %{$temp_hash}){
+        if( $temp_hash->{$key}->{name} ne $params->{object_name} ){
+            warn $temp_hash->{$key}->{name};
+        }
+
+    }
+    return(keys $temp_hash);
 };
 
 };

@@ -1,5 +1,4 @@
 %= tag h1 => ml('Export') ;
-%#= stash('file2download') ;
 % my $headers = stash('headers') ;
 % my $objects = stash('objects') ;
 % if( scalar keys %{$headers} ){

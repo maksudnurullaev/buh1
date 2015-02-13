@@ -87,17 +87,33 @@ sub validate{
     return(1);
 };
 
+sub get_all_objects{
+    my $self = shift ;
+    my $db = Utils::Db::client($self);
+    my $fields = ['description','counting_field','counting_parent','counting_direction'] ;
+    my $objects = $db->get_objects({ name => [object_name],
+        field => $fields, no_links => 1 });
+    return($objects);    
+};
+
 sub current_list_objects{
     my ($self,$name,$path) = @_;
 
     my $filter = Utils::Filter::get_filter($self);
+    my $fields = ['description','counting_field','counting_parent','counting_direction'] ;
     my $db = Utils::Db::client($self);
     my $objects ;
-    my $fields = ['description','counting_field','counting_parent','counting_direction'] ;
     if( !$filter ){
-        $objects = get_all_objects($self,$fields) ;
+        $objects = $db->get_filtered_objects({
+                name          => object_name(),
+                names         => object_names(),
+                exist_field   => 'description',
+                filter_value  => undef,
+                filter_prefix => " field='description' ",
+                result_fields => $fields,
+            });
     } else {
-        $objects = Utils::Db::get_filtered_objects2($self, {
+        $objects = $db->get_filtered_objects2({
                 object_name   => object_name(),
                 object_names  => object_names(),
                 fields        => $fields,
@@ -150,21 +166,6 @@ sub deploy_remains_all{
     }
     $self->stash( remains_objects => $remains_objects ) if scalar(@{$rids});
     return($rids);
-};
-
-sub get_all_objects{
-    my $self   = shift ;
-    my $fields = shift ;
-    my $db = Utils::Db::client($self) ;
-    return $db->get_filtered_objects({
-            self          => $self,
-            name          => object_name(),
-            names         => object_names(),
-            exist_field   => 'description',
-            filter_value  => undef,
-            filter_prefix => " field='description' ",
-            result_fields => $fields,
-        });
 };
 
 sub update_counting_field{

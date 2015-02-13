@@ -15,6 +15,7 @@ use Data::Dumper ;
 
 sub list{
     my $self = shift;
+    return if !$self->who_is('local','reader');
     my $action = $self->param('payload');
 
 	if( $self->req->method  eq 'POST' && $action eq 'add' ){
@@ -26,6 +27,7 @@ sub list{
 
 sub del{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my @deletes = ("$archives_path/$file", "$archives_path/$file.desc") ;
@@ -35,6 +37,7 @@ sub del{
 
 sub update{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
@@ -45,6 +48,7 @@ sub update{
 
 sub edit{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
@@ -60,6 +64,7 @@ sub edit{
 
 sub download{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
@@ -69,6 +74,7 @@ sub download{
 
 sub update_desc{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my $archive_file_desc = "$archives_path/$file.desc" ;
@@ -121,6 +127,7 @@ sub make_new_archive{
 
 sub restore{
     my $self = shift ;
+    return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;

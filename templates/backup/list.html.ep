@@ -2,6 +2,6 @@
 <h2><%= ml 'Backup/Restore' %></h2>
 %= include 'success_error' ;
 
-%= include 'backup/add_form' ;
+%= include 'backup/add_form' if who_is_local 'writer' ;
 %= include 'backup/list_page' ;
 
