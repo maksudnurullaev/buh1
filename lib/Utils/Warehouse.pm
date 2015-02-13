@@ -125,9 +125,26 @@ sub current_list_objects{
     return($objects);
 };
 
-sub deploy_remains_all{
-    my ($self,$name,$path) = @_;
+sub get_remains_ids_all{
+    my $self = shift ;
+    my $sql = " SELECT DISTINCT id, value desription "
+              . " FROM objects WHERE name = 'warehouse object' " 
+              . " AND field = 'description' AND field = 'description' "
+              . " AND id NOT IN (SELECT DISTINCT id FROM objects " 
+              . " WHERE name = 'warehouse object' AND field = 'counting_parent'); " ;
+    my $db = Utils::Db::client($self);
+    my $sth = $db->get_from_sql( $sql ) ;
+    my $ids = []; 
+    my ($id, $description);
+    $sth->bind_columns(\$id, \$description);
+    while($sth->fetch){
+        push @{$ids}, $id if $id;
+    }
+    return($ids);
+};
 
+sub get_remains_ids{
+    my $self = shift ;
     my $filter = Utils::Filter::get_filter($self);
     my $sql = " SELECT DISTINCT id, value desription "
               . " FROM objects WHERE name = 'warehouse object' " 
@@ -140,7 +157,9 @@ sub deploy_remains_all{
     my ($id, $description);
     $sth->bind_columns(\$id, \$description);
     while($sth->fetch){
-        push @{$ids}, $id if !$filter || $description =~ /$filter/i ;
+        if( $id ){
+            push @{$ids}, $id if !$filter || $description =~ /$filter/i ;
+        }
     }
     return({}) if !scalar(@{$ids}) ; # return empty hash ref
     # 2. Setup paginator
@@ -149,7 +168,14 @@ sub deploy_remains_all{
     my $end_index = $start_index + $pagesize - 1 ;
     # 3. Final actions
     my $rids = []; @{$rids} = (reverse @{$ids})[$start_index..$end_index];
+    return($rids);
+};
+
+sub deploy_remains_all{
+    my $self = shift ;
+
     my $remains_objects = {};
+    my $rids =  get_remains_ids($self);
     for my $rid (@{$rids}) {
         next if !$rid ;
         my ($object,$links) = get_clear_db_object($self,$rid);

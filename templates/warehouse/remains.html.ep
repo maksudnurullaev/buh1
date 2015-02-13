@@ -1,6 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Remains' %></h2>
-%= link_to ml('Back') => "/warehouse/edit/$payload" ;
+<p><%= include 'success_error' %></p>
+%= include 'warehouse/toolbar4remains' ;
 % my $hash_objects = stash('remains_objects');
 <p>
 % if( $hash_objects && scalar(keys(%{$hash_objects})) ){
@@ -41,7 +42,3 @@
     <%= ml('No data!') %> 
 % }
 </p>
-
-<pre>
-%#= dumper stash('remains_objects') ;
-</pre>
