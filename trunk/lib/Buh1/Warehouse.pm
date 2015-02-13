@@ -123,10 +123,42 @@ sub export{
     my ($file_path,$file_name,$objects,$headers) =
         Utils::Excel::warehouse_export($self,$scope,$type);    
     if($file_path && $file_name){
-        $self->render_file( filepath => $file_path, filename => $file_name);
+        $self->render_file( filepath => $file_path, filename => $file_name );
     } else {
         $self->stash( headers => $headers );
         $self->stash( objects => $objects );
+    }
+};
+
+sub export_remains{
+    my $self = shift ;
+    return if !$self->who_is('local','reader');
+
+    my $pid = $self->param('payload');
+    my $type = $self->param('type');
+    my ($file_path,$file_name,$objects,$headers) =
+        Utils::Excel::warehouse_export_remains($self,$type,[$pid]);    
+    if($file_path && $file_name){
+        $self->render_file( filepath => $file_path, filename => $file_name );
+    } else {
+        $self->redirect_to("/warehouse/remains/$pid?error=1");
+    }
+};
+
+sub export_remains_all{
+    my $self = shift ;
+    return if !$self->who_is('local','reader');
+
+    my ($scope,$type) = ($self->param('scope'),$self->param('type'));
+    my $rids =  $scope eq 'current' ?
+                Utils::Warehouse::get_remains_ids($self): 
+                Utils::Warehouse::get_remains_ids_all($self);
+    my ($file_path,$file_name,$objects,$headers) =
+        Utils::Excel::warehouse_export_remains($self,$type,$rids);    
+    if($file_path && $file_name){
+        $self->render_file( filepath => $file_path, filename => $file_name );
+    } else {
+        $self->redirect_to("/warehouse/remains_all?error=1");
     }
 };
 

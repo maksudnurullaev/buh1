@@ -1,6 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Warehouse' %> | <%= ml 'Remains' %></h2>
-%= link_to ml('Back') => "/warehouse/list" ;
+%= include 'warehouse/toolbar4remains_all' ;
 % my $hash_objects = stash('remains_objects');
 <p>
 %= include 'filter'   , filter4    => $controller ;
@@ -33,6 +33,6 @@
 % }
 </p>
 <p>
-%= include 'filter'   , filter4    => $controller ;
-%= include 'paginator', paginator4 => $controller, path => '/warehouse/remains_all' ;
+ %= include 'filter'   , filter4    => $controller ;
+ %= include 'paginator', paginator4 => $controller, path => '/warehouse/remains_all' ;
 </p>
