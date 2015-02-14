@@ -87,7 +87,7 @@ sub update_file{
     my $file_path = get_path($self,$pid) . '/' . $fileid ;
     $file->move_to($file_path) ;
     set_file_content($file_path . '.name', $file->filename) ;
-    $self->redirect_to( $self->param('path') . "?success=1&fileid=$fileid" );
+    $self->redirect_to( $self->param('path') . "?fileform=update&fileid=$fileid&success=1" );
     return(1)
 };
 

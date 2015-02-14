@@ -1,7 +1,7 @@
 % use Utils::Files ;
 % Utils::Files::deploy($self,$_pid,$_fileid);
 <div class="toolbar">
- %= form_for "/files/update_desc"  => ( method => 'POST') => begin
+ %= form_for "/files/update_desc?prefix=$controller"  => ( method => 'POST') => begin
  %= hidden_field fileid => $_fileid ;
  %= hidden_field path => $_path ;
  %= hidden_field pid => $_pid ;
@@ -24,7 +24,7 @@
   </tr>
 % }
  % end
- %= form_for "/files/update_file" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= form_for "/files/update_file?prefix=$controller" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
   %= hidden_field fileid => $_fileid ;
   %= hidden_field path => $_path ;
   %= hidden_field pid => $_pid ;
@@ -56,7 +56,7 @@
    <td>
    </td>
    <td class='tar'>
-     %= link_to ml('Delete') => "/files/delete?pid=$_pid&fileid=$_fileid&path=$_path" ;
+     %= link_to ml('Delete') => "/files/delete?prefix=$controller&pid=$_pid&fileid=$_fileid&path=$_path" ;
    </td>
   </tr>
 % }  
