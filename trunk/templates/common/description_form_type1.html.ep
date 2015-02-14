@@ -1,5 +1,6 @@
 <div class="form toolbar">
- %= form_for ('/$controller/$action/' . ($payload ? $payload : '')) => (method => 'POST') => begin
+ % my $path = $payload ? "/$controller/$action/$payload" : "/$controller/$action" ;
+ %= form_for $path => (method => 'POST') => begin
  %= hidden_field oname => (stash('oname') || $controller) ;
  %= hidden_field id => $payload if $payload ;
  %= hidden_field counting_parent => stash('object.counting_parent') if stash('object.counting_parent') ;
