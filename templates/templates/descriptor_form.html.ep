@@ -8,7 +8,7 @@
     %= ml 'Description' 
    </td>
    <td>
-    % if( $action =~ /edit/i ){
+    % if( $action =~ /(edit|add)/i ){
      %= text_area description => (stash 'description'), class => (stash 'description_class') 
     % } else {
      %= text_area description => (stash 'description'), disabled => 'disabled'
