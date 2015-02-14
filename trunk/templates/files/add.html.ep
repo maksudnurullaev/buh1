@@ -1,5 +1,5 @@
 <div class="toolbar">
- %= form_for "/files/add/$_pid" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= form_for "/files/add/$_pid?prefix=$controller" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
  %= hidden_field path => $_return_path ;
  %= hidden_field pid => $_pid ;
  <table class='colortable'>

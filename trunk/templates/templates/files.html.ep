@@ -1,5 +1,5 @@
 % layout "default";
-%= include "success_error" ;
+%= include "success_error" if $action ne 'files' ;
 <h2><%= ml "Templates" %> | <%= ml "Files" %></h2>
 <p>
 %= include "$controller/descriptor_toolbar" if who_is_global('editor') ;
