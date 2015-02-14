@@ -1,7 +1,19 @@
-[find some text]
+=== Useful SQLs ===
+CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
+CREATE INDEX i_objects ON objects (name, id, field);
+
+=== Packages to install ===
+cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
+	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
+        Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
+	Spreadsheet::WriteExcel
+=== Documents and business transactions ===
+Documents contains sum ammont
+
+=== find some text ===
 find templates/ -type f -print | xargs grep "is_admin"
 
-[dump sqlte database files between servers]
+=== dump sqlte database files between servers ===
 echo '.dump' | sqlite3 db/main.db | gzip -c > db/dump/main.db.dump.gz
 zcat db/dump/main.db.dump.gz | sqlite3 db/main.db
 
