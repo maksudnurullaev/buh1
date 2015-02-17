@@ -19,9 +19,9 @@ my $id3 = $db->insert($data3);
 ok($id1 && $id2 && $id3, 'Test for valid ids!');
 
 # -= create linkis between three objects =-
-ok($db->set_link($name1, $id1, $name2, $id2), "Set link #12");
+ok($db->set_link($id1,$id2), "Set link #12");
 ok($db->exists_link($id1,$id2), "Test for link existance #12");
-ok($db->set_link($name1, $id1, $name2, $id3), "Set link #13");
+ok($db->set_link($id1,$id3), "Set link #13");
 ok($db->exists_link($id1,$id3), "Test for link existance #13");
 
 # -= get links =-
@@ -43,7 +43,7 @@ ok(!exists($result->{$id1}), "Test NOT for existance of #1 for #12");
 ### -= FINISH =-
 done_testing();
 END{
-    unlink $db->{'file'};
+    unlink $db->{'file'} ;
 };
 
 
