@@ -501,6 +501,7 @@ sub set_link{
 
     my ($name1,$name2) = ($self->get_object_name_by_id($id1),
                           $self->get_object_name_by_id($id2));
+
     return(0) if !$name1 || !$name2 ;
 
     my $dbh = $self->get_db_connection() || return;
