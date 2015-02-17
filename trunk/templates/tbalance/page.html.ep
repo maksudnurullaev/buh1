@@ -14,6 +14,19 @@
     %= submit_button 
    </td>
   </tr>
+% if( stash('tbalance_data') ){
+  <tr>
+   <td class="tar">
+    %= label_for export => ml('Export') ;
+   </td>
+   <td>
+    %= check_box export => 1, style => "width:auto;", id => 'export' ;
+    %= select_field type => [qw(.xls .zip .7z)]
+   </td> 
+  </tr>
+% }    
 </table>
-% end; #form
-%= include 'tbalance/table' if stash 'tbalance_data' ;
+% end; 
+% if( stash('tbalance_data') ){
+ %= include 'tbalance/table' if stash 'tbalance_data' ;
+% } 

@@ -16,13 +16,6 @@ use Utils;
 use Spreadsheet::WriteExcel;
 use Data::Dumper ;
 
-sub get_file_name_path{
-    my $uuid = Utils::get_uuid();
-    my $file_name = "export_current_$uuid.xls" ;
-    my $file_path = "/tmp/$file_name" ;
-    return(($file_name,$file_path));
-};
-
 sub warehouse_prepare{
     my ($self,$scope) = @_ ;
     my $objects = $scope eq 'current' ? Utils::Warehouse::current_list_objects($self)
@@ -76,7 +69,7 @@ sub get_objects_headers{
 
 sub get_new_file_path_name{
     my $uuid = Utils::get_uuid();
-    my $file_name = "export_current_$uuid.xls" ;
+    my $file_name = "buh1_export_$uuid.xls" ;
     my $file_path = "/tmp/$file_name" ;
     return(($file_path,$file_name));
 };
