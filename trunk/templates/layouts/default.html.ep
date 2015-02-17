@@ -12,7 +12,7 @@
 <body>
   %= include 'debug/access' if $debug_mode ;
   <div id="headerSection">
-    <a href="http://buh1.uz/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
+    <a href="http://www.buh1uz.com/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
     <div class="login_status">
       % if( who_is_global 'user' ) {
        <strong><%= session->{'user email'} %></strong>
