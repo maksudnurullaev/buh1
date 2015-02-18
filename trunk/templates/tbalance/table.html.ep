@@ -1,5 +1,5 @@
-% my $tbalace_data = stash 'tbalance_data';
-% my $count = scalar keys %{$tbalance_data};
+% my $tbalace = stash 'tbalance';
+% my $count = scalar keys %{$tbalance};
 % if( $count ){
 <hr />
  <table border="1">
@@ -11,28 +11,28 @@
   </tr>
   <tr><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
  % my ($start_date,$end_date) = (param('start_date'),param('end_date'));
- % for my $key (sort keys %{$tbalance_data}){
+ % for my $key (sort keys %{$tbalance}){
   % next if $key eq 'totals' ;
-  % my $account_id = $tbalance_data->{$key}{account_id};
+  % my $account_id = $tbalance->{$key}{account_id};
   <tr>
-   <td><%= link_to shrink_if($tbalance_data->{$key}{name},50) => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date" %></td>
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{start_debet};
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{start_credit} ;
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{debet} ;
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{credit} ; 
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{end_debet} ;
-   %= include 'tbalance/table_td', value => $tbalance_data->{$key}{end_credit} ;
+   <td><%= link_to shrink_if($tbalance->{$key}{name},50) => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date" %></td>
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{start_debet};
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{start_credit} ;
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{debet} ;
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{credit} ; 
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{end_debet} ;
+   %= include 'tbalance/table_td', value => $tbalance->{$key}{end_credit} ;
   </tr>
-  %= include 'tbalance/docs_row', docs => $tbalance_data->{$key}{docs} if param('payload') && param('payload') eq $tbalance_data->{$key}{account_id};
+  %= include 'tbalance/docs_row', docs => $tbalance->{$key}{docs} if param('payload') && param('payload') eq $tbalance->{$key}{account_id};
  % }
  <tr>
   <th><%= ml 'TOTAL' %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{start_debets} %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{start_credits} %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{debets} %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{credits} %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{end_debets} %></th>
-  <th class="tar"><%= currency_format $tbalance_data->{totals}{end_credits} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{start_debets} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{start_credits} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{debets} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{credits} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{end_debets} %></th>
+  <th class="tar"><%= currency_format $tbalance->{totals}{end_credits} %></th>
  </tr>
  </table>
 % }

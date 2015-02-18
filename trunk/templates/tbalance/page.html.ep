@@ -14,7 +14,7 @@
     %= submit_button 
    </td>
   </tr>
-% if( stash('tbalance_data') ){
+% if( scalar keys %{stash('tbalance')} ){
   <tr>
    <td class="tar">
     %= label_for export => ml('Export') ;
@@ -27,8 +27,6 @@
 % }    
 </table>
 % end; 
-% if( stash('tbalance_data') ){
- %= include 'tbalance/table' if stash 'tbalance_data' ;
-% } 
-%= tag pre => dumper(stash('tbalance_data')) ;
+%= include 'tbalance/table' if stash 'tbalance' ;
+%= tag pre => dumper(stash('tbalance')) ;
 %= tag pre => dumper(stash('tdata')) ;
