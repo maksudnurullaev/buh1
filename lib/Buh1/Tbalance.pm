@@ -43,15 +43,15 @@ sub page {
     if( my $data = validate($self) ){
         if( !exists($data->{error}) ){
             my ($start_date,$end_date) = ($data->{start_date},$data->{end_date});
-            my ($result,$data) = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
+            my ($tbalance,$tdata) = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
             if( $self->param('export') ){
-                my ($file_path,$file_name) = Utils::Excel::tbalance_export($self, $data) ;
+                my ($file_path,$file_name) = Utils::Excel::balance_export($self, $tbalance,$tdata) ;
                 if($file_path && $file_name){
                     $self->render_file( filepath => $file_path, filename => $file_name );
                 }
             }
-            $self->stash( tbalance_data => $result );
-            $self->stash( tdata => $data );
+            $self->stash( tbalance => $tbalance );
+            $self->stash( tdata   => $tdata );
         }
     }
 };

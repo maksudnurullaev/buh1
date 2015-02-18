@@ -206,11 +206,11 @@ sub make_remains_outline{
 };
 
 sub tbalance_export{
-    my ($self,$data) = @_ ;
+    my ($self,$tbalance,$tdata) = @_ ;
     my ($file_path,$file_name) = get_new_file_path_name();
     # Create a new workbook 
-    my $workbook  = Spreadsheet::WriteExcel->new($file_path);
-    my $bold = $workbook->add_format(bold => 1);
+    my $workbook = Spreadsheet::WriteExcel->new($file_path);
+    my $bold     = $workbook->add_format(bold => 1);
     # Add worksheet
     my $worksheet = $workbook->add_worksheet('Export - Buh1.Uz');
     $worksheet->set_column('A:A', 30);
