@@ -30,3 +30,5 @@
 % if( stash('tbalance_data') ){
  %= include 'tbalance/table' if stash 'tbalance_data' ;
 % } 
+%= tag pre => dumper(stash('tbalance_data')) ;
+%= tag pre => dumper(stash('tdata')) ;

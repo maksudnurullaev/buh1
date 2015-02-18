@@ -1,6 +1,7 @@
 package Buh1::Tbalance; {
 use Mojo::Base 'Mojolicious::Controller';
 use Utils::Documents;
+use Utils::Excel;
 use Data::Dumper;
 
 sub validate{
@@ -37,16 +38,23 @@ sub validate_dates{
 
 sub page {
     my $self = shift;
-    my $isPost  = ($self->req->method =~ /POST/);
+    return if !$self->who_is('local','reader');
 
     if( my $data = validate($self) ){
         if( !exists($data->{error}) ){
             my ($start_date,$end_date) = ($data->{start_date},$data->{end_date});
-            my $data = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
-            $self->stash( tbalance_data => $data );
+            my ($result,$data) = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
+            if( $self->param('export') ){
+                my ($file_path,$file_name) = Utils::Excel::tbalance_export($self, $data) ;
+                if($file_path && $file_name){
+                    $self->render_file( filepath => $file_path, filename => $file_name );
+                }
+            }
+            $self->stash( tbalance_data => $result );
+            $self->stash( tdata => $data );
         }
     }
-}
+};
 
 
 

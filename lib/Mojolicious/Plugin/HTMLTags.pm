@@ -54,7 +54,6 @@ sub register {
     $app->helper( cdb_get_unique_field => sub { Utils::Db::cdb_get_unique_field (@_) ; } );
 
     $app->helper( shrink_if     => sub { Utils::shrink_if (@_) ; } );
-    $app->helper( tbalance_row  => sub { Utils::Documents::tbalance_row (@_); } );
     $app->helper( files_count   => sub { Utils::Files::files_count (@_); } );
     $app->helper( calcs_count   => sub { Utils::Calculations::count (@_); } );
     $app->helper( cdb_calculate => sub { Utils::Calculations::cdb_calculate (@_); } );
