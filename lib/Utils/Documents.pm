@@ -113,11 +113,11 @@ sub generate_tbalance_data{
         generate_tbalance_row($self,$result,$debet_code,'debet',$amount,$is_start_part,$doc_id);
         generate_tbalance_row($self,$result,$credit_code,'credit',$amount,$is_start_part,$doc_id);
     }
-    generate_tbalance_row2($self,$result);
+    generate_tbalance_totals($self,$result);
     return($result);
 };
 
-sub generate_tbalance_row2{
+sub generate_tbalance_totals{
     my ($self,$data) = @_ ;
     return if !$data ;
     my ($start_debets,$start_credits,$debets,$credits,$end_debets,$end_credits) = (0,0,0,0,0,0); 
