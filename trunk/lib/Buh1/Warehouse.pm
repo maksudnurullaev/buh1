@@ -136,7 +136,7 @@ sub export_remains{
 
     my $pid = $self->param('payload');
     my $type = $self->param('type');
-    my ($file_path,$file_name,$objects,$headers) =
+    my ($file_path,$file_name) =
         Utils::Excel::warehouse_export_remains($self,$type,[$pid]);    
     if($file_path && $file_name){
         $self->render_file( filepath => $file_path, filename => $file_name );
@@ -153,7 +153,7 @@ sub export_remains_all{
     my $rids =  $scope eq 'current' ?
                 Utils::Warehouse::get_remains_ids($self): 
                 Utils::Warehouse::get_remains_ids_all($self);
-    my ($file_path,$file_name,$objects,$headers) =
+    my ($file_path,$file_name) =
         Utils::Excel::warehouse_export_remains($self,$type,$rids);    
     if($file_path && $file_name){
         $self->render_file( filepath => $file_path, filename => $file_name );

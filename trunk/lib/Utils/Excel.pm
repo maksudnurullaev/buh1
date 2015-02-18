@@ -205,6 +205,21 @@ sub make_remains_outline{
     return($ord_row+1);
 };
 
+sub tbalance_export{
+    my ($self,$data) = @_ ;
+    my ($file_path,$file_name) = get_new_file_path_name();
+    # Create a new workbook 
+    my $workbook  = Spreadsheet::WriteExcel->new($file_path);
+    my $bold = $workbook->add_format(bold => 1);
+    # Add worksheet
+    my $worksheet = $workbook->add_worksheet('Export - Buh1.Uz');
+    $worksheet->set_column('A:A', 30);
+    # final
+    $workbook->close();
+    return(($file_path,$file_name)) if $self->param('type') eq '.xls' ;
+    ($file_path,$file_name) = make_zipped_file(($file_path,$file_name,$self->('type')));
+    return(($file_path,$file_name));
+};
 
 # END OF PACKAGE
 };

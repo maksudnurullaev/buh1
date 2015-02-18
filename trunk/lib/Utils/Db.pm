@@ -120,6 +120,22 @@ sub deploy{
     return(undef);
 };
 
+sub db_get_objects_from_sql{
+    my($self,$sql) = @_ ;
+    return if !$sql ;
+    my $db = main($self);
+    my $sth = Utils::Db::cdb_execute_sql($self,$sql);
+    return $db->format_statement2hash_objects($sth);
+};
+
+sub cdb_get_objects_from_sql{
+    my($self,$sql) = @_ ;
+    return if !$sql ;
+    my $db = client($self);
+    my $sth = Utils::Db::cdb_execute_sql($self,$sql);
+    return $db->format_statement2hash_objects($sth);
+};
+
 sub cdb_execute_sql{
     my($self,$sql) = @_ ;
     return if !$sql ;
@@ -130,7 +146,7 @@ sub cdb_execute_sql{
 sub db_execute_sql{
     my($self,$sql) = @_ ;
     return if !$sql ;
-    my $dbc = Db->new($self);
+    my $dbc = main($self);
     $dbc->get_from_sql($sql);
 };
 
