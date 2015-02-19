@@ -211,15 +211,72 @@ sub tbalance_export{
     # Create a new workbook 
     my $workbook = Spreadsheet::WriteExcel->new($file_path);
     my $bold     = $workbook->add_format(bold => 1);
+    my $center   = $workbook->add_format( valign  => 'vcenter', align   => 'center' );
+    my $merge   = $workbook->add_format( valign  => 'vcenter', align   => 'center' );
+
     # Add worksheet
     my $worksheet = $workbook->add_worksheet('Export - Buh1.Uz');
     $worksheet->set_column('A:A', 30);
+    $worksheet->set_column('B:G', 15);
+    # Iterate tbalance
+    my $ord_row = 0;
+    $ord_row = make_tbalance_header($self,$worksheet,$ord_row,$center,$merge);
+    my $rows = $tbalance->{rows};
+    for my $key ( sort keys %{$rows} ){
+        $ord_row = make_tbalance_outline($self,$key,$worksheet,$rows->{$key},$tdata,$ord_row,$bold) if $key ne 'totals' ;
+    }
     # final
     $workbook->close();
     return(($file_path,$file_name)) if $self->param('type') eq '.xls' ;
     ($file_path,$file_name) = make_zipped_file(($file_path,$file_name,$self->('type')));
     return(($file_path,$file_name));
 };
+
+sub make_tbalance_header{
+    my ($self,$worksheet,$ord_row,$center,$merge) = @_ ;
+    $ord_row ||= 1;
+    $worksheet->merge_range("B$ord_row:C$ord_row",$self->param('ml_BALANCE FOR START PERIOD'),$merge);
+    $worksheet->merge_range("D$ord_row:E$ord_row",$self->param('ml_BALANCE FOR PERIOD'),$merge);
+    $worksheet->merge_range("F$ord_row:G$ord_row",$self->param('ml_BALANCE FOR END PERIOD'),$merge);
+    $worksheet->write($ord_row,0,$self->param('ml_Account'));
+    $worksheet->write($ord_row,1,'DEBET',$center);
+    $worksheet->write($ord_row,2,'CREDIT',$center);
+    $worksheet->write($ord_row,3,'DEBET',$center);
+    $worksheet->write($ord_row,4,'CREDIT',$center);
+    $worksheet->write($ord_row,5,'DEBET',$center);
+    $worksheet->write($ord_row,6,'CREDIT',$center);
+    return($ord_row+1);
+};
+
+sub make_tbalance_outline{
+    my ($self,$key,$worksheet,$row,$tdata,$ord_row,$bold) = @_ ;
+    # parent record
+    my $ord_col = 0 ;
+    $worksheet->write($ord_row, $ord_col++, $row->{name}, $bold);
+    for my $key (qw/start_debet start_credit debet credit end_debet end_credit/){
+        if( exists $row->{$key} ){
+            $worksheet->write($ord_row,$ord_col,$row->{$key}, $bold);
+        }
+        $ord_col++;
+    }
+    # child records 
+    my $docs = $row->{docs};
+    for my $docid (keys %{$docs}){
+        $ord_col = 0;
+        $worksheet->set_row(++$ord_row,  undef, undef, 1, 2);
+        my $doc_details = '(' . $tdata->{$docid}{'document number'} . ') ' . $tdata->{$docid}{details} ; 
+        $worksheet->write($ord_row,$ord_col,$doc_details);
+        for my $key (qw/start_debet start_credit debet credit end_debet end_credit/){
+            $ord_col++;
+            if( exists $docs->{$docid}{$key} ){
+                $worksheet->write($ord_row,$ord_col,$docs->{$docid}{$key});
+            }
+        }
+    }
+    # final
+    return($ord_row+1);
+};
+
 
 # END OF PACKAGE
 };

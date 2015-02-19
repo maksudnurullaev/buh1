@@ -101,7 +101,7 @@ sub get_tbalance_data{
 sub generate_tbalance_data{
     my ($self,$data,$date1) = @_;
     return(undef) if !$self || !$data || !$date1;
-    my $result = {};
+    my $tbalance = {};
     for my $doc_id (keys %{$data}){
         my $debet         = $data->{$doc_id}{debet};
         my $debet_code    = get_account_code($data->{$doc_id}{debet});
@@ -110,71 +110,74 @@ sub generate_tbalance_data{
         my $amount        = $data->{$doc_id}{'currency amount'};
         my $is_start_part = ($date1 ge $data->{$doc_id}{date});
 
-        generate_tbalance_row($self,$result,$debet_code,'debet',$amount,$is_start_part,$doc_id);
-        generate_tbalance_row($self,$result,$credit_code,'credit',$amount,$is_start_part,$doc_id);
+        generate_tbalance_row($self,$tbalance,$debet_code,'debet',$amount,$is_start_part,$doc_id);
+        generate_tbalance_row($self,$tbalance,$credit_code,'credit',$amount,$is_start_part,$doc_id);
     }
-    generate_tbalance_totals($self,$result);
-    return($result);
+    generate_tbalance_totals($self,$tbalance);
+    return($tbalance);
 };
 
 sub generate_tbalance_totals{
-    my ($self,$data) = @_ ;
-    return if !$data ;
+    my ($self,$tbalance) = @_ ;
+    return if !$tbalance ;
     my ($start_debets,$start_credits,$debets,$credits,$end_debets,$end_credits) = (0,0,0,0,0,0); 
     my $lang = Utils::Languages::current($self);
-    for my $key (sort keys %{$data}){
+    my $rows = $tbalance->{rows};
+    for my $key (sort keys %{$rows}){
         my ($sd,$sc,$d,$c) = (0,0,0,0); 
-        my $account_id = $data->{$key}{account_id};
+        my $account_id = $rows->{$key}{account_id};
         my $account = Utils::Db::db_get_objects($self,{id =>[$account_id], field => ['type',$lang]})->{$account_id};
-        $data->{$key}{name} = $account->{$lang} ;
-        $data->{$key}{type} = $account->{type} ;
+        $rows->{$key}{name} = $account->{$lang} ;
+        $rows->{$key}{type} = $account->{type} ;
 
-        $sd = $data->{$key}{start_debet} || 0;
-        $sc = $data->{$key}{start_credit} || 0;
-        $d  = $data->{$key}{debet} || 0;
-        $c  = $data->{$key}{credit} || 0;
+        $sd = $rows->{$key}{start_debet} || 0;
+        $sc = $rows->{$key}{start_credit} || 0;
+        $d  = $rows->{$key}{debet} || 0;
+        $c  = $rows->{$key}{credit} || 0;
         #warn "(\$sd,\$sc,\$d,\$c) = ($sd,$sc,$d,$c)";
         my ($start_debet,$start_credit,$debet,$credit,$end_debet,$end_credit) = tbalance_row ($self,$account->{type},$sd,$sc,$d,$c);
         #warn "(\$start_debet,\$start_credit,\$debet,\$credit,\$end_debet,\$end_credit) = ($start_debet,$start_credit,$debet,$credit,$end_debet,$end_credit)"
-        $data->{$key}{start_debet}  = $start_debet ;
+        $rows->{$key}{start_debet}  = $start_debet ;
         $start_debets += $start_debet ;
-        $data->{$key}{start_credit} = $start_credit ;
+        $rows->{$key}{start_credit} = $start_credit ;
         $start_credits += $start_credit ;
-        $data->{$key}{debet}  = $debet ;
+        $rows->{$key}{debet}  = $debet ;
         $debets += $debet ;
-        $data->{$key}{credit} = $credit ;
+        $rows->{$key}{credit} = $credit ;
         $credits += $credit ;
-        $data->{$key}{end_debet}  = $end_debet ;
+        $rows->{$key}{end_debet}  = $end_debet ;
         $end_debets += $end_debet ;
-        $data->{$key}{end_credit} = $end_credit ;
+        $rows->{$key}{end_credit} = $end_credit ;
         $end_credits += $end_credit ;
     }
-    $data->{totals} = {} ;
-    $data->{totals}{start_debets} = $start_debets ;
-    $data->{totals}{start_credits} = $start_credits ;
-    $data->{totals}{debets} = $debets ;
-    $data->{totals}{credits} = $credits ;
-    $data->{totals}{end_debets} = $end_debets ;
-    $data->{totals}{end_credits} = $end_credits ;
+    $tbalance->{totals} = {} ;
+    $tbalance->{totals}{start_debets} = $start_debets ;
+    $tbalance->{totals}{start_credits} = $start_credits ;
+    $tbalance->{totals}{debets} = $debets ;
+    $tbalance->{totals}{credits} = $credits ;
+    $tbalance->{totals}{end_debets} = $end_debets ;
+    $tbalance->{totals}{end_credits} = $end_credits ;
 };
 
 sub  generate_tbalance_row{
-    my($self,$result,$code,$code_name,$amount,$is_start_part,$doc_id) = @_;
+    my($self,$tbalance,$code,$code_name,$amount,$is_start_part,$doc_id) = @_;
+    $tbalance->{rows} = {} if !exists $tbalance->{rows} ;
+    my $rows = $tbalance->{rows};
     my $account_id = "account $code" . '00';
     my $with_details = $self->param('account') && ($account_id eq $self->param('account'));
     $code_name = "start_$code_name" if $is_start_part;
-    if( !exists($result->{$code}) ){
-        $result->{$code} = {};
-        $result->{$code}{account_id} = "account $code" . '00';
-        $result->{$code}{$code_name} = $amount;
+    if( !exists($rows->{$code}) ){
+        $rows->{$code} = {};
+        $rows->{$code}{account_id} = "account $code" . '00';
+        $rows->{$code}{$code_name} = $amount;
     } else {
-        $result->{$code}{$code_name} += $amount;
+        $rows->{$code}{$code_name} += $amount;
     }
     # row details
-    if( !exists($result->{$code}{docs}) ){
-        $result->{$code}{docs} = { $doc_id => { $code_name => $amount } } ;
+    if( !exists($rows->{$code}{docs}) ){
+        $rows->{$code}{docs} = { $doc_id => { $code_name => $amount } } ;
     }else{
-        $result->{$code}{docs}{$doc_id} = { $code_name => $amount } ;
+        $rows->{$code}{docs}{$doc_id} = { $code_name => $amount } ;
     }
 };
 
