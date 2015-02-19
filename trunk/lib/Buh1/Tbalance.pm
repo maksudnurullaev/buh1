@@ -45,7 +45,7 @@ sub page {
             my ($start_date,$end_date) = ($data->{start_date},$data->{end_date});
             my ($tbalance,$tdata) = Utils::Documents::get_tbalance_data($self,$start_date,$end_date);
             if( $self->param('export') ){
-                my ($file_path,$file_name) = Utils::Excel::balance_export($self, $tbalance,$tdata) ;
+                my ($file_path,$file_name) = Utils::Excel::tbalance_export($self, $tbalance,$tdata) ;
                 if($file_path && $file_name){
                     $self->render_file( filepath => $file_path, filename => $file_name );
                 }

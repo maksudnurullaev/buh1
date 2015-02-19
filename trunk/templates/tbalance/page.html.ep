@@ -1,6 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Trial balance' %></h2>
 % my $path = '/tbalance/page';
+% my $is_valid_tbalance = stash('tbalance') && scalar(keys(stash('tbalance'))) ;
 %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
@@ -14,7 +15,7 @@
     %= submit_button 
    </td>
   </tr>
-% if( scalar keys %{stash('tbalance')} ){
+% if( $is_valid_tbalance ){
   <tr>
    <td class="tar">
     %= label_for export => ml('Export') ;
@@ -22,11 +23,14 @@
    <td>
     %= check_box export => 1, style => "width:auto;", id => 'export' ;
     %= select_field type => [qw(.xls .zip .7z)]
+    % for my $key (('Account','BALANCE FOR START PERIOD','BALANCE FOR PERIOD','BALANCE FOR END PERIOD','TOTAL')){
+        %= hidden_field "ml_$key" => ml($key);
+    % }
    </td> 
   </tr>
 % }    
 </table>
 % end; 
-%= include 'tbalance/table' if stash 'tbalance' ;
-%= tag pre => dumper(stash('tbalance')) ;
-%= tag pre => dumper(stash('tdata')) ;
+%= include 'tbalance/table' if $is_valid_tbalance ;
+%= tag pre => dumper(stash('tbalance')) if $is_valid_tbalance ;
+%= tag pre => dumper(stash('tdata')) if $is_valid_tbalance ;

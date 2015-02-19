@@ -11,19 +11,20 @@
   </tr>
   <tr><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th><th>DEBET</th><th>CREDIT</th></tr>
  % my ($start_date,$end_date) = (param('start_date'),param('end_date'));
- % for my $key (sort keys %{$tbalance}){
+ % my $rows = $tbalance->{rows};
+ % for my $key (sort keys %{$rows}){
   % next if $key eq 'totals' ;
-  % my $account_id = $tbalance->{$key}{account_id};
+  % my $account_id = $rows->{$key}{account_id};
   <tr>
-   <td><%= link_to shrink_if($tbalance->{$key}{name},50) => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date" %></td>
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{start_debet};
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{start_credit} ;
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{debet} ;
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{credit} ; 
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{end_debet} ;
-   %= include 'tbalance/table_td', value => $tbalance->{$key}{end_credit} ;
+   <td><%= link_to shrink_if($rows->{$key}{name},50) => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date" %></td>
+   %= include 'tbalance/table_td', value => $rows->{$key}{start_debet};
+   %= include 'tbalance/table_td', value => $rows->{$key}{start_credit} ;
+   %= include 'tbalance/table_td', value => $rows->{$key}{debet} ;
+   %= include 'tbalance/table_td', value => $rows->{$key}{credit} ; 
+   %= include 'tbalance/table_td', value => $rows->{$key}{end_debet} ;
+   %= include 'tbalance/table_td', value => $rows->{$key}{end_credit} ;
   </tr>
-  %= include 'tbalance/docs_row', docs => $tbalance->{$key}{docs} if param('payload') && param('payload') eq $tbalance->{$key}{account_id};
+  %= include 'tbalance/docs_row', docs => $rows->{$key}{docs} if param('payload') && param('payload') eq $rows->{$key}{account_id};
  % }
  <tr>
   <th><%= ml 'TOTAL' %></th>
