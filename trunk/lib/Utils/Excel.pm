@@ -220,15 +220,19 @@ sub tbalance_export{
     $worksheet->set_column('B:G', 15);
     # Iterate tbalance
     my $ord_row = 0;
+    # header
     $ord_row = make_tbalance_header($self,$worksheet,$ord_row,$center,$merge);
+    # body
     my $rows = $tbalance->{rows};
     for my $key ( sort keys %{$rows} ){
         $ord_row = make_tbalance_outline($self,$key,$worksheet,$rows->{$key},$tdata,$ord_row,$bold) if $key ne 'totals' ;
     }
+    # footer
     # final
+    make_tbalance_footer($self,$worksheet,$tbalance->{totals},$ord_row,$bold) if exists $tbalance->{totals} ; 
     $workbook->close();
     return(($file_path,$file_name)) if $self->param('type') eq '.xls' ;
-    ($file_path,$file_name) = make_zipped_file(($file_path,$file_name,$self->('type')));
+    ($file_path,$file_name) = make_zipped_file(($file_path,$file_name,$self->param('type')));
     return(($file_path,$file_name));
 };
 
@@ -246,6 +250,17 @@ sub make_tbalance_header{
     $worksheet->write($ord_row,5,'DEBET',$center);
     $worksheet->write($ord_row,6,'CREDIT',$center);
     return($ord_row+1);
+};
+
+sub make_tbalance_footer{
+    my ($self,$worksheet,$totals,$ord_row,$bold) = @_ ;
+    $worksheet->write($ord_row,0,$self->param('ml_TOTAL'),$bold);
+    $worksheet->write($ord_row,1,$totals->{start_debets},$bold);
+    $worksheet->write($ord_row,2,$totals->{start_credits},$bold);
+    $worksheet->write($ord_row,3,$totals->{debets},$bold);
+    $worksheet->write($ord_row,4,$totals->{credits},$bold);
+    $worksheet->write($ord_row,5,$totals->{end_debets},$bold);
+    $worksheet->write($ord_row,6,$totals->{end_credits},$bold);
 };
 
 sub make_tbalance_outline{
