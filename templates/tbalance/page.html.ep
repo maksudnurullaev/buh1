@@ -32,5 +32,5 @@
 </table>
 % end; 
 %= include 'tbalance/table' if $is_valid_tbalance ;
-%= tag pre => dumper(stash('tbalance')) if $is_valid_tbalance ;
-%= tag pre => dumper(stash('tdata')) if $is_valid_tbalance ;
+%#= tag pre => dumper(stash('tbalance')) if $is_valid_tbalance ;
+%#= tag pre => dumper(stash('tdata')) if $is_valid_tbalance ;
