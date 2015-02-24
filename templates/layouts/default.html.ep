@@ -43,7 +43,7 @@
                % } else {
                 <ul><li><a href="/feedbacks/add"><%= ml 'Feedback' %></a></li></ul>
                % }
-               <ul><li><a href="http://forum.buh1uz.com"><%= ml 'Forum' %></a></li></ul>
+               <ul><li><a href="http://forum.buh1uz.com/cgi-bin/yabb2/YaBB.pl"><%= ml 'Forum' %></a></li></ul>
               </li>
               % if( who_is_global 'user' ){
                <li><%= ml 'Cabinet' %>
