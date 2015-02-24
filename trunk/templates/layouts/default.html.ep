@@ -43,6 +43,8 @@
                % } else {
                 <ul><li><a href="/feedbacks/add"><%= ml 'Feedback' %></a></li></ul>
                % }
+               <ul><li><a href="/forum"><%= ml 'Forum' %></a></li></ul>
+
               </li>
               % if( who_is_global 'user' ){
                <li><%= ml 'Cabinet' %>
