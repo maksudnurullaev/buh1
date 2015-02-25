@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <title>Buh1Uz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="/mstyle.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+
+<body>
+<div data-role="page">
+ <div data-role="header">
+<table width="100%">
+ <tr>
+  <td>Buh I.</td>
+  <td class="tar"><%= languages_bar %></td>
+ </tr>
+</table
+ </div><!-- /header -->
+ <div role="main" class="ui-content">
+ %= content ;
+ </div><!-- /content -->
+ <div data-role="footer">
+<div class="footer_text">
+ %= include 'footer' ;
+</div>
+ </div><!-- /footer -->
+</div><!-- /page -->
+</body>
+</html>

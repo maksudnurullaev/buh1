@@ -1,0 +1,8 @@
+Copyright 2013, The NMK Foundation<br />
+Generated: <%= localtime %><br />
+ % if( is_mobile_browser ){
+  %= link_to ml('Full version') => '/browser/mobile/0' ;
+ % } else {
+  %= link_to ml('Mobile version') => '/browser/mobile/1' ;
+ % }
+
