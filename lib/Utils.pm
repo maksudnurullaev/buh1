@@ -55,6 +55,7 @@ sub is_mobile_browser {
         # http://www.davekb.com/browse_programming_tips:detect_mobile_browser_in_perl:txt
         # http://detectmobilebrowser.com/mobile
         my $self = shift;
+        return $self->session->{mobile} if exists $self->session->{mobile} ;
         my $user_agent = $self->req->headers->user_agent();
         if( $user_agent ) {
             return 1 if ($user_agent =~ m/android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i);
