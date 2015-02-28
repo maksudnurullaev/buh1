@@ -1,0 +1,14 @@
+<div class="menu1">
+%= link_to ml('Home') => '/' ;
+|
+%= link_to ml('Companies') => '/desktop/company' ;
+% if( who_is_local('reader') ){
+|
+ %= link_to ml('Documents') => '/documents/list' ;
+% } 
+</div>
+% if( who_is_local('reader') ){
+<div class="menu2">
+ <%= ml('Company') %>: <strong><%= session 'company name' %></strong>
+</div>
+% } 

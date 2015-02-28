@@ -14,13 +14,7 @@
   <div id="headerSection">
     <a href="http://www.buh1uz.com/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
     <div class="login_status">
-      % if( who_is_global 'user' ) {
-       <strong><%= session->{'user email'} %></strong>
-       <sup><a href="/user/logout"><%= ml 'Logout' %></a></sup>
-      % } else {
-       <strong><%= ml 'Guest' %></strong>
-       <sup><a href="/user/login"><%= ml 'Login' %></a></sup>
-      % }
+      %= include 'login_bar' ;
       &nbsp;&nbsp;|||&nbsp;&nbsp;
       <%= languages_bar %>
       % if( who_is_local 'reader' ) {
@@ -63,7 +57,7 @@
               </li>
               % if( who_is_global('user') && !who_is_global('editor') ) {
                <li><%= ml 'Companies' %>
-                <ul><li><a href="/desktop/select_company"><%= ml 'Select' %></a></li></ul>
+                <ul><li><a href="/desktop/company"><%= ml 'Select' %></a></li></ul>
                </li>
               % }
               % if( session->{'company name'} ) {

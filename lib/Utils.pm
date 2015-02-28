@@ -177,6 +177,26 @@ sub url_append{
     return("$path?$value") ;
 };
 
+sub get_client_companies{
+    my $self = shift;
+    my $user_id = $self->session('user id');
+    return if !$user_id ;
+
+    my $db = Db->new($self);
+    my $companies = $db->get_links( $user_id, 'company', ['name'] );
+    my $result = {};
+
+    for my $cid (keys %{$companies}){
+       my $company = $db->get_objects({id => [$cid], field => ['name']})->{$cid};
+       $result->{$cid} = {
+           name   => $company->{name},
+           access => $db->get_linked_value('access',$cid,$user_id)
+       };
+    }
+    return($result);
+};
+
+
 # END OF PACKAGE
 };
 

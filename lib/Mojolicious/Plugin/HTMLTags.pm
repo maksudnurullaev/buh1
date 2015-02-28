@@ -64,6 +64,7 @@ sub register {
     $app->helper( calc_start4ol => sub { Utils::calc_start4ol (@_); } );
 
     $app->helper( utf_compare   => sub { Utils::utf_compare (@_); } );
+    $app->helper( client_companies => sub { Utils::get_client_companies (@_); } );
 };
 
 };
