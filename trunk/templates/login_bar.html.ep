@@ -1,0 +1,7 @@
+% if( who_is_global 'user' ) {
+ <strong><%= session->{'user email'} %></strong>
+ <sup><a href="/user/logout"><%= ml 'Logout' %></a></sup>
+% } else {
+ <strong><%= ml 'Guest' %></strong>
+ <sup><a href="/user/login"><%= ml 'Login' %></a></sup>
+% }

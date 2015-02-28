@@ -1,7 +1,7 @@
 % layout 'default';
 <h1><%= ml 'Companies' %></h1>
 % my $user      = stash 'user';
-% my $companies = stash 'companies';
+% my $companies = client_companies ;
 % my $company   = session->{'company name'};
 % if ( $companies ){
  <div>
@@ -11,7 +11,7 @@
     % if ($company && $company eq $companies->{$cid}{name} ){
      <li><strong><%= $companies->{$cid}{name} %></strong></li>
     % } else {    
-     <li><%= link_to $companies->{$cid}{name} => "/desktop/select_company/$cid" %></li>
+     <li><%= link_to $companies->{$cid}{name} => "/desktop/company/$cid" %></li>
     % } 
     <ul><li><u><%= ml 'Access level' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
    % } else {

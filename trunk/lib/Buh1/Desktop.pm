@@ -18,7 +18,7 @@ use Utils::Db;
 use DbClient;
 use Utils::Documents;
 
-sub select_company{
+sub company{
     my $self = shift;
     my $cid = $self->param('payload');
     if( $cid ){
@@ -26,8 +26,6 @@ sub select_company{
         my $company = $db->get_objects({id => [$cid], field => ['name']});
         deploy_client_company($self,$cid,$company->{$cid}{name}) if $company && $company->{$cid};
     }
-    deploy_client_companies($self);
-    Utils::Documents::detach($self);
 };
 
 sub deploy_client_company{
@@ -43,22 +41,6 @@ sub deploy_client_company{
         $self->session->{'company access'} = 
             $db->get_linked_value('access',$user_id,$company_id) ;
     }
-};
-
-sub deploy_client_companies{
-    my $self = shift;
-    my $db = Db->new($self);
-    my $user_id = $self->session('user id');
-    my $companies = $db->get_links( $user_id, 'company', ['name'] );
-
-    for my $cid (keys %{$companies}){
-       my $company = $db->get_objects({id => [$cid], field => ['name']})->{$cid};
-       $companies->{$cid} = {
-           name   => $company->{name},
-           access => $db->get_linked_value('access',$cid,$user_id)
-       };
-    }
-    $self->stash( companies => $companies ) if scalar keys %{$companies};
 };
 
 1;
