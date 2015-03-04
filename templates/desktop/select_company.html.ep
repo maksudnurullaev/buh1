@@ -1,0 +1,26 @@
+% layout 'default';
+<h2><%= ml 'Companies' %></h2>
+% my $user      = stash 'user';
+% my $companies = client_companies ;
+% my $company   = session->{'company name'};
+% if ( $companies ){
+ <div>
+  <ul>
+  % for my $cid ( sort keys %{$companies}) {
+   %if ( $companies->{$cid}{access} ) { 
+    % if ($company && $company eq $companies->{$cid}{name} ){
+     <li><strong><%= $companies->{$cid}{name} %></strong></li>
+    % } else {    
+     <li><%= link_to $companies->{$cid}{name} => "/desktop/company/$cid" %></li>
+    % } 
+    <ul><li><u><%= ml 'Access level' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
+   % } else {
+    <li><%= $companies->{$cid}{name} %></li>  
+    <ul><li><u><%= ml 'Access level' %>:</u> <%= ml 'No access' %></li></ul>   
+   % }
+  % }    
+  </ul>
+ </div>
+% } else {
+ <h3><%= ml 'No data!' %></h3>
+% }

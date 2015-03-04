@@ -8,7 +8,7 @@
     % if( !$_read_only ){
      <%= link_to $files->{$fileid}{name} => ($_path . "?fileform=update&fileid=$fileid") %>
     % } else {
-     <%= link_to $files->{$fileid}{name} => "/files/download/$payload?fileid=$fileid" %>
+     <%= link_to $files->{$fileid}{name} => "/files/download/$payload?fileid=$fileid&prefix=$controller" %>
     % }
     % if( $files->{$fileid}{desc} ){
      <br /><small><%= $files->{$fileid}{desc} %></small>
