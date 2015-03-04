@@ -93,8 +93,8 @@ sub update_file{
 
 sub get_path{
     my($self,$id) = @_ ;
-    my $controller = $self->param('prefix') || $self->stash('controller');
-    if( $controller =~ /templates/i ){ # admin actions
+    my $prefix = $self->param('prefix') || $self->stash('controller') ;
+    if( $prefix =~ /templates/i ){ # admin part
         return( $self->app->home->rel_dir("db/main/$id") ) ;
     } 
     my $company_id = $self->session('company id') ;
