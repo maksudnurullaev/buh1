@@ -1,1 +1,1 @@
-Simple accpunting application based on perl & mojolicious.
+Simple accounting application based on perl & mojolicious.
