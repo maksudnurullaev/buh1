@@ -59,13 +59,16 @@ sub startup {
       ->to( controller => 'users', action => 'list' );
     $r->get('/users/list/*payload')
       ->to( controller => 'users', action => 'list' );
-    $r->get('/users/add')->methods( 'GET', 'POST' )
+    $r->any('/users/add')->methods( 'GET', 'POST' )
       ->to( controller => 'users', action => 'add' );
-    $r->get('/users/edit/*payload')->methods( 'GET', 'POST' )
+    $r->any('/users/edit/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'users', action => 'edit' );
-    $r->get('/users/deleted')->methods( 'GET', 'POST' )
+    $r->any('/users/deleted')->methods( 'GET', 'POST' )
       ->to( controller => 'users', action => 'deleted' );
 
+    # Accounts
+    $r->get('/accounts/list')
+      ->to( controller => 'accounts', action => 'list' );
 
 }
 

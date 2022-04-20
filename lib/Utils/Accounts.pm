@@ -19,7 +19,13 @@ use Hash::Merge::Simple qw/ merge /;
 use Data::Dumper;
 use utf8;
 
-my ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $TYPES )
+# PARENT <-> CHILD LINKS
+# ACOUNT PART 
+# └─► ACCOUNT SECTION 
+#       └─► ACCOUNT 
+#            └─► ACCOUNT SUBCONTO
+
+our ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $TYPES )
  = ( 'account part','account section','account','account subconto', ['a','p','ca','cp','t'] );
 
 sub get_part_name{
@@ -100,11 +106,6 @@ sub get_child_name_by_id{
     return(undef);
 };
 
-# PARENT <-> CHILD links
-# acount part 
-#  └-> account section 
-#       └-> account 
-#            └-> account subconto
 sub get_child_name{
     my $account_name = shift;
     return(undef) if !$account_name;

@@ -1,4 +1,5 @@
-package t::database::Base; {
+package t::database::Base;
+{
 
 =encoding utf8
 
@@ -8,31 +9,34 @@ package t::database::Base; {
 
 =cut
 
-use strict;
-use warnings;
+    use strict;
+    use warnings;
 
-use Mojo::Base -strict;
-use Test::More;
-use Test::Mojo;
-use t::Base;
+    use Mojo::Base -strict;
+    use Test::More;
+    use Test::Mojo;
+    use t::Base;
 
-use DbTest;
-use File::Temp;
+    use DbTest;
+    use File::Temp;
 
-use_ok('DbTest');
-require_ok('DbTest');
+    use_ok('DbTest');
+    require_ok('DbTest');
 
-sub get_test_db{
-    my $test_mojo = t::Base::get_test_mojo();
-    my $test_db   = DbTest->new( $test_mojo );
-    $test_db->{'file'} 
-                  = File::Temp::tempnam( $test_mojo->app->home->rel_dir('t/database'), 'db_test_' ); 
-    ok( $test_db->initialize(), 'Test for initialize script!' );
-    ok( $test_db->is_valid, 'Check database' );
-    return( $test_db );
-}
+    use Mojo::Home;
 
-# END OF PACKAGE
+    sub get_test_db {
+        my $test_mojo = t::Base::get_test_mojo();
+        my $test_db   = DbTest->new($test_mojo);
+        $test_db->{'file'} =
+          File::Temp::tempnam( $test_mojo->app->home->rel_file('t/database'),
+            'db_test_' );
+        ok( $test_db->initialize(), 'Test for initialize script!' );
+        ok( $test_db->is_valid,     'Check database' );
+        return ($test_db);
+    }
+
+    # END OF PACKAGE
 };
 
 1;

@@ -1,5 +1,5 @@
 % layout 'default';
- <h2><%= ml ( $user_id ? 'User' : 'New user' ) %> - EDITOR</h2>
+ <h2><%= ml ( $user_id ? 'User' : 'New user' ) %></h2>
  %= tag 'a', href => '/users/list', ml('Back')
 %= include 'success_error'
 <div class="form">
