@@ -21,14 +21,14 @@
       %= submit_button ml('Delete') ;
      % } elsif( $action eq 'edit' ) {
       %= submit_button ml('Save') ;
-       | <%= link_to ml('Cancel')  => "/$controller/list" %>
+       | <%= tag 'a', href  => "/$controller/list", ml('Cancel') %>
      % } elsif( $action eq 'add' ) {
       %= submit_button ml('Save') ;
-       | <%= link_to ml('Cancel')  => "/$controller/list" %>
+       | <%= tag 'a', href  => "/$controller/list", ml('Cancel') %>
      % } elsif( $action eq 'move' ){
       %= submit_button ml('Move') ;
        % if( stash 'PARENT' ) {
-        | <%= link_to ml('Make root') => "/$controller/make_root/$payload" if stash 'PARENT' %>
+        | <%= tag 'a', href => "/$controller/make_root/$payload", ml('Make root') if stash 'PARENT' %>
        % }
      % } 
    &nbsp;

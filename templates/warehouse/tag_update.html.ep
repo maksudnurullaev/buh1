@@ -9,9 +9,9 @@
  <tr>
   <td><%= submit_button ml('Update') %></td>
   <td colspan="2">
-   <%= link_to ml('Cancel') => ("/$controller/edit/$payload") %>
+   <%= tag 'a', href => ("/$controller/edit/$payload"), ml('Cancel') %>
    |
-   <%= link_to ml('Delete') => ("/$controller/del_tag/$payload?tagid=" . param('tagid')) %>
+   <%= tag 'a', href => ("/$controller/del_tag/$payload?tagid=" . param('tagid')), ml('Delete') %>
   </td>
  </tr>
 % end

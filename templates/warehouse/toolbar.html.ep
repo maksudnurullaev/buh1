@@ -1,10 +1,10 @@
 % my $has_objects = stash('objects') && scalar(keys %{stash('objects')});
 <div>
 %= form_for '/warehouse/export?path=/warehouse/list' => (method => 'POST') => begin
- %= link_to ml('Add') => "/$controller/add"  if who_is_local 'writer' ; 
+ %= tag 'a', href => "/$controller/add", ml('Add') if who_is_local 'writer' ; 
  % if( $has_objects ){
  |    
- %= link_to ml('Remains') => '/warehouse/remains_all'
+ %= tag 'a', href => '/warehouse/remains_all', ml('Remains')
  |    
  %= submit_button ml('Export'), style => 'width: auto;'
  %= select_field scope => [[ml('Current list') => 'current'], [ml('All') => 'all']]

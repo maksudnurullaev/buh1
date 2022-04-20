@@ -53,10 +53,10 @@
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td>
-    <%= link_to "/backup/restore/$payload" => begin %><%= ml 'Restore' %><% end %>
+    %= tag 'a', href => "/backup/restore/$payload", ml('Restore')
    </td>
    <td class='tar'>
-    %= link_to ml('Delete') => "/backup/del/$payload"
+    %= tag 'a', href => "/backup/del/$payload", ml('Delete')
    </td>
   </tr>
  </table>

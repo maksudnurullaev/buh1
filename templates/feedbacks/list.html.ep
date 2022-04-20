@@ -8,7 +8,7 @@
  <ul>
   % for my $id( reverse sort keys %{$feedbacks} ) {
    <li><%= $feedbacks->{$id}{message} %><br />
-    <%= link_to "/feedbacks/del/$id" => begin%><%= ml 'Delete' %><% end %>
+    %= tag 'a', href => "/feedbacks/del/$id", ml('Delete')
     % if($feedbacks->{$id}{user}) {
      <ul><li><%= ml 'User' %>:
       %= $feedbacks->{$id}{user}

@@ -1,13 +1,13 @@
 <div class="toolbar">
  % if( $action eq 'files_add_new' ){
-  <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+  %= tag 'a', href => "/$controller/files/$payload", ml('Files')
   |
-  <%= ml 'New' %>  
+  %= ml 'New'  
  % } elsif( $action eq 'files_update' ) {
-  <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+  %= tag 'a', href => "/$controller/files/$payload", ml('Files')
  % } else {
-  <%= ml 'Files' %>  
+  %= ml 'Files'
   |
-  <%= link_to "/$controller/files_add_new/$payload" => begin %><%= ml 'New' %><% end %>
+  %= tag 'a', href => "/$controller/files_add_new/$payload", ml('New')
  % }
 </div>

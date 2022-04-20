@@ -9,7 +9,7 @@
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li>    
-    <%= link_to "/users/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    %= tag 'a', href => "/users/restore/$id", ml('Restore')
     <%= $users->{$id}{email} %>
     % if($users->{$id}{description}) {
       <ul><li>
