@@ -15,7 +15,7 @@
     % if ( $bt && $bt eq $id ){
      <strong><%= $name %></strong>
     % } else {
-     <%= link_to $name => "/operations/edit/$payload?bt=$id"  %>
+     <%= tag 'a', href => "/operations/edit/$payload?bt=$id" , $name %>
     % }
    </li>
    <ul><li><u>DEBET:</u> <%= $debet %>, <u>CREDIT:</u> <%= $credit %></li></ul>

@@ -1,4 +1,4 @@
 <div class="toolbar">
- %= link_to ml('Add') => "/$controller/add" ; 
+ %= tag 'a', href => "/$controller/add" , ml('Add') 
 </div>
 

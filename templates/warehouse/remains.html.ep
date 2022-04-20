@@ -16,7 +16,7 @@
   <tr style="background-color: darkgray">
    <th>(o)</th>
    <td>
-    %= link_to $parent->{description} => "/warehouse/edit/$parent->{id}" ;
+    %= tag 'a', href => "/warehouse/edit/$parent->{id}", $parent->{description} ;
    </td>
    <td><%= ml 'Incoming' %></td>
    <td class="tar"><%= $parent->{counting_field_value} %></td>
@@ -28,7 +28,7 @@
    % my $row_color     = ( $direction eq '+') ? 'darkgray' : 'bisque' ;
    <tr style="background-color: <%= $row_color %>">
     <th><%= $childs->{$cid}->{counting_direction} %></th>
-    <td><%= link_to $childs->{$cid}->{description} => "/warehouse/edit/$cid" %></td>
+    <td><%= tag 'a', href => "/warehouse/edit/$cid", $childs->{$cid}->{description} %></td>
     <td><%= ml $direction_str %></td>
     <td class="tar"><%= $childs->{$cid}->{counting_direction} %><%= $childs->{$cid}->{counting_field_value} %></td>
    </tr>

@@ -3,10 +3,10 @@
  <ul style="list-style: none;">
   <li><%= ml 'Child accounts' %>: 
   % if( who_is_global( 'editor' ) && stash('has_child') ){
-   <%= link_to ml('Add') => "/accounts/add_part/$payload" %></li>
+   <%= tag 'a', href => "/accounts/add_part/$payload",  ml('Add') %></li>
   % }
   % for my $cid (sort keys %{$CHILDS}) {
-   <li><%= link_to $CHILDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
+   <li><%= tag 'a', href => "/accounts/edit/$cid", $CHILDS->{$cid}{name}  %></li>
   % }    
  </ul>
 % }

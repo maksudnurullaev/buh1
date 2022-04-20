@@ -26,4 +26,4 @@
 12.1    (Done) Make unique files update & upload library
 13.1    Check & workout read only access for all users with no admin or writer access in company's submeny modules
 14.1    Filter + Paging does work properly when used together
-
+15.1    Fix user's list page access for anonymous

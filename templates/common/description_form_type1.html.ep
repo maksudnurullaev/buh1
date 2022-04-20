@@ -26,13 +26,13 @@
    <td>
     %= submit_button ml('Save') ;
     |
-    %= link_to ml('Cancel') => $_cancel_link ;
+    %= tag 'a', href => $_cancel_link, ml('Cancel') ;
    </td>
   </tr>
 % } elsif( stash('_cancel_link') ){
   <tr><td>&nbsp;</td>
    <td class="tar">
-    %= link_to ml('Cancel') => $_cancel_link ;
+    %= tag 'a', href => $_cancel_link, ml('Cancel') ;
    </td>
   </tr>
 % }

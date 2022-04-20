@@ -1,9 +1,9 @@
 % if( $account ){
  <p>
  % for my $account_id (keys %{$account}){   
-  %= link_to $account->{$account_id}{name} => "/operations/account/$payload"
+  %= tag 'a', href => "/operations/account/$payload", $account->{$account_id}{name} 
   <sup>
-  %= link_to ml('Chart of Accounts') => "/accounts/edit/$account_id"
+  %= tag 'a', href => "/accounts/edit/$account_id", ml('Chart of Accounts') 
   </sup>
  % }
  </p>

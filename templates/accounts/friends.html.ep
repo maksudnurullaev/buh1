@@ -4,7 +4,7 @@
    % if ( $cid eq $payload ){
     <li><strong><%= $FRIENDS->{$cid}{name} %></strong></li>
    % } else {    
-    <li><%= link_to $FRIENDS->{$cid}{name} => "/accounts/edit/$cid" %></li>
+    <li><%= tag 'a', href => "/accounts/edit/$cid", $FRIENDS->{$cid}{name} %></li>
    % } 
   % }    
 % }

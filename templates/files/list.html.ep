@@ -6,9 +6,9 @@
   % for my $fileid (reverse sort keys %{$files}){
    <li>
     % if( !$_read_only ){
-     <%= link_to $files->{$fileid}{name} => ($_path . "?fileform=update&fileid=$fileid") %>
+     <%= tag 'a', href => ($_path . "?fileform=update&fileid=$fileid"), $files->{$fileid}{name} %>
     % } else {
-     <%= link_to $files->{$fileid}{name} => "/files/download/$payload?fileid=$fileid&prefix=$controller" %>
+     <%= tag 'a', href => "/files/download/$payload?fileid=$fileid&prefix=$controller", $files->{$fileid}{name} %>
     % }
     % if( $files->{$fileid}{desc} ){
      <br /><small><%= $files->{$fileid}{desc} %></small>

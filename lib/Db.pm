@@ -730,7 +730,7 @@ sub get_filtered_ids{
         }
 
     }
-    return(keys $temp_hash);
+    return(keys %{$temp_hash});
 };
 
 };

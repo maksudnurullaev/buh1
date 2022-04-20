@@ -17,7 +17,7 @@
   % if ( $docid ){
    %= include 'document_header';
    %= submit_button ml 'Update';
-   %= link_to ml('Cancel') => "/documents/cancel_update_document_header/$payload?docid=$docid";
+   %= tag 'a', href => "/documents/cancel_update_document_header/$payload?docid=$docid", ml('Cancel') 
   % } else {
    %= include 'documents/types'
    %= submit_button ml('Create') if $skd && $skc && who_is_local('writer') ; 

@@ -7,9 +7,9 @@
     <strong><%= $temp_hash->{$id}{description} %></strong>
    % } else {
     % my $temp_link = who_is_global('editor') ? "/$controller/edit/$id" : "/$controller/files/$id" ;
-    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => $temp_link %></dfn>
+    <dfn id="<%= $id %>"><%= tag 'a', href => $temp_link, $temp_hash->{$id}{description} %></dfn>
    % }
-   <sup><%= link_to $files_count => "/$controller/files/$id" %></sup>
+   <sup><%= tag 'a', href => "/$controller/files/$id", $files_count %></sup>
    % if( exists $temp_hash->{$id}{CHILDREN} ){
     %= include "$controller/list_resources", temp_hash => $temp_hash->{$id}{CHILDREN} ;
    % }

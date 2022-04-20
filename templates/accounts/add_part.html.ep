@@ -15,7 +15,7 @@
         % $parent_id = $pid;
         <li><u>Object name:</u> <%= uc $parents->{$pid}{object_name} %></li>
         <li><u>ID:</u> <%= $pid %></li>
-        <li><u>Name:</u> <%= link_to $parents->{$pid}{name} => "/accounts/edit/$pid" %></li>
+        <li><u>Name:</u> <%= tag 'a', href => "/accounts/edit/$pid", $parents->{$pid}{name} %></li>
     % } 
     </ul>
 </div>

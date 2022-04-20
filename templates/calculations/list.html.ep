@@ -9,7 +9,7 @@
     %= $result ? currency_format($result) : '(?)' ;
     %# set up link to calculcation
     % my $form = $_read_only ? 'test' : 'edit' ;
-    %= link_to $calcs->{$key}{description} => "$_return_path?calcform=$form&calcid=$key" ;
+    %= tag 'a', href => "$_return_path?calcform=$form&calcid=$key", $calcs->{$key}{description} ;
    </li>
   % }
   </ul>

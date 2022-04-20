@@ -20,7 +20,7 @@
    <td>
     %= submit_button ml 'Upload'
     |
-    %= link_to ml('Cancel') => $_return_path ;
+    %= tag 'a', href => $_return_path, ml('Cancel') ;
    </td>
   </tr>
  </table>

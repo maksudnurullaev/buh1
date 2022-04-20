@@ -1,4 +1,4 @@
 % my $_path = $self->req->url->path->to_string() ;
 <div class="toolbar">
-   %= link_to ml('Add') => "$_path?fileform=add"
+   %= tag 'a', href => "$_path?fileform=add", ml('Add') 
 </div>

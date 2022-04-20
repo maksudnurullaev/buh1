@@ -12,9 +12,9 @@
   <tr><td>&nbsp;</td>
    <td>
    % if( !$_read_only ){
-    <%= submit_button ml('Save') %> | <%= link_to ml('Cancel') => $_return_path %>
+    <%= submit_button ml('Save') %> | <%= tag 'a', href => $_return_path, ml('Cancel') %>
    % } else {
-    <%= submit_button ml('Calculate') %> | <%= link_to ml('Reset') => $_success_path %> 
+    <%= submit_button ml('Calculate') %> | <%= tag 'a', href => $_success_path %>, ml('Reset') 
    % }
    </td>
  </tr>

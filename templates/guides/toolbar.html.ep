@@ -1,19 +1,19 @@
 <div class="toolbar">
  % if( $action eq 'page' ){
   % if( who_is_global('editor') ) { 
-   <%= link_to ml('Add') => 'add' %> 
+   <%= tag 'a', href => 'add' %>, ml('Add') 
   % } 
  % } elsif( $action eq 'add' ) {
-   <%= link_to ml('Back') => '/guides/page' %> 
+   <%= tag 'a', href => '/guides/page' %>, ml('Back') 
  % } elsif( $action eq 'view' ) {
-   <%= link_to ml('Back') => '/guides/page' %> 
+   <%= tag 'a', href => '/guides/page' %>, ml('Back') 
   % if( who_is_global('editor') ) { 
-   | <%= link_to ml('Edit') => "/guides/edit/$payload" %>
+   | <%= tag 'a', href => "/guides/edit/$payload", ml('Edit') %>
   % } 
  % } elsif( $action eq 'edit' ) {
-   <%= link_to ml('Back') => '/guides/page' %> 
+   <%= tag 'a', href => '/guides/page' %>, ml('Back') 
   % if( who_is_global('editor') ) { 
-   | <%= link_to ml('View') => "/guides/view/$payload" %>
+   | <%= tag 'a', href => "/guides/view/$payload", ml('View') %>
   % } 
  % } 
 </div>

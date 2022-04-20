@@ -1,4 +1,4 @@
 <div class="toolbar">
- %= link_to ml('Back') => $back_link ;
+ %= tag 'a', href => $back_link, ml('Back') ;
 </div>
 

@@ -1,7 +1,7 @@
 % my $has_objects = stash('remains_objects') && scalar(keys %{stash('remains_objects')});
 <div>
 %= form_for "/warehouse/export_remains/$payload?path=/warehouse/remains_all" => (method => 'POST') => begin
- %= link_to ml('Back') => "/warehouse/list" ;
+ %= tag 'a', href => "/warehouse/list", ml('Back') ;
  % if( $has_objects ){
  |    
  %= submit_button ml('Export'), style => 'width: auto;'

@@ -11,7 +11,7 @@
     % if ($company && $company eq $companies->{$cid}{name} ){
      <li><strong><%= $companies->{$cid}{name} %></strong></li>
     % } else {    
-     <li><%= link_to $companies->{$cid}{name} => "/desktop/company/$cid" %></li>
+     <li><%= tag 'a', href => "/desktop/company/$cid", $companies->{$cid}{name} %></li>
     % } 
     <ul><li><u><%= ml 'Access level' %>:</u> <%= ml $companies->{$cid}{access} %></li></ul>   
    % } else {

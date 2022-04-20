@@ -23,6 +23,6 @@
   % }
  % }
  <label for='<%= $lid %>'><%= $name %></label>
- <sup><%= link_to ml('Chart of Accounts') => "/accounts/edit/$id" %></sup>
+ <sup><%= tag 'a', href => "/accounts/edit/$id", ml('Chart of Accounts') %></sup>
  <br />
 % }

@@ -5,7 +5,7 @@
    % if( stash('id') && stash('id') eq $id ){
     <strong><%= $temp_hash->{$id}{description} %></strong>
    % } else {
-    <dfn id="<%= $id %>"><%= link_to $temp_hash->{$id}{description} => "/$controller/edit/$id" %></dfn>
+    <dfn id="<%= $id %>"><%= tag 'a', href => "/$controller/edit/$id", $temp_hash->{$id}{description} %></dfn>
    % }
    %= include 'common/files_calcs_links', _id => $id ;
    % if( exists $temp_hash->{$id}{CHILDREN} ){

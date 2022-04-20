@@ -15,7 +15,7 @@
    <td>
      %= submit_button ml('Delete') ;
      | 
-     %= link_to ml('Cancel') => "/$controller/edit/$payload"
+     %= tag 'a', href => "/$controller/edit/$payload", ml('Cancel') 
    </td>
   </tr>
  </table>
