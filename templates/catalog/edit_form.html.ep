@@ -15,7 +15,7 @@
    <td>
     %= submit_button ml('Save') ;
     | 
-    %= link_to ml('Cancel') => "/$controller/list" 
+    %= tag 'a', href => "/$controller/list", ml('Cancel') 
    </td>
   </tr>
  </table>

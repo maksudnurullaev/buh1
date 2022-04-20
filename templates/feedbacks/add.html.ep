@@ -3,7 +3,7 @@
 %= include 'success_error'
 %= include 'feedbacks/toolbar' if who_is_global('editor') ;
 % if( stash 'success' ) { 
- %= link_to ml('Again') => '/feedbacks/add';
+ %= tag 'a', href => '/feedbacks/add';, ml('Again') 
 % } else { 
  %= include 'feedbacks/form';
 % }

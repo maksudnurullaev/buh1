@@ -35,10 +35,10 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | <%= link_to '/guides/page' => begin %><%= ml 'Cancel' %><% end %>
+    | <%= tag 'a', href => begin %><%= ml 'Cancel' %><% end, '/guides/page' %>
     % if( $action eq 'edit' ){
      |
-     %= link_to ml('Delete') => "/$controller/del/$payload"
+     %= tag 'a', href => "/$controller/del/$payload", ml('Delete') 
     % }
    </td>
   </tr>

@@ -4,8 +4,8 @@
   <ul>
    % for my $company_id(keys %{$companies} ) {
     <li>
-     %= link_to ml('Delete') => "/users/remove_company/$payload?company=$company_id" ;
-     %= link_to $companies->{$company_id}{name} => "/companies/edit/$company_id" ; 
+     %= tag 'a', href => "/users/remove_company/$payload?company=$company_id", ml('Delete') ;
+     %= tag 'a', href => "/companies/edit/$company_id" ;, $companies->{$company_id}{name} 
     </li>
    % }
   </ul>

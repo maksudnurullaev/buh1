@@ -1,5 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Users' %></h2>
+%= tag 'a', href=>'/users/list', ml('Back')
 <p>
 %= include 'filter'   , filter4    => 'users'
 %= include 'paginator', paginator4 => 'users'
@@ -9,7 +10,7 @@
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li>    
-    <%= link_to "/users/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    <%= tag 'a', href => begin%><%= ml 'Restore' %><% end, "/users/restore/$id" %>
     <%= $users->{$id}{email} %>
     % if($users->{$id}{description}) {
       <ul><li>

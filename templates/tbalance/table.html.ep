@@ -16,7 +16,7 @@
   % next if $key eq 'totals' ;
   % my $account_id = $rows->{$key}{account_id};
   <tr>
-   <td><%= link_to shrink_if($rows->{$key}{name},50) => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date" %></td>
+   <td><%= tag 'a', href => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date", shrink_if($rows->{$key}{name},50) %></td>
    %= include 'tbalance/table_td', value => $rows->{$key}{start_debet};
    %= include 'tbalance/table_td', value => $rows->{$key}{start_credit} ;
    %= include 'tbalance/table_td', value => $rows->{$key}{debet} ;

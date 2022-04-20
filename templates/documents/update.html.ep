@@ -19,9 +19,9 @@
   % if( $isValid ){
    % if( my $bt = stash 'bt' ){
     % if( $docid ){
-     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";
+     %= tag 'a', href => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid";, ml('Edit') 
     % } else {
-     %= link_to ml('Edit') => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";
+     %= tag 'a', href => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}";, ml('Edit') 
     % }
    % }
   % } 

@@ -1,18 +1,17 @@
  % my @pagesizes = (5,10,20,40,100);
+
  % my $path = $self->req->url->path->to_string() ;
- % my $pagesize_path = "$path/pagesize" ;
- % my $pagesize = session($pagesize_path) || 5 ;
- % my $pages_path = "$path/pages" ;
- % my $pages = session($pages_path) || 1 ;
- % my $page_path = "$path/page" ;
- % my $page = session($page_path) || 1 ;
+ % my $pagesize = session("$path/pagesize") || 5 ;
+ % my $pages = session("$path/pages") || 1 ;
+ % my $page = session("$path/page") || 1 ;
+
 <div>
   <%= ml 'Page size' %>:
   % for my $ps ( @pagesizes ) {
    % if ( $ps == $pagesize) {
      <strong><u><%= $ps %></u></strong>
    % } else {
-      %= link_to $ps => "/filter/pagesize/$ps?path=$path" ;
+      %= tag 'a', href => "/filter/pagesize/$ps?path=$path", $ps
    % }
   % } 
   <br /><%= ml 'Pages' %>:
@@ -20,7 +19,7 @@
    % if ( $p == $page ) {
     <strong><u><%= $page %></u></strong>
    % } else {
-    %= link_to $p => "/filter/page/$p?path=$path"
+      %= tag 'a', href => "filter/page/$p?path=$path", $p
    % } 
   % }
 </div>

@@ -14,7 +14,7 @@
  <ul>
   % for my $id( reverse sort keys %{$users} ) {
    <li><%= ml 'User' %>:
-    <%= link_to "/users/edit/$id" => begin%><%= $users->{$id}{email} %><% end %>
+    %= tag 'a', href => "/users/edit/$id", $users->{$id}{email}
     % if($users->{$id}{description}) {
      <ul><li><%= ml 'Description' %>:
       %= $users->{$id}{description}
@@ -23,7 +23,7 @@
     % if($users->{$id}{companies}) {
      <ul><li><%= ml 'Companies' %>:
       % for my $company_id(keys %{$users->{$id}{companies}} ) {
-       <%= link_to "/companies/edit/$company_id" => begin %><%= $users->{$id}{companies}{$company_id}{name} %><% end %> 
+       %= tag 'a', href => "/companies/edit/$company_id", $users->{$id}{companies}{$company_id}{name} 
        &nbsp;
       % }
      </li></ul>

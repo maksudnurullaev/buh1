@@ -82,8 +82,7 @@ sub validate_email{
 };
 
 sub validate{
-    my $self = shift;
-    my $edit_mode = shift;
+    my ($self, $edit_mode) = @_;
     my $data = { 
         object_name => $OBJECT_NAME,
         creator => Utils::User::current($self),
@@ -133,20 +132,18 @@ sub remove_company{
 
 sub edit{
     my $self = shift;
-    $self->stash(edit_mode => 1);
-    my $method = $self->req->method;
-    my $data;
-    my $id = $self->param('payload');
-    if( !$id) { 
+    my $user_id = $self->param('payload');
+    if( !$user_id) { 
         $self->redirect_to('/users/list'); 
         warn "Users:edit:error user id not defined!";
         return; 
     }
-    my $db = Db->new($self);
-    if ( $method =~ /POST/ ){
+    $self->stash(user_id => $user_id);
+    my ($db, $data) = (Db->new($self), undef);
+    if ( $self->req->method eq 'POST' ){
         $data = validate( $self, 1 );
         if( !exists($data->{error}) ){
-            $data->{id} = $id;
+            $data->{id} = $user_id;
             if( $db->update($data) ){
                 $self->stash(success => 1);
             } else {
@@ -157,20 +154,21 @@ sub edit{
             $self->stash(error => 1);
         }
     } 
-    $data = $db->get_objects({id=>[$id]});
+    $data = $db->get_objects({id=>[$user_id]});
     if( $data ){
         $db->links_attach($data,'companies','company',['name']);
-        for my $key (keys %{$data->{$id}} ){
-            $self->stash($key => $data->{$id}->{$key});
+        for my $key (keys %{$data->{$user_id}} ){
+            $self->stash($key => $data->{$user_id}->{$key});
         }
     } else {
         redirect_to('/users/list');
     }
-    $self->render('/users/add');
+    $self->render();
 };
 
 sub add{
     my $self = shift;
+    $self->stash( user_id => undef);
     my $method = $self->req->method;
     if ( $method =~ /POST/ ){
         # check values
@@ -188,7 +186,7 @@ sub add{
             $self->stash(error => 1);
         }
     }
-    $self->render();
+    $self->render('/users/edit');
 };
 
 1;

@@ -19,7 +19,7 @@
     % if( stash 'edit_mode') {
      %= submit_button ml('Save')
      |  
-     <%= link_to "/companies/del/$payload" => begin %><%= ml 'Delete' %><% end %>
+     <%= tag 'a', href => begin %><%= ml 'Delete' %><% end, "/companies/del/$payload" %>
     % } else {
      %= submit_button ml('Add')
     % }

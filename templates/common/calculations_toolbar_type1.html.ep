@@ -1,5 +1,5 @@
 % my $_path = $self->req->url->path->to_string() ;
 <div class="toolbar">
-   %= link_to ml('Add') => "$_path?calcform=add"
+   %= tag 'a', href => "$_path?calcform=add", ml('Add') 
 </div>
 

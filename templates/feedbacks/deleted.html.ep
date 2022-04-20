@@ -20,9 +20,9 @@
     % }
    </li>
    <sup>
-    <%= link_to "/feedbacks/restore/$id" => begin%><%= ml 'Restore' %><% end %>
+    <%= tag 'a', href => begin%><%= ml 'Restore' %><% end, "/feedbacks/restore/$id" %>
     | 
-    %= link_to ml('Delete') => "/feedbacks/del_final/$id" ;
+    %= tag 'a', href => "/feedbacks/del_final/$id", ml('Delete') ;
     </sup>
   % }
  </ul>

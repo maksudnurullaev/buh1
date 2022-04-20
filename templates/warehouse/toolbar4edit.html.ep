@@ -1,9 +1,9 @@
 <div class="toolbar">
-%= link_to ml('Back')         => "/warehouse/list" ;
+%= tag 'a', href => "/warehouse/list", ml('Back')         ;
 |
-%= link_to ml('Files')        => "/warehouse/files/$payload" ;
+%= tag 'a', href => "/warehouse/files/$payload", ml('Files')        ;
 <sup>(<%= files_count($payload) %>)</sup>
 |
-%= link_to ml('Calculations') => "/warehouse/calculations/$payload" ;
+%= tag 'a', href => "/warehouse/calculations/$payload", ml('Calculations') ;
 <sup>(<%= calcs_count($payload) %>)</sup>
 </div>

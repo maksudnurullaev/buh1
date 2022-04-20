@@ -1,19 +1,33 @@
-package Buh1::Initial; {
-use Mojo::Base 'Mojolicious::Controller';
+package Buh1::Initial;
+{
+    use Mojo::Base 'Mojolicious::Controller';
+    use Data::Dumper;
 
-# This action will render a template
-sub welcome {
-    my $self = shift;
-    $self->render();
-}
+    # This action will render a template
+    sub welcome {
+        my $self = shift;
 
-sub lang{
-    my $self = shift;
-    my $lang = $self->param('payload'); #choosed language
-    $self->session->{'lang'} = $lang;
-    $self->redirect_to('/');
-};
+        if ( $self->stash->{Controller} ) {
+            my $c = $self->stash->{Controller};
+            my $a = $self->stash->{Action};
+            $self->redirect_to(
+                {
+                    controller => $c,
+                    action     => $a
+                }
+            );
+            return;
+        }
+        $self->render();
+    }
 
-1;
+    sub lang {
+        my $self = shift;
+        my $lang = $self->param('payload');    #choosed language
+        $self->session->{'lang'} = $lang;
+        $self->redirect_to('/');
+    }
+
+    1;
 
 };

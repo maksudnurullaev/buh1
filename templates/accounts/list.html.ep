@@ -9,12 +9,12 @@
  % my $parts = stash 'parts';
  % for my $pid (sort keys %{$parts}) {
   <ul class="nostyle" style="padding-left: 10px">
-   <li><dfn id="<%= $pid %>"><%= link_to $parts->{$pid}{name} => "/accounts/edit/$pid" %></dfn></li>
+   <li><dfn id="<%= $pid %>"><%= tag 'a', href => "/accounts/edit/$pid", $parts->{$pid}{name} %></dfn></li>
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
     <ul class="nostyle" style="padding-left: 10px">
      % for my $sid(sort keys %{$sections}) {
-      <li><dfn id="<%= $sid %>"><%= link_to $sections->{$sid}{name} => "/accounts/edit/$sid" %></dfn></li>
+      <li><dfn id="<%= $sid %>"><%= tag 'a', href => "/accounts/edit/$sid", $sections->{$sid}{name} %></dfn></li>
       % if ( exists $sections->{$sid}{accounts} ) {
        % my $accounts = $sections->{$sid}{accounts} ;
        <ul class="nostyle" style="padding-left: 10px">
@@ -22,25 +22,25 @@
          % my $account        = $accounts->{$aid} ;
          % my $account_prefix = $1 if $aid =~ /(\d{2})00$/ ;
          <li><%= ml "account type $account->{type}" if $account->{type} %></li>
-         <li><dfn id="<%= $aid %>"><%= link_to $account->{name} => "/accounts/edit/$aid" %></dfn></li>
+         <li><dfn id="<%= $aid %>"><%= tag 'a', href => "/accounts/edit/$aid", $account->{name} %></dfn></li>
          % if( exists $account->{subcontos} ) {
           % my $subcontos = $account->{subcontos};
           <ul class="nostyle" style="padding-left: 10px">
            % for my $subconto_id (sort keys %{$subcontos} ) {
             <li>
-            %= link_to ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' => 'color: red' if $subcontos->{$subconto_id}{name} =~ /delete/i
+            %= tag 'a', href => 'color: red' if $subcontos->{$subconto_id}{name} =~, ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' /delete/i
             % if ($subconto_id =~ /(\d{2})00$/){
              % my $idnew = "account " . $1 . "00";
-             %= link_to ml("Error!") => "/accounts/fix_account/$subconto_id?aid=$aid&idnew=$idnew&sid=$sid", 'style' => 'color: red'
-             %= link_to ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' => 'color: red'
+             %= tag 'a', href => 'color:, ml("Error!") => "/accounts/fix_account/$subconto_id?aid=$aid&idnew=$idnew&sid=$sid", 'style' red'
+             %= tag 'a', href => 'color:, ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' red'
             % } elsif ($subconto_id !~ /$account_prefix\d{2}/){
              % if ( $subconto_id =~ /(\d{2})\d{2}$/ ) {
               % my $pnew = 'account ' . $1 . '00';
-              %= link_to ml("Error!") => "/accounts/fix_subconto/$subconto_id?pnew=$pnew&pold=$aid", 'style' => 'color: red'
+              %= tag 'a', href => 'color:, ml("Error!") => "/accounts/fix_subconto/$subconto_id?pnew=$pnew&pold=$aid", 'style' red'
              % }
-             %= link_to ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' => 'color: red'
+             %= tag 'a', href => 'color:, ml('Delete') => "/accounts/delete_subconto/$subconto_id?parent=$aid", 'style' red'
             % }
-            <dfn id="<%= $subconto_id %>"><%= link_to $subcontos->{$subconto_id}{name} => "/accounts/edit/$subconto_id" %></dfn>
+            <dfn id="<%= $subconto_id %>"><%= tag 'a', href => "/accounts/edit/$subconto_id", $subcontos->{$subconto_id}{name} %></dfn>
             </li>
            % }
           </ul>

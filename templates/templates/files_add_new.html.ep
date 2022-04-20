@@ -7,7 +7,7 @@
 <div class="toolbar">
  <%= ml "Name" %>:
  <strong>
-  %= link_to stash("description") => "/$controller/edit/$payload" 
+  %= tag 'a', href => "/$controller/edit/$payload", stash("description") 
  </strong>
 </div>
 

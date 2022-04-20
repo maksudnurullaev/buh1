@@ -5,13 +5,13 @@
  % my $parts = stash 'parts';
  % for my $pid (sort keys %{$parts}) {
   <ul class="nostyle" style="padding-left: 10px">
-   <li><%= link_to $parts->{$pid}{name} => "/accounts/edit/$pid" %></li>
+   <li><%= tag 'a', href => "/accounts/edit/$pid", $parts->{$pid}{name} %></li>
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
     <ul class="nostyle" style="padding-left: 10px">
     % for my $sid(sort keys %{$sections}) {
      <li>
-     %= link_to $sections->{$sid}{name} => "/accounts/edit/$sid"
+     %= tag 'a', href => "/accounts/edit/$sid", $sections->{$sid}{name} 
      </li>
      % if ( exists $sections->{$sid}{accounts} ) {
       % my $accounts = $sections->{$sid}{accounts} ;
@@ -23,7 +23,7 @@
          % if ( exists $account->{_link_}{'business transaction'} ) {
              % $count = $account->{_link_}{'business transaction'};
          % }
-         <li><%= link_to $account->{name} => "/operations/account/$aid" %> (<%= $count %>)</li>
+         <li><%= tag 'a', href => "/operations/account/$aid" %> (<%= $count, $account->{name} %>)</li>
        % }
       </ul>
      % }

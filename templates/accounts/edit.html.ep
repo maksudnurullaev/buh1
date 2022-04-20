@@ -9,7 +9,7 @@
 % if ( $parent ) {
  <ul class="nostyle">
   <li><%= ml 'Parent account' %>:</li>
-  <li><%= link_to $parent->{$parent_id}{name} => "/accounts/edit/$parent_id" %></li>
+  <li><%= tag 'a', href => "/accounts/edit/$parent_id", $parent->{$parent_id}{name} %></li>
 % }
 <ul class="nostyle">
  % if( stash 'FRIENDS' ){

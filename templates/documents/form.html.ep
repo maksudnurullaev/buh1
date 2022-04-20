@@ -88,7 +88,7 @@
 % if( $docid ){
   <tr><td>&nbsp;</td>
    <td class="tar">
-    %= link_to ml('Print') => "/documents/print/$docid", target=>'_blank';
+    %= tag 'a', href => "/documents/print/$docid",, ml('Print') target=>'_blank';
    </td>
   </tr>
 % }

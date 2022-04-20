@@ -4,7 +4,7 @@
    <tr class="details">
     <td>
       %= $tdoc->{'document number'} . '.';
-      %= link_to shrink_if("($tdoc->{date}) $tdoc->{details}",50) => ("/documents/update/" . $tdoc->{account} . "?docid=$doc_id");
+      %= tag 'a', href => ("/documents/update/" . $tdoc->{account} ., shrink_if("($tdoc->{date}) $tdoc->{details}",50) "?docid=$doc_id");
     </td>
     % my @cnames = ('start_debet','start_credit','debet','credit'); 
     % for my $cname (@cnames){

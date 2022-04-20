@@ -20,7 +20,7 @@
    <tr style="background-color: <%= $row_num++ % 2 ? 'darkgray' : 'bisque' %>">
     <th>(O)</th>
     <td>
-     %= link_to $hash_objects->{$cid}->{description} => "/warehouse/remains/$cid" ;
+     %= tag 'a', href => "/warehouse/remains/$cid", $hash_objects->{$cid}->{description} ;
      %= include 'common/files_calcs_links', _id => $cid ;
     </td>
     <td class="tar"><%= ($hash_objects->{$cid}->{calculated_childs_count} + 1) %></td>

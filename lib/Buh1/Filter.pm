@@ -4,7 +4,7 @@ package Buh1::Filter; {
 
 =head1 NAME
 
-    For filterinf and paginating controller
+    For filtering and paginating controller
 
 =cut
 

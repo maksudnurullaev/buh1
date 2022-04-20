@@ -25,7 +25,7 @@
  % if ( who_is_global 'admin' ) {
   <tr><td>&nbsp;</td>
    <td>
-    <sup><%= link_to ml("Delete") => "/operations/delete_bt/$payload?bt=$bt" %></sup>
+    <sup><%= tag 'a', href => "/operations/delete_bt/$payload?bt=$bt", ml("Delete") %></sup>
    </td>
   </tr>
  % }

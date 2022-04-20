@@ -12,7 +12,7 @@
    <td>
     %= submit_button ml('Calculate') ;
     |
-    %= link_to  ml('Reset') => full_url() ;
+    %= tag 'a', href => full_url(), ml('Reset') ;
    </td>
   </tr>
 

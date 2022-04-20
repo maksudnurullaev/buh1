@@ -19,7 +19,7 @@
    <td>
     %= submit_button ml 'Update'
     |
-    %= link_to ml('Cancel') => $_path
+    %= tag 'a', href => $_path, ml('Cancel') 
    </td>
   </tr>
 % }
@@ -45,7 +45,7 @@
    <td>
     %= submit_button ml 'Update'
     |
-    %= link_to ml('Cancel') => $_path
+    %= tag 'a', href => $_path, ml('Cancel') 
    </td>
   </tr>
 % }  
@@ -56,7 +56,7 @@
    <td>
    </td>
    <td class='tar'>
-     %= link_to ml('Delete') => "/files/delete?prefix=$controller&pid=$_pid&fileid=$_fileid&path=$_path" ;
+     %= tag 'a', href => "/files/delete?prefix=$controller&pid=$_pid&fileid=$_fileid&path=$_path", ml('Delete') ;
    </td>
   </tr>
 % }  

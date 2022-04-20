@@ -1,8 +1,10 @@
-Copyright 2013, The NMK Foundation<br />
-Generated: <%= localtime %><br />
+% my $lt = localtime;
+% my @lt_splitted = split(/\s/, $lt);
+Copyright <%= $lt_splitted[4] %>, The NMK Foundation<br />
+<small>Generated: <%= $lt %></small><br />
  % if( is_mobile_browser ){
-  %= link_to ml('Full version') => '/browser/mobile/0' ;
+  %= tag 'a', href => '/browser/mobile/0', ml('Full version') ;
  % } else {
-  %= link_to ml('Mobile version') => '/browser/mobile/1' ;
+  %= tag 'a', href => '/browser/mobile/1', ml('Mobile version') ;
  % }
 

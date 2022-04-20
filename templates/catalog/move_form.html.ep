@@ -18,12 +18,12 @@
    <tr><td>&nbsp;</td>
     <td>
      % if( stash("catalog.PARENT") ) {
-      %= link_to ml('Make root') => "/$controller/make_root/$payload" ;
+      %= tag 'a', href => "/$controller/make_root/$payload", ml('Make root') ;
      % } else {
       %= ml('Make root') ;
      % }
      | 
-     %= link_to ml('Cancel') => "/$controller/edit/$payload"
+     %= tag 'a', href => "/$controller/edit/$payload", ml('Cancel') 
     </td>
    </tr>
   </table>

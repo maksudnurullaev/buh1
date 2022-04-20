@@ -14,7 +14,7 @@
        % if( param('tagid') && param('tagid') eq $key ){
         <u><%= $object->{$key}{'name'} %></u>
        % } else {
-        <%= link_to $object->{$key}{'name'} => "/$controller/$action/$payload?tagid=$key" %>
+        <%= tag 'a', href => "/$controller/$action/$payload?tagid=$key", $object->{$key}{'name'} %>
        % }
        :
       </td>
@@ -26,7 +26,7 @@
          </td> 
          <td>
           <%= label_for $key => currency_format($object->{$key}{'value'}) %>
-          <sup><%= link_to ml('Remains') => "/warehouse/remains/$payload" %>: <%= stash('calculated_counting') %></sup>
+          <sup><%= tag 'a', href => "/warehouse/remains/$payload" %>: <%= stash('calculated_counting'), ml('Remains') %></sup>
          </td>
         % } else {
          <td align="center" class="<%= param('error_counting_field') %>">

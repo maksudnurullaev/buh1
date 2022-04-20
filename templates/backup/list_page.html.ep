@@ -3,7 +3,7 @@
  <ul>
   % for my $file (reverse sort keys %{$archives}){
    <li>
-    <%= link_to substr($file,0,19) => "/backup/edit/$file" %>
+    <%= tag 'a', href => "/backup/edit/$file", substr($file,0,19) %>
     <br /><%= substr(currency_format($archives->{$file}{size}),0,-4) %> bytes
     % if( $archives->{$file}{desc} ){
      <br /><small><%= $archives->{$file}{desc} %></small>

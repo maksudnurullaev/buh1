@@ -1,12 +1,12 @@
   <ul>
    <li>
-    %= link_to $account->{name} => "/operations/account/$payload"
+    %= tag 'a', href => "/operations/account/$payload", $account->{name} 
     <sup>
-     %= link_to ml('Chart of Accounts') => "/accounts/edit/$payload"
+     %= tag 'a', href => "/accounts/edit/$payload", ml('Chart of Accounts') 
     </sup>
     <ul>
      % if( my $bt = stash 'bt' ){
-      <li><%= link_to $bt->{name} => ("/operations/edit/$payload?bt=$bt->{id}") %></li>
+      <li><%= tag 'a', href => ("/operations/edit/$payload?bt=$bt->{id}"), $bt->{name} %></li>
      % } else {
       <li><%= $bt->{name} %></li>
      %}

@@ -1,10 +1,10 @@
 <div class="menu1">
-%= link_to ml('Home') => '/' ;
+%= tag 'a', href => '/', ml('Home') ;
 |
-%= link_to ml('Companies') => '/desktop/company' ;
+%= tag 'a', href => '/desktop/company', ml('Companies') ;
 % if( who_is_local('reader') ){
 |
- %= link_to ml('Documents') => '/documents/list' ;
+ %= tag 'a', href => '/documents/list', ml('Documents') ;
 % } 
 </div>
 % if( who_is_local('reader') ){

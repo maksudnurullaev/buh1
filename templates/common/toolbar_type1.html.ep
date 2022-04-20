@@ -3,20 +3,20 @@
 % my $editor = ( who_is_global('editor') || who_is_local('writer') ) ;
 <div class="toolbar">
  % if ( $editor && !stash('CHILDREN') && !$files_count && !$calcs_count ){
-  <%= link_to ml("Delete") => "/$controller/del/$payload" %> 
+  <%= tag 'a', href => "/$controller/del/$payload" %>, ml("Delete") 
  % } else {
    %= ml('Delete') ;
  % }
  |
  % if ( $editor && $action ne 'move' ){
-  <%= link_to ml("Move") => "/$controller/move/$payload" %>
+  <%= tag 'a', href => "/$controller/move/$payload", ml("Move") %>
  % } else {
    %= ml('Move') ;
  % }
  |
- <%= link_to "/$controller/files/$payload" => begin %><%= ml 'Files' %><% end %>
+ <%= tag 'a', href => begin %><%= ml 'Files' %><% end, "/$controller/files/$payload" %>
  (<%= $files_count %>)
  |
- <%= link_to "/$controller/calculations/$payload" => begin %><%= ml 'Calculations' %><% end %>
+ <%= tag 'a', href => begin %><%= ml 'Calculations' %><% end, "/$controller/calculations/$payload" %>
  (<%= $calcs_count %>)
 </div>
