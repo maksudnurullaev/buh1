@@ -88,11 +88,7 @@
 % if( $docid ){
   <tr><td>&nbsp;</td>
    <td class="tar">
-    %= tag 'a', (href => "/documents/print/$docid", target=>'_blank'), ml('Print');
    </td>
-  </tr>
-% }
- </table>
  % end
 % if( $docid && !$isReadOnly ){
 <p>

@@ -1,9 +1,5 @@
 % layout 'default';
- <h2><%= ml ( $user_id ? 'User' : 'New user' ) %></h2>
  %= tag 'a', href => '/users/list', ml('Back')
-%= include 'success_error'
-<div class="form">
- % my $_path = ($user_id ? "/users/edit/$user_id" : '/users/add');
  %= form_for $_path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>

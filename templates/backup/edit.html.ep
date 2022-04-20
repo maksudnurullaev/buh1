@@ -53,11 +53,7 @@
   <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
   <tr>
    <td>
-    %= tag 'a', href => "/backup/restore/$payload", ml('Restore')
    </td>
    <td class='tar'>
     %= tag 'a', href => "/backup/del/$payload", ml('Delete')
    </td>
-  </tr>
- </table>
-</div>

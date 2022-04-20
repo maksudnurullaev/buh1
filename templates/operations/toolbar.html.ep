@@ -6,7 +6,4 @@
  % } 
  % if ( who_is_global('editor') && ($action eq 'account') ) {
   | 
-  %= tag 'a', href => "/operations/add/$payload", ml('Add') 
  % }
-</div>
-

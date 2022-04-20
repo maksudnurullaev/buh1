@@ -11,11 +11,7 @@
     <ul class="nostyle" style="padding-left: 10px">
     % for my $sid(sort keys %{$sections}) {
      <li>
-     %= tag 'a', href => "/accounts/edit/$sid", $sections->{$sid}{name}
      </li>
-     % if ( exists $sections->{$sid}{accounts} ) {
-      % my $accounts = $sections->{$sid}{accounts} ;
-      <ul class="nostyle" style="padding-left: 10px">
        % for my $aid (sort keys %{$accounts}) {
         % my $account = $accounts->{$aid} ;
          <li><%= ml "account type $account->{type}" if $account->{type} %></li>

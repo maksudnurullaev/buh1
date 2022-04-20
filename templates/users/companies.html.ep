@@ -5,8 +5,4 @@
    % for my $company_id(keys %{$companies} ) {
     <li>
      %= tag 'a', href => "/users/remove_company/$payload?company=$company_id", ml('Delete') ;
-     %= tag 'a', href => "/companies/edit/$company_id" , $companies->{$company_id}{name} 
     </li>
-   % }
-  </ul>
- % }
