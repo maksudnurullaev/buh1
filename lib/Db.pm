@@ -497,11 +497,11 @@ sub is_linked{
 sub set_link{
     my ($self,$id1,$id2) = @_;
     if( !$id1 || !$id2 ){
-        warn "WARNING: Not defined ID1 or ID2! Look to (ID1 or ID2): ($id1 OR $id2)";
+        warn "Not defined ID1 or ID2! Look to (ID1 or ID2): ($id1 OR $id2)";
         return(0);
     }
     if( $self->is_linked($id1,$id2) ){ # link already exists!
-        warn "WARNING: Link for (ID1,ID2): ($id1,$id2) already exists!";
+        warn "Link for (ID1,ID2): ($id1,$id2) already exists!";
         return (0);
     }
 
