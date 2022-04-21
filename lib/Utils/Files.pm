@@ -95,10 +95,10 @@ sub get_path{
     my($self,$id) = @_ ;
     my $prefix = $self->param('prefix') || $self->stash('controller') ;
     if( $prefix =~ /templates/i ){ # admin part
-        return( $self->app->home->rel_dir("db/main/$id") ) ;
+        return( $self->app->home->rel_file("db/main/$id") ) ;
     } 
     my $company_id = $self->session('company id') ;
-    return( $self->app->home->rel_dir("db/clients/$company_id/$id") ) ;
+    return( $self->app->home->rel_file("db/clients/$company_id/$id") ) ;
 };
 
 sub deploy{

@@ -1,10 +1,15 @@
 use Test::More;
+use Test::Warn;
 use t::database::Base;
+
+BEGIN{
+    $DB::TESTING_MODE = 1;
+}
 my $db = t::database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 # -= test for some non-existed link =-
-ok(!$db->exists_link('invalid id #1', 'invalid id #2'), "test non-existed link");
+ok(!$db->is_linked('invalid id #1', 'invalid id #2'), "test non-existed link");
 
 # -= create some db objects for test =-
 my ($name1, $name2) = ('test object 1', 'test objects 2 3');
@@ -18,11 +23,18 @@ my $id3 = $db->insert($data3);
 
 ok($id1 && $id2 && $id3, 'Test for valid ids!');
 
-# -= create linkis between three objects =-
+# -= create links between three objects =-
 ok($db->set_link($id1,$id2), "Set link #12");
-ok($db->exists_link($id1,$id2), "Test for link existance #12");
+ok($db->is_linked($id1,$id2), "Test for link existance #12");
 ok($db->set_link($id1,$id3), "Set link #13");
-ok($db->exists_link($id1,$id3), "Test for link existance #13");
+ok($db->is_linked($id1,$id3), "Test for link existance #13");
+
+# -= couldn't create links if it's already exists =-
+# ok(!$db->set_link($id1,$id2), "Test for link existance #13");
+warnings_like { 
+    $db->set_link($id1,$id2) 
+    } [qr/already exists/], 'Expected warning!';
+
 
 # -= get links =-
 my $result = $db->get_links($id1,$name2);

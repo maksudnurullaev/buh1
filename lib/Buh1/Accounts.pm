@@ -30,9 +30,9 @@ sub add_part{
             return;
         }
         $object_name4form = Utils::Accounts::get_child_name_by_id($self, $parent_id)
-            || Utils::Accounts::get_part_name();
+            || Utils::Accounts::get_account_part_name();
     } else {
-        $object_name4form = Utils::Accounts::get_part_name();
+        $object_name4form = Utils::Accounts::get_account_part_name();
     }
     $self->stash( object_name => $object_name4form );
     # 2. Process post if needs

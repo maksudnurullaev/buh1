@@ -1,5 +1,6 @@
 % layout 'default';
  %= tag 'a', href => '/users/list', ml('Back')
+ % my $_path = $user_id ? "/users/edit/$user_id" : '/users/add';
  %= form_for $_path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>

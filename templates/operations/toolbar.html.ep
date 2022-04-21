@@ -5,5 +5,5 @@
   %= tag 'a', href => "/operations/list", ml('Back') ;
  % } 
  % if ( who_is_global('editor') && ($action eq 'account') ) {
-  | 
+  <!-- TODO: | -->
  % }

@@ -9,21 +9,25 @@
    % if (exists $parts->{$pid}{sections}) {
     % my $sections = $parts->{$pid}{sections};
     <ul class="nostyle" style="padding-left: 10px">
-    % for my $sid(sort keys %{$sections}) {
+     % for my $sid(sort keys %{$sections}) {
      <li>
+      %= tag 'a', href => "/accounts/edit/$sid", $sections->{$sid}{name}
      </li>
-       % for my $aid (sort keys %{$accounts}) {
-        % my $account = $accounts->{$aid} ;
-         <li><%= ml "account type $account->{type}" if $account->{type} %></li>
-         % my $count = 0;
-         % if ( exists $account->{_link_}{'business transaction'} ) {
-             % $count = $account->{_link_}{'business transaction'};
-         % }
-         <li><%= tag 'a', href => "/operations/account/$aid", $account->{name} %> (<%= $count %>)</li>
-       % }
-      </ul>
+      % if ( exists $sections->{$sid}{accounts} ) {
+       % my $accounts = $sections->{$sid}{accounts} ;
+        <ul class="nostyle" style="padding-left: 10px"> 
+          % for my $aid (sort keys %{$accounts}) {
+           % my $account = $accounts->{$aid} ;
+           <li><%= ml "account type $account->{type}" if $account->{type} %></li>
+           % my $count = 0;
+           % if ( exists $account->{_link_}{'business transaction'} ) {
+              % $count = $account->{_link_}{'business transaction'};
+           % }
+          <li><%= tag 'a', href => "/operations/account/$aid", $account->{name} %> (<%= $count %>)</li>
+          % }
+       </ul>
+      % }
      % }
-    % }
     </ul>
    % } 
   </ul>

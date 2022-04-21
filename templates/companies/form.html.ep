@@ -1,4 +1,5 @@
 <div class="form">
+ % my $payload = stash('payload');
  % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
  %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
@@ -19,7 +20,7 @@
     % if( stash 'edit_mode') {
      %= submit_button ml('Save')
      |  
-     <%= tag 'a', href => "/companies/del/$payload", ml('Delete')
+     %= tag 'a', href => "/companies/del/$payload", ml('Delete')
     % } else {
      %= submit_button ml('Add')
     % }
@@ -28,4 +29,8 @@
  </table>
  % end
 </div>
+
+<pre>
+%= dumper stash('company')
+</pre>
 

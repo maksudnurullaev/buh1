@@ -38,7 +38,8 @@ sub startup {
     # General route
     ## Initial controller part:
     $r->get('/')->to( controller => 'initial', action => 'welcome' );
-    $r->get('/initial/lang/:payload')->to( controller => 'initial', action => 'lang' );
+    $r->get('/initial/lang/:payload')
+      ->to( controller => 'initial', action => 'lang' );
 
     ## Feedback controller part:
     $r->any('/feedbacks/add')->methods( 'GET', 'POST' )
@@ -53,10 +54,8 @@ sub startup {
       ->to( controller => 'user', action => 'login' );
     $r->any('/user/password')->methods( 'GET', 'POST' )
       ->to( controller => 'user', action => 'password' );
-    $r->get('/user/logout')
-      ->to( controller => 'user', action => 'logout' );
-    $r->get('/users/list')
-      ->to( controller => 'users', action => 'list' );
+    $r->get('/user/logout')->to( controller => 'user', action => 'logout' );
+    $r->get('/users/list')->to( controller => 'users', action => 'list' );
     $r->get('/users/list/*payload')
       ->to( controller => 'users', action => 'list' );
     $r->any('/users/add')->methods( 'GET', 'POST' )
@@ -67,8 +66,43 @@ sub startup {
       ->to( controller => 'users', action => 'deleted' );
 
     # Accounts
-    $r->get('/accounts/list')
-      ->to( controller => 'accounts', action => 'list' );
+    $r->get('/accounts/list')->to( controller => 'accounts', action => 'list' );
+    $r->any('/accounts/edit/*payload')
+      ->to( controller => 'accounts', action => 'edit' );
+
+    # Operations
+    $r->get('/operations/list')
+      ->to( controller => 'operations', action => 'list' );
+    $r->any('/operations/edit/*payload')
+      ->to( controller => 'operations', action => 'edit' );
+    $r->any('/operations/account/*payload')
+      ->to( controller => 'operations', action => 'account' );
+
+    # Templates
+    $r->get('/templates/list')
+      ->to( controller => 'templates', action => 'list' );
+    $r->any('/templates/files/*payload')
+      ->to( controller => 'templates', action => 'files' );
+    $r->any('/templates/edit/*payload')
+      ->to( controller => 'templates', action => 'edit' );
+    $r->any('/templates/move/*payload')
+      ->to( controller => 'templates', action => 'move' );
+
+    # Guides
+    $r->get('/guides/page')->to( controller => 'guides', action => 'page' );
+    $r->get('/guides/view/*payload')
+      ->to( controller => 'guides', action => 'view' );
+    $r->any('/guides/add')->to( controller => 'guides', action => 'add' );
+    $r->any('/guides/edit/*payload')
+      ->to( controller => 'guides', action => 'edit' );
+
+    # Companies
+    $r->get('/companies/list')->to( controller => 'companies', action => 'list' );
+    $r->get('/companies/deleted')->to( controller => 'companies', action => 'deleted' );
+    $r->any('/companies/add')->to( controller => 'companies', action => 'add' );
+    $r->any('/companies/edit/*payload')->to( controller => 'companies', action => 'edit' );
+    $r->post('/companies/add_user/*payload')->to( controller => 'companies', action => 'add_user' );
+    $r->post('/companies/remove_user/*payload')->to( controller => 'companies', action => 'remove_user' );
 
 }
 

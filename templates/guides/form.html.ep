@@ -1,4 +1,5 @@
 <div class="form">
+ % my $payload = stash('payload');
  <table class='colortable'>
  % my $path = '/guides/add';
  % $path = "/guides/edit/$payload" if $action ne 'add' ; 
@@ -35,9 +36,10 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | <%= tag 'a', href => '/guides/page', ml('Cancel')
+     | 
+     %= tag 'a', href => '/guides/page', ml('Cancel')
     % if( $action eq 'edit' ){
-     |
+     | 
      %= tag 'a', href => "/$controller/del/$payload", ml('Delete')
     % }
    </td>

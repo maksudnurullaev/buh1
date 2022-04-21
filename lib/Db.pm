@@ -416,11 +416,11 @@ sub get_user{
 # -= access to linked value between two objects =-
 # Note: ALWAYS: ID1 < ID2
 # example:
-# ==============================
+#  ==============================
 # | name   | id  | field | value |
 # ==============================
 # | access | id1 | id2   | value |
-# ------------------------------
+#  ------------------------------
 sub get_linked_value{
     my $self = shift;
     my ($name,$id1,$id2) = @_;
@@ -447,7 +447,7 @@ sub set_linked_value{
     my $self = shift;
     my ($name,$id1,$id2,$value) = @_;
     return if( !$name || !$id1 || !$id2 || !$value || ($id1 eq $id2) );
-    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # impotant test & swap
+    ($id1,$id2) = ($id2,$id1) if $id1 gt $id2; # Impotant!!! Test & Swap if necessary!
     my $dbh = $self->get_db_connection() || return;
     if ( get_linked_value($name,$id1,$id2) ) {
         my $sth = $dbh->prepare(
@@ -477,7 +477,7 @@ sub del_linked_value{
 # ==============================
 # | link | id1 | name2 | id2   |
 # ------------------------------
-sub exists_link{
+sub is_linked{
     my $self = shift;
     my ($id1,$id2) = @_;
     return if( !$id1 || !$id2 );
@@ -496,8 +496,14 @@ sub exists_link{
 
 sub set_link{
     my ($self,$id1,$id2) = @_;
-    return(0) if( !$self || !$id1 || !$id2 );
-    return(1) if exists_link($id1,$id2);
+    if( !$id1 || !$id2 ){
+        warn "WARNING: Not defined ID1 or ID2! Look to (ID1 or ID2): ($id1 OR $id2)";
+        return(0);
+    }
+    if( $self->is_linked($id1,$id2) ){ # link already exists!
+        warn "WARNING: Link for (ID1,ID2): ($id1,$id2) already exists!";
+        return (0);
+    }
 
     my ($name1,$name2) = ($self->get_object_name_by_id($id1),
                           $self->get_object_name_by_id($id2));

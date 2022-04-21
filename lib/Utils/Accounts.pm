@@ -25,15 +25,27 @@ use utf8;
 #       └─► ACCOUNT 
 #            └─► ACCOUNT SUBCONTO
 
-our ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $TYPES )
+our ( $ACCOUNT_PART ,$ACCOUNT_SECTION ,$ACCOUNT ,$ACCOUNT_SUBCONTO , $ACCOUNT_TYPES )
  = ( 'account part','account section','account','account subconto', ['a','p','ca','cp','t'] );
 
-sub get_part_name{
+sub get_account_part_name{
     return($ACCOUNT_PART);
+};
+
+sub get_account_section_name{
+    return($ACCOUNT_SECTION);
 };
 
 sub get_account_name{
     return($ACCOUNT);
+};
+
+sub get_account_subconto_name{
+    return($ACCOUNT_SUBCONTO);
+};
+
+sub get_account_types{
+    return($ACCOUNT_TYPES);
 };
 
 sub authorized2modify{
@@ -86,7 +98,7 @@ sub get_types4select{
     my $self = shift;
     my $selected_value = shift;
     my $result = [];
-    for my $t (@{$TYPES}){
+    for my $t (@{$ACCOUNT_TYPES}){
         if( $selected_value && $selected_value eq $t ){
             push @{$result}, [$self->ml("account type $t") => $t, selected => 'true'];
         } else {

@@ -27,9 +27,9 @@ sub authorized2edit{
 sub get_guides_path{
     my ($self,$id) = @_ ;
     if( $id ){
-        return( $self->app->home->rel_dir("db/guides/$id") ) ;
+        return( $self->app->home->rel_file("db/guides/$id") ) ;
     }
-    return( $self->app->home->rel_dir('db/guides') ) ;
+    return( $self->app->home->rel_file('db/guides') ) ;
 };
 
 sub get_list{
