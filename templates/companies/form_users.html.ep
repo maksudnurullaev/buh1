@@ -1,7 +1,10 @@
 <h3><%= ml 'Users' %></h3>
-% if( stash 'company_users' ) {
- % my $company_users      = stash 'company_users';   
- % my $company_users_hash = stash 'company_users_hash';   
+% my $payload = stash('payload');
+% my $company = stash('company');
+% my $company_users = $company->{EXTRA}{company_users};
+% my $company_users_hash = $company->{EXTRA}{company_users_hash};
+% my $non_company_users = $company->{EXTRA}{non_company_users};
+% if( @{$company_users} ) {
  % my @accesses           = ('No access','Read','Write','Confirm','Administrator');
  % for my $user_mail (keys %{$company_users_hash}){
   % my $user_access = $company_users_hash->{$user_mail}{access};
@@ -29,11 +32,11 @@
 % } else {
  %= ml 'No data!'   
 % }
-% if( stash 'non_company_users' ) {
+% if( @{$non_company_users} ) {
  <hr />
  %= form_for "/companies/add_user/$payload" => (method => 'POST') => begin
   %= submit_button ml('Add')
-  %= select_field user => stash 'non_company_users' 
+  %= select_field user => $non_company_users 
  % end
 % }
 

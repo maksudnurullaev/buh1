@@ -1,18 +1,19 @@
 <div class="form">
  % my $payload = stash('payload');
- % my $path = stash('edit_mode')?"/companies/edit/$payload":'/companies/add';
+ % my $company = stash('company');
+ % my $path = stash('edit_mode') ? "/companies/edit/$payload" : '/companies/add';
  %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
    <td class='tar'><u><%= ml 'Name' %></u></td>
-   <td><%= text_field name => (stash 'name') , class => stash 'name_class' %></td>
+   <td><%= text_field name => $company->{name} , class => stash 'name_class' %></td>
   </tr>
   <tr>
    <td class='tar'> 
     %= ml 'Description' 
    </td>
    <td> 
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    %= text_area description => $company->{description}, class => (stash 'description_class') 
    </td>
   </tr>
   <tr><td>&nbsp;</td>
@@ -29,8 +30,3 @@
  </table>
  % end
 </div>
-
-<pre>
-%= dumper stash('company')
-</pre>
-

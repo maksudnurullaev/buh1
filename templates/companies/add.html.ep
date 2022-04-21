@@ -2,4 +2,12 @@
 <h2><%= ml 'Company' %></h2>
 %= include 'success_error';
 %= include 'companies/form';
-%= include 'companies/form_users' if( stash 'edit_mode');
+% if( stash 'edit_mode') {
+    % include 'companies/form_users' 
+%}
+
+<hr />
+<pre>
+%= dumper stash('company')
+</pre>
+

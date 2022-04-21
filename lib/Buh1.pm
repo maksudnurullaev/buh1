@@ -103,6 +103,8 @@ sub startup {
     $r->any('/companies/edit/*payload')->to( controller => 'companies', action => 'edit' );
     $r->post('/companies/add_user/*payload')->to( controller => 'companies', action => 'add_user' );
     $r->post('/companies/remove_user/*payload')->to( controller => 'companies', action => 'remove_user' );
+    $r->get('/companies/del/*payload')->to( controller => 'companies', action => 'del' );
+    $r->get('/companies/restore/*payload')->to( controller => 'companies', action => 'restore' );
 
 }
 
