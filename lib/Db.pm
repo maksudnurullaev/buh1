@@ -679,12 +679,18 @@ sub get_parent_childs{
 
 sub get_object_name_by_id{
     my ($self,$id) = @_ ;
-    my $sql = " SELECT DISTINCT name FROM objects WHERE id = '$id' AND name NOT LIKE '\\_%' ESCAPE '\\' ; " ;
+    my $sql = " SELECT name FROM objects WHERE id = '$id' AND name NOT LIKE '\\_%' ESCAPE '\\'  LIMIT 1 ; " ;
     my $sth = $self->get_from_sql( $sql ) ;
     my $name;
     $sth->bind_col(1, \$name);
     return($name) if $sth->fetch ;
     return(undef);
+};
+
+sub get_rows_by_id{
+    my ($self,$id) = @_ ;
+    my $sql = " SELECT * FROM objects WHERE id = '$id' ; " ;
+    return $self->get_from_sql( $sql ) ;
 };
 
 sub get_filtered_objects2{

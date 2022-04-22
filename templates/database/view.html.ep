@@ -1,0 +1,56 @@
+% layout 'default';
+
+%= tag 'h1', (ml('Database') . ' | ' . ml('Records'))
+
+%= tag p => begin
+ %= tag 'a', href => '/database/page', ml 'Back'
+% end
+
+% my $_table_rows = stash('table_rows');
+% if ( $_table_rows ) {
+  % my $_table_column_names = stash('table_column_names');
+  <fieldset>
+    %= t 'legend', 'SQL';
+    %= form_for "/database/view/$payload" => (method => 'POST') => begin
+      <table class="styled">
+        <thead><tr>
+          % for my $_tcn (@{$_table_column_names}) {
+          %= tag 'th', $_tcn
+          % }
+        </tr></thead>
+        % for my $_tr (@{$_table_rows}) {
+          <tr>
+            % my $_index = 0;
+            % for my $_td (@{$_tr}) {
+              % if ($_index == 0) {
+                <td>
+                  <label><%= check_box "delete", value => $_td %><%= $_td %></label>
+                </td>
+              % } else {
+                <td> 
+                  % if ($_td =~ /(\d{4}\.\d{2}\.\d{2}\s\d{2}:\d{2}:\d{2}\s[\d|\w]{8})/ ) {
+                    %= tag 'a', href => "/database/view/$_td", $_td
+                  % } else {
+                    %= $_td
+                  % }
+                </td>
+              % }
+              % $_index++;
+            % }
+          </tr>
+        % }
+      </table>
+      <p>
+        %= t label => begin
+          %= radio_button '', (name => 'action', value => 'DELETE', style => "width: fit-content;")
+          %= ml('Delete')
+        % end
+        %= t label => begin
+          %= radio_button '', (name => 'action', value => 'RESTORE'), style => "width: fit-content;"
+          %= ml('Restore')
+        % end
+      </p>
+      %= submit_button 
+    % end
+  </fieldset>
+% }

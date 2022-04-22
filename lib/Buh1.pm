@@ -106,6 +106,9 @@ sub startup {
     $r->get('/companies/del/*payload')->to( controller => 'companies', action => 'del' );
     $r->get('/companies/restore/*payload')->to( controller => 'companies', action => 'restore' );
 
+    # Database administration
+    $r->any('/database/page')->methods('GET','POST')->to( controller => 'database', action => 'page' );
+    $r->any('/database/view/*payload')->methods('GET','POST')->to( controller => 'database', action => 'view' );
 }
 
 1;
