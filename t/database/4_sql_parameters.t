@@ -1,6 +1,6 @@
 use Test::More;
-use t::database::Base;
-my $db = t::database::Base::get_test_db() ;
+use Tests::Database::Base;
+my $db = Tests::Database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 my $parameters = {id => ['2013.04.16 09:52:10 C792E7AC'],

@@ -1,12 +1,12 @@
 use Test::More;
-use t::Base;
+use Tests::Base;
 use Data::Dumper;
 use Utils;
 use Utils::Cacher;
 use utf8;
 
 my $test_mojo;
-BEGIN { $t = t::Base::get_test_mojo_session(); }    
+BEGIN { $t = Tests::Base::get_test_mojo_session(); }    
 
 use_ok('Utils::Cacher');
 require_ok('Utils::Cacher');

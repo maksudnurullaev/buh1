@@ -43,7 +43,6 @@ package Utils::Import::Definitions;
                 };
             }
         }
-        warn Dumper $result if $test_mode;
         return ($result);
     }
 
@@ -133,8 +132,6 @@ package Utils::Import::Definitions;
                 id          => $part,
                 rus         => $part_hash->{rus}
             };
-            # warn 'Result: ' . Db::update($part_object);
-            warn Dumper $part_object;
             for my $section ( sort keys %{ $part_hash->{sections} } ) {
                 my $section_hash = $part_hash->{sections}{$section};
                 warn "--> $section: " . $section_hash->{rus};

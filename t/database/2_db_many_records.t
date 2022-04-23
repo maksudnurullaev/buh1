@@ -1,6 +1,6 @@
 use Test::More;
-use t::database::Base;
-my $db = t::database::Base::get_test_db() ;
+use Tests::Database::Base;
+my $db = Tests::Database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 my $object_name = 'test object';

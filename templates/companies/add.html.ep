@@ -3,11 +3,8 @@
 %= include 'success_error';
 %= include 'companies/form';
 % if( stash 'edit_mode') {
-    % include 'companies/form_users' 
+    %= t fieldset => begin
+        %= t legend => ml('Users')
+        %= include 'companies/form_users' 
+    % end
 %}
-
-<hr />
-<pre>
-%= dumper stash('company')
-</pre>
-

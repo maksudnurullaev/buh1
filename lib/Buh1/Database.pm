@@ -24,12 +24,7 @@ package Buh1::Database;
 
         if ( $self->req->method eq 'POST' ) {
             my $action = $self->req->params->every_param('action')->[0];
-
-            # warn Dumper $action;
-
             my $forDeletes = $self->req->params->every_param('delete');
-
-            # warn Dumper $forDeletes ;
 
             if ( @{$forDeletes} && $action ) {
                 if ( $action eq 'DELETE' ) {
@@ -40,8 +35,6 @@ package Buh1::Database;
                       . ") and id NOT LIKE 'DELETED%' ;";
 
                     $dbc->do($statement) or warn $dbc->errstr;
-
-                    warn Dumper $statement;
                 }
                 elsif ( $action eq 'RESTORE' ) {
                     my $dbc = $dbh->get_db_connection();
@@ -51,9 +44,6 @@ package Buh1::Database;
                       . ") and id LIKE 'DELETED%' ;";
 
                     $dbc->do($statement) or warn $dbc->errstr;
-
-                    warn Dumper $statement;
-
                 }
             }
             warn "No action defined!" if !$action;

@@ -1,5 +1,5 @@
 use Test::More;
-use t::Base;
+use Tests::Base;
 use ML;
 use Data::Dumper;
 use Utils;
@@ -12,7 +12,7 @@ my $ml_file_path;
 my $test_mojo;
 
 BEGIN { 
-    $test_mojo     = t::Base::get_test_mojo_session();
+    $test_mojo     = Tests::Base::get_test_mojo_session();
     $ML::FILE_NAME = 'MLTest.INI';
     $ml_file_path  = $test_mojo->app->home->rel_file("$ML::DIR_NAME/$ML::FILE_NAME");
     die "Tests going to work with actual(production) ML.INI file" if $ml_file_path =~ /ML\.INI$/ ;

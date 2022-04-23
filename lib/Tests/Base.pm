@@ -1,4 +1,4 @@
-package t::Base; {
+package Tests::Base; {
 
 =encoding utf8
 

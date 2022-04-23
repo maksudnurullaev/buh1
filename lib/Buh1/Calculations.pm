@@ -17,11 +17,6 @@ sub add{
     Utils::Calculations::add($self) if $self->req->method =~ /POST/; 
 };
 
-#sub test{
-#    my $self = shift;
-#    Utils::Calculations::test($self); 
-#};
-
 sub edit{
     my $self = shift;
     Utils::Calculations::edit($self) if $self->req->method =~ /POST/; 

@@ -69,7 +69,8 @@ package Buh1::Companies;
             object_name => $OBJECT_NAME,
             creator     => Utils::User::current($self)
         };
-        $data->{name}   = Utils::trim $self->param('name');
+        $data->{name} = Utils::trim $self->param('name');
+
         # $data->{access} = $self->param('access');
         if ( !$data->{name} ) {
             $data->{error} = 1;
@@ -108,7 +109,7 @@ package Buh1::Companies;
         my $id      = $self->param('payload');
         my $user_id = $self->param('user');
         warn "ADD user: $id, $user_id";
-        my $db      = Db->new($self);
+        my $db = Db->new($self);
         $db->set_link( $id, $user_id );
         $self->redirect_to("/companies/edit/$id");
     }
@@ -119,7 +120,8 @@ package Buh1::Companies;
         my $user_id     = $self->param('user_id');
         my $user_access = $self->param('user_access');
         my $db          = Db->new($self);
-        $db->del_linked_value( 'access', $id, $user_id ); # delete all old linkes
+        $db->del_linked_value( 'access', $id, $user_id )
+          ;    # delete all old linkes
         $db->set_linked_value( 'access', $id, $user_id, $user_access );
         $self->redirect_to("/companies/edit/$id");
     }
@@ -169,8 +171,8 @@ package Buh1::Companies;
         }
 
         my $company_extra = {
-            non_company_users  => $non_company_users,
-            company_users      => $company_users,
+            non_company_users  => Utils::sort_array_ref($non_company_users),
+            company_users      => Utils::sort_array_ref($company_users),
             company_users_hash => $company_users_hash
         };
 
@@ -181,8 +183,10 @@ package Buh1::Companies;
         else {
             redirect_to('/companies/list');
         }
-        $self->render('companies/add');
+        $self->render('/companies/add');
     }
+
+
 
     sub add {
         my $self = shift;

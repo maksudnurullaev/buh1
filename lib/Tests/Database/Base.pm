@@ -1,4 +1,4 @@
-package t::database::Base;
+package Tests::Database::Base;
 {
 
 =encoding utf8
@@ -15,7 +15,7 @@ package t::database::Base;
     use Mojo::Base -strict;
     use Test::More;
     use Test::Mojo;
-    use t::Base;
+    use Tests::Base;
 
     use DbTest;
     use File::Temp;
@@ -26,7 +26,7 @@ package t::database::Base;
     use Mojo::Home;
 
     sub get_test_db {
-        my $test_mojo = t::Base::get_test_mojo();
+        my $test_mojo = Tests::Base::get_test_mojo();
         my $test_db   = DbTest->new($test_mojo);
         $test_db->{'file'} =
           File::Temp::tempnam( $test_mojo->app->home->rel_file('t/database'),

@@ -1,15 +1,16 @@
 % layout 'default';
  %= tag 'a', href => '/users/list', ml('Back')
- % my $_path = $user_id ? "/users/edit/$user_id" : '/users/add';
+ % my $_user = stash('user');
+ % my $_path = $_user ? "/users/edit/$user_id" : '/users/add';
  %= form_for $_path => (method => 'POST') => begin
  <table class='colortable'>
   <tr>
    <td class='tar'><u><%= ml 'E-mail' %></u></td>
    <td>
     % if ($user_id) { 
-    <strong><%= stash 'email' %></strong>
+    <strong><%= $_user->{email} %></strong>
     % } else {
-    <%= text_field email => (stash 'email') , class => stash 'email_class' %>
+    <%= text_field email => $_user->{email} , class => stash 'email_class' %>
     % }
    </td>
   </tr>
@@ -26,16 +27,18 @@
     %= ml 'Description' 
    </td>
    <td> 
-    %= text_area description => (stash 'description'), class => (stash 'description_class') 
+    %= text_area description => $_user->{description}, class => (stash 'description_class') 
    </td>
   </tr>
   %= include 'users/extended_rights' if $user_id;
   <tr><td>&nbsp;</td>
    <td>
-     %= submit_button ml( ($user_id ? 'Save' : 'Add') )
-     % if ($user_id) {
-     |  
-     %= tag 'a', href => "/users/del/$user_id", ml('Delete')
+     % if ($_user) {
+        %= submit_button ml( ('Save') )
+        |  
+        %= tag 'a', href => "/users/del/$user_id", ml('Delete')
+     % } else {
+        %= submit_button ml('Add')
      % }
    </td>
   </tr>

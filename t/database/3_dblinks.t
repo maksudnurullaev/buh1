@@ -1,11 +1,11 @@
 use Test::More;
 use Test::Warn;
-use t::database::Base;
+use Tests::Database::Base;
 
 BEGIN{
     $DB::TESTING_MODE = 1;
 }
-my $db = t::database::Base::get_test_db() ;
+my $db = Tests::Database::Base::get_test_db() ;
 
 # -= TESTS BEGIN =-
 # -= test for some non-existed link =-

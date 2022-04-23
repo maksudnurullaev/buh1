@@ -1,5 +1,5 @@
 use Test::More;
-use t::Base;
+use Tests::Base;
 use ML;
 use Data::Dumper;
 use Utils;
@@ -10,7 +10,7 @@ use_ok('Auth');
 require_ok('Auth');
 
 my $test_mojo;
-BEGIN { $test_mojo     = t::Base::get_test_mojo_session(); }    
+BEGIN { $test_mojo     = Tests::Base::get_test_mojo_session(); }    
 
 # Salted password
 ok(!defined(Auth::salted_password()), "Non defined result with no parameters!");

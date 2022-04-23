@@ -45,13 +45,13 @@ sub page{
     $self->redirect_to($self->param('path')) if $self->param('path') ;
 };
 
-sub nofilter{
+sub reset{
     my $self = shift ;
     delete $self->session->{get_filter_path($self)} ;
     $self->redirect_to($self->param('path')) if $self->param('path') ;
 };
 
-sub filter{
+sub set{
     my $self = shift;
     set_filter($self, $self->param('filter')) 
         if $self->param('filter') ; 

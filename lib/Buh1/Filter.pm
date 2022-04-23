@@ -16,8 +16,8 @@ use Encode qw( encode decode_utf8 );
 
 sub pagesize{ Utils::Filter::pagesize(shift); };
 sub page{ Utils::Filter::page(shift); };
-sub nofilter{ Utils::Filter::nofilter(shift); };
-sub filter{ Utils::Filter::filter(shift); };
+sub reset{ Utils::Filter::reset(shift); };
+sub set{ Utils::Filter::set(shift); };
 
 # END OF PACKAGE
 };
