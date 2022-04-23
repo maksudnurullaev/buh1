@@ -1,6 +1,6 @@
 <div>
  % my $docid = param 'docid' ;
-% my $isReadOnly = !(who_is_local 'writer') ;
+ % my $isReadOnly = !(who_is_local 'writer') ;
  % my $path = "/documents/update/$payload?bt=$bt->{id}";
  % $path = "/documents/update/$payload?docid=$docid" if $docid;
  %= form_for $path => (method => 'POST') => begin

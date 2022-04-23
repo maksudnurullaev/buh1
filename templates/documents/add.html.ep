@@ -1,0 +1,9 @@
+% layout 'default';
+<h2><%= ml 'Documents' %> | <%= ml 'Add' %></h2>
+<div class="toolbar">
+ <a href='/documents/list'><%= ml 'Back' %></a>
+</div>
+%= include 'success_error'
+%= include 'documents/_add_form';
+
+%#= t pre => dumper(stash('document'))

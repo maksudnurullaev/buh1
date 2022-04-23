@@ -140,6 +140,20 @@ sub startup {
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );
     $r->get('/filter/reset')->to( controller => 'filter', action => 'reset' );
+
+    ### Companies
+
+    # Desktop
+    $r->get('/desktop/company')
+      ->to( controller => 'desktop', action => 'company' );
+    $r->get('/desktop/company/*payload')
+      ->to( controller => 'desktop', action => 'company' );
+
+    # Documents
+    $r->get('/documents/list')
+      ->to( controller => 'documents', action => 'list' );
+    $r->any('/documents/add')->methods( 'GET', 'POST' )
+      ->to( controller => 'documents', action => 'add' );
 }
 
 1;

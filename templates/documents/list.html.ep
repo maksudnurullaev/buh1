@@ -1,5 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Documents' %></h2>
+%= t 'a', href => '/documents/add', ml('Add') if who_is_local('writer') ;
 % my $documents = stash 'documents';
 % my $count     = scalar(keys %{$documents});
 
@@ -20,7 +21,7 @@
    <tr>   
     % my $doc_num    = $documents->{$id}{'document number'};
     % my $account_id = $documents->{$id}{account};
-    <td><%= tag 'a', href => "/documents/update/$account_id?docid=$id", $doc_num %>
+    <td><%= tag 'a', href => "/documents/update/$account_id?docid=$id", $doc_num %></td>
     <td class="tar"><%= currency_format $documents->{$id}{'currency amount'} %></td>
     <td><%= $documents->{$id}{'date'} %></td>
     <td><strong><%= ml ("Document " . $documents->{$id}{type}) %>:</strong> <%= $documents->{$id}{'details'} %></td>
