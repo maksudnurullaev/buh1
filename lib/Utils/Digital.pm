@@ -67,8 +67,9 @@ use vars qw(%diw %nom);
     5 => {0 => "триллиона",1 => "триллионов",2 => "один триллион",3 => "два триллиона"} ); 
 
 my $out_rub; 
-sub rur_in_words {
-    my ($sum) = shift;
+sub sum2ru_words {
+    my $sum = shift;
+    $sum =~ s/\s+//g;
     my ($retval, $i, $sum_rub, $sum_kop);
     $retval = "";
     $out_rub = ($sum >= 1) ? 0 : 1;
@@ -84,7 +85,7 @@ sub rur_in_words {
         $retval = get_string($sum_part, $i)." ".$retval;
     }
     $retval .= " сумов" if ($out_rub == 0);
-    $retval .= " ".$kop if $kop;
+    $retval .= " " . $kop . " тийин" if $kop;
     $retval =~ s/\s+/ /g;
     return $retval;
 };

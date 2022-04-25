@@ -6,4 +6,4 @@
 %= include 'success_error'
 %= include 'documents/_add_form';
 
-%#= t pre => dumper(stash('document'))
+%= t pre => dumper(stash('document'))

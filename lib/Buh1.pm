@@ -154,6 +154,8 @@ sub startup {
       ->to( controller => 'documents', action => 'list' );
     $r->any('/documents/add')->methods( 'GET', 'POST' )
       ->to( controller => 'documents', action => 'add' );
+    $r->any('/documents/update/*payload')->methods( 'GET', 'POST' )
+      ->to( controller => 'documents', action => 'update' );
 }
 
 1;

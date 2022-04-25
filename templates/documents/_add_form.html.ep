@@ -1,12 +1,16 @@
 <div>
  % my $isReadOnly = !(who_is_local 'writer') ;
  % my $_document = stash('document');
+ % my $_errors = $_document->{errors};
  %= form_for "/documents/add" => (method => 'POST') => begin
+%= hidden_field object_name => 'document';
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Document order' %></td>
    <td>
-    <%= text_field 'document number' => $_document->{'document number'}, class => (stash 'document number_class') %>
-    <%= ml 'Last' %>: <%= get_document_number_last || 'NaN' %>
+    <%= text_field 'document number' => $_document->{'document number'}, class => $_errors->{'document number'} %>
+    % if (my $_last_document_number = get_document_number_last ) {
+      <%= ml 'Last' %>: <%= $_last_document_number %>
+    % }
    </td>
   </tr>
   <tr>
@@ -15,53 +19,57 @@
   </tr>
   <tr><td class='tar'><%= ml 'Date(yyyy.mm.dd)' %></td>
     <td>
-     <%= text_field 'date' => get_date, class => (stash 'date_class') %>
+     <%= text_field 'date' => get_date, class => $_errors->{'date'} %>
     </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter' %></td>
-   <td><%= text_area permitter => $_document->{'permitter'}, class => (stash 'permitter_class') %></td>
+   <td><%= text_area permitter => $_document->{'permitter'}, class => $_errors->{'permitter'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter debet' %></td>
-   <td><%= text_field 'permitter debet' => $_document->{'permitter debet'}, class => (stash 'permitter debet_class') %> </td>
+   <td><%= text_field 'permitter debet' => $_document->{'permitter debet'}, class => $_errors->{'permitter debet'} %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter INN' %></td>
-   <td><%= text_field 'permitter inn' => $_document->{'permitter inn'}, class => (stash 'permitter inn_class') %> </td>
+   <td><%= text_field 'permitter inn' => $_document->{'permitter inn'}, class => $_errors->{'permitter inn'} %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter bank name' %></td>
-   <td><%= text_area 'permitter bank name' => $_document->{'permitter bank name'}, class => (stash 'permitter bank name_class') %></td>
+   <td><%= text_area 'permitter bank name' => $_document->{'permitter bank name'}, class => $_errors->{'permitter bank name'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Permitter bank code' %></td>
-   <td><%= text_field 'permitter bank code' => $_document->{'permitter bank code'}, class => (stash 'permitter bank code_class') %></td>
+   <td><%= text_field 'permitter bank code' => $_document->{'permitter bank code'}, class => $_errors->{'permitter bank code'} %></td>
   </tr>
-  <tr><td class='tar'><%= ml 'Currency amount' %></td>
+  <tr><td class='tar'>
+    %= ml 'Currency amount';
+  </td>
    <td>
-    %= text_field 'currency amount' => $_document->{'currency amount'}, class => (stash 'currency amount_class') ;
+    %= text_field 'currency amount' => $_document->{'currency amount'}, class => $_errors->{'currency amount'} ;
+    %= hidden_field 'old currency amount' => $_document->{'old currency amount'};
    </td>
   </tr>
   <tr><td class='tar'><%= ml 'Currency amount in words' %></td>
-   <td><%= text_area 'currency amount in words' => $_document->{'currency amount in words'}, class => (stash 'currency amount in words_class') %>
+   <td>
+      <%= text_area 'currency amount in words' => $_document->{'currency amount in words'}, class => $_errors->{'currency amount in words'} %>
    </td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary' %></td>
-   <td><%= text_area beneficiary => $_document->{'beneficiary'}, class => (stash 'beneficiary_class') %></td>
+   <td><%= text_area beneficiary => $_document->{'beneficiary'}, class => $_errors->{'beneficiary'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary credit' %></td>
-   <td><%= text_field 'beneficiary credit' => $_document->{'beneficiary credit'} , class => stash 'beneficiary credit_class' %> </td>
+   <td><%= text_field 'beneficiary credit' => $_document->{'beneficiary credit'} , class => $_errors->{'beneficiary credit'} %> </td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary bank name' %></td>
-   <td><%= text_area 'beneficiary bank name' => $_document->{'beneficiary bank name'}, class => (stash 'beneficiary bank name_class') %></td>
+   <td><%= text_area 'beneficiary bank name' => $_document->{'beneficiary bank name'}, class => $_errors->{'beneficiary bank name'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Beneficiary bank code' %></td>
-   <td><%= text_field 'beneficiary bank code' => $_document->{'beneficiary bank code'}, class => (stash 'beneficiary bank code_class') %></td>
+   <td><%= text_field 'beneficiary bank code' => $_document->{'beneficiary bank code'}, class => $_errors->{'beneficiary bank code'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Details' %></td>
-   <td><%= text_area 'details' => $_document->{'details'}, class => (stash 'details_class') %></td>
+   <td><%= text_area 'details' => $_document->{'details'}, class => $_errors->{'details'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Executive' %></td>
-   <td><%= text_field 'executive' => $_document->{'executive'}, class => (stash 'executive_class') %></td>
+   <td><%= text_field 'executive' => $_document->{'executive'}, class => $_errors->{'executive'} %></td>
   </tr>
   <tr><td class='tar'><%= ml 'Accounting manager' %></td>
-   <td><%= text_field 'accounting manager' => $_document->{'accounting manager'}, class => (stash 'accounting manager_class') %></td>
+   <td><%= text_field 'accounting manager' => $_document->{'accounting manager'}, class => $_errors->{'accounting manager'} %></td>
   </tr>
   <tr><td>&nbsp;</td>
    <td>

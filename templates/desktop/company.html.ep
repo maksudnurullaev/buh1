@@ -26,4 +26,4 @@
 % }
 
 <hr />
-%= t pre => dumper(session)
+%#= t pre => dumper(session)
