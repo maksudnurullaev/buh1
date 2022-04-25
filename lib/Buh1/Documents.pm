@@ -38,24 +38,28 @@ package Buh1::Documents;
     my @OBJECT_HEADER_FIELDS = ( 'docid', 'account', 'bt', 'debet', 'credit' );
 
     sub set_new_data {
-        return {
+        my $self          = shift;
+        my $_sum          = int( rand(10000000) );
+        my $_sum_in_words = Utils::Digital::sum2ru_words($_sum);
+        $self->req->params->merge(
             'document number' =>
-              Utils::Documents::get_document_number_next(shift),
-            'permitter debet'       => '01234567890123456789',
-            'permitter'             => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"',
-            'permitter debet'       => '01234567890123456789',
-            'permitter inn'         => '123456789',
-            'permitter bank name'   => 'ЧОАКБ ИнФинБанк',
-            'permitter bank code'   => '01041',
-            'currency amount'       => int( rand(10000000) ),
-            'beneficiary'           => 'ОАО "Узбекистон Темирйуллари"',
-            'beneficiary credit'    => '99999999999999999999',
-            'beneficiary bank name' => 'АИКБ "Ипак Йули"',
-            'beneficiary bank code' => '14230',
-            'details'               => 'Оплата за установку кронштейна!',
-            'executive'             => 'Петров И.У.',
-            'accounting manager'    => 'Камолова К.С.'
-        };
+              Utils::Documents::get_document_number_next($self),
+            'permitter debet'          => '01234567890123456789',
+            'permitter'                => 'ООО "УЗБЕКЛОЙИХАСОЗЛАШ"',
+            'permitter debet'          => '01234567890123456789',
+            'permitter inn'            => '123456789',
+            'permitter bank name'      => 'ЧОАКБ ИнФинБанк',
+            'permitter bank code'      => '01041',
+            'currency amount'          => $_sum,
+            'currency amount in words' => $_sum_in_words,
+            'beneficiary'              => 'ОАО "Узбекистон Темирйуллари"',
+            'beneficiary credit'       => '99999999999999999999',
+            'beneficiary bank name'    => 'АИКБ "Ипак Йули"',
+            'beneficiary bank code'    => '14230',
+            'details'                  => 'Оплата за установку кронштейна!',
+            'executive'                => 'Петров И.У.',
+            'accounting manager'       => 'Камолова К.С.'
+        );
     }
 
     sub set_form_header {
@@ -134,11 +138,12 @@ package Buh1::Documents;
 
     sub validate_new_doc {
         my $self   = shift;
-        my $id     = shift;
         my $errors = {};
         my $data   = {
-            object_name => $OBJECT_NAME,
-            creator     => Utils::User::current($self),
+            document => {
+                object_name => $OBJECT_NAME,
+                creator     => Utils::User::current($self),
+            }
         };
         my @fields = @OBJECT_FIELDS;
         for my $field (@fields) {
@@ -147,7 +152,7 @@ package Buh1::Documents;
               @OBJECT_HEADER_FIELDS;    # skip absent fields for new documents
             my $value = Utils::trim $self->param($field);
             if ($value) {
-                $data->{$field} = $value;
+                $data->{document}{$field} = $value;
             }
             else {
                 $errors->{$field} = 'error';
@@ -156,22 +161,23 @@ package Buh1::Documents;
         }
 
         # recalculate amount if needs
-        my $currency_amount = $data->{'currency amount'};
+        my $currency_amount = $self->param('currency amount');
 
-        # check currency amount inwords
-        $data->{'currency amount in words'} =
-          Utils::Digital::sum2ru_words($currency_amount)
-          if !$data->{'currency amount in words'};
-        if ( $data->{'currency amount'} ne $self->param('old currency amount') )
+        # check currency amount in words
+        if ( $self->param('currency amount') ne
+            $self->param('old currency amount') )
         {
-            $data->{'old currency amount'} = $data->{'currency amount'};
-            $errors->{'currency amount'}   = 'error';
+            $self->req->params->merge( 'currency amount in words' =>
+                  Utils::Digital::sum2ru_words($currency_amount) );
+            $self->req->params->merge(
+                'old currency amount' => $self->param('currency amount') );
+            $errors->{'currency amount'} = 'error';
         }
 
         # check for document number existance
         if (
             Utils::Documents::document_number_exist(
-                $self, $data->{'document number'}, $id
+                $self, $data->{document}{'document number'}
             )
           )
         {
@@ -179,9 +185,9 @@ package Buh1::Documents;
         }
 
         # validate document date
-        my $date = Utils::validate_date( $data->{date} );
+        my $date = Utils::validate_date( $data->{document}{date} );
         if ($date) {
-            $data->{date} = $date;
+            $data->{document}{date} = $date;
         }
         else {
             $errors->{'date'} = 'error';
@@ -328,20 +334,20 @@ package Buh1::Documents;
 
         if ( $self->req->method eq 'POST' ) {
             my $data = validate_new_doc($self);
-            if ( $data->{errors_count} ) {
-                $self->stash( document => $data );
-            }
-            else {
+            if ( !$data->{errors_count} ) {
                 my $db_client = Utils::Db::client($self);
 
-                if ( my $id = $db_client->insert($data) ) {
+                if ( my $id = $db_client->insert( $data->{document} ) ) {
                     $self->redirect_to(
                         "/documents/update/$id?docid=$id&success=1");
                 }
                 else {
                     $self->stash( error => 1 );
-                    warn 'Could not insert document object!';
+                    warn 'Could not insert [document] object!';
                 }
+            }
+            else {
+                $self->stash( errors => $data->{errors} );
             }
         }
         else {

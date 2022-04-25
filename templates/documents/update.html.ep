@@ -29,4 +29,3 @@
  %= ml 'No data!' if !$isValid ;
 </fieldset>
 %= include 'documents/form' if $isValid;
-%= t pre => dumper(stash)
