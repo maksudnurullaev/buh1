@@ -3,22 +3,24 @@
  <strong><%= param('description') %></strong> 
  <br />&nbsp;
 % } 
-<table border='1'>
- <tr>
-  % for (@{$guide_data->{header}}){
-   <th><%= $_ %></th>
-  % }
- </tr>
- 
- % foreach ( sort {$a<=>$b} keys %{$guide_data->{data}} ){
-   % if( $_ =~ /^\d+/ ){
+<table class="styled">
+  <thead>
     <tr>
-    % for my $val (@{$guide_data->{data}{$_}}){
-     <td><%= $val %></td>
+    % for (@{$guide_data->{header}}){
+      <th><%= $_ %></th>
     % }
     </tr>
-   % }
- % }
+  </thead>
+ 
+  % foreach ( sort {$a<=>$b} keys %{$guide_data->{data}} ){
+    % if( $_ =~ /^\d+/ ){
+      <tr>
+        % for my $val (@{$guide_data->{data}{$_}}){
+          <td><%= $val %></td>
+        % }
+      </tr>
+    % }
+  % }
 </table>
 </div>
 

@@ -100,7 +100,7 @@ sub startup {
       ->to( controller => 'guides', action => 'edit' );
 
     # Calculations
-    $r->get('/calculations/page')
+    $r->any('/calculations/page')->methods( 'GET', 'POST' )
       ->to( controller => 'calculations', action => 'page' );
     $r->post('/calculations/edit')
       ->to( controller => 'calculations', action => 'edit' );
@@ -154,8 +154,17 @@ sub startup {
       ->to( controller => 'documents', action => 'list' );
     $r->any('/documents/add')->methods( 'GET', 'POST' )
       ->to( controller => 'documents', action => 'add' );
-    $r->any('/documents/update/*payload')->methods( 'GET', 'POST' )
+    $r->any('/documents/update/*account')->methods( 'GET', 'POST' )
       ->to( controller => 'documents', action => 'update' );
+    $r->any('/documents/update/')->methods( 'GET', 'POST' )
+      ->to( controller => 'documents', action => 'update' );
+    $r->get('/documents/print/*account')
+      ->to( controller => 'documents', action => 'print' );
+    $r->post('/documents/update_document_header/*account')
+      ->to( controller => 'documents', action => 'update_document_header' );
+    $r->get('/documents/cancel_update_document_header/*account')
+      ->to( controller => 'documents', action => 'cancel_update_document_header' );
+      
 }
 
 1;

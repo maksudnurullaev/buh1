@@ -1,31 +1,21 @@
 % layout 'default';
-% my $isReadOnly = !who_is_local('writer') ;
-% my $docid = param 'docid' ;
-% if( $docid ){
- <h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>
-% } else {
- <h2><%= ml 'Documents' %> | <%= ml 'Add' %></h2>
-% }
+
+% my $dheaders = stash('dheaders');
+
+<h2><%= ml 'Documents' %> | <%= ml 'Edit' %></h2>
 <div class="toolbar">
  <a href='/documents/list'><%= ml 'Back' %></a>
 </div>
-%= include 'success_error'
-% my $isValid = stash('account') && stash('bt') && stash('credit') && stash('debet');
-<fieldset>
- <legend><%= ml 'Business operation' %></legend>
- %= include 'documents/header' if $isValid ;
- % if( !$isReadOnly ){
-  % my($payload,$debet,$credit) = (param('payload'),stash('debet'),stash('credit'));
-  % if( $isValid ){
-   % if( my $bt = stash 'bt' ){
-    % if( $docid ){
-     %= tag 'a', href => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid", ml('Edit') 
-    % } else {
-     %= tag 'a', href => "/operations/edit/$payload?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}", ml('Edit') 
-    % }
-   % }
-  % } 
- % }
- %= ml 'No data!' if !$isValid ;
-</fieldset>
-%= include 'documents/form' if $isValid;
+
+%= include 'success_error'; # message in header of page
+
+% if ($dheaders){
+    %= include 'documents/_update_header'
+    %= include 'documents/_update_form' 
+% }
+
+
+%# DEBUG
+%#= t pre => dumper(stash('dheaders'))
+%#= t pre => dumper(stash('errors'))
+%#= t pre => dumper($self->req->params)

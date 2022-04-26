@@ -387,3 +387,7 @@ table.styled {
 .styled input[type=radio] {
   width: fit-content;
 }
+
+fieldset {
+  margin-bottom: 5px;
+}

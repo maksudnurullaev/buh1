@@ -1,0 +1,32 @@
+% my $account = stash('account');
+% my $docid = param 'docid' ;
+
+% my $dheaders = stash('dheaders'); # Document headers
+% my $account = $dheaders->{account};
+% my $bt = $dheaders->{bt};
+% my $debet = $dheaders->{debet};
+% my $credit = $dheaders->{credit};
+
+<fieldset>
+  <legend><%= ml 'Business operation' %></legend>
+
+   <ul>
+      <li>
+         %= tag 'a', href => "/operations/account/$account->{id}", $account->{name} 
+         <sup>
+         %= tag 'a', href => "/accounts/edit/$account->{id}", ml('Chart of Accounts') 
+         </sup>
+         <ul>
+            <li><%= tag 'a', href => ("/operations/edit/$account->{id}?bt=$bt->{id}"), $bt->{name} %></li>
+            <ul>
+               <li>DEBET: <%= $debet->{name} %></li>
+               <li>CREDIT: <%= $credit->{name} %></li>
+            </ul>
+         </ul>
+      </li>
+   </ul> 
+
+  % if( who_is_local('writer') && $docid ) {
+    %= tag 'a', href => "/operations/edit/$account->{id}?bt=$bt->{id}&debet=$debet->{id}&credit=$credit->{id}&docid=$docid", ml('Edit') 
+  % }
+</fieldset>

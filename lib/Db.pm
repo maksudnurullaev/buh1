@@ -356,8 +356,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
     }
 
     sub get_filtered_objects {
-        my $self          = shift;
-        my $parameters    = shift;
+        my ( $self, $parameters, $debug_mode ) = @_;
         my $name          = $parameters->{name};
         my $names         = $parameters->{names};
         my $exist_field   = $parameters->{exist_field};
@@ -381,7 +380,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         }
         else {
             $result =
-              $self->get_counts( { name => [$name], field => [$exist_field] } );
+              $self->get_counts( { name => [$name], field => [$exist_field] },
+                $debug_mode );
         }
         return if !$result;    # count is 0
         my ( $page, $pages, $pagesize ) =
@@ -425,8 +425,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
     }
 
     sub get_counts {
-        my $self       = shift;
-        my $parameters = shift;
+        my ( $self, $parameters, $debug_mode ) = @_;
         if ( ref($parameters) ne "HASH" ) {
             warn "Parameters should be hash!";
             return;
@@ -434,8 +433,11 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $dbh = $self->get_db_connection() || return;
         $dbh->{FetchHashKeyName} = 'NAME_lc';
         my $where_part = $self->format_sql_where_part($parameters);
-        my ($count) = $dbh->selectrow_array(
+        my $sql        = " SELECT COUNT(*) FROM objects WHERE $where_part ;";
+        my ($count)    = $dbh->selectrow_array(
             " SELECT COUNT(*) FROM objects WHERE $where_part ;");
+        warn "Db:get_count:[SQL]: $sql\n ... RESULT(count): $count"
+          if $debug_mode;
         return ($count);
     }
 

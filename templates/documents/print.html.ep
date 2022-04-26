@@ -1,49 +1,49 @@
-%= stylesheet '/style.css'
+%= stylesheet '/style.css';
 <table>
  <tr>
-  <td>&nbsp;</td><th><%= uc ml('Document ' . stash('type')) %>#</th>
-  <th style="border-style: solid ;"><%= stash 'document number' %></th><td>&nbsp;</td>
+  <td>&nbsp;</td><th><%= uc ml('Document ' . param('type')) %>#</th>
+  <th style="border-style: solid ;"><%= param 'document number' %></th><td>&nbsp;</td>
  </tr>
  <tr>
-  <td class="tar"><strong><%= uc ml 'Date' %></strong></td><td style="border-style: solid ;"><%= stash 'date' %></td>
+  <td class="tar"><strong><%= uc ml 'Date' %></strong></td><td style="border-style: solid ;"><%= param 'date' %></td>
   <td>&nbsp;</td><td>&nbsp;</td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Permitter' %></td><td style="border-style: solid ;"><%= stash 'permitter' %></td>
+  <td class="tar"><%= ml 'Permitter' %></td><td style="border-style: solid ;"><%= param 'permitter' %></td>
   <td>&nbsp;</td><td>&nbsp;</td>
  </tr> 
  <tr>
-  <td class="tar"><strong><%= ml 'Permitter debet' %></strong></td><td style="border-style: solid ;"><%= stash 'permitter debet' %></td>
-  <td class="tar"><%= ml 'Permitter INN' %></td><td style="border-style: solid ;"><%= stash 'permitter inn' %></td>
+  <td class="tar"><strong><%= ml 'Permitter debet' %></strong></td><td style="border-style: solid ;"><%= param 'permitter debet' %></td>
+  <td class="tar"><%= ml 'Permitter INN' %></td><td style="border-style: solid ;"><%= param 'permitter inn' %></td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Permitter bank name' %></td><td style="border-style: solid ;"><%= stash 'permitter bank name'%></td>
-  <td class="tar"><%= ml 'Permitter bank code' %></td><td style="border-style: solid ;"><%= stash 'permitter bank code' %></td>
+  <td class="tar"><%= ml 'Permitter bank name' %></td><td style="border-style: solid ;"><%= param 'permitter bank name'%></td>
+  <td class="tar"><%= ml 'Permitter bank code' %></td><td style="border-style: solid ;"><%= param 'permitter bank code' %></td>
  </tr>
  <tr>
-  <td class="tar"><strong><%= ml 'Currency amount' %></strong></td><td colspan="3" style="border-style: solid ;"><%= currency_format(stash('currency amount')) %></td>
+  <td class="tar"><strong><%= ml 'Currency amount' %></strong></td><td colspan="3" style="border-style: solid ;"><%= currency_format(param('currency amount')) %></td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Beneficiary' %></td><td colspan="3" style="border-style: solid ;"><%= stash 'beneficiary' %></td>
+  <td class="tar"><%= ml 'Beneficiary' %></td><td colspan="3" style="border-style: solid ;"><%= param 'beneficiary' %></td>
  </tr>
  <tr>
-  <td class="tar"><strong><%= ml 'Beneficiary credit' %></strong></td><td  colspan="3" style="border-style: solid ;"><%= stash 'beneficiary credit' %>
+  <td class="tar"><strong><%= ml 'Beneficiary credit' %></strong></td><td  colspan="3" style="border-style: solid ;"><%= param 'beneficiary credit' %>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Beneficiary bank name' %></td><td style="border-style: solid ;"><%= stash 'beneficiary bank name'%></td>
-  <td class="tar"><%= ml 'Beneficiary bank code' %></td><td style="border-style: solid ;"><%= stash 'beneficiary bank code' %></td>
+  <td class="tar"><%= ml 'Beneficiary bank name' %></td><td style="border-style: solid ;"><%= param 'beneficiary bank name'%></td>
+  <td class="tar"><%= ml 'Beneficiary bank code' %></td><td style="border-style: solid ;"><%= param 'beneficiary bank code' %></td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Currency amount in words' %></td><td colspan="3" style="border-style: solid ;"><%= uc stash 'currency amount in words' %></td>
+  <td class="tar"><%= ml 'Currency amount in words' %></td><td colspan="3" style="border-style: solid ;"><%= uc param 'currency amount in words' %></td>
  </tr>
  <tr>
   <td colspan="4" style="border-top: 1px solid black;">&nbsp;</td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Details' %></td><td colspan="3" style="border-style: solid ;"><%= stash 'details' %></td>
+  <td class="tar"><%= ml 'Details' %></td><td colspan="3" style="border-style: solid ;"><%= param 'details' %></td>
  </tr>
  <tr>
-  <td class="tar"><%= ml 'Executive' %></td><td style="border-style: solid ;"><%= stash 'executive'%></td>
+  <td class="tar"><%= ml 'Executive' %></td><td style="border-style: solid ;"><%= param 'executive'%></td>
   <td>&nbsp;</td><td>&nbsp;</td>
  </tr> 
  <tr>
@@ -51,7 +51,7 @@
   <th colspan="2"><sup>(<%= ml 'sign' %>)</sup></th>
  </tr> 
  <tr>
-  <td class="tar"><%= ml 'Accounting manager' %></td><td style="border-style: solid ;"><%= stash 'accounting manager' %></td>
+  <td class="tar"><%= ml 'Accounting manager' %></td><td style="border-style: solid ;"><%= param 'accounting manager' %></td>
   <td>&nbsp;</td><td>&nbsp;</td>
  </tr> 
  <tr>
@@ -72,3 +72,5 @@
   <td class="tar"><%= ml 'Transfered' %><sup>(<%= ml 'date' %>)</sup><td style="border-bottom: 1px solid black ;">&nbsp;</td> 
  </tr>
 </table>
+
+%#= t pre => dumper($self->req->params->to_hash);

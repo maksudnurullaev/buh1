@@ -1,6 +1,5 @@
 % layout 'default';
 <h2><%= ml 'Documents' %></h2>
-%= t 'a', href => '/documents/add', ml('Add') if who_is_local('writer') ;
 % my $documents = stash 'documents';
 % my $count     = scalar(keys %{$documents});
 

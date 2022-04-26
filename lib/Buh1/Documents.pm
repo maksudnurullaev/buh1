@@ -37,7 +37,7 @@ package Buh1::Documents;
     );
     my @OBJECT_HEADER_FIELDS = ( 'docid', 'account', 'bt', 'debet', 'credit' );
 
-    sub set_new_data {
+    sub set_test_data {
         my $self          = shift;
         my $_sum          = int( rand(10000000) );
         my $_sum_in_words = Utils::Digital::sum2ru_words($_sum);
@@ -65,19 +65,23 @@ package Buh1::Documents;
     sub set_form_header {
         my $self       = shift;
         my $parameters = {};
-        my @headers    = ( 'account', 'bt', 'debet', 'credit' );
-        for my $header (@headers) {
+        for my $header ( ( 'account', 'bt', 'debet', 'credit' ) ) {
             my $value = $self->param($header) || $self->stash($header);
             if ($value) {
                 $parameters->{$header} = $value;
             }
             else {
                 warn "Could not find proper value for '$header'";
-                $self->stash( error => 1 );
+                $self->stash(
+                    error         => 1,
+                    error_message =>
+                      $self->ml('Could not set headers for document!')
+                );
                 return;
             }
         }
-        my $db = Db->new($self);
+        my $db       = Db->new($self);
+        my $dheaders = {};               # Document headers
         for my $key ( keys %{$parameters} ) {
             my $id = $parameters->{$key};
             if ( !$id ) {
@@ -92,8 +96,9 @@ package Buh1::Documents;
                 return;
             }
             Utils::Languages::generate_name( $self, $db_object );
-            $self->stash( $key => $db_object->{$id} );
+            $dheaders->{$key} = $db_object->{$id};
         }
+        $self->stash( dheaders => $dheaders );
         return (1);
     }
 
@@ -119,7 +124,7 @@ package Buh1::Documents;
                 self          => $self,
                 name          => $name,
                 names         => $OBJECT_NAMES,
-                exist_field   => 'bt',
+                exist_field   => 'document number',
                 filter_value  => $filter,
                 filter_prefix =>
                   " field NOT IN('bt','debet','credit','account') ",
@@ -129,14 +134,15 @@ package Buh1::Documents;
                     'account',         'type'
                 ],
                 path => ''
-            }
+            },
+            1
         );
         $self->stash( path      => $path );
         $self->stash( documents => $objects )
           if $objects && scalar( keys %{$objects} );
     }
 
-    sub validate_new_doc {
+    sub validate_document {
         my $self   = shift;
         my $errors = {};
         my $data   = {
@@ -147,16 +153,12 @@ package Buh1::Documents;
         };
         my @fields = @OBJECT_FIELDS;
         for my $field (@fields) {
-            next
-              if grep { /$field/ }
-              @OBJECT_HEADER_FIELDS;    # skip absent fields for new documents
             my $value = Utils::trim $self->param($field);
             if ($value) {
                 $data->{document}{$field} = $value;
             }
             else {
                 $errors->{$field} = 'error';
-                warn "Invalid field '$field'";
             }
         }
 
@@ -170,14 +172,15 @@ package Buh1::Documents;
             $self->req->params->merge( 'currency amount in words' =>
                   Utils::Digital::sum2ru_words($currency_amount) );
             $self->req->params->merge(
-                'old currency amount' => $self->param('currency amount') );
+                'old currency amount' => $currency_amount );
             $errors->{'currency amount'} = 'error';
         }
 
         # check for document number existance
         if (
             Utils::Documents::document_number_exist(
-                $self, $data->{document}{'document number'}
+                $self, $data->{document}{'document number'},
+                $self->param("docid")
             )
           )
         {
@@ -197,81 +200,6 @@ package Buh1::Documents;
         $data->{errors_count} = scalar( keys( %{$errors} ) );
         $data->{errors}       = $errors;
 
-        return ($data);
-    }
-
-    sub validate_old_doc {
-        my $self = shift;
-        my $id   = shift;
-        my $data = {
-            object_name => $OBJECT_NAME,
-            creator     => Utils::User::current($self),
-            errors      => [],
-        };
-        my @fields = @OBJECT_FIELDS;
-        push( @fields, 'id' ) if $id;
-        for my $field (@fields) {
-            my $value = Utils::trim $self->param($field);
-            if ($value) {
-                $data->{$field} = $value;
-            }
-            else {
-                $data->{error} = 1;
-                push @{ $data->{errors} }, $field;
-                $self->stash(
-                    document => { ( $field . '_class' ) => 'error' } );
-            }
-        }
-
-        # recalculate amount if needs
-        my $currency_amount = $data->{'currency amount'};
-
-        # my $currency_amount_in_words =
-        #   Utils::Digital::sum2ru_words($currency_amount);
-        if ($id) {
-            my $old_currency_amount = $self->param('old currency amount');
-            if (
-                !$old_currency_amount
-                || ( $currency_amount
-                    && ( $currency_amount ne $old_currency_amount ) )
-              )
-            {
-                my $_sum_in_words =
-                  Utils::Digital::sum2ru_words($currency_amount)
-                  ;    #TODO: Refactor
-                $data->{'currency amount in words'} = $_sum_in_words;
-                $self->param( 'currency amount in words' => $_sum_in_words );
-            }
-            $data->{updater} = Utils::User::current($self);
-        }
-        else {
-            my $_sum_in_words = Utils::Digital::sum2ru_words($currency_amount);
-            $data->{'currency amount in words'} = $_sum_in_words;
-            $self->param( 'currency amount in words' => $_sum_in_words );
-        }
-
-        # check for document number existance
-        if (
-            Utils::Documents::document_number_exist(
-                $self, $data->{'document number'}, $id
-            )
-          )
-        {
-            $data->{error} = 1;
-            push @{ $data->{errors} }, 'document number already exists';
-            $self->stash( document => { 'document number_class' => 'error' } );
-        }
-
-        # validate document date
-        my $date = Utils::validate_date( $data->{date} );
-        if ($date) {
-            $data->{date} = $date;
-        }
-        else {
-            $data->{error} = 1;
-            push @{ $data->{errors} }, 'invalid date';
-            $self->stash( 'date_class' => 'error' );
-        }
         return ($data);
     }
 
@@ -305,89 +233,79 @@ package Buh1::Documents;
                 warn 'Could not update objects!';
             }
         }
-        my $payload = $self->param("payload");
+        my $account = $self->param("account");
         my $docid   = Utils::Documents::detach($self);
-        $self->redirect_to("/documents/update/$payload?docid=$docid");
+        $self->redirect_to("/documents/update/$account?docid=$docid");
     }
 
     sub cancel_update_document_header {
         my $self = shift;
 
-        my $payload = $self->param("payload");
+        my $account = $self->param("account");
         my $docid   = Utils::Documents::detach($self);
-        $self->redirect_to("/documents/update/$payload?docid=$docid");
+        $self->redirect_to("/documents/update/$account?docid=$docid");
     }
 
     sub print {
         my $self = shift;
         return if !$self->who_is( 'local', 'reader' );
 
-        my $docid = $self->param('payload');
+        my $docid = $self->param('account');
         if ($docid) {
             deploy_document( $self, $docid );
         }
     }
 
-    sub add {
-        my $self = shift;
-        return if !$self->who_is( 'local', 'reader' );
+    # sub add {
+    #     my $self = shift;
+    #     return if !$self->who_is( 'local', 'reader' );
 
-        if ( $self->req->method eq 'POST' ) {
-            my $data = validate_new_doc($self);
-            if ( !$data->{errors_count} ) {
-                my $db_client = Utils::Db::client($self);
+    #     if ( $self->req->method eq 'POST' ) {
+    #         my $data = validate_new_doc($self);
+    #         if ( !$data->{errors_count} ) {
+    #             my $db_client = Utils::Db::client($self);
 
-                if ( my $id = $db_client->insert( $data->{document} ) ) {
-                    $self->redirect_to(
-                        "/documents/update/$id?docid=$id&success=1");
-                }
-                else {
-                    $self->stash( error => 1 );
-                    warn 'Could not insert [document] object!';
-                }
-            }
-            else {
-                $self->stash( errors => $data->{errors} );
-            }
-        }
-        else {
-            $self->stash( document => set_new_data($self) );
-        }
-    }
+    #             if ( my $id = $db_client->insert( $data->{document} ) ) {
+    #                 $self->redirect_to(
+    #                     "/documents/update/$id?docid=$id&success=1");
+    #             }
+    #             else {
+    #                 $self->stash( error => 1 );
+    #                 warn 'Could not insert [document] object!';
+    #             }
+    #         }
+    #         else {
+    #             $self->stash( errors => $data->{errors} );
+    #         }
+    #     }
+    #     else {
+    #         $self->stash( document => set_test_data($self) );
+    #     }
+    # }
 
     sub update {
         my $self = shift;
         return if !$self->who_is( 'local', 'reader' );
 
-        my $isPost = ( $self->req->method =~ /POST/ )
-          && ( ( !$self->param('post') )
-            || ( $self->param('post') !~ /^preliminary$/i ) );    #???
         my $id      = $self->param('docid');
-        my $payload = $self->param('payload');
+        my $account = $self->param('account');
         my $bt      = $self->param('bt');
 
-        # my $db      = Utils::Db::client($self);
-        if ($id) {
-            deploy_document( $self, $id );
-        }
-        else {
-            my $template = $self->param('template');
-            if ($template) {
-                deploy_document( $self, $template );
-            }
-        }
-        set_form_header($self);
-        if ($isPost) {
+        my $isPost = ( $self->req->method =~ /POST/ )
+          && ( ( !$self->param('post') )
+            || ( $self->param('post') !~ /^preliminary$/i ) );
 
+        if ($isPost) {
             return if !$self->who_is( 'local', 'writer' );
-            my $data = validate_old_doc( $self, $id );
-            if ( !exists( $data->{error} ) ) {
+            my $data = validate_document( $self, $id );
+            if ( !$data->{errors_count} ) {
                 my $db_client = Utils::Db::client($self);
                 if ( defined $id ) {
-                    if ( $db_client->update($data) ) {
+                    $data->{document}{id} = $id;
+                    if ( $db_client->update( $data->{document} ) ) {
                         $self->stash( success => 1 );
                         $self->redirect_to(
-                            "/documents/update/$payload?docid=$id&success=1");
+                            "/documents/update/$account?docid=$id&success=1");
                     }
                     else {
                         $self->stash( error => 1 );
@@ -395,9 +313,9 @@ package Buh1::Documents;
                     }
                 }
                 else {
-                    if ( $id = $db_client->insert($data) ) {
+                    if ( $id = $db_client->insert( $data->{document} ) ) {
                         $self->redirect_to(
-                            "/documents/update/$payload?docid=$id&success=1");
+                            "/documents/update/$account?docid=$id&success=1");
                     }
                     else {
                         $self->stash( error => 1 );
@@ -406,9 +324,26 @@ package Buh1::Documents;
                 }
             }
             else {
-                $self->stash( error => 1 );
+                $self->stash( error  => 1 );
+                $self->stash( errors => $data->{errors} );
+                if ( $self->param('fill_with_test_data') ) {
+                    set_test_data($self);
+                    $self->req->params->merge( 'fill_with_test_data' => undef );
+                }
             }
         }
+        else {
+            if ($id) {    # TODO: Here refactor needs
+                deploy_document( $self, $id );
+            }
+            else {
+                my $template = $self->param('template');
+                if ($template) {
+                    deploy_document( $self, $template );
+                }
+            }
+        }
+        set_form_header($self);    # set headers for document
     }
 
     sub deploy_document {
@@ -421,8 +356,10 @@ package Buh1::Documents;
             my $objects = $db_client->get_objects( { id => [$id] } );
             if ( $objects && exists( $objects->{$id} ) ) {
                 my $document = $objects->{$id};
-                for my $field ( keys %{$document} ) {
-                    $self->stash( $field => $document->{$field} );
+
+                # $self->stash( document => $document );
+                for my $key ( keys %{$document} ) {
+                    $self->req->params->merge( $key => $document->{$key} );
                 }
             }
         }

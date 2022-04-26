@@ -4,8 +4,8 @@
 % if( stash('error') || param('error') ) { 
  <div class='alert error noaccess'><%= uc ml 'Error!' %></div>
 % } 
-% if( stash('error_message') ) { 
- <div class='alert error noaccess'><%= uc stash 'error_message' %></div>
+% if( my $_message = stash('error_message') ) { 
+ <div class='alert error noaccess'><%= uc $_message %></div>
 % } 
 % if( stash('noaccess') || param('noaccess') ) { 
  <div class='alert error noaccess'><%= ml 'No access' %>!</div>
