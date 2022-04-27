@@ -176,6 +176,24 @@ sub startup {
       ->to( controller => 'tbalance', action => 'page' );
     $r->get('/tbalance/page/*account')
       ->to( controller => 'tbalance', action => 'page' );
+    
+    # Catalog
+    $r->get('/catalog/list')
+      ->to( controller => 'catalog', action => 'list' );
+    $r->any('/catalog/add')->methods('GET','POST')
+      ->to( controller => 'catalog', action => 'add' );
+    $r->any('/catalog/edit/*payload')->methods('GET','POST')
+      ->to( controller => 'catalog', action => 'edit' );
+    $r->any('/catalog/files/*payload')->methods('GET','POST')
+      ->to( controller => 'catalog', action => 'files' );
+
+    # Files 
+    $r->post('/files/add/*payload')
+      ->to( controller => 'files', action => 'add' );
+    $r->any('/catalog/calculations/*payload')
+      ->to( controller => 'catalog', action => 'calculations' );
+
+        
 }
 
 1;

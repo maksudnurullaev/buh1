@@ -1,3 +1,4 @@
 # Clients data files
 db/clients
 db/dump
+db/clients/*.db

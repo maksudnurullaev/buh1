@@ -14,9 +14,9 @@
    %= ml('Move') ;
  % }
  |
- <%= tag 'a', href => "/$controller/files/$payload", ml('Files')
+ %= tag 'a', href => "/$controller/files/$payload", ml('Files')
  (<%= $files_count %>)
  |
- <%= tag 'a', href => "/$controller/calculations/$payload", ml('Calculations')
+ %= tag 'a', href => "/$controller/calculations/$payload", ml('Calculations')
  (<%= $calcs_count %>)
 </div>
