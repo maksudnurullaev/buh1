@@ -59,6 +59,7 @@ sub register {
     $app->helper( cdb_calculate => sub { Utils::Calculations::cdb_calculate (@_); } );
     $app->helper( db_calculate  => sub { Utils::Calculations::db_calculate (@_); } );
     $app->helper( get_date      => sub { Utils::get_date (@_); } );
+    $app->helper( date4format2  => sub { Utils::date2format (@_); } );
     $app->helper( full_url      => sub { Utils::get_full_url (@_); } );
 
     $app->helper( calc_start4ol => sub { Utils::calc_start4ol (@_); } );

@@ -39,9 +39,9 @@
     </tr>
     <tr><td class='tar'><%= ml 'Date(yyyy.mm.dd)' %></td>
       % if( $docid ){
-        <td><%= text_field 'date', class => $errors->{date} %></td>
+        <td><%= date_field 'date', class => $errors->{date} %></td>
       % } else {
-        <td><%= text_field 'date' => get_date, class => $errors->{date} %></td>
+        <td><%= date_field 'date' => get_date('%Y-%m-%d'), class => $errors->{date} %></td>
       % }
     </tr>
     <tr><td class='tar'><%= ml 'Permitter' %></td>

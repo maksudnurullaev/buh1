@@ -91,6 +91,22 @@ m/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|
         return ( $result->strftime($format) );
     }
 
+    sub date2format {
+        my $self = shift;
+        return date4format2format(@_);
+    }
+
+    sub date4format2format {
+        my ($date,$inFormat,$outFormat) = (shift,shift,shift);
+        return (undef) if !$date || !$inFormat | !$outFormat;
+
+        my $result;
+        eval { $result = Time::Piece->strptime( $date, $inFormat ); };
+        return (undef) if $@;
+        return ( $result->strftime($outFormat) );
+    }
+
+
     sub currency_format1 {
         my $self   = shift;
         my $amount = shift;

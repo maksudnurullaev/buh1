@@ -1,14 +1,14 @@
 % layout 'default';
 <h2><%= ml 'Trial balance' %></h2>
 % my $path = '/tbalance/page';
-% my $is_valid_tbalance = stash('tbalance') && scalar(keys(stash('tbalance'))) ;
+% my $is_valid_tbalance = stash('tbalance') && scalar(keys(%{stash('tbalance')})) ;
 %= form_for $path => (method => 'POST') => begin
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
-    <td><%= text_field 'start_date' => get_date, class => (stash 'start_date_class') %></td>
+    <td><%= date_field 'start_date' => get_date('%Y-%m-01'), class => (stash 'start_date_class') %></td>
   </tr>
   <tr><td class='tar'><%= ml 'End'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
-    <td><%= text_field 'end_date' => get_date, class => (stash 'end_date_class') %></td>
+    <td><%= date_field 'end_date' => get_date('%Y-%m-%d'), class => (stash 'end_date_class') %></td>
   </tr>
   <tr><td>&nbsp;</td>
    <td>
@@ -34,3 +34,10 @@
 %= include 'tbalance/table' if $is_valid_tbalance ;
 %#= tag pre => dumper(stash('tbalance')) if $is_valid_tbalance ;
 %#= tag pre => dumper(stash('tdata')) if $is_valid_tbalance ;
+
+%#= t pre => get_date
+%#= t pre => get_date('%Y-%m-%d')
+%#= t pre => dumper($self->req->params)
+%#= t pre => param('start_date')
+%#= t pre => param('end_date')
+%#= t pre => dumper(stash('tdates'))
