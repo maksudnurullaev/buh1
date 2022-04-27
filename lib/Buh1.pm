@@ -140,8 +140,10 @@ sub startup {
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );
     $r->get('/filter/reset')->to( controller => 'filter', action => 'reset' );
-    $r->get('/filter/page/#page')->to( controller => 'filter', action => 'page' );
-    $r->get('/filter/pagesize/#pagesize')->to( controller => 'filter', action => 'pagesize' );
+    $r->get('/filter/page/#page')
+      ->to( controller => 'filter', action => 'page' );
+    $r->get('/filter/pagesize/#pagesize')
+      ->to( controller => 'filter', action => 'pagesize' );
 
     ### Companies
 
@@ -164,9 +166,16 @@ sub startup {
       ->to( controller => 'documents', action => 'print' );
     $r->post('/documents/update_document_header/*account')
       ->to( controller => 'documents', action => 'update_document_header' );
-    $r->get('/documents/cancel_update_document_header/*account')
-      ->to( controller => 'documents', action => 'cancel_update_document_header' );
-      
+    $r->get('/documents/cancel_update_document_header/*account')->to(
+        controller => 'documents',
+        action     => 'cancel_update_document_header'
+    );
+
+    # TBalance
+    $r->any('/tbalance/page')->methods( 'GET', 'POST' )
+      ->to( controller => 'tbalance', action => 'page' );
+    $r->get('/tbalance/page/*account')
+      ->to( controller => 'tbalance', action => 'page' );
 }
 
 1;

@@ -1,4 +1,5 @@
 % my $tbalace = stash 'tbalance';
+% my $tdates = stash 'tdates';
 % my $count = scalar keys %{$tbalance};
 % if( $count ){
 <hr />
@@ -16,7 +17,7 @@
   % next if $key eq 'totals' ;
   % my $account_id = $rows->{$key}{account_id};
   <tr>
-   <td><%= tag 'a', href => "/tbalance/page/$account_id?start_date=$start_date&end_date=$end_date", shrink_if($rows->{$key}{name},50) %></td>
+   <td><%= tag 'a', href => "/tbalance/page/$account_id?start_date=$tdates->{start_date}&end_date=$tdates->{end_date}", shrink_if($rows->{$key}{name},50) %></td>
    %= include 'tbalance/table_td', value => $rows->{$key}{start_debet};
    %= include 'tbalance/table_td', value => $rows->{$key}{start_credit} ;
    %= include 'tbalance/table_td', value => $rows->{$key}{debet} ;
@@ -24,7 +25,7 @@
    %= include 'tbalance/table_td', value => $rows->{$key}{end_debet} ;
    %= include 'tbalance/table_td', value => $rows->{$key}{end_credit} ;
   </tr>
-  %= include 'tbalance/docs_row', docs => $rows->{$key}{docs} if param('payload') && param('payload') eq $rows->{$key}{account_id};
+  %= include 'tbalance/docs_row', docs => $rows->{$key}{docs} if param('account') && param('account') eq $rows->{$key}{account_id};
  % }
  <tr>
   <th><%= ml 'TOTAL' %></th>

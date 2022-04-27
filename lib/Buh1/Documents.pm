@@ -187,15 +187,6 @@ package Buh1::Documents;
             $errors->{'document number'} = 'error';
         }
 
-        # validate document date
-        my $date = Utils::validate_date( $data->{document}{date} );
-        if ($date) {
-            $data->{document}{date} = $date;
-        }
-        else {
-            $errors->{'date'} = 'error';
-        }
-
         # final
         $data->{errors_count} = scalar( keys( %{$errors} ) );
         $data->{errors}       = $errors;
