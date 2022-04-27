@@ -19,7 +19,7 @@
    % if ( $p == $page ) {
     <strong><u><%= $page %></u></strong>
    % } else {
-      %= tag 'a', href => "filter/page/$p?path=$path", $p
+      %= tag 'a', href => "/filter/page/$p?path=$path", $p
    % } 
   % }
 </div>

@@ -256,33 +256,6 @@ package Buh1::Documents;
         }
     }
 
-    # sub add {
-    #     my $self = shift;
-    #     return if !$self->who_is( 'local', 'reader' );
-
-    #     if ( $self->req->method eq 'POST' ) {
-    #         my $data = validate_new_doc($self);
-    #         if ( !$data->{errors_count} ) {
-    #             my $db_client = Utils::Db::client($self);
-
-    #             if ( my $id = $db_client->insert( $data->{document} ) ) {
-    #                 $self->redirect_to(
-    #                     "/documents/update/$id?docid=$id&success=1");
-    #             }
-    #             else {
-    #                 $self->stash( error => 1 );
-    #                 warn 'Could not insert [document] object!';
-    #             }
-    #         }
-    #         else {
-    #             $self->stash( errors => $data->{errors} );
-    #         }
-    #     }
-    #     else {
-    #         $self->stash( document => set_test_data($self) );
-    #     }
-    # }
-
     sub update {
         my $self = shift;
         return if !$self->who_is( 'local', 'reader' );

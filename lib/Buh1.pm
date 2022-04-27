@@ -140,6 +140,8 @@ sub startup {
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );
     $r->get('/filter/reset')->to( controller => 'filter', action => 'reset' );
+    $r->get('/filter/page/#page')->to( controller => 'filter', action => 'page' );
+    $r->get('/filter/pagesize/#pagesize')->to( controller => 'filter', action => 'pagesize' );
 
     ### Companies
 
