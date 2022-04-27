@@ -12,8 +12,6 @@ package Buh1::Tbalance;
         my ( $start_date, $end_date ) =
           ( $self->param('start_date'), $self->param('end_date') );
         if ( $start_date && $end_date ) {
-
-            # warn "( $start_date, $end_date )";
             my ( $tbalance, $tdata ) =
               Utils::Documents::get_tbalance_data( $self, $start_date,
                 $end_date );
