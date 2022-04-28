@@ -6,20 +6,25 @@
  % my $page = session("$path/page") || 1 ;
 
 <div>
-  <%= ml 'Page size' %>:
-  % for my $ps ( @pagesizes ) {
-   % if ( $ps == $pagesize) {
-     <strong><u><%= $ps %></u></strong>
-   % } else {
-      %= tag 'a', href => "/filter/pagesize/$ps?path=$path", $ps
-   % }
-  % } 
-  <br /><%= ml 'Pages' %>:
-  % for my $p (1 .. $pages) {
-   % if ( $p == $page ) {
-    <strong><u><%= $page %></u></strong>
-   % } else {
-      %= tag 'a', href => "/filter/page/$p?path=$path", $p
-   % } 
-  % }
+  <p>
+    <%= ml 'Page size' %>:
+    % for my $ps ( @pagesizes ) {
+      % if ( $ps == $pagesize) {
+        <strong><u><%= $ps %></u></strong>
+      % } else {
+        %= tag 'a', href => "/filter/pagesize/$ps?path=$path", $ps
+      % }
+    % }
+    % if ( $pages > 1 ) {
+      <br />
+      <%= ml 'Pages' %>:
+      % for my $p (1 .. $pages) {
+        % if ( $p == $page ) {
+          <strong><u><%= $page %></u></strong>
+        % } else {
+          %= tag 'a', href => "/filter/page/$p?path=$path", $p
+        % } 
+      % }
+    % }
+  </p>
 </div>

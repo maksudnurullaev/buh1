@@ -38,7 +38,8 @@
   <tr><td>&nbsp;</td>
    <td>
     %= submit_button ml('Save') ;
-    | %= tag 'a', href => "/$controller/list", ml('Cancel')
+    | 
+    %= tag 'a', href => "/$controller/list", ml('Cancel') 
    </td>
   </tr>
 % }

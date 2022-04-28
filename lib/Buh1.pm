@@ -176,24 +176,50 @@ sub startup {
       ->to( controller => 'tbalance', action => 'page' );
     $r->get('/tbalance/page/*account')
       ->to( controller => 'tbalance', action => 'page' );
-    
+
     # Catalog
-    $r->get('/catalog/list')
-      ->to( controller => 'catalog', action => 'list' );
-    $r->any('/catalog/add')->methods('GET','POST')
+    $r->get('/catalog/list')->to( controller => 'catalog', action => 'list' );
+    $r->any('/catalog/add')->methods( 'GET', 'POST' )
       ->to( controller => 'catalog', action => 'add' );
-    $r->any('/catalog/edit/*payload')->methods('GET','POST')
+    $r->any('/catalog/edit/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'catalog', action => 'edit' );
-    $r->any('/catalog/files/*payload')->methods('GET','POST')
+    $r->any('/catalog/files/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'catalog', action => 'files' );
 
-    # Files 
+    # Files
     $r->post('/files/add/*payload')
       ->to( controller => 'files', action => 'add' );
     $r->any('/catalog/calculations/*payload')
       ->to( controller => 'catalog', action => 'calculations' );
 
-        
+    # Wirehouse
+    $r->get('/warehouse/list')
+      ->to( controller => 'warehouse', action => 'list' );
+    $r->any('/warehouse/add')->methods( 'GET', 'POST' )
+      ->to( controller => 'warehouse', action => 'add' );
+    $r->any('/warehouse/edit/*payload')->methods( 'GET', 'POST' )
+      ->to( controller => 'warehouse', action => 'edit' );
+    $r->post('/warehouse/add_tag/*payload')
+      ->to( controller => 'warehouse', action => 'add_tag' );
+    $r->post('/warehouse/update_tag/*payload')
+      ->to( controller => 'warehouse', action => 'update_tag' );
+    $r->post('/warehouse/update_counting_field/*payload')
+      ->to( controller => 'warehouse', action => 'update_counting_field' );
+    $r->any('/warehouse/remains/*payload')->methods( 'GET', 'POST' )
+      ->to( controller => 'warehouse', action => 'remains' );
+    $r->get('/warehouse/remains_all')
+      ->to( controller => 'warehouse', action => 'remains_all' );
+    $r->get('/warehouse/files/*payload')
+      ->to( controller => 'warehouse', action => 'files' );
+    $r->get('/warehouse/calculations/*payload')
+      ->to( controller => 'warehouse', action => 'calculations' );
+    $r->post('/warehouse/export')
+      ->to( controller => 'warehouse', action => 'export' );
+    $r->post('/warehouse/export_remains/*payload')
+      ->to( controller => 'warehouse', action => 'export_remains' );
+    $r->get('/warehouse/del_tag/*payload')
+      ->to( controller => 'warehouse', action => 'del_tag' );
+
 }
 
 1;

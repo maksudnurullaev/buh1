@@ -3,7 +3,7 @@
  %= form_for filter => (action => "/filter/set?path=$path", method => 'POST' ) => begin
   %= text_field filter => session("$path/filter") ;
   %= submit_button ml 'Filter' ;
-  %= tag 'a', href => "/filter/reset?path=$path",  ml("Reset") ;
+  %= tag 'a', href => "/filter/reset?path=$path",  ml("Reset")  if session("$path/filter");
  % end 
 </div>
 

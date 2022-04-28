@@ -2,9 +2,9 @@
 % my @lt_splitted = split(/\s/, $lt);
 Copyright <%= $lt_splitted[4] %>, The NMK Foundation<br />
 <small>Generated: <%= $lt %></small><br />
- % if( is_mobile_browser ){
-  %= tag 'a', href => '/browser/mobile/0', ml('Full version') ;
- % } else {
-  %= tag 'a', href => '/browser/mobile/1', ml('Mobile version') ;
- % }
+ %# if( is_mobile_browser ){
+  %#= tag 'a', href => '/browser/mobile/0', ml('Full version') ;
+ %# } else {
+  %#= tag 'a', href => '/browser/mobile/1', ml('Mobile version') ;
+ %# }
 
