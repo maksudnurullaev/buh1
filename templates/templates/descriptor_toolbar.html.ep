@@ -20,7 +20,7 @@
   % }
  % }  
  % if( stash('action') ne 'files' ){
-   %= tag 'a', href => "/$controller/files/$payload", (ml('Files')+"($files_count)")
+   %= tag 'a', href => "/$controller/files/$payload", (ml('Files') . "($files_count)")
  % } else {
   <%= ml 'Files' %>(<%= $files_count %>)
  % }
