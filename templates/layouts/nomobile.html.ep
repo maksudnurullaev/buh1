@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>buh1 v0.0.1a</title>
+  <title>Buga.Uz v0.1b</title>
   <link rel="stylesheet" type="text/css" href="/style.css" />
   % my $debug_mode = 0 ;
 </head>
@@ -12,7 +12,7 @@
 <body>
   %= include 'debug/access' if $debug_mode ;
   <div id="headerSection">
-    <a href="http://www.buh1uz.com/"><img src="/buh1_logo.png" alt="The B.U.H.1." align="left" border="0" /></a>
+    <a href="http://www.buh1uz.com/"><img src="/logo.png" alt="Buga.Uz" align="left" border="0" /></a>
     <div class="login_status">
       %= include 'login_bar' ;
       &nbsp;&nbsp;|||&nbsp;&nbsp;
