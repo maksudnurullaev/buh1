@@ -46,3 +46,5 @@
  % end
 </div>
 %= include 'users/companies' if $user_id;
+
+%#= t pre => dumper(stash)

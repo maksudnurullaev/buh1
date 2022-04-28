@@ -66,6 +66,8 @@ sub startup {
       ->to( controller => 'users', action => 'deleted' );
     $r->get('/users/del/*payload')
       ->to( controller => 'users', action => 'del' );
+    $r->get('/users/remove_company/*payload')
+      ->to( controller => 'users', action => 'remove_company' );
 
     # Accounts
     $r->get('/accounts/list')->to( controller => 'accounts', action => 'list' );

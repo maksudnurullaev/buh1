@@ -72,6 +72,7 @@ package Db;
     sub initialize {
         my $self = shift;
         return (1) if ( -e $self->{'file'} );
+
         # warn Dumper $self->{file};
         if ( $DB_CURRENT_TYPE == $DB_SQLite_TYPE ) {
             my $connection = $self->get_db_connection()

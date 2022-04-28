@@ -1,5 +1,5 @@
 % my $companies = stash 'companies';
-% if ( $companies ) {
+% if ( keys %{$companies} ) {
   <h3><%= ml('Companies') %></h3>
   <ul>
    % for my $company_id(keys %{$companies} ) {

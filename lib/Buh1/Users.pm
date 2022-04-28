@@ -1,6 +1,7 @@
 package Buh1::Users;
 {
     use Mojo::Base 'Mojolicious::Controller';
+    use Db;
     use Auth;
     use Data::Dumper;
     use Utils::Filter;
@@ -137,9 +138,10 @@ package Buh1::Users;
         my $self    = shift;
         my $user_id = $self->param('payload');
         my $id      = $self->param('company');
-        my $db      = Db->new($self);
-        db->del_link( $id, $user_id );
-        db->del_linked_value( 'access', $id, $user_id );
+        if ( my ($db) = Db->new($self) ) {
+            $db->del_linked_value( 'access', $id, $user_id );
+            $db->del_link( $id, $user_id );
+        }
         $self->redirect_to("/users/edit/$user_id");
     }
 
@@ -170,12 +172,16 @@ package Buh1::Users;
             }
         }
         $data = $db->get_objects(
-            { id => [$user_id], field => [ 'email', 'description', 'extended_right' ] } );
+            {
+                id    => [$user_id],
+                field => [ 'email', 'description', 'extended_right' ]
+            }
+        );
         if ($data) {
-            # $db->links_attach( $data, 'companies', 'company', ['name'] );
-            # for my $key ( keys %{ $data->{$user_id} } ) {
-            #     $self->stash( $key => $data->{$user_id}->{$key} );
-            # }
+            $db->links_attach( $data, 'companies', 'company', ['name'] );
+            for my $key ( keys %{ $data->{$user_id} } ) {
+                $self->stash( $key => $data->{$user_id}->{$key} );
+            }
             $self->stash( user => $data->{$user_id} );
         }
         else {
