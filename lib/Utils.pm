@@ -231,7 +231,7 @@ m/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|
               $db->get_objects( { id => [$cid], field => ['name'] } )->{$cid};
             $result->{$cid} = {
                 name   => $company->{name},
-                access => $db->get_linked_value( 'access', $cid, $user_id )
+                access => $db->get_linked_value( 'access', $cid, $user_id ) # TODO: Refactor needs here
             };
         }
         return ($result);

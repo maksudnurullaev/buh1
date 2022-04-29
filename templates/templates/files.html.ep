@@ -10,7 +10,9 @@
 <p>
  %= include "files/filer", _pid => $payload, _read_only => !who_is_global('writer') ;
 </p>
-<hr />
-<p>
-%= include "$controller/list_resources", temp_hash => stash('resources_root') if stash('resources_root') ;
-</p>
+% if ( stash('resources_root') ) {
+    <hr />
+    <p>
+        %= include "$controller/list_resources", temp_hash => stash('resources_root')  ;
+    </p>
+% }

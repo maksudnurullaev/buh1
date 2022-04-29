@@ -53,10 +53,10 @@ sub set_admin_password{
 sub get_admin_password{
     my $self = shift;
     my $file = get_admin_password_file_path($self);
-    if(! -e $file){ return(set_admin_password($self, 'admin')); }
+    if(! -e $file){ return(set_admin_password($self, 'admin')); } # First time admin password is 'admin'
     my ($f,$salt) = (undef,undef);
     open($f, "<", $file) || die("Can't open $file to read: $!");
-    $salt = <$f>; # get just first line
+    $salt = <$f>; # just get first line
     close($f);
     return($salt);
 };
@@ -66,10 +66,9 @@ sub login{
     $email = lc $email; # email string should be case insensative!!!
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
-        # return(1) if salted_password($password,get_admin_password($self));
-        # warn "Admin's password invalid!";
-        # return(0);
-        return(1);
+        return(1) if salted_password($password,get_admin_password($self));
+        warn "Admin's password invalid!";
+        return(0);
     }
     # 2. Is user exists
     my $db = Db->new($self);

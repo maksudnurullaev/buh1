@@ -1,50 +1,50 @@
 % layout 'default';
- %= tag 'a', href => '/users/list', ml('Back')
- % my $_user = stash('user');
- % my $_path = $_user ? "/users/edit/$user_id" : '/users/add';
- %= form_for $_path => (method => 'POST') => begin
- <table class='colortable'>
-  <tr>
-   <td class='tar'><u><%= ml 'E-mail' %></u></td>
-   <td>
-    % if ($user_id) { 
-    <strong><%= $_user->{email} %></strong>
-    % } else {
-    <%= text_field email => $_user->{email} , class => stash 'email_class' %>
-    % }
-   </td>
-  </tr>
-  <tr>
-   <td class='tar'><u><%= ml 'New Password' %></u></td>
-   <td><%= password_field 'password1', class => stash 'password1_class' %></td>
-  </tr>
-  <tr>
-   <td class='tar'><u><%= ml 'New Password(again)' %></u></td>
-   <td><%= password_field 'password2', class => stash 'password2_class' %></td>
-  </tr>
-  <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
-   <td> 
-    %= text_area description => $_user->{description}, class => (stash 'description_class') 
-   </td>
-  </tr>
-  %= include 'users/extended_rights' if $user_id;
-  <tr><td>&nbsp;</td>
-   <td>
-     % if ($_user) {
-        %= submit_button ml( ('Save') )
-        |  
-        %= tag 'a', href => "/users/del/$user_id", ml('Delete')
-     % } else {
-        %= submit_button ml('Add')
-     % }
-   </td>
-  </tr>
- </table>
- % end
-</div>
+% my $_user = stash('user');
+% my $_path = $_user ? "/users/edit/$user_id" : '/users/add';
+
+%= tag 'a', href => '/users/list', ml('Back')
+%= include 'success_error';
+
+%= form_for $_path => (method => 'POST') => begin
+   <h1><%= ml 'User' %></h1>
+   <table class='colortable'>
+      <tr>
+         <td class='tar'><u><%= ml 'E-mail' %></u></td>
+         <td>
+            % if ($user_id) { 
+               <strong><%= $_user->{email} %></strong>
+            % } else {
+               <%= text_field email => $_user->{email} , class => stash 'email_class' %>
+            % }
+         </td>
+      </tr>
+      <tr>
+         <td class='tar'><u><%= ml 'New Password' %></u></td>
+         <td><%= password_field 'password1', class => stash 'password1_class' %></td>
+      </tr>
+      <tr>
+         <td class='tar'><u><%= ml 'New Password(again)' %></u></td>
+         <td><%= password_field 'password2', class => stash 'password2_class' %></td>
+      </tr>
+      <tr>
+         <td class='tar'><%= ml 'Description' %></td>
+         <td><%= text_area description => $_user->{description}, class => (stash 'description_class') %></td>
+      </tr>
+         %= include 'users/extended_rights' if $user_id;
+      <tr><td>&nbsp;</td>
+         <td>
+            % if ($_user) {
+               %= submit_button ml( ('Save') )
+               |  
+               %= tag 'a', href => "/users/del/$user_id", ml('Delete')
+            % } else {
+               %= submit_button ml('Add')
+            % }
+         </td>
+      </tr>
+   </table>
+% end
+
 %= include 'users/companies' if $user_id;
 
 %#= t pre => dumper(stash)

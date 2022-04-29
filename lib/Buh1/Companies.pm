@@ -37,7 +37,9 @@ package Buh1::Companies;
         $self->stash( path      => $path );
         $self->stash( companies => $objects )
           if $objects && scalar( keys %{$objects} );
+
         $db->links_attach( $objects, 'users', 'user', ['email'] );
+        
         for my $cid ( keys %{$objects} ) {
             if ( exists $objects->{$cid}{users} ) {
                 my $users = $objects->{$cid}{users};
@@ -101,17 +103,17 @@ package Buh1::Companies;
         my $db      = Db->new($self);
         $db->del_link( $id, $user_id );
         $db->del_linked_value( 'access', $id, $user_id );
-        $self->redirect_to("/companies/edit/$id");
+        $self->redirect_to("/companies/edit/$id?success=1");
     }
 
     sub add_user {
         my $self    = shift;
         my $id      = $self->param('payload');
         my $user_id = $self->param('user');
-        warn "ADD user: $id, $user_id";
-        my $db = Db->new($self);
+        my $db      = Db->new($self);
         $db->set_link( $id, $user_id );
         $self->redirect_to("/companies/edit/$id");
+        $self->redirect_to("/companies/edit/$id?success=1");
     }
 
     sub change_access {
@@ -120,10 +122,11 @@ package Buh1::Companies;
         my $user_id     = $self->param('user_id');
         my $user_access = $self->param('user_access');
         my $db          = Db->new($self);
-        $db->del_linked_value( 'access', $id, $user_id )
-          ;    # delete all old linkes
+        $db->del_linked_value( 'access', $id, $user_id );
+
+        # delete all old linkes
         $db->set_linked_value( 'access', $id, $user_id, $user_access );
-        $self->redirect_to("/companies/edit/$id");
+        $self->redirect_to("/companies/edit/$id?success=1");
     }
 
     sub edit {
@@ -185,8 +188,6 @@ package Buh1::Companies;
         }
         $self->render('/companies/add');
     }
-
-
 
     sub add {
         my $self = shift;

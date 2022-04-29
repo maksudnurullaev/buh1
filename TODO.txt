@@ -27,5 +27,6 @@
 13.1    Check & workout read only access for all users with no admin or writer access in company's submeny modules
 14.1    Filter + Paging does work properly when used together
 15.1    Fix user's list page access for anonymous
-16.1    Reseerch DB anomalies
+16.1    Research DB anomalies
 select count(*) as cnt, name, id, field from objects group by name, id, field HAVING COUNT(*)>1 and name <> '_link_'; 
+17.     Add test for linked values for Db.pm package

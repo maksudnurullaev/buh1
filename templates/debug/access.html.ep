@@ -1,14 +1,14 @@
 <fieldset>
  <legend>Access debug</legend>
   Global: <%= who_global %><br />
-  Global who_is_global 'guest': <%= who_is_global 'guest' %><br />
-  Global who_is_global 'user': <%= who_is_global 'user' %><br />
-  Global who_is_global 'editor': <%= who_is_global 'editor' %><br />
-  Global who_is_global 'admin': <%= who_is_global 'admin' %><br />
+  Global who_is_global 'guest': <%= who_is_global('guest')?'YES':'NO' %><br />
+  Global who_is_global 'user': <%= who_is_global('user')?'YES':'NO' %><br />
+  Global who_is_global 'editor': <%= who_is_global('editor')?'YES':'NO' %><br />
+  Global who_is_global 'admin': <%= who_is_global('admin')?'YES':'NO' %><br />
   Local: <%= who_local %><br />
-  Local who_is_local 'reader': <%= who_is_local 'reader' %><br />
-  Local who_is_local 'writer': <%= who_is_local 'writer' %><br />
-  Local who_is_local 'admin': <%= who_is_local 'admin' %><br />
+  Local who_is_local 'reader': <%= who_is_local('reader')?'YES':'NO' %><br />
+  Local who_is_local 'writer': <%= who_is_local('writer')?'YES':'NO' %><br />
+  Local who_is_local 'admin': <%= who_is_local('admin')?'YES':'NO' %><br />
   Local company access:  <%= session->{'company access'} %><br />
   Is mobile browser: <%= is_mobile_browser %> 
 </fieldset>

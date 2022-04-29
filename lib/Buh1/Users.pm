@@ -31,6 +31,7 @@ package Buh1::Users;
         $self->stash( users => $objects )
           if $objects && scalar( keys %{$objects} );
         $db->links_attach( $objects, 'companies', 'company', ['name'] );
+        warn Dumper $objects;
         for my $uid ( keys %{$objects} ) {
             if ( exists $objects->{$uid}{companies} ) {
                 my $companies = $objects->{$uid}{companies};
@@ -45,17 +46,23 @@ package Buh1::Users;
 
     sub list {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         _select_objects( $self, $OBJECT_NAME, '' );
     }
 
     sub deleted {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         _select_objects( $self, $DELETED_OBJECT_NAME, '/users/deleted' );
     }
 
     sub restore {
         my $self = shift;
-        my $id   = $self->param('payload');
+        return if !$self->who_is( 'global', 'admin' );
+
+        my $id = $self->param('payload');
         if ($id) {
             my $db = Db->new($self);
             $db->change_name( $OBJECT_NAME, $id );
@@ -66,8 +73,9 @@ package Buh1::Users;
         $self->redirect_to('/users/deleted');
     }
 
-    sub validate_passwords {
+    sub _validate_passwords {
         my $self = shift;
+
         my $data = shift;
         if (
             !Utils::validate_passwords(
@@ -83,19 +91,22 @@ package Buh1::Users;
             $data->{password} = Auth::salted_password( $data->{password1} );
             delete $data->{password1};
             delete $data->{password2};
+            $self->stash( success => 1 );
         }
     }
 
-    sub validate_email {
+    sub _validate_email {
         my ( $self, $email ) = @_;
+
         return (0) if ( !$email || !Utils::validate_email($email) );
         my $db = Db->new($self);
         return (0) if ( $db->get_user($email) );
         return (1);
     }
 
-    sub validate {
+    sub _validate {
         my ( $self, $edit_mode ) = @_;
+
         my $data = {
             object_name    => $OBJECT_NAME,
             creator        => Utils::User::current($self),
@@ -103,7 +114,7 @@ package Buh1::Users;
         };
         if ( !$edit_mode ) {
             $data->{email} = Utils::trim $self->param('email');
-            if ( !validate_email( $self, $data->{email} ) ) {
+            if ( !_validate_email( $self, $data->{email} ) ) {
                 $data->{error} = 1;
                 $self->stash( email_class => "error" );
             }
@@ -117,7 +128,7 @@ package Buh1::Users;
             delete $data->{password2};
             return ($data);
         }
-        validate_passwords( $self, $data );
+        _validate_passwords( $self, $data );
         return ($data);
     }
 
@@ -146,7 +157,9 @@ package Buh1::Users;
     }
 
     sub edit {
-        my $self    = shift;
+        my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $user_id = $self->param('payload');
         if ( !$user_id ) {
             $self->redirect_to('/users/list');
@@ -156,7 +169,7 @@ package Buh1::Users;
         $self->stash( user_id => $user_id );
         my ( $db, $data ) = ( Db->new($self), undef );
         if ( $self->req->method eq 'POST' ) {
-            $data = validate( $self, 1 );
+            $data = _validate( $self, 1 );
             if ( !exists( $data->{error} ) ) {
                 $data->{id} = $user_id;
                 if ( $db->update($data) ) {
@@ -178,6 +191,7 @@ package Buh1::Users;
             }
         );
         if ($data) {
+            warn Dumper $data;
             $db->links_attach( $data, 'companies', 'company', ['name'] );
             for my $key ( keys %{ $data->{$user_id} } ) {
                 $self->stash( $key => $data->{$user_id}->{$key} );
@@ -185,7 +199,7 @@ package Buh1::Users;
             $self->stash( user => $data->{$user_id} );
         }
         else {
-            redirect_to('/users/list');
+            $self->redirect_to('/users/list');
         }
         $self->render();
     }
@@ -197,7 +211,7 @@ package Buh1::Users;
         if ( $method =~ /POST/ ) {
 
             # check values
-            my $data = validate( $self, 0 );
+            my $data = _validate( $self, 0 );
 
             # add
             if ( !exists( $data->{error} ) ) {

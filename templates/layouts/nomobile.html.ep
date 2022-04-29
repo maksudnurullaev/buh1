@@ -85,5 +85,10 @@
   <div id="footerSection">
    %= include 'footer' ;
   </div>
+  %#= t pre => dumper(stash('user'))
+  %#= t pre => dumper(stash('users'))
+  %#= t pre => dumper(stash('companies'))
+  %#= t pre => dumper(session)
+  %#= include 'debug/access'
 </body>
 </html>

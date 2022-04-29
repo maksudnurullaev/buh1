@@ -499,7 +499,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
           "SELECT value FROM objects WHERE name=? AND id=? AND field=? ;";
         my $sth = $dbh->prepare($sth_str);
 
-        if ( $sth->execute( $name, $id1, $id2 ) ) {
+        if ( $sth->execute( "_$name", $id1, $id2 ) ) {
             my $value;
             $sth->bind_columns( \($value) );
             if ( $sth->fetch ) {
@@ -507,8 +507,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             }
             return (undef);
         }
-        warn $DBI::errstr;
-        return (undef);    # some error happens
+        warn $DBI::errstr; # some error happens
+        return (undef);    
     }
 
     sub set_linked_value {
@@ -516,7 +516,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my ( $name, $id1, $id2, $value ) = @_;
         return if ( !$name || !$id1 || !$id2 || !$value || ( $id1 eq $id2 ) );
         ( $id1, $id2 ) = ( $id2, $id1 )
-          if $id1 gt $id2;    # Impotant!!! Test & Swap if necessary!
+          if $id1 gt $id2;    # impotant test & swap
         my $dbh = $self->get_db_connection() || return;
         if ( get_linked_value( $name, $id1, $id2 ) ) {
             my $sth = $dbh->prepare(
@@ -527,7 +527,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         else {
             my $sth = $dbh->prepare(
                 "INSERT INTO objects (name,id,field,value) values(?,?,?,?);");
-            return (0) if !$sth->execute( $name, $id1, $id2, $value );
+            return (0) if !$sth->execute( "_$name", $id1, $id2, $value );
         }
         return (1);
     }
@@ -539,7 +539,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         ( $id1, $id2 ) = ( $id2, $id1 ) if $id1 gt $id2;  # impotant test & swap
         my $dbh = $self->get_db_connection() || return;
         return $dbh->do(
-"DELETE FROM objects WHERE name='$name' AND id='$id1' AND field='$id2';"
+"DELETE FROM objects WHERE name='_$name' AND id='$id1' AND field='$id2';"
         );
     }
 
@@ -836,10 +836,9 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
           . "' AND field NOT IN ('creator','counting_field') ;";
         my $sth = $self->get_from_sql($sql);
         for my $id ( @{ $sth->fetchall_arrayref() } ) {
-            if ( eval("'$id->[1]' =~ /$params->{filter_value}/i") ) {
+            if ( $id->[1] =~ /$params->{filter_value}/i ) {
                 $temp_hash->{ $id->[0] } = { name => $params->{object_name} };
             }
-            else { warn $@ if $@; }
         }
 
         # 2. Look in child objects
@@ -852,11 +851,10 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
           . " WHERE c.name IN($child_names) AND c.field != 'creator' ;";
         $sth = $self->get_from_sql($sql);
         for my $id ( @{ $sth->fetchall_arrayref() } ) {
-            if ( eval("'$id->[3]' =~ /$params->{filter_value}/i") ) {
+            if ( $id->[3] =~ /$params->{filter_value}/i ) {
                 $temp_hash->{ $id->[1] } = { name => $params->{object_name} }
                   if !exists $temp_hash->{ $id->[1] };
             }
-            else { warn $@ if $@; }
         }
 
         # 3. Parse childs to linked parent object, if not existance

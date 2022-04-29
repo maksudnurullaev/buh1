@@ -1,4 +1,3 @@
-<hr />
  % my $extended_values = ['No rights','Editor'];
  % my $extended_rights = [];
  % my $extended_right  = stash 'extended_right';
