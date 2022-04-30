@@ -31,3 +31,4 @@
 select count(*) as cnt, name, id, field from objects group by name, id, field HAVING COUNT(*)>1 and name <> '_link_'; 
 17.     Add test for linked values for Db.pm package
 18.     Add to archive also company's static files
+19.     Fix clients archive restore 

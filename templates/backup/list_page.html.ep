@@ -1,14 +1,15 @@
 % my $archives = stash 'archives' ;
 % if( scalar keys %{$archives} ){
- <ul>
+  <ul>
   % for my $file (reverse sort keys %{$archives}){
-   <li>
-    <%= tag 'a', href => "/backup/edit/$file", substr($file,0,19) %>
-    <br /><%= substr(currency_format($archives->{$file}{size}),0,-4) %> bytes
-    % if( $archives->{$file}{desc} ){
-     <br /><small><%= $archives->{$file}{desc} %></small>
-    % }
-   </li>
+    <li>
+      <%= tag 'a', href => "/backup/edit/$file", $file %>
+      <ul><li><%= t strong => ml('Size') %>: <%= substr(currency_format($archives->{$file}{size}),0,-4) %> bytes</li>
+        % if( $archives->{$file}{desc} ){
+          <li><%= t strong => ml('Description') %>: <%= $archives->{$file}{desc} %></li>
+        % }
+      </ul>  
+    </li>
   % }
   </ul>
 % } else {

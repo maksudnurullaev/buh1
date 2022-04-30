@@ -1,6 +1,7 @@
 # Clients data files
 db/clients
-db/main/templates
+db/main
+db/guides
 db/dump
 db/archives
 db/main.db

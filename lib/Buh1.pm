@@ -228,8 +228,13 @@ sub startup {
 
     # Backup/Restore
     $r->get('/backup/list')->to( controller => 'backup', action => 'list' );
+    $r->get('/backup/download/*payload')->to( controller => 'backup', action => 'download' );
+    $r->get('/backup/del/*payload')->to( controller => 'backup', action => 'del' );
     $r->post('/backup/list/*payload')
       ->to( controller => 'backup', action => 'list' );
+    $r->post('/backup/update_desc/*payload')
+      ->to( controller => 'backup', action => 'update_desc' );
+    $r->get('/backup/edit/*payload')->to( controller => 'backup', action => 'edit' );
 
 }
 

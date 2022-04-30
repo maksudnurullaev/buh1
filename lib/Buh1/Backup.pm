@@ -29,6 +29,7 @@ sub del{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    # $file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my @deletes = ("$archives_path/$file", "$archives_path/$file.desc") ;
     unlink @deletes ;
@@ -39,6 +40,7 @@ sub update{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    # $file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
 	my $new_archive = $self->param('new_archive');
@@ -50,6 +52,7 @@ sub edit{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    #$file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
     my $archive_file_desc = "$archives_path/$file.desc" ;
@@ -66,6 +69,7 @@ sub download{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    #$file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
     $self->stash( 'file.name' => $file );
@@ -76,6 +80,7 @@ sub update_desc{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    # $file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my $archive_file_desc = "$archives_path/$file.desc" ;
     my $description = $self->param("archive_desc");
@@ -112,13 +117,16 @@ sub make_new_archive{
     chdir $root_path ;
     my $archives_path = get_client_archives_path($self);
     my $archive_name = Utils::get_date_uuid();
+    $archive_name =~ tr/a-zA-Z0-9//cd;
     my $archive_file = "$archives_path/$archive_name.tar.gz" ;
     system "mkdir -p '$archives_path'" if ! -d $archives_path ;
 
     my $client_path = get_client_files_path($self);
-    my $company_id = $self->session('company id') ;
+    # $archive_name =~ tr/a-zA-Z0-9//cd;
+    # my $company_id = $self->session('company id') ;
     
     system "tar czf '$archive_file' '$client_path' '$client_path.db'" ;
+    warn "QQQQ: tar czf '$archive_file' '$client_path' '$client_path.db'" ;
     if( my $file_description = $self->param('archive.desc') ){
         Utils::Files::set_file_content("$archive_file.desc",$file_description) ;
     }
@@ -129,6 +137,7 @@ sub restore{
     my $self = shift ;
     return if !$self->who_is('local','writer');
     my $file = $self->param('payload');
+    # $file =~ tr/a-zA-Z0-9//cd;
     my $archives_path = get_client_archives_path($self); 
     my $archive_file = "$archives_path/$file" ;
     system "tar xzf '$archive_file' " ;
@@ -138,12 +147,14 @@ sub restore{
 sub get_client_archives_path{
 	my $self = shift ;
     my $company_id = $self->session('company id') ;
+     $company_id =~ tr/a-zA-Z0-9//cd;
     return( "db/archives/$company_id" ) ;
 };
 
 sub get_client_files_path{
 	my $self = shift ;
     my $company_id = $self->session('company id') ;
+    $company_id =~ tr/a-zA-Z0-9//cd;
     return( "db/clients/$company_id" ) ;
 };
 
