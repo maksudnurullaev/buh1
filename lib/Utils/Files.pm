@@ -113,7 +113,7 @@ package Utils::Files;
         my $prefix = $self->param('prefix') || $self->stash('controller');
         my $result;
         if ( $prefix =~ /templates/i ) {    # admin part
-            $result = $self->app->home->rel_file("db/main/$id");
+            $result = $self->app->home->rel_file("db/main/templates/$id");
             return ($result);
         }
         my $company_id = $self->session('company id');

@@ -26,23 +26,19 @@ sub download{
 };
 
 sub update_desc{
-    my $self = shift;
-    Utils::Files::update_desc($self);
+    Utils::Files::update_desc(shift);
 };
 
 sub update_file{
-    my $self = shift;
-    Utils::Files::update_file($self);
+    Utils::Files::update_file(shift);
 };
 
 sub add{
-    my $self = shift;
-    Utils::Files::add($self);
+    Utils::Files::add(shift);
 };
 
 sub delete{
-    my $self = shift ;
-    Utils::Files::delete($self);
+    Utils::Files::delete(shift);
 };
 
 
