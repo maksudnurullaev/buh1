@@ -134,8 +134,10 @@ sub startup {
       ->to( controller => 'companies', action => 'change_access' );
 
     # Database administration
-    $r->any('/database/page')->methods( 'GET', 'POST' )
-      ->to( controller => 'database', action => 'page' );
+    $r->any('/database/adb')->methods( 'GET', 'POST' )
+      ->to( controller => 'database', action => 'adb' );
+    $r->any('/database/counts')->methods( 'GET', 'POST' )
+      ->to( controller => 'database', action => 'counts' );
     $r->any('/database/view/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'database', action => 'view' );
 
@@ -221,6 +223,12 @@ sub startup {
       ->to( controller => 'warehouse', action => 'export_remains' );
     $r->get('/warehouse/del_tag/*payload')
       ->to( controller => 'warehouse', action => 'del_tag' );
+
+    # Backup/Restore
+    $r->get('/backup/list')
+      ->to( controller => 'backup', action => 'list' );
+    $r->post('/backup/list/*payload')
+      ->to( controller => 'backup', action => 'list' );
 
 }
 

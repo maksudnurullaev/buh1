@@ -21,7 +21,7 @@
    % }
    %= select_field user_access  => $temp, value => stash('access');
    %= hidden_field user_id      => $user_id;
-   %= $user_mail ;
+   %= t 'a', href => "/users/edit/$user_id", $user_mail ;
   % end
  % }
  <hr />

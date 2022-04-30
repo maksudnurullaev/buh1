@@ -30,8 +30,11 @@ package Buh1::Users;
         $self->stash( path  => $path );
         $self->stash( users => $objects )
           if $objects && scalar( keys %{$objects} );
+
+        # 1. Attach links
         $db->links_attach( $objects, 'companies', 'company', ['name'] );
-        warn Dumper $objects;
+
+        # 2. Attached linked value
         for my $uid ( keys %{$objects} ) {
             if ( exists $objects->{$uid}{companies} ) {
                 my $companies = $objects->{$uid}{companies};
@@ -191,10 +194,15 @@ package Buh1::Users;
             }
         );
         if ($data) {
-            warn Dumper $data;
+            # 1. Attach links for companies
             $db->links_attach( $data, 'companies', 'company', ['name'] );
-            for my $key ( keys %{ $data->{$user_id} } ) {
-                $self->stash( $key => $data->{$user_id}->{$key} );
+            # 2. Attach lined value - access to companies
+            if ( exists $data->{$user_id}{companies} ) {
+                my $companies = $data->{$user_id}{companies};
+                for my $cid ( keys %{$companies} ) {
+                    $companies->{$cid}{access} =
+                      $db->get_linked_value( 'access', $cid, $user_id );
+                }
             }
             $self->stash( user => $data->{$user_id} );
         }

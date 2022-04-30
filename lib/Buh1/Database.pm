@@ -5,16 +5,25 @@ package Buh1::Database;
     use Data::Dumper;
     use Db;
 
-    sub page {
+    sub adb {    # (ADB) - Anonal double records
         my $self = shift;
-        if ( $self->req->method eq 'POST' ) {
-            my $sql = $self->param('sql');
-            my $dbh = Db->new($self);
-            my $sth = $dbh->get_from_sql($sql);
-            $self->stash( table_rows         => $sth->fetchall_arrayref );
-            $self->stash( table_column_names => $sth->{NAME_uc} );
-        }
+        _do_sql($self) if $self->req->method eq 'POST';
         $self->render();
+    }
+
+    sub counts {    # Count of DB objects
+        my $self = shift;
+        _do_sql($self) if $self->req->method eq 'POST';
+        $self->render();
+    }
+
+    sub _do_sql {
+        my $self = shift;
+        my $sql  = $self->param('sql');
+        my $dbh  = Db->new($self);
+        my $sth  = $dbh->get_from_sql($sql);
+        $self->stash( table_rows         => $sth->fetchall_arrayref );
+        $self->stash( table_column_names => $sth->{NAME_uc} );
     }
 
     sub view {
@@ -23,7 +32,7 @@ package Buh1::Database;
         my $dbh       = Db->new($self);
 
         if ( $self->req->method eq 'POST' ) {
-            my $action = $self->req->params->every_param('action')->[0];
+            my $action     = $self->req->params->every_param('action')->[0];
             my $forDeletes = $self->req->params->every_param('delete');
 
             if ( @{$forDeletes} && $action ) {

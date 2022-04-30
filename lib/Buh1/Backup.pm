@@ -16,9 +16,9 @@ use Data::Dumper ;
 sub list{
     my $self = shift;
     return if !$self->who_is('local','reader');
-    my $action = $self->param('payload');
+    my $_action = $self->param('payload');
 
-	if( $self->req->method  eq 'POST' && $action eq 'add' ){
+	if( $self->req->method  eq 'POST' && $_action eq 'add' ){
         make_new_archive $self ;
         $self->stash( success => 1 );
     }
@@ -115,7 +115,7 @@ sub make_new_archive{
     my $archive_file = "$archives_path/$archive_name.tar.gz" ;
     system "mkdir -p '$archives_path'" if ! -d $archives_path ;
 
-    my $client_path = get_client_Files_path($self);
+    my $client_path = get_client_files_path($self);
     my $company_id = $self->session('company id') ;
     
     system "tar czf '$archive_file' '$client_path' '$client_path.db'" ;

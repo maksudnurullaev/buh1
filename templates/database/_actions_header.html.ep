@@ -1,0 +1,4 @@
+<ul>
+  <li><%= $action eq 'adb' ? ml 'Anomal double records' : t 'a', href => '/database/adb', ml('Anomal double records')  %></li>
+  <li><%= $action eq 'counts' ? ml 'Objects counts' : t 'a', href => '/database/counts', ml('Objects counts')  %></li>
+</ul>

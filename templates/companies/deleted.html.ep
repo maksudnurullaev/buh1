@@ -1,5 +1,6 @@
 % layout 'default';
 <h2><%= ml 'Deleted' %> <%= ml 'Companies' %></h2>
+%= t 'a', href => '/companies/list', ml('Back')
 <p>
 %= include 'filter'   , filter4    => 'companies'
 %= include 'paginator', paginator4 => 'companies'

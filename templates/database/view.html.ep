@@ -3,7 +3,7 @@
 %= tag 'h1', (ml('Database') . ' | ' . ml('Records'))
 
 %= tag p => begin
- %= tag 'a', href => '/database/page', ml 'Back'
+ %= tag 'a', href => '/database/adb', ml 'Back'
 % end
 
 % my $_table_rows = stash('table_rows');

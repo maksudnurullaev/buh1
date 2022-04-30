@@ -1,34 +1,8 @@
-% layout 'default';
-
-%= form_for '/database/page' => (method => 'POST') => begin
- <h2><%= ml 'Database' %></h2>
- <fieldset>
-  <legend>SQL</legend>
-  <textarea id="w3review" class='extended' name="sql">
-select 
-  count(*), 
-  name, 
-  id, 
-  field 
-from 
-  objects 
-group by 
-  name, 
-  id, 
-  field 
-HAVING 
-  COUNT(*)> 1 
-  and name <> '_link_';
-  </textarea><br /><br />
-  %= submit_button ml('Select')
-  </fieldset>
-% end
-
 % my $_table_rows = stash('table_rows');
 % if ( $_table_rows ) {
   % my $_table_column_names = stash('table_column_names');
   <table class="styled">
-    <caption>SQL Result</caption>
+    <caption><%= ml('SQL Result') %></caption>
     <thead><tr>
       % for my $_tcn (@{$_table_column_names}) {
       %= tag 'th', $_tcn

@@ -1,13 +1,20 @@
-% my $companies = stash 'companies';
-% if ( keys %{$companies} ) {
-  <h3><%= ml('Companies') %></h3>
+% my $user = stash 'user';
+% my $_companies = $user->{companies};
+% if ( keys %{$_companies} ) {
+  <h3><%= ml('Companies') %>:</h3>
   <ul>
-   % for my $company_id(keys %{$companies} ) {
+   % for my $_company_id(keys %{$_companies} ) {
+     % my $_company = $_companies->{$_company_id};
     <li>
-     %= tag 'a', href => "/companies/edit/$company_id", $companies->{$company_id}{name} ; 
+     %= tag 'a', href => "/companies/edit/$_company_id", $_company->{name} ; 
      <sup>
-     %= tag 'a', href => "/users/remove_company/$user_id?company=$company_id", ml('Delete') ;
+     %= tag 'a', href => "/users/remove_company/$user_id?company=$_company_id", ml('Delete') ;
      </sup>
+     % if ( $_company->{access} ){
+       <ul><li>
+       <strong><%= ml('Access') %>:</strong> <%= $_company->{access} %>  
+       </li></ul>
+     % }
     </li>
    % }
   </ul>

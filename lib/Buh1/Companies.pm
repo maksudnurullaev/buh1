@@ -49,6 +49,7 @@ package Buh1::Companies;
                 }
             }
         }
+
         return ($objects);
     }
 
@@ -118,6 +119,7 @@ package Buh1::Companies;
 
     sub change_access {
         my $self        = shift;
+
         my $id          = $self->param('payload');
         my $user_id     = $self->param('user_id');
         my $user_access = $self->param('user_access');
@@ -131,6 +133,8 @@ package Buh1::Companies;
 
     sub edit {
         my $self = shift;
+        return if !$self->who_is('global','user');
+
         $self->stash( edit_mode => 1 );
         my $id = $self->param('payload');
         if ( !$id ) {

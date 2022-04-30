@@ -1,0 +1,21 @@
+% layout 'default';
+
+%= form_for '/database/counts' => (method => 'POST') => begin
+ <h2><%= ml 'Database' %></h2>
+ %= include 'database/_actions_header';
+ <fieldset>
+  <legend>SQL</legend>
+  <textarea id="w3review" class='extended' name="sql">
+select 
+  count(*), 
+  name 
+from 
+  objects 
+group by 
+  name;
+  </textarea><br /><br />
+  %= submit_button ml('Select')
+  </fieldset>
+% end
+
+%= include 'database/_actions_sql_result_view' if stash('table_rows');
