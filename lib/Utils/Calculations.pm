@@ -315,7 +315,7 @@ sub decode_eval_string{
 sub calculate{
     my $eval_string = shift ;
     return(undef) if !$eval_string ;
-    my $result = eval($eval_string) ;
+    my $result = eval { $eval_string } ;
     if( $@ ) { # some eror in eval
         warn $@ ;
         return(undef);

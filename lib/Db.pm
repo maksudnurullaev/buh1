@@ -507,8 +507,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             }
             return (undef);
         }
-        warn $DBI::errstr; # some error happens
-        return (undef);    
+        warn $DBI::errstr;    # some error happens
+        return (undef);
     }
 
     sub set_linked_value {
@@ -860,7 +860,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         # 3. Parse childs to linked parent object, if not existance
         for my $key ( keys %{$temp_hash} ) {
             if ( $temp_hash->{$key}->{name} ne $params->{object_name} ) {
-                warn $temp_hash->{$key}->{name};
+                warn "TODO-1234: " . $temp_hash->{$key}->{name};
             }
 
         }

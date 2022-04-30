@@ -194,6 +194,7 @@ sub startup {
     $r->post('/files/add/*payload')
       ->to( controller => 'files', action => 'add' );
     $r->get('/files/delete')->to( controller => 'files', action => 'delete' );
+    $r->get('/files/download/*payload')->to( controller => 'files', action => 'download' );
     $r->any('/catalog/calculations/*payload')
       ->to( controller => 'catalog', action => 'calculations' );
 

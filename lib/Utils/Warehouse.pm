@@ -303,8 +303,6 @@ package Utils::Warehouse;
                     $self->param('counting_direction') || '+' );
                 set_field( $self, $new_pid, 'counting_parent',
                     $self->param('counting_parent') || $pid );
-                warn "set_field(_self,$new_pid,'counting_parent', "
-                  . $self->param('counting_parent') || $pid . ")";
             }
             $self->redirect_to("/warehouse/edit/$new_pid?success=1");
         }

@@ -19,7 +19,6 @@ sub download{
     my $id         = $self->param('payload');
     my $fileid     = $self->param('fileid');
     my $path       = Utils::Files::get_path($self,$id);
-    warn $path ;
     my $file_path  = "$path/$fileid" ;
     my $file_name  = Utils::Files::get_file_content($file_path . '.name') ;
 

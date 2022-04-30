@@ -94,7 +94,6 @@ sub update_guide{
     $self->stash(error => 0);
 
     my $guide_number      = $self->param('number');
-    warn "Number: " . $guide_number ;
     my $guide_description = $self->param('description');
     my $guide_content     = $self->param('content');
     my $path              = get_guides_path($self);

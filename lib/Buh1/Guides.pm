@@ -67,8 +67,6 @@ sub del{
     my $guide_number      = $self->param('payload');
     my $path              = Utils::Guides::get_guides_path($self);
     my $path_file         = "$path/$guide_number";
-    warn $path_file;
-    warn ($path_file . '.desc') if -e ($path_file . '.desc');
     unlink $path_file;
     unlink ($path_file . '.desc') if -e ($path_file . '.desc');
     $self->redirect_to('/guides/page');
