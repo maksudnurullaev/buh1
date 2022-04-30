@@ -29,7 +29,7 @@
    % end
    <p>
     <%= mlm 'rus', 'Demo access block' => begin %>
-     <u>Демонстрационный вход</u>: пользователь <strong>demo@buh1.uz</strong>, пароль <strong>demo</strong>!
+     <u>Демонстрационный вход</u>: пользователь <strong>demo@buga.uz</strong>, пароль <strong>demo</strong>!
     <% end %>
    </p>
   </div>

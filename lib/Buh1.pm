@@ -236,6 +236,9 @@ sub startup {
       ->to( controller => 'backup', action => 'update_desc' );
     $r->get('/backup/edit/*payload')->to( controller => 'backup', action => 'edit' );
 
+    ## For mobile devices
+    $r->get('/browser/mobile/*payload')->to( controller => 'browser', action => 'mobile' );
+
 }
 
 1;

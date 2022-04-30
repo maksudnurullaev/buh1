@@ -61,10 +61,10 @@ sub password{
             $error_found = 1; 
             $self->stash(password_class => "error")
         }
-        # prevent change password for demo@buh1.uz 
-        if( lc($email) eq 'demo@buh1.uz' ){
+        # prevent change password for demo@buga.uz 
+        if( lc($email) eq 'demo@buga.uz' ){
             $error_found = 1;
-            $self->stash( error_message => $self->ml('You could not change password for demo@buh1.uz') );
+            $self->stash( error_message => $self->ml('You could not change password for demo@buga.uz') );
         }
         # FINAL ACTION - change password if no errors
         if( !$error_found ){
