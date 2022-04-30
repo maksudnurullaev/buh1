@@ -7,12 +7,16 @@ package Buh1::Database;
 
     sub adb {    # (ADB) - Anonal double records
         my $self = shift;
+        return if !$self->who_is('global', 'admin');
+
         _do_sql($self) if $self->req->method eq 'POST';
         $self->render();
     }
 
     sub counts {    # Count of DB objects
         my $self = shift;
+        return if !$self->who_is('global', 'admin');
+
         _do_sql($self) if $self->req->method eq 'POST';
         $self->render();
     }
@@ -28,6 +32,8 @@ package Buh1::Database;
 
     sub view {
         my $self      = shift;
+        return if !$self->who_is('global', 'admin');
+
         my $object_id = $self->param('payload');
         my $dbh       = Db->new($self);
 
