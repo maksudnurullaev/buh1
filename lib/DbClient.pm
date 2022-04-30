@@ -22,6 +22,8 @@ sub new {
         warn 'DbClinet:new:error: Could not create db connection, company not defined!' ;
         return(undef);
     }
+    
+    $file_name =~ tr/a-zA-Z0-9//cd;
     my $file_path = $mojo->app->home->rel_file("db/clients/$file_name");
     my $self = { mojo => $mojo, 
                  file => ($file_path . '.db') };

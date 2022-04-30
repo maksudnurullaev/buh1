@@ -193,6 +193,7 @@ sub startup {
     # Files
     $r->post('/files/add/*payload')
       ->to( controller => 'files', action => 'add' );
+    $r->get('/files/delete')->to( controller => 'files', action => 'delete' );
     $r->any('/catalog/calculations/*payload')
       ->to( controller => 'catalog', action => 'calculations' );
 
@@ -225,8 +226,7 @@ sub startup {
       ->to( controller => 'warehouse', action => 'del_tag' );
 
     # Backup/Restore
-    $r->get('/backup/list')
-      ->to( controller => 'backup', action => 'list' );
+    $r->get('/backup/list')->to( controller => 'backup', action => 'list' );
     $r->post('/backup/list/*payload')
       ->to( controller => 'backup', action => 'list' );
 

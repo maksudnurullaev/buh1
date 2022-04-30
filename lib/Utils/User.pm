@@ -46,23 +46,21 @@ package Utils::User;
         my $self  = shift;
         my $email = current($self);
 
+        # 0. For guests
+        return ('g_guest') if !$email;
+
         # 1. Is global admin
         return ('g_admin') if ( $email =~ /^admin$/i );
 
         # 2. Is user registered, not registered yet
-        if ($email) {
             my $result = 'user';
             # 2.1 Is user has extended right
-            my $db   = Db->new($self);
-            my $user = $db->get_user($email);
-            if ( exists( $user->{extended_right} ) ) {
-                $result = $user->{extended_right} if $user->{extended_right};
-            }
-            return ( 'g_' . who_normalize($result) );
+        my $db   = Db->new($self);
+        my $user = $db->get_user($email);
+        if ( exists( $user->{extended_right} ) ) {
+            $result = $user->{extended_right} if $user->{extended_right};
         }
-
-        # 3. Is guest
-        return ('g_guest');
+        return ( 'g_' . who_normalize($result) );
     }
 
     #GLOBAL

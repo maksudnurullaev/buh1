@@ -46,9 +46,9 @@ package Utils::Import::Definitions;
         return ($result);
     }
 
-    my $apart_name = Utils::Accounts::get_account_part_name();
-    my $asection_name = Utils::Accounts::get_account_section_name();
-    my $account_name = Utils::Accounts::get_account_name();
+    my $apart_name     = Utils::Accounts::get_account_part_name();
+    my $asection_name  = Utils::Accounts::get_account_section_name();
+    my $account_name   = Utils::Accounts::get_account_name();
     my $asubconto_name = Utils::Accounts::get_account_subconto_name();
 
     my $part_id_prefix    = $apart_name . ' ';
