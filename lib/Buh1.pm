@@ -91,6 +91,8 @@ sub startup {
       ->to( controller => 'templates', action => 'edit' );
     $r->any('/templates/move/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'templates', action => 'move' );
+    $r->post('/files/update_desc')
+      ->to( controller => 'files', action => 'update_desc' );
 
     # Guides
     $r->get('/guides/page')->to( controller => 'guides', action => 'page' );
@@ -194,7 +196,8 @@ sub startup {
     $r->post('/files/add/*payload')
       ->to( controller => 'files', action => 'add' );
     $r->get('/files/delete')->to( controller => 'files', action => 'delete' );
-    $r->get('/files/download/*payload')->to( controller => 'files', action => 'download' );
+    $r->get('/files/download/*payload')
+      ->to( controller => 'files', action => 'download' );
     $r->any('/catalog/calculations/*payload')
       ->to( controller => 'catalog', action => 'calculations' );
 
@@ -228,16 +231,20 @@ sub startup {
 
     # Backup/Restore
     $r->get('/backup/list')->to( controller => 'backup', action => 'list' );
-    $r->get('/backup/download/*payload')->to( controller => 'backup', action => 'download' );
-    $r->get('/backup/del/*payload')->to( controller => 'backup', action => 'del' );
+    $r->get('/backup/download/*payload')
+      ->to( controller => 'backup', action => 'download' );
+    $r->get('/backup/del/*payload')
+      ->to( controller => 'backup', action => 'del' );
     $r->post('/backup/list/*payload')
       ->to( controller => 'backup', action => 'list' );
     $r->post('/backup/update_desc/*payload')
       ->to( controller => 'backup', action => 'update_desc' );
-    $r->get('/backup/edit/*payload')->to( controller => 'backup', action => 'edit' );
+    $r->get('/backup/edit/*payload')
+      ->to( controller => 'backup', action => 'edit' );
 
     ## For mobile devices
-    $r->get('/browser/mobile/*payload')->to( controller => 'browser', action => 'mobile' );
+    $r->get('/browser/mobile/*payload')
+      ->to( controller => 'browser', action => 'mobile' );
 
 }
 

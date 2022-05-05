@@ -1,4 +1,4 @@
-% my $account = stash('account');
+%# my $account = stash('account');
 % my $docid = param 'docid' ;
 
 % my $dheaders = stash('dheaders'); # Document headers

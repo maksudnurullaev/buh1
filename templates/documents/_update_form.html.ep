@@ -1,6 +1,6 @@
 <div>
 
-% my $account = stash('account');
+%# my $account = stash('account');
 % my $dheaders = stash('dheaders'); # Document headers
 
 % my $account = $dheaders->{account};
@@ -98,7 +98,7 @@
       <tr><td>&nbsp;</td>
         <td class="tar"><%= t 'a', (href => "/documents/print/$docid", target=>'_blank'), ml('Print') %></td>
       </tr>
-    % } else {
+    % } elsif ( !param('document number') ) {
       <tr><td colspan='2' style="background: white;">&nbsp;</td></tr>
       <tr><td class='tar'><label for="_this_check_box"><%= ml 'Fill with test data' %></label></td>
         <td><%= check_box 'fill_with_test_data', (style => 'width: auto;', id => '_this_check_box') %></td>
@@ -121,4 +121,5 @@
   </p>
 % }
 
+%#= t pre => dumper param('document number')
 </div>
