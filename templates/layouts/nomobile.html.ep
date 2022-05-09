@@ -12,7 +12,7 @@
 <body>
   %= include 'debug/access' if $debug_mode ;
   <div id="headerSection">
-    <a href="http://www.buh1uz.com/"><img src="/logo.png" alt="Buga.Uz" align="left" border="0" /></a>
+    <a href="https://buga.uz"><img src="/logo.png" alt="Buga.Uz" align="left" border="0" /></a>
     <div class="login_status">
       %= include 'login_bar' ;
       &nbsp;&nbsp;|||&nbsp;&nbsp;

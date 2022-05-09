@@ -7,7 +7,7 @@
 </head>
 <body>
  <div class="header">
-  <h1>Buh1Uz</h1>
+  <h1>Buga.Uz</h1>
   <table width="100%">
    <tr>
     <td><%= include 'login_bar' %></td>
