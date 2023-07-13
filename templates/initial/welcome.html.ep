@@ -16,5 +16,5 @@
 % }
 </div>
 <p> 
- <strong><%= ml 'To contact with us' %>.</strong>
+ <strong><%= ml 'To contact with us' %></strong>: <a href="tel:+998903272378">+998 90 327 23 78</a>
 </p> 
