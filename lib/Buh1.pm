@@ -27,7 +27,7 @@ sub startup {
     $self->app->secrets( [ 'Nkjlkj344!!!#4jkj;l', 'Hl53gfsgd;-l=rtw45@#' ] );
 
     # production or development
-    $self->app->mode('development');
+    $self->app->mode('production');
 
     # $self->app->mode('production');
     # ... just for hypnotoad
@@ -246,6 +246,9 @@ sub startup {
     $r->get('/browser/mobile/*payload')
       ->to( controller => 'browser', action => 'mobile' );
 
+    # for my telegram bot - temporary
+    $r->any('/6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE/*payload' => {payload => 'Hello'})
+      ->to( controller => 'TBot', action => 'hello' );
 }
 
 1;

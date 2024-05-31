@@ -1,0 +1,1 @@
+morbo -m production ./script/buh1 -l http://127.0.0.1:9000
