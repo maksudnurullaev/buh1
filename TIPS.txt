@@ -3,7 +3,11 @@ CREATE TABLE objects (name TEXT, id TEXT, field TEXT, value TEXT);
 CREATE INDEX i_objects ON objects (name, id, field);
 
 === Packages to install ===
-cpanm Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
+cpanm Mojolicious Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
+	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
+        Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
+	Spreadsheet::WriteExcel
+cpm install -g Mojolicious Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
 	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
         Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
 	Spreadsheet::WriteExcel
@@ -22,3 +26,8 @@ echo '.dump' | sqlite3 db/clients/2013.05.08\ 15\:48\:32\ 359B6B84.db | gzip -c 
 
 zcat db/dump/2013.05.08\ 15\:52\:30\ C36993F0.db.dump.gz | sqlite3 db/clients/2013.05.08\ 15\:52\:30\ C36993F0.db
 zcat db/dump/2013.05.08\ 15\:48\:32\ 359B6B84.db.dump.gz | sqlite3 db/clients/2013.05.08\ 15\:48\:32\ 359B6B84.db
+
+=== TBot ===
+[TBot:ColvirTextD72Links]
+https://api.telegram.org/bot6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE/getWebHookInf
+
