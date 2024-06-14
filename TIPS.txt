@@ -7,10 +7,10 @@ cpanm Mojolicious Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
 	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
         Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
 	Spreadsheet::WriteExcel WWW::Telegram::BotAPI
-cpm install -g Mojolicious Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
-	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
-        Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
-	Spreadsheet::WriteExcel WWW::Telegram::BotAPI
+
+OR just:
+cpm install -g 
+
 === Documents and business transactions ===
 Documents contains sum ammont
 

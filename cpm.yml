@@ -1,0 +1,20 @@
+prereqs:
+  runtime:
+    requires:
+      Mojolicious:
+      Crypt::SaltedHash:
+      Data::UUID:
+      DBI:
+      DBD::SQLite:
+      List::MoreUtils:
+      Locale::Currency::Format:
+      Mojolicious::Plugin::RenderFile:
+      Hash::Merge::Simple:
+      Text::CSV_XS:
+      Test::Most:
+      Test::Deep:
+      Test::NoWarnings:
+      CHI:
+      EV:
+      Spreadsheet::WriteExcel:
+      WWW::Telegram::BotAPI:
