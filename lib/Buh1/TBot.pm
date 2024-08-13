@@ -21,6 +21,22 @@ sub match_all_positions {
             'type' => 'text_link'
         };
     }
+    warn "Test #2";
+    while ($string =~ /^(.*:)$/mg) {
+        my $sPos = $-[0];
+        my $ePos = $+[0];
+	#warn $1;
+        push @ret, {
+            'length' => ($ePos - $sPos),
+            'offset' => $sPos,
+	    'type' => 'bold'
+        };
+        push @ret, {
+            'length' => ($ePos - $sPos),
+            'offset' => $sPos,
+	    'type' => 'underline'
+        };
+    }
     return [@ret]
 }
 
@@ -30,13 +46,13 @@ sub hello {
     #warn "METHOD: " . $self->req->method;
     #warn Dumper($self->req->json);
     if($self->req->method eq 'POST' && $self->req->json && $self->req->json->{message} && $self->req->json->{message}{text}){
-        #warn "Message from BOT: " . $self->req->json->{message}{text};
+	#warn "Message from BOT: " . $self->req->json->{message}{text};
         #match_all_positions('#(\d{7})', $self->req->json->{message}{text});
         $tBotApi->sendMessage ({
             chat_id      => $self->req->json->{message}{chat}{id},
             link_preview_options => { is_disabled => \1 }, 
             text => $self->req->json->{message}{text},
-            entities => match_all_positions('[#?](\d{7})', $self->req->json->{message}{text})
+            entities => match_all_positions('[#?!](\d{7})', $self->req->json->{message}{text})
         });
 
     }
