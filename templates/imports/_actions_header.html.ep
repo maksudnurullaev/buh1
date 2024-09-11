@@ -1,0 +1,4 @@
+<ul>
+  <li><%= $action eq 'lex' ? 'Lex.Uz' : t 'a', href => '/imports/lex', 'Lex.Uz'  %></li>
+  <li><%= $action eq 'norma' ? 'Norma.Uz' : t 'a', href => '/imports/norma', 'Norma.Uz'  %></li>
+</ul>

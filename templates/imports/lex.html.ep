@@ -1,0 +1,73 @@
+% layout 'default';
+
+%= form_for '/imports/lex' => (method => 'POST') => begin
+ %= include 'imports/_actions_header';
+ <fieldset>
+  <legend><%= ml 'Definitions' %>:</legend>
+  <table>
+   <tr>
+    <td class="tar">URL:</td>
+    <td><%= input_tag 'url', value => ($action eq 'lex' ? 'https://lex.uz/acts/417624' : '')  %></td>
+   </tr><!-- tr>
+    <td class="tar">Regex:</td>
+    <td><%= include 'imports/_regex_textarea' %></td>
+   </tr --><tr>
+    <td class="tar">
+     %= label_for use_cache => ml('Use cache') ;
+   </td>
+   <td>
+    %= check_box use_cache => 1, style => "width:auto;", id => 'use_cache' ;
+    </td>
+   </tr><tr>
+    <td class="tar"><%= ml 'Direction' ; %>:</td>
+   <td>
+    %= select_field parse_variant => [[ml('Chart of Accounts') => 'accounts'], [ml('Business operations') => 'operations']], id => 'parse_variants' ;
+    </td>
+   </tr><tr>
+    <td class="tar"><%= ml 'Operation' ; %>:</td>
+   <td>
+    %= select_field view_or_save => [[ml('View') => 'view'], [ml('Save') => 'save']], id => 'view_or_save' ;
+    </td>
+   </tr>
+  </table>
+  <br />
+  %= submit_button ml('Select')
+  </fieldset>
+% end
+
+ <fieldset>
+  <legend><%= ml 'Result' %>:</legend>
+  <ul id="myTreeViewUL">
+    <li><span class="caret">Beverages</span>
+      <ul class="nested">
+        <li>Water</li>
+        <li>Coffee</li>
+        <li><span class="caret">Tea</span>
+          <ul class="nested">
+            <li>Black Tea</li>
+            <li>White Tea</li>
+            <li><span class="caret">Green Tea</span>
+              <ul class="nested">
+                <li>Sencha</li>
+                <li>Gyokuro</li>
+                <li>Matcha</li>
+                <li>Pi Lo Chun</li>
+              </ul>
+            </li>
+          </ul>
+        </li>  
+      </ul>
+    </li>
+  </ul>
+</fieldset>
+<script>
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+</script>

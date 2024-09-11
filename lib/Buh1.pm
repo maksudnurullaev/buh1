@@ -1,5 +1,5 @@
 package Buh1;
-use Mojo::Base 'Mojolicious';
+use Mojo::Base 'Mojolicious', -strict;
 use Auth;
 use Db;
 use Mojolicious::Plugin;
@@ -24,10 +24,14 @@ sub startup {
     # setup plugins
     $self->plugin('HTMLTags');
     $self->plugin('RenderFile');
+    $self->plugin('AdditionalValidationChecks');
+
+    #SECRETs
     $self->app->secrets( [ 'Nkjlkj344!!!#4jkj;l', 'Hl53gfsgd;-l=rtw45@#' ] );
 
     # production or development
-    $self->app->mode('production');
+    # $self->app->mode('production');
+    $self->app->mode('development');
 
     # $self->app->mode('production');
     # ... just for hypnotoad
@@ -143,6 +147,10 @@ sub startup {
     $r->any('/database/view/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'database', action => 'view' );
 
+    # Imports reference books
+    $r->any('/imports/lex')->methods( 'GET', 'POST' )
+      ->to( controller => 'imports', action => 'lex' );    #by default
+
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );
     $r->get('/filter/reset')->to( controller => 'filter', action => 'reset' );
@@ -247,8 +255,10 @@ sub startup {
       ->to( controller => 'browser', action => 'mobile' );
 
     # for my telegram bot - temporary
-    $r->any('/6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE/*payload' => {payload => 'Hello'})
+    $r->any( '/6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE/*payload' =>
+          { payload => 'Hello' } )
       ->to( controller => 'TBot', action => 'hello' );
+
 }
 
 1;
