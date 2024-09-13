@@ -1,0 +1,45 @@
+
+%= form_for '/imports/lex' => (method => 'POST') => begin
+<fieldset>
+  <legend>
+    <%= ml 'Definitions' %>:
+  </legend>
+  <table>
+    <tr>
+      <td class="tar">URL:</td>
+      <td>
+        <%= input_tag 'url' , value=> ($action eq 'lex' ? 'https://lex.uz/acts/417624' : '') %>
+      </td>
+    </tr><!-- tr>
+    <td class="tar">Regex:</td>
+    <td><%= include 'imports/_regex_textarea' %></td>
+   </tr -->
+    <tr>
+      <td class="tar">
+        %= label_for use_cache => ml('Use cache') ;
+      </td>
+      <td>
+        %= check_box use_cache => 1, checked => 1, style => "width:auto;", id => 'use_cache' ;
+      </td>
+    </tr>
+    <tr>
+      <td class="tar">
+        <%= ml 'Direction' ; %>:
+      </td>
+      <td>
+        %= select_field parse_variant => [[ml('Chart of Accounts') => 'accounts'], [ml('Business operations') => 'operations']], id => 'parse_variants' ;
+      </td>
+    </tr>
+    <tr>
+      <td class="tar">
+        <%= ml 'Operation' ; %>:
+      </td>
+      <td>
+        %#= select_field view_or_save => [[ml('View') => 'view'], [ml('Save') => 'save']], id => 'view_or_save' ;
+      </td>
+    </tr>
+  </table>
+  <br />
+  %= submit_button ml('Select')
+</fieldset>
+% end

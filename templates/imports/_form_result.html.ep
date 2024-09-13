@@ -1,0 +1,58 @@
+
+% my $parts = stash 'parts';
+% if ($parts) {
+<fieldset>
+  <legend>
+    <%= ml 'Result' %>:
+  </legend>
+  <ul id="myTreeViewUL">
+    % for my $pid (sort keys %{$parts}) {
+    % my $sections = $parts->{$pid}{sections} ;
+    <li>
+      <%= tag 'span' , class=> ( $sections ? 'caret' : '' ), $parts->{$pid}{rus} %>
+        % if ( $sections ) {
+        <ul class="nested">
+          % for my $sid (sort keys %{$sections}) {
+          % my $accounts = $sections->{$sid}{accounts} ;
+          <li>
+            %= tag 'span', id => $sid, class => ( $sections ? 'caret' : '' ), $sections->{$sid}{rus} ;
+            % if ( $accounts ) {
+            <ul class="nested">
+              % for my $aid (sort keys %{$accounts}) {
+              % my $subcontos = $accounts->{$aid}->{subconto} ;
+              <li>
+                %= tag 'span', class => ( $subcontos ? 'caret' : '' ), $accounts->{$aid}{rus} ;
+                % if ($subcontos) {
+                <ul class="nested">
+                  % for my $said (sort keys %{$subcontos}) {
+                  <li>
+                    %= tag 'span', $subcontos->{$said}{rus} ;
+                  </li>
+                  % }
+                </ul>
+                % }
+              </li>
+              % }
+            </ul>
+            % }
+          </li>
+          % }
+        </ul>
+        % }
+    </li>
+    % }
+  </ul>
+</fieldset>
+% }
+
+<script>
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+</script>

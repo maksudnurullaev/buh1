@@ -17,6 +17,15 @@ use Utils::Accounts;
 use Data::Dumper;
 use Utils::Cacher;
 
+my $debug_mode = 0;
+
+my $apart_name        = Utils::Accounts::get_account_part_name();
+my $asection_name     = Utils::Accounts::get_account_section_name();
+my $account_name      = Utils::Accounts::get_account_name();
+my $asubconto_name    = Utils::Accounts::get_account_subconto_name();
+my $part_id_prefix    = $apart_name . ' ';
+my $section_id_prefix = $asection_name . ' ';
+
 sub get_web_resource {
     my $url = shift;
     return (undef) if !defined($url);
@@ -38,51 +47,85 @@ sub get_dom_deep_text {
 
     my $collections =
       $dom->descendant_nodes->grep( sub { $_->type eq 'text' } );
-    return $collections->size ? $collections->first : '';
+    return $collections->size ? $collections->first->to_string : '';
 }
 
 sub parse_accounts {
-    my ( $self, $dom ) = ( shift, shift );
+    my ( $self, $dom, $result ) = ( shift, shift, {} );
     if ( !$self || !$dom ) { warn "Empty parameters!"; return; }
 
-    my $skip      = 0;
-    my $skipAfter = 50;
+    my ( $current_part, $current_section, $current_account );
+    my ( $current_part_num, $current_section_num ) = ( 1, 1 );
+
     for my $div ( $dom->find('div[class="TABLE_STD"]')->each ) {
-        print $div->attr->{id}, ", #$skip\n" if $skip++;
         my $TRs = $div->find('tr[tabindex="1"]');
-        print $TRs->size . "\n";
         for my $TR ( $TRs->each ) {
             my $TDs = $TR->find('td');
 
             if ( $TDs->size == 1
                 && ( my $text = get_dom_deep_text( $TDs->[0] ) ) )
-            {    # PARTs & SECTIONs
-                if ( $text =~ /^ЧАСТЬ/ ) {
-                    warn ". $text";
+            {
+                if ( $text =~ /^ЧАСТЬ/ ) {    # . PARTs
+                    warn ". $text" if $debug_mode;
+                    $current_part = $part_id_prefix . ( $current_part_num++ );
+                    $result->{$current_part} = {
+                        rus => $text    #,
+                                        #sections => {}
+                    };
                 }
-                elsif ( $text =~ /^РАЗДЕЛ/ ) {
-                    warn ".. $text";
+                elsif ( $text =~ /^РАЗДЕЛ/ ) {    # .. SECTIONs
+                    warn ".. $text" if $debug_mode;
+                    $current_section =
+                      $section_id_prefix . ( $current_section_num++ );
+                    $result->{$current_part}{sections}{$current_section} = {
+                        rus => $text    #,
+                                        #accounts => {}
+                    };
                 }
             }
             elsif ( $TDs->size == 3
-                && ( my $text = get_dom_deep_text( $TDs->[0] ) ) )
-            {    # ACCOUNTs & SUBCONTOs
-                if ( $text =~ /^\d{2}00/ ) {
+                && ( $text = get_dom_deep_text( $TDs->[0] ) ) )
+            {
+                if ( $text =~ /^\d{2}00/ ) {    # ... ACCOUNTs
                     my ( $name, $type ) = (
                         get_dom_deep_text( $TDs->[1] ),
                         get_dom_deep_text( $TDs->[2] )
                     );
-                    warn "... $text | $name | $type ";
+                    next                          if !$name;
+                    warn "... $text $name $type " if $debug_mode;
+                    my ( $acc_num, $acc_name, $acc_type ) =
+                      ( $text, $name, $type );
+                    $current_account = $acc_num;
+                    $result->{$current_part}{sections}{$current_section}
+                      {accounts}{$current_account} = {
+                        type => Utils::Accounts::get_type($acc_type),
+                        rus  => "$acc_num $acc_name"                    #,
+                              #subconto => {}
+                      };
                 }
-                elsif ( $text =~ /^\d{4}/ ) {
+                elsif ( $text =~ /^\d{4}/ ) {    # .... SUBCONTOs
                     my $name = get_dom_deep_text( $TDs->[1] );
-                    warn ".... $text | $name ";
+                    next                     if !$name;
+                    warn ".... $text $name " if $debug_mode;
+                    $result->{$current_part}{sections}{$current_section}
+                      {accounts}{$current_account}{subconto}{$text} =
+                      { rus => "$text $name" };
+                }
+                elsif ( $text =~ /^\d{3}/ ) {    # off-balance
+                    my $name = get_dom_deep_text( $TDs->[1] );
+                    next                   if !$name;
+                    warn ".. $text $name " if $debug_mode;
+                    $current_section =
+                      $section_id_prefix . ( $current_section_num++ );
+                    $result->{$current_part}{sections}{$current_section} = {
+                        rus => "$text $name"    #,
+                                                #accounts => {}
+                    };
                 }
             }
-            last until $skipAfter--;
         }
-        last;
     }
+    return $result;
 }
 
 sub lex {
@@ -97,7 +140,6 @@ sub lex {
         my $validation = $self->validation;
         $validation->input( { url => $url, definitions => $definitions } );
 
-        # warn Dumper $req_params;
         if ( $validation->required('url')->http_url()->is_valid ) {
 
             #check cache || result
@@ -108,17 +150,17 @@ sub lex {
                 cache_it( $self, $url, $html_dom_all )
                   if defined($res)
                   && ( $html_dom_all = $res->dom );
-                warn "Cache dom!";
+                warn "Cache dom!" if $debug_mode;
             }
             else {
-                warn "Use cached version of dom!";
+                warn "Use cached version of dom!" if $debug_mode;
             }
             return if !defined($html_dom_all);
 
             # parse
             if ( $req_params->{parse_variant} eq 'accounts' ) {
                 my $result = parse_accounts( $self, $html_dom_all );
-                warn Dumper $result;
+                $self->stash( parts => $result );
             }
             elsif ( $req_params->{parse_variant} eq 'operations' ) {
                 warn uc( $req_params->{parse_variant} )
@@ -127,7 +169,7 @@ sub lex {
             else { warn "Not defined parse variant!"; }
         }
         else {
-            warn "URL: !!!NOT VALID!!!";
+            warn "URL: !!!NOT VALID!!!" if $debug_mode;
         }
 
     }
@@ -147,7 +189,7 @@ sub add_part {
     if ($parent_id) {
         $parents = $db->get_objects( { id => [$parent_id] } );
         if ( !$parents ) {
-            warn "Accounts:add_part: no parents! Redirecting...";
+            warn "Accounts:add_part: no parents! Redirecting..." if $debug_mode;
             $self->redirect_to('/accounts/list');
             return;
         }
@@ -177,7 +219,7 @@ sub add_part {
             }
             else {
                 $self->stash( error => 1 );
-                warn 'Accounts:edit:ERROR: could not update!';
+                warn 'Accounts:edit:ERROR: could not update!' if $debug_mode;
             }
         }
         else {
@@ -242,7 +284,8 @@ sub fix_subconto {
         clear_cache($self);
     }
     else {
-        warn "Accounts:fix_subconto:error parameters are not properly defined!";
+        warn "Accounts:fix_subconto:error parameters are not properly defined!"
+          if $debug_mode;
     }
     $self->redirect_to("/accounts/list#$id");
 }
@@ -266,7 +309,8 @@ sub fix_account {
         }
     }
     else {
-        warn "Accounts:fix_account:error parameters are not properly defined!";
+        warn "Accounts:fix_account:error parameters are not properly defined!"
+          if $debug_mode;
     }
     $self->redirect_to("/accounts/list#$idnew");
 }
@@ -297,7 +341,7 @@ sub edit {
     my $id = $self->param('payload');
     if ( !$id ) {
         $self->redirect_to('/accounts/list');
-        warn "Accounts:edit:error id not defined!";
+        warn "Accounts:edit:error id not defined!" if $debug_mode;
         return;
     }
 
@@ -316,7 +360,7 @@ sub edit {
             }
             else {
                 $self->stash( error => 1 );
-                warn 'Accounts:edit:ERROR: could not update!';
+                warn 'Accounts:edit:ERROR: could not update!' if $debug_mode;
             }
         }
         else {
@@ -326,7 +370,7 @@ sub edit {
     my $data = $db->get_objects( { id => [$id] } );
     if ( !$data ) {
         $self->redirect_to("/accounts/list#$id");
-        warn "Accounts:edit:error id not found!";
+        warn "Accounts:edit:error id not found!" if $debug_mode;
         return;
     }
     my $parent_name =
