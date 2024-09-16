@@ -10,10 +10,7 @@
       <td>
         <%= input_tag 'url' , value=> ($action eq 'lex' ? 'https://lex.uz/acts/417624' : '') %>
       </td>
-    </tr><!-- tr>
-    <td class="tar">Regex:</td>
-    <td><%= include 'imports/_regex_textarea' %></td>
-   </tr -->
+    </tr>
     <tr>
       <td class="tar">
         %= label_for use_cache => ml('Use cache') ;

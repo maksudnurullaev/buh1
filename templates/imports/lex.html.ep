@@ -1,7 +1,7 @@
 % layout 'default';
 
 %= include 'imports/_actions_header';
-%= include 'imports/_form';
-%= include 'imports/_form_result';
 
-%#= tag pre => dumper(stash('parts')->{'account part 6'}) if stash('parts');
+%= include 'imports/_form_lex';
+
+%= include 'imports/_form_result_lex';

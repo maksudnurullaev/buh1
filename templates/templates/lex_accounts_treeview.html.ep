@@ -1,0 +1,76 @@
+<fieldset>
+    <legend>
+        <%= ml 'Result' %>:
+    </legend>
+    <button onclick="allFold()">-</button>
+    <button onclick="allUnfold()">+</button>
+    <ul id="myTreeViewUL">
+        % for my $pid (sort keys %{$parts}) {
+        % my $sections = $parts->{$pid}{sections} ;
+        <li>
+            %= tag span => class=> ( $sections ? 'caret' : '' ), ('(' . scalar(keys %{$sections}) . ')') if $sections ;
+            %= tag span => $parts->{$pid}{$lang} ;
+            % if ( $sections ) {
+            %= tag ul => ( class => ($sections ? "nested": "") ) => begin 
+                % for my $sid (sort keys %{$sections}) {
+                % my $accounts = $sections->{$sid}{accounts} ;
+                <li>
+                %= tag span => class=> ( $accounts ? 'caret' : '' ), ('(' . scalar(keys %{$accounts}) . ')') if $accounts ;
+                %= tag span => $sections->{$sid}{$lang} ;
+                % if ( $accounts ) {
+                %= tag ul => ( class => ($accounts ? "nested": "") ) => begin 
+                    % for my $aid (sort keys %{$accounts}) {
+                    % my $subcontos = $accounts->{$aid}->{subconto} ;
+                    <li>
+                    %= tag span => class=> ( $subcontos ? 'caret' : '' ), ('(' . scalar(keys %{$subcontos}) . ')') if $subcontos ;
+                    %= tag span => $accounts->{$aid}{$lang} ;
+                    - (<%= tag strong => uc($accounts->{$aid}{type}) %>)
+                    % if ($subcontos) {
+                    %= tag ul => ( class => ($subcontos ? "nested": "") ) => begin
+                        % for my $said (sort keys %{$subcontos}) {
+                        <li>
+                        %= tag 'span', $subcontos->{$said}{$lang} ;
+                        </li>
+                        % }
+                    % end
+                    % }
+                    </li>
+                    % }
+                % end
+                % }
+                </li>
+                % }
+            % end
+            % }
+        </li>
+        % }
+    </ul>
+</fieldset>
+
+
+<script>
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+
+function allFold(){
+    document.getElementById("myTreeViewUL").querySelectorAll(".nested").forEach(function (userItem) {
+        userItem.classList.add("active");
+        userItem.parentElement.querySelector(".caret").classList.add("caret-down");
+    });    
+}
+
+function allUnfold(){
+    document.getElementById("myTreeViewUL").querySelectorAll(".nested").forEach(function (userItem) {
+        userItem.classList.remove("active");
+        userItem.parentElement.querySelector(".caret").classList.remove("caret-down");
+    });    
+}
+
+</script>

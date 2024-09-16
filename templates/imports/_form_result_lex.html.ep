@@ -1,0 +1,7 @@
+%  if ( my $parts = stash('parts') ) {
+  %= include 'templates/lex_accounts_treeview', parts => $parts, lang => 'rus' ;
+% } elsif ( my $operations = stash('operations')) {
+  %= include 'templates/lex_operations_view', operations => $operations, lang => 'rus';
+% } else {
+  %= tag div => class => 'error', "Not template defined!" ;
+% }

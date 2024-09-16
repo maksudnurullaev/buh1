@@ -150,6 +150,8 @@ sub startup {
     # Imports reference books
     $r->any('/imports/lex')->methods( 'GET', 'POST' )
       ->to( controller => 'imports', action => 'lex' );    #by default
+    $r->any('/imports/norma')->methods( 'GET', 'POST' )
+      ->to( controller => 'imports', action => 'norma' ); 
 
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );
