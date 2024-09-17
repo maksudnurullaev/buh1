@@ -48,8 +48,7 @@ sub parse_operations_lex {
 
     my ( $start_parse_tds, $current_code ) = ( 0, undef );
     for my $div ( $dom->find('div')->each ) {
-        given ($start_parse_tds) {
-            when (0) {    # search operations header
+        if (!$start_parse_tds) {   # search operations header
                 my ( $class, $text ) = (
                     $div->attr('class'), Utils::Imports::get_dom_deep_text($div)
                 );
@@ -58,7 +57,6 @@ sub parse_operations_lex {
                     && uc($class) eq 'TEXT_HEADER_DEFAULT'
                     && $text =~ /\((\d{4})\)/ )
                 {
-                    warn Utils::Imports::get_dom_deep_text($div);
                     $start_parse_tds    = 1;
                     $result->{$1}{name} = $text;
                     $current_code       = $1;
@@ -66,8 +64,7 @@ sub parse_operations_lex {
                     warn "$start_parse_tds" if $debug_mode;
                     next;
                 }
-            }
-            when (1) {    #search operations descriptions
+        } elsif( $start_parse_tds) {    #search operations descriptions
                 my ( $class, $id ) = ( $div->attr('class'), $div->attr('id') );
                 warn "( $class, $id )" if $class && $id && $debug_mode;
                 if (   $class
@@ -79,16 +76,14 @@ sub parse_operations_lex {
                     $result->{$current_code}{size} = $oper_desc_trs->size;
                     $result->{$current_code}{operations} =
                       parse_operations_desc_trs($oper_desc_trs);
-                    warn "Found tr's: " . $div->find('tr')->size;
+                    warn "Found tr's: " . $div->find('tr')->size if $debug_mode;
                     $start_parse_tds = 0;
                     warn "$start_parse_tds" if $debug_mode;
                     next;
                 }
 
-            }
-            default {
+        } else {
                 warn "Not definde case of start_parse_tds: $start_parse_tds";
-            }
         }
     }
     return $result;
@@ -113,9 +108,15 @@ sub parse_operations_desc_trs {
                 Utils::Imports::get_dom_deep_text( $TDs->[2] ),
                 Utils::Imports::get_dom_deep_text( $TDs->[3] )
             );
-            warn "($desc_N, $desc_text, $desc_D, $desc_C)";
+            $result->{"operation_$1"} = {
+                desc   => $desc_text,
+                debet  => $desc_D,
+                credit => $desc_C
+            };
+            warn "($desc_N, $desc_text, $desc_D, $desc_C)" if $debug_mode;
         }
     }
+    warn "Result size: " . scalar( keys %{$result} ) if $debug_mode;
     return $result;
 }
 

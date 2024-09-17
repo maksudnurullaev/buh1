@@ -12,6 +12,13 @@ sub startup {
     $my_self = $self;
 
     $self->helper( cache => sub { state $cache = {} } );
+    $self->helper(
+        brit => sub {
+            my ( $self, $result ) = ( shift, shift );
+            $result =~ s/_BR_/\<br \/\>/ig;
+            return $result ? $result : '';
+        }
+    );
 
     # Set up password for administrator
     Auth::get_admin_password($self)
@@ -151,7 +158,7 @@ sub startup {
     $r->any('/imports/lex')->methods( 'GET', 'POST' )
       ->to( controller => 'imports', action => 'lex' );    #by default
     $r->any('/imports/norma')->methods( 'GET', 'POST' )
-      ->to( controller => 'imports', action => 'norma' ); 
+      ->to( controller => 'imports', action => 'norma' );
 
     # Filter
     $r->post('/filter/set')->to( controller => 'filter', action => 'set' );

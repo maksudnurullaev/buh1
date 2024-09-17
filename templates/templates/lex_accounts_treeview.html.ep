@@ -24,7 +24,7 @@
                     <li>
                     %= tag span => class=> ( $subcontos ? 'caret' : '' ), ('(' . scalar(keys %{$subcontos}) . ')') if $subcontos ;
                     %= tag span => $accounts->{$aid}{$lang} ;
-                    - (<%= tag strong => uc($accounts->{$aid}{type}) %>)
+                    - (<%= tag strong => uc($accounts->{$aid}{type}?$accounts->{$aid}{type}:"Err") %>)
                     % if ($subcontos) {
                     %= tag ul => ( class => ($subcontos ? "nested": "") ) => begin
                         % for my $said (sort keys %{$subcontos}) {
