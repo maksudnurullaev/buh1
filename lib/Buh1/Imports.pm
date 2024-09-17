@@ -16,6 +16,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Utils::Accounts;
 use Data::Dumper;
 use Utils::Cacher;
+use Utils::Imports;
 
 my $debug_mode = 0;
 
@@ -41,58 +42,81 @@ sub get_web_resource {
     return (undef);
 }
 
-sub get_dom_deep_text {
-    my $dom = shift;
-    return if !$dom;
-
-    my $collections =
-      $dom->descendant_nodes->grep( sub { $_->type eq 'text' } );
-    return $collections->size ? $collections->first->to_string : '';
-}
-
 sub parse_operations_lex {
     my ( $self, $dom, $result ) = ( shift, shift, {} );
     if ( !$self || !$dom ) { warn "Empty parameters!"; return; }
 
     my ( $start_parse_tds, $current_code ) = ( 0, undef );
     for my $div ( $dom->find('div')->each ) {
-
-        if ( !$start_parse_tds ) {
-            my ( $class, $text ) =
-              ( $div->attr('class'), get_dom_deep_text($div) );
-            if (   $class
-                && $text
-                && uc($class) eq 'TEXT_HEADER_DEFAULT'
-                && $text =~ /\((\d{4})\)/ )
-            {
-                warn get_dom_deep_text($div);
-                $start_parse_tds    = 1;
-                $result->{$1}{name} = $text;
-                $current_code       = $1;
-                $start_parse_tds    = 1;
-                warn "$start_parse_tds" if $debug_mode;
-                next;
+        given ($start_parse_tds) {
+            when (0) {    # search operations header
+                my ( $class, $text ) = (
+                    $div->attr('class'), Utils::Imports::get_dom_deep_text($div)
+                );
+                if (   $class
+                    && $text
+                    && uc($class) eq 'TEXT_HEADER_DEFAULT'
+                    && $text =~ /\((\d{4})\)/ )
+                {
+                    warn Utils::Imports::get_dom_deep_text($div);
+                    $start_parse_tds    = 1;
+                    $result->{$1}{name} = $text;
+                    $current_code       = $1;
+                    $start_parse_tds    = 1;
+                    warn "$start_parse_tds" if $debug_mode;
+                    next;
+                }
             }
-        }
-        elsif ($start_parse_tds) {
-            my ( $class, $id ) = ( $div->attr('class'), $div->attr('id') );
-            warn "( $class, $id )" if $class && $id && $debug_mode;
-            if (   $class
-                && $id
-                && uc($class) eq "TABLE_STD"
-                && uc($id) eq uc("theDefCssID") )
-            {
-                $result->{$current_code}{size} = $div->find('tr')->size;
-                warn "Found tr's: " . $div->find('tr')->size;
-                $start_parse_tds = 0;
-                warn "$start_parse_tds" if $debug_mode;
-                next;
+            when (1) {    #search operations descriptions
+                my ( $class, $id ) = ( $div->attr('class'), $div->attr('id') );
+                warn "( $class, $id )" if $class && $id && $debug_mode;
+                if (   $class
+                    && $id
+                    && uc($class) eq "TABLE_STD"
+                    && uc($id) eq uc("theDefCssID") )
+                {
+                    my $oper_desc_trs = $div->find('tr');
+                    $result->{$current_code}{size} = $oper_desc_trs->size;
+                    $result->{$current_code}{operations} =
+                      parse_operations_desc_trs($oper_desc_trs);
+                    warn "Found tr's: " . $div->find('tr')->size;
+                    $start_parse_tds = 0;
+                    warn "$start_parse_tds" if $debug_mode;
+                    next;
+                }
+
+            }
+            default {
+                warn "Not definde case of start_parse_tds: $start_parse_tds";
             }
         }
     }
-
     return $result;
+}
 
+sub parse_operations_desc_trs {
+    my $trs = shift;
+    if ( !$trs || !$trs->size ) {
+        warn "Nothing to parse: oprations descriptions";
+        return;
+    }
+
+    my $result = {};
+    for my $TR ( $trs->each ) {
+        my $TDs = $TR->find('td');
+        if ( $TDs->size == 4
+            && Utils::Imports::get_dom_deep_text( $TDs->[0] ) =~ /(\d+)\./ )
+        {
+            my ( $desc_N, $desc_text, $desc_D, $desc_C ) = (
+                $1,
+                Utils::Imports::get_dom_deep_text( $TDs->[1] ),
+                Utils::Imports::get_dom_deep_text( $TDs->[2] ),
+                Utils::Imports::get_dom_deep_text( $TDs->[3] )
+            );
+            warn "($desc_N, $desc_text, $desc_D, $desc_C)";
+        }
+    }
+    return $result;
 }
 
 sub parse_accounts_lex {
@@ -107,8 +131,10 @@ sub parse_accounts_lex {
         for my $TR ( $TRs->each ) {
             my $TDs = $TR->find('td');
 
-            if ( $TDs->size == 1
-                && ( my $text = get_dom_deep_text( $TDs->[0] ) ) )
+            if (
+                $TDs->size == 1
+                && ( my $text = Utils::Imports::get_dom_deep_text( $TDs->[0] ) )
+              )
             {
                 if ( $text =~ /^ЧАСТЬ/ ) {    # . PARTs
                     warn ". $text" if $debug_mode;
@@ -129,12 +155,12 @@ sub parse_accounts_lex {
                 }
             }
             elsif ( $TDs->size == 3
-                && ( $text = get_dom_deep_text( $TDs->[0] ) ) )
+                && ( $text = Utils::Imports::get_dom_deep_text( $TDs->[0] ) ) )
             {
                 if ( $text =~ /^\d{2}00/ ) {    # ... ACCOUNTs
                     my ( $name, $type ) = (
-                        get_dom_deep_text( $TDs->[1] ),
-                        get_dom_deep_text( $TDs->[2] )
+                        Utils::Imports::get_dom_deep_text( $TDs->[1] ),
+                        Utils::Imports::get_dom_deep_text( $TDs->[2] )
                     );
                     next                          if !$name;
                     warn "... $text $name $type " if $debug_mode;
@@ -149,7 +175,7 @@ sub parse_accounts_lex {
                       };
                 }
                 elsif ( $text =~ /^\d{4}/ ) {    # .... SUBCONTOs
-                    my $name = get_dom_deep_text( $TDs->[1] );
+                    my $name = Utils::Imports::get_dom_deep_text( $TDs->[1] );
                     next                     if !$name;
                     warn ".... $text $name " if $debug_mode;
                     $result->{$current_part}{sections}{$current_section}
@@ -157,7 +183,7 @@ sub parse_accounts_lex {
                       { rus => "$text $name" };
                 }
                 elsif ( $text =~ /^\d{3}/ ) {    # off-balance
-                    my $name = get_dom_deep_text( $TDs->[1] );
+                    my $name = Utils::Imports::get_dom_deep_text( $TDs->[1] );
                     next                   if !$name;
                     warn ".. $text $name " if $debug_mode;
                     $current_section =
