@@ -7,13 +7,6 @@
 Данная программа разработана для бухгалтеров!<br />
 <% end %>
     </p>
-% if( !who_is_global('user') ){    
-    <p>
-<%= mlm 'rus', 'Demo access block' => begin %>
-<u>Демонстрационный вход</u>: пользователь <strong>demo@buga.uz</strong>, пароль <strong>demo</strong>!
-<% end %>
-    </p>
-% }
 </div>
 <p> 
  <strong><%= ml 'To contact with us' %></strong>: <a href="tel:+998903272378">+998 90 327 23 78</a>

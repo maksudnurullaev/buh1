@@ -15,10 +15,10 @@
    %= form_for '/user/login' => (method => 'POST') => begin
    <table class='colortable'>
     <tr><td class='tar'><u><%= ml 'Name' %></u></td>
-     <td><%= text_field 'email', class => stash 'email_class' %></td>
+     <td><%= text_field email => id => 'email' %></td>
     </tr>
     <tr><td class='tar'><u><%= ml 'Password' %></u></td>
-     <td><%= password_field 'password', class => stash 'password_class' %></td>
+     <td><%= password_field password => id => 'password' %></td>
     </tr>
     <tr><td>&nbsp;</td>
      <td>
@@ -32,9 +32,18 @@
      <u>Демонстрационный вход</u>: пользователь <strong>demo@buga.uz</strong>, пароль <strong>demo</strong>!
     <% end %>
    </p>
+    <input type="button" value="<%= ("Demo - " . ml("Login")) %>" onclick="enterAsDemo();">
   </div>
  % }
 % }
 
+<script>
+
+function enterAsDemo(){
+    document.getElementById("email").value = 'demo@buga.uz';
+    document.getElementById("password").value = 'demo';
+}
+
+</script>
 
 %#= include 'debug/access'
