@@ -6,7 +6,8 @@
     %= ml 'Description' 
    </td>
    <td>
-    %= text_area 'archive.desc' ;
+    % my $lt = localtime;
+    %= text_area 'archive.desc' => $lt ;
    </td>
   </tr> 
   <tr><td>&nbsp;</td>

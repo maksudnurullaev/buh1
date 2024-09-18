@@ -243,6 +243,8 @@ sub startup {
       ->to( controller => 'warehouse', action => 'export' );
     $r->post('/warehouse/export_remains/*payload')
       ->to( controller => 'warehouse', action => 'export_remains' );
+    $r->post('/warehouse/export_remains_all')
+      ->to( controller => 'warehouse', action => 'export_remains_all' );
     $r->get('/warehouse/del_tag/*payload')
       ->to( controller => 'warehouse', action => 'del_tag' );
 
