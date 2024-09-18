@@ -233,7 +233,7 @@ sub startup {
       ->to( controller => 'warehouse', action => 'update_counting_field' );
     $r->any('/warehouse/remains/*payload')->methods( 'GET', 'POST' )
       ->to( controller => 'warehouse', action => 'remains' );
-    $r->get('/warehouse/remains_all')
+    $r->get('/warehouse/remains_all')->methods( 'GET', 'POST' )
       ->to( controller => 'warehouse', action => 'remains_all' );
     $r->get('/warehouse/files/*payload')
       ->to( controller => 'warehouse', action => 'files' );
