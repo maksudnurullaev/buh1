@@ -1,0 +1,67 @@
+%#= t pre => dumper($operations) ;
+
+<div style="padding: 1em;">
+% if( param('description') ){
+ <strong><%= param('description') %></strong> 
+ <br />&nbsp;
+% } 
+<table class="styled">
+  <thead>
+    <tr>
+    % for (@{['Name','Debet','Credit']}){
+      <th><%= $_ %></th>
+    % }
+    </tr>
+  </thead>
+      <tr>
+        <td colspan="4">
+          %= text_field quick_search => placeholder => 'Filter', id => 'quickFilter' ;
+        <td>
+      </tr>
+
+  % for my $oid ( sort keys %{$operations} ){
+      <tr>
+        <td colspan="4">
+            %= tag strong => $operations->{$oid}{name} ;
+        <td>
+      </tr>
+      % if (my $soperations = $operations->{$oid}{operations}){
+        % for my $soid ( sort keys %{$soperations} ){
+            <tr class="forQuickFilter">
+                <td><%== brit($soperations->{$soid}{desc}) %></td>
+                <td><%== brit($soperations->{$soid}{debet}) %></td>
+                <td><%== brit($soperations->{$soid}{credit}) %></td>
+            </tr>
+      % }  
+      % }
+  % }
+</table>
+</div>
+
+<script>
+const quickFilter = document.getElementById('quickFilter');
+
+const inputHandler = function(e) {
+  // console.log(e.target.value);
+  var TRs = document.getElementsByClassName("forQuickFilter");
+  var searchString = e.target.value.trim();
+  if(searchString.length > 0){
+    const re = new RegExp(e.target.value, "i"); 
+    for (i = 0; i < TRs.length; i++) {
+        if (TRs[i].innerText.search(re) == -1 ){
+          TRs[i].style.display = 'none';
+        } else {
+          TRs[i].style.display = '';
+        }
+    }
+  } else {
+    for (i = 0; i < TRs.length; i++) {
+      TRs[i].style.display = '';
+    }
+  }
+}
+
+quickFilter.addEventListener('change', inputHandler);
+//quickFilter.addEventListener('propertychange', inputHandler); // for IE8
+
+</script>

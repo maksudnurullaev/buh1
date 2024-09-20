@@ -1,5 +1,5 @@
 %  if ( my $parts = stash('parts') ) {
-  %= include 'templates/lex_accounts_treeview', parts => $parts, lang => 'rus' ;
+  %= include 'imports/_lex_accounts_treeview', parts => $parts, lang => 'rus' ;
 % } elsif ( my $operations = stash('operations')) {
-  %= include 'templates/lex_operations_view', operations => $operations, lang => 'rus' if $operations;
+  %= include 'imports/_lex_operations_view', operations => $operations, lang => 'rus' if $operations;
 % } 
