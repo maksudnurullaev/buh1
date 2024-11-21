@@ -6,7 +6,7 @@ CREATE INDEX i_objects ON objects (name, id, field);
 cpanm Mojolicious Crypt::SaltedHash Data::UUID DBI DBD::SQLite List::MoreUtils \
 	Hash::Merge::Simple Locale::Currency::Format Mojolicious::Plugin::RenderFile \
         Hash::Merge::Simple Text::CSV_XS Test::Most Test::Deep Test::NoWarnings CHI EV \
-	Spreadsheet::WriteExcel WWW::Telegram::BotAPI
+	Spreadsheet::WriteExcel WWW::Telegram::BotAPI Mojolicious::Plugin::AdditionalValidationChecks
 
 OR just:
 cpm install -g 
