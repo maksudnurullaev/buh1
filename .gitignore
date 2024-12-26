@@ -1,5 +1,5 @@
 # Clients data files
-db/clients
+db/clients/**
 db/main
 db/guides
 db/dump
