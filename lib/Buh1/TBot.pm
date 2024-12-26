@@ -5,7 +5,7 @@ use Data::Dumper;
 
 use WWW::Telegram::BotAPI;
 my $tBotApi = WWW::Telegram::BotAPI->new (
-    token => '6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE'
+    token => '6938590791:AAFOQjRSBR1hJ9cTK4nrdY-a4jBl_J-wwtw'
 );
 
 sub match_all_positions {
@@ -21,7 +21,7 @@ sub match_all_positions {
             'type' => 'text_link'
         };
     }
-    warn "Test #2";
+    # warn "Test #2";
     while ($string =~ /^(.*:)$/mg) {
         my $sPos = $-[0];
         my $ePos = $+[0];

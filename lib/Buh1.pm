@@ -266,7 +266,7 @@ sub startup {
       ->to( controller => 'browser', action => 'mobile' );
 
     # for my telegram bot - temporary
-    $r->any( '/6938590791:AAFOkQDDcOiq6LUZ1vHniC06jUlWIYxpgTE/*payload' =>
+    $r->any( '/6938590791:AAFOQjRSBR1hJ9cTK4nrdY-a4jBl_J-wwtw/*payload' =>
           { payload => 'Hello' } )
       ->to( controller => 'TBot', action => 'hello' );
 
