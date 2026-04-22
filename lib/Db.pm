@@ -43,11 +43,19 @@ package Db;
         return ( -e $self->{'file'} );
     }
 
+    # Returns the Mojo::Log instance regardless of whether $self->{mojo} is the
+    # app object (Mojolicious) or a request controller (Mojolicious::Controller).
+    sub _log {
+        my $self = shift;
+        my $mojo = $self->{mojo};
+        return $mojo->isa('Mojolicious') ? $mojo->log : $mojo->app->log;
+    }
+
     sub get_db_connection {
         my $self = shift;
         if ( exists( $self->{dbh} ) && defined( $self->{dbh} ) ) {
             return $self->{dbh} if $self->{dbh}{Active};
-            warn "Db: connection inactive, reconnecting to " . $self->{'file'};
+            $self->_log->warn("Db: connection inactive, reconnecting to " . $self->{'file'});
             delete $self->{dbh};
         }
         if ( $DB_CURRENT_TYPE == $DB_SQLite_TYPE ) {
@@ -55,7 +63,7 @@ package Db;
             my $dbh = DBI->connect( $dbi_connection_string, undef, undef,
                 { sqlite_unicode => 1, AutoCommit => 1 } );
             if ( !defined($dbh) ) {
-                warn $DBI::errstr;
+                $self->_log->warn($DBI::errstr // 'DBI connection error');
                 return (undef);
             }
             $dbh->do("PRAGMA synchronous = NORMAL");
@@ -63,11 +71,11 @@ package Db;
             return ($dbh);
         }
         elsif ( $DB_CURRENT_TYPE == $DB_Pg_TYPE ) {
-            warn "Error:Pg: Not implemeted yet!";
+            $self->_log->warn("Error:Pg: Not implemeted yet!");
             return (undef);
         }
         else {
-            warn "Error:DB: Unknown db type!";
+            $self->_log->warn("Error:DB: Unknown db type!");
             return (undef);
         }
     }
@@ -94,7 +102,7 @@ package Db;
             }
         }
         else {
-            warn "Error:DB: Unknown db type!";
+            $self->_log->warn("Error:DB: Unknown db type!");
             return (undef);
         }
     }
@@ -116,7 +124,7 @@ package Db;
         if ( $idold && $idnew ) {
             my $found = $self->get_objects( { id => [$idnew] } );
             if ( $found && $self->object_valid( $found->{$idnew} ) ) {
-                warn "change_id:error Object with id '$idnew' already exists!";
+                $self->_log->warn("change_id:error Object with id '$idnew' already exists!");
                 return;
             }
 
@@ -124,7 +132,7 @@ package Db;
             my $sth = $dbh->prepare("UPDATE objects SET id=? WHERE id=?;");
             return $sth->execute( $idnew, $idold );
         }
-        warn "change_id:error NEW or OLD id not defined!";
+        $self->_log->warn("change_id:error NEW or OLD id not defined!");
         return;
     }
 
@@ -155,11 +163,11 @@ package Db;
             delete $hashref->{object_name};
         }
         else {
-            warn "Error:Db:Update: No object or object name or Id!";
+            $self->_log->warn("Error:Db:Update: No object or object name or Id!");
             return (undef);
         }
         if ( scalar( keys %{$hashref} ) == 0 ) {
-            warn "Error:Db:Insert: No data!";
+            $self->_log->warn("Error:Db:Update: No data!");
             return (undef);
         }
         my $dbh        = $self->get_db_connection() || return;
@@ -191,11 +199,11 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             delete $hashref->{object_name};
         }
         else {
-            warn "Error:Db:Insert: No object or object name!";
+            $self->_log->warn("Error:Db:Insert: No object or object name!");
             return (undef);
         }
         if ( scalar( keys %{$hashref} ) == 0 ) {
-            warn "Error:Db:Insert: No data!";
+            $self->_log->warn("Error:Db:Insert: No data!");
             return (undef);
         }
         my $id  = $hashref->{id}             || Utils::get_date_uuid();
@@ -262,13 +270,13 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             if ( $sth->execute(@_) ) {
                 return ($sth);
             }
-            else { warn $DBI::errstr; }
+            else { $self->_log->warn($DBI::errstr // "DBI error"); }
         }
         else {
             if ( $sth->execute ) {
                 return ($sth);
             }
-            else { warn $DBI::errstr; }
+            else { $self->_log->warn($DBI::errstr // "DBI error"); }
         }
         return (undef);
     }
@@ -277,7 +285,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $self       = shift;
         my $parameters = shift;
         if ( !$parameters || scalar( keys %{$parameters} ) == 0 ) {
-            warn "No parameters!";
+            $self->_log->warn("No parameters!");
             return;
         }
         my $result;
@@ -344,7 +352,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $parameters = shift;
 
         if ( ref($parameters) ne "HASH" ) {
-            warn "Parameters should be hash!";
+            $self->_log->warn("Parameters should be hash!");
             return;
         }
         my $dbh = $self->get_db_connection() || return;
@@ -356,7 +364,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             return (
                 $self->format_statement2hash_objects( $sth, $parameters ) );
         }
-        else { warn $DBI::errstr; }
+        else { $self->_log->warn($DBI::errstr // "DBI error"); }
         return;
     }
 
@@ -434,7 +442,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
     sub get_counts {
         my ( $self, $parameters, $debug_mode ) = @_;
         if ( ref($parameters) ne "HASH" ) {
-            warn "Parameters should be hash!";
+            $self->_log->warn("Parameters should be hash!");
             return;
         }
         my $dbh = $self->get_db_connection() || return;
@@ -443,7 +451,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $sql        = " SELECT COUNT(*) FROM objects WHERE $where_part ;";
         my ($count)    = $dbh->selectrow_array(
             " SELECT COUNT(*) FROM objects WHERE $where_part ;");
-        warn "Db:get_count:[SQL]: $sql\n ... RESULT(count): $count"
+        $self->_log->debug("Db:get_count:[SQL]: $sql\n ... RESULT(count): $count")
           if $debug_mode;
         return ($count);
     }
@@ -463,11 +471,11 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my @ids   = keys %{$users};
         my $count = scalar(@ids);
         if ( !$count ) {
-            warn "User with email '$email' not exist";
+            $self->_log->warn("User with email '$email' not exist");
             return (undef);
         }
         if ( scalar(@ids) != 1 ) {
-            warn "User with email '$email' not unique: $count!";
+            $self->_log->warn("User with email '$email' not unique: $count!");
             return (undef);
         }
 
@@ -514,7 +522,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             }
             return (undef);
         }
-        warn $DBI::errstr;    # some error happens
+        $self->_log->warn($DBI::errstr // "DBI error");    # some error happens
         return (undef);
     }
 
@@ -568,18 +576,18 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             my ($count) = $sth->fetchrow_array;
             return $count;
         }
-        warn $DBI::errstr;
+        $self->_log->warn($DBI::errstr // "DBI error");
         return (undef);    # some error happens
     }
 
     sub set_link {
         my ( $self, $id1, $id2 ) = @_;
         if ( !$id1 || !$id2 ) {
-            warn "Not defined ID1 or ID2! Look to (ID1 or ID2): ($id1 OR $id2)";
+            $self->_log->warn("Not defined ID1 or ID2! Look to (ID1 or ID2): ($id1 OR $id2)");
             return (0);
         }
         if ( $self->is_linked( $id1, $id2 ) ) {    # link already exists!
-            warn "Link for (ID1,ID2): ($id1,$id2) already exists!";
+            $self->_log->warn("Link for (ID1,ID2): ($id1,$id2) already exists!");
             return (0);
         }
 
@@ -640,7 +648,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
                 $result->{$link_id} = $object->{$link_id} if $object;
             }
         }
-        else { warn $DBI::errstr; }
+        else { $self->_log->warn($DBI::errstr // "DBI error"); }
         return ($result) if scalar keys %{$result};
         return (undef);
     }
@@ -843,7 +851,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         # 3. Parse childs to linked parent object, if not existance
         for my $key ( keys %{$temp_hash} ) {
             if ( $temp_hash->{$key}->{name} ne $params->{object_name} ) {
-                warn "TODO-1234: " . $temp_hash->{$key}->{name};
+                $self->_log->warn("TODO-1234: " . $temp_hash->{$key}->{name});
             }
 
         }

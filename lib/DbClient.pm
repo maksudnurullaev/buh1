@@ -19,7 +19,7 @@ sub new {
     my $mojo  = shift;
     my $file_name = ($mojo->session('company id') || shift );
     if( !$file_name ){
-        warn 'DbClinet:new:error: Could not create db connection, company not defined!' ;
+        $mojo->app->log->warn('DbClient:new:error: Could not create db connection, company not defined!');
         return(undef);
     }
     

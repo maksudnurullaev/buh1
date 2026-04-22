@@ -111,12 +111,12 @@ package Utils::Calculations;
         my $self        = shift;
         my $return_path = $self->param('return_path');
         if ( !$return_path ) {
-            warn "ERROR:Calculcation::delete: return_path not defined!";
+            $self->app->log->warn("ERROR:Calculcation::delete: return_path not defined!");
             return;
         }
         if ( is_global_part($self) ) {
             if ( !$self->param('calcid') ) {
-                warn "ERROR:Calculcation::delete: calcid not defined!";
+                $self->app->log->warn("ERROR:Calculcation::delete: calcid not defined!");
                 $self->redirect_to(
                     Utils::url_append( $return_path, 'error=1' ) );
             }
@@ -131,7 +131,7 @@ package Utils::Calculations;
         if (   !$self->param('calcid')
             || !$self->param('pid') )
         {
-            warn "ERROR:Calculcation::delete: calcid or pid not defined!";
+            $self->app->log->warn("ERROR:Calculcation::delete: calcid or pid not defined!");
             $self->redirect_to( Utils::url_append( $return_path, 'error=1' ) );
         }
         else {
@@ -338,7 +338,7 @@ package Utils::Calculations;
 
         my $recursion = shift || 0;
         if ( $recursion > 14 ) {
-            warn "ERROR:RECURSION: $recursion ";
+            $self->app->log->warn("ERROR:RECURSION: $recursion");
             return ($eval_string);
         }
 

@@ -31,14 +31,14 @@ package Utils::Warehouse;
         my $self = shift;
         my $id   = $self->param('payload');
         if ( !$id ) {
-            warn "Object not exists!";
+            $self->app->log->warn("Object not exists!");
             $self->redirect_to('/user/login?warning=data_not_found');
             return (0);
         }
         my $db      = Utils::Db::client($self);
         my $objects = $db->get_objects( { id => [$id] } );
         if ( !scalar( keys( %{$objects} ) ) ) {
-            warn "Object not found!";
+            $self->app->log->warn("Object not found!");
             $self->redirect_to('/user/login?warning=data_not_found');
             return (0);
         }
@@ -287,7 +287,7 @@ package Utils::Warehouse;
         };
         if ($@) {
             $self->redirect_to("/warehouse/edit/$pid?error=1");
-            warn "Transaction aborted because $@";
+            $self->app->log->warn("Transaction aborted because $@");
             eval { $dbh->finish(); $dbh->rollback(); };   # ROLLBACK TRANSACTION
             return (undef);
         }
@@ -342,7 +342,7 @@ package Utils::Warehouse;
             $eval_string = "$pid_cfv";
             $eval_string .= $childs_eval_str if $childs_eval_str;
             $result = eval $eval_string;
-            warn $@ if $@;
+            $self->app->log->warn($@) if $@;
         }
         return ( $parent, $childs, $result || 0 );
     }

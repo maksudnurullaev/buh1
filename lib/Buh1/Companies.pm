@@ -61,7 +61,7 @@ package Buh1::Companies;
             $db->change_name( $OBJECT_NAME, $id );
         }
         else {
-            warn "Companies:restore:error company id not defined!";
+            $self->app->log->warn("Companies:restore:error company id not defined!");
         }
         $self->redirect_to('/companies/deleted');
     }
@@ -92,7 +92,7 @@ package Buh1::Companies;
             $db->change_name( $DELETED_OBJECT_NAME, $id );
         }
         else {
-            warn "Companies:delete:error company id not defined!";
+            $self->app->log->warn("Companies:delete:error company id not defined!");
         }
         $self->redirect_to('/companies/list');
     }
@@ -139,7 +139,7 @@ package Buh1::Companies;
         my $id = $self->param('payload');
         if ( !$id ) {
             $self->redirect_to('/companies/list');
-            warn "Companies:edit:error company ID not found!";
+            $self->app->log->warn("Companies:edit:error company ID not found!");
             return;
         }
 
@@ -155,7 +155,7 @@ package Buh1::Companies;
                 }
                 else {
                     $self->stash( error => 1 );
-                    warn 'Companies:edit:ERROR: could not update company!';
+                    $self->app->log->warn('Companies:edit:ERROR: could not update company!');
                 }
             }
             else {
@@ -208,7 +208,7 @@ package Buh1::Companies;
                 }
                 else {
                     $self->stash( error => 1 );
-                    warn 'Companies:add:ERROR: could not add new company!';
+                    $self->app->log->warn('Companies:add:ERROR: could not add new company!');
                 }
             }
             else {

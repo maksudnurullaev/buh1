@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  buh1:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist the SQLite databases and uploaded files outside the container
+      - ./db:/app/db
+    environment:
+      MOJO_MODE: production
+      # Override with a strong random value in production:
+      BUH1_SECRETS: "changeme1,changeme2"
+      # Uncomment and set to enable the Telegram bot webhook:
+      # TBOT_TOKEN: "your_telegram_bot_token_here"
+    restart: unless-stopped

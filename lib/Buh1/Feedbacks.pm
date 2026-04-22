@@ -50,7 +50,7 @@ sub restore{
         my $db = Db->new($self);
         $db->change_name($OBJECT_NAME, $id);
     } else {
-        warn "$OBJECT_NAMES:restore:error $OBJECT_NAME id not defined!"; 
+        $self->app->log->warn("$OBJECT_NAMES:restore:error $OBJECT_NAME id not defined!");
     }
     $self->redirect_to("/$OBJECT_NAMES/deleted");
 };
@@ -86,7 +86,7 @@ sub del{
         my $db = Db->new($self);
         $db->change_name($DELETED_OBJECT_NAME, $id);
     } else {
-        warn "$OBJECT_NAMES:delete:error $OBJECT_NAME id not defined!"; 
+        $self->app->log->warn("$OBJECT_NAMES:delete:error $OBJECT_NAME id not defined!");
     }
     $self->redirect_to("/$OBJECT_NAMES/list");
 };
@@ -100,7 +100,7 @@ sub del_final{
         my $db = Db->new($self);
         $db->del($id);
     } else {
-        warn "$OBJECT_NAMES:del_final:error $OBJECT_NAME id not defined!"; 
+        $self->app->log->warn("$OBJECT_NAMES:del_final:error $OBJECT_NAME id not defined!");
     }
     $self->redirect_to("/$OBJECT_NAMES/deleted");
 };
@@ -117,7 +117,7 @@ sub add{
             if( $db->insert($data) ){
                 $self->stash(success => 1);
             } else {
-                warn "$OBJECT_NAMES:add:error: could not add new one!";
+                $self->app->log->warn("$OBJECT_NAMES:add:error: could not add new one!");
             }
         } else {
             $self->stash(error => 1);

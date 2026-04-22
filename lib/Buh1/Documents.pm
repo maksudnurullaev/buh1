@@ -71,7 +71,7 @@ package Buh1::Documents;
                 $parameters->{$header} = $value;
             }
             else {
-                warn "Could not find proper value for '$header'";
+                $self->app->log->warn("Could not find proper value for '$header'");
                 $self->stash(
                     error         => 1,
                     error_message =>
@@ -85,13 +85,13 @@ package Buh1::Documents;
         for my $key ( keys %{$parameters} ) {
             my $id = $parameters->{$key};
             if ( !$id ) {
-                warn "No ID to linked object($key) defined!";
+                $self->app->log->warn("No ID to linked object($key) defined!");
                 $self->stash( error => 1 );
                 return;
             }
             my $db_object = $db->get_objects( { id => [$id] } );
             if ( !$db_object ) {
-                warn "No db object($id) found in database!";
+                $self->app->log->warn("No db object($id) found in database!");
                 $self->stash( error => 1 );
                 return;
             }
@@ -200,7 +200,7 @@ package Buh1::Documents;
         for my $header (@OBJECT_HEADER_FIELDS) {
             my $value = $self->param($header);
             if ( !$value ) {
-                warn "No value found for mandatory $header field";
+                $self->app->log->warn("No value found for mandatory $header field");
                 return;
             }
             $result->{$header} = $value;
@@ -221,7 +221,7 @@ package Buh1::Documents;
             }
             else {
                 $self->stash( error => 1 );
-                warn 'Could not update objects!';
+                $self->app->log->warn('Could not update objects!');
             }
         }
         my $account = $self->param("account");
@@ -273,7 +273,7 @@ package Buh1::Documents;
                     }
                     else {
                         $self->stash( error => 1 );
-                        warn 'Could not update objects!';
+                        $self->app->log->warn('Could not update objects!');
                     }
                 }
                 else {
@@ -283,7 +283,7 @@ package Buh1::Documents;
                     }
                     else {
                         $self->stash( error => 1 );
-                        warn 'Could not insert document object!';
+                        $self->app->log->warn('Could not insert document object!');
                     }
                 }
             }

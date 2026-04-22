@@ -8,14 +8,10 @@ my $object_name = 'test object';
 
 # -= check for invalid hash =-
 my $invalid_object;
-warnings_like
- { $invalid_object = $db->insert({}) } [qr/Error:Db:Insert: No object or object name/],
- 'Expected warning!';
-ok(!defined($invalid_object)); 
-warnings_like
- { $invalid_object = $db->insert({object_name => $object_name}) } [qr/Error:Db:Insert: No data/],
- 'Expected warning!';
-ok(!defined($invalid_object)); 
+$invalid_object = $db->insert({});
+ok(!defined($invalid_object), 'insert({}) returns undef for missing object_name');
+$invalid_object = $db->insert({object_name => $object_name});
+ok(!defined($invalid_object), 'insert({object_name=>...}) returns undef for missing data');
 
 # -= check for single insertrion =-
 my $id_1 = $db->insert({

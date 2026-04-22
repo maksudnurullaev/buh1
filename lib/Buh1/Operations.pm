@@ -76,7 +76,7 @@ sub add{
                 return;
             } else {
                $self->stash(error => 1);
-               warn "Operations:add:ERROR: could not insert!";
+               $self->app->log->warn("Operations:add:ERROR: could not insert!");
             }
         } else {
             $self->stash(error => 1);
@@ -106,7 +106,7 @@ sub edit{
     my $account = $db->get_objects({id => [$account_id]});
     if ( !$bt || !$account ){
         $self->redirect_to('/operations/list');
-        warn "Operations:edit:error some objects are not exists!";
+        $self->app->log->warn("Operations:edit:error some objects are not exists!");
         return;
     }
 
@@ -120,7 +120,7 @@ sub edit{
                 clear_cache($self);
             } else {
                 $self->stash(error => 1);
-                warn "Operations:edit:ERROR: could not update!";
+                $self->app->log->warn("Operations:edit:ERROR: could not update!");
             }
         } else {
             $self->stash(error => 1);

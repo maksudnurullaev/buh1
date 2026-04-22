@@ -72,7 +72,7 @@ sub login{
     # 1. Is administrator
     if( $email =~ /^admin$/i ){
         return(1) if salted_password($password,get_admin_password($self));
-        warn "Admin's password invalid!";
+        $self->app->log->warn("Admin's password invalid!");
         return(0);
     }
     # 2. Is user exists
@@ -82,7 +82,7 @@ sub login{
     # 3. Validate password
     my $salt = $user->{password};
     return($user) if salted_password($password,$salt);
-    warn "User with mail '$email' exists but password is invalid!";
+    $self->app->log->warn("User with mail '$email' exists but password is invalid!");
     return(0);
 };
 

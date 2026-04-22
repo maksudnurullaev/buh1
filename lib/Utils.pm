@@ -144,7 +144,7 @@ m/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|
     sub redirect2list_or_path {
         my ( $self, $object_names ) = @_;
         if ( !$self || !$object_names ) {
-            warn 'Parameter(s) error!';
+            $self->app->log->warn('Parameter(s) error!');
             return;
         }
         if ( $self->param('path') ) {
@@ -195,7 +195,7 @@ m/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|
     sub utf_compare {
         my ( $self, $a, $b ) = @_;
         if ( !$self || !$a || !$b ) {
-            warn "Parameters not defined properly to compare!";
+            $self->app->log->warn("Parameters not defined properly to compare!");
             return (0);
         }
         my @a = unpack( 'U*', $a );

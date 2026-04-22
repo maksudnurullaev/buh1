@@ -126,7 +126,7 @@ sub make_new_archive{
     # my $company_id = $self->session('company id') ;
     
     system "tar czf '$archive_file' '$client_path' '$client_path.db'" ;
-    warn "QQQQ: tar czf '$archive_file' '$client_path' '$client_path.db'" ;
+    $self->app->log->debug("tar czf '$archive_file' '$client_path' '$client_path.db'");
     if( my $file_description = $self->param('archive.desc') ){
         Utils::Files::set_file_content("$archive_file.desc",$file_description) ;
     }

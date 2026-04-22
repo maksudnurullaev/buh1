@@ -48,7 +48,7 @@ sub view {
                   . join( ',', @{$forDeletes} )
                   . ") and id NOT LIKE 'DELETED%' ;";
 
-                $dbc->do($statement) or warn $dbc->errstr;
+                $dbc->do($statement) or $self->app->log->warn($dbc->errstr);
             }
             elsif ( $action eq 'RESTORE' ) {
                 my $dbc = $dbh->get_db_connection();
@@ -57,11 +57,11 @@ sub view {
                   . join( ',', @{$forDeletes} )
                   . ") and id LIKE 'DELETED%' ;";
 
-                $dbc->do($statement) or warn $dbc->errstr;
+                $dbc->do($statement) or $self->app->log->warn($dbc->errstr);
             }
         }
-        warn "No action defined!" if !$action;
-        warn "No rows defined!"   if !@{$forDeletes};
+        $self->app->log->warn("No action defined!") if !$action;
+        $self->app->log->warn("No rows defined!")   if !@{$forDeletes};
     }
 
     my $sth = $dbh->get_from_sql(

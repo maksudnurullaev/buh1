@@ -71,7 +71,7 @@ package Buh1::Users;
             $db->change_name( $OBJECT_NAME, $id );
         }
         else {
-            warn "Users:restore:error user id not defined!";
+            $self->app->log->warn("Users:restore:error user id not defined!");
         }
         $self->redirect_to('/users/deleted');
     }
@@ -143,7 +143,7 @@ package Buh1::Users;
             $db->change_name( $DELETED_OBJECT_NAME, $id );
         }
         else {
-            warn "Users:delete:error user id not defined!";
+            $self->app->log->warn("Users:delete:error user id not defined!");
         }
         $self->redirect_to('/users/list');
     }
@@ -166,7 +166,7 @@ package Buh1::Users;
         my $user_id = $self->param('payload');
         if ( !$user_id ) {
             $self->redirect_to('/users/list');
-            warn "Users:edit:error user id not defined!";
+            $self->app->log->warn("Users:edit:error user id not defined!");
             return;
         }
         $self->stash( user_id => $user_id );
@@ -180,7 +180,7 @@ package Buh1::Users;
                 }
                 else {
                     $self->stash( error => 1 );
-                    warn 'Users:edit:ERROR: could not update user!';
+                    $self->app->log->warn('Users:edit:ERROR: could not update user!');
                 }
             }
             else {
@@ -229,7 +229,7 @@ package Buh1::Users;
                 }
                 else {
                     $self->stash( error => 1 );
-                    warn 'Users:add:error: could not add new user!';
+                    $self->app->log->warn('Users:add:error: could not add new user!');
                 }
             }
             else {

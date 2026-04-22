@@ -63,13 +63,13 @@ sub validate4add_part{
     if ( $data->{id} !~ /^\d+$/ ){
         $data->{error} = 1 ; 
         $self->stash('id_class' => 'error');
-        warn "Accounts:validate4add_part: id is not numeric!";
+        $self->app->log->warn("Accounts:validate4add_part: id is not numeric!");
     } else {
         my $parent_id = "$data->{object_name} $data->{id}";
         my $db = Db->new($self);
         if( $db->get_objects({id => [$parent_id]}) ){
             $data->{error} = 1 ;
-            warn "Accounts:validate4add_part: such object already exists!";
+            $self->app->log->warn("Accounts:validate4add_part: such object already exists!");
         }
     }
     return($data);

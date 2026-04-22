@@ -25,7 +25,7 @@ sub add_part{
     if ( $parent_id ){
         $parents = $db->get_objects({id=>[$parent_id]});
         if( !$parents ){
-            warn "Accounts:add_part: no parents! Redirecting...";
+            $self->app->log->warn("Accounts:add_part: no parents! Redirecting...");
             $self->redirect_to('/accounts/list');
             return;
         }
@@ -50,7 +50,7 @@ sub add_part{
                 return;
             } else {
                 $self->stash(error => 1);
-                warn 'Accounts:edit:ERROR: could not update!';
+                $self->app->log->warn('Accounts:edit:ERROR: could not update!');
             }
         } else {
             $self->stash( error => 1 );
@@ -110,7 +110,7 @@ sub fix_subconto{
         $db->set_link($pnew,$id);
         clear_cache($self);
     } else {
-        warn "Accounts:fix_subconto:error parameters are not properly defined!";
+        $self->app->log->warn("Accounts:fix_subconto:error parameters are not properly defined!");
     }
     $self->redirect_to("/accounts/list#$id"); 
 };
@@ -131,7 +131,7 @@ sub fix_account{
             clear_cache($self);
         }
     } else {
-        warn "Accounts:fix_account:error parameters are not properly defined!";
+        $self->app->log->warn("Accounts:fix_account:error parameters are not properly defined!");
     }
     $self->redirect_to("/accounts/list#$idnew"); 
 };
@@ -143,7 +143,7 @@ sub delete_subconto{
     my $id = $self->param('payload');
     my $parent = $self->param('parent');
     if ( !$id || !$parent ){
-        warn "Accounts:delete_subconto:error parameters are not properly defined!";
+        $self->app->log->warn("Accounts:delete_subconto:error parameters are not properly defined!");
         $self->redirect_to("/accounts/list/$id");
         return;
     }
@@ -161,7 +161,7 @@ sub edit{
     my $id = $self->param('payload');
     if( !$id ) { 
         $self->redirect_to('/accounts/list'); 
-        warn "Accounts:edit:error id not defined!";
+        $self->app->log->warn("Accounts:edit:error id not defined!");
         return; 
     }
 
@@ -178,7 +178,7 @@ sub edit{
                 clear_cache($self);
             } else {
                 $self->stash(error => 1);
-                warn 'Accounts:edit:ERROR: could not update!';
+                $self->app->log->warn('Accounts:edit:ERROR: could not update!');
             }
         } else {
             $self->stash(error => 1);
@@ -187,7 +187,7 @@ sub edit{
     my $data = $db->get_objects({id=>[$id]});
     if ( !$data ){
         $self->redirect_to("/accounts/list#$id");
-        warn "Accounts:edit:error id not found!";
+        $self->app->log->warn("Accounts:edit:error id not found!");
         return;
     }
     my $parent_name = Utils::Accounts::get_parent_name($data->{$id}{object_name});

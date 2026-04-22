@@ -31,9 +31,7 @@ ok($db->is_linked($id1,$id3), "Test for link existance #13");
 
 # -= couldn't create links if it's already exists =-
 # ok(!$db->set_link($id1,$id2), "Test for link existance #13");
-warnings_like { 
-    $db->set_link($id1,$id2) 
-    } [qr/already exists/], 'Expected warning!';
+ok( !$db->set_link($id1,$id2), 'set_link returns false when link already exists' );
 
 
 # -= get links =-

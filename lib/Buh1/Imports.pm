@@ -238,7 +238,7 @@ sub lex {
                 my $result = parse_operations_lex( $self, $html_dom_all );
                 $self->stash( operations => $result );
             }
-            else { warn "Not defined parse variant!"; }
+            else { $self->app->log->warn("Not defined parse variant!"); }
         }
         else {
             warn "URL: !!!NOT VALID!!!" if $debug_mode;
