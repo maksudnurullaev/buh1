@@ -7,8 +7,12 @@ db/archives
 db/main.db
 cpm
 cpm.*
-# Ignore all hidden files
+# Ignore all hidden files except project config
 .*
+!.gitignore
+!.proverc
+!.github
+!.github/**
 # Ignore the following files
 *.log
 *.tmp

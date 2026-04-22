@@ -9,12 +9,16 @@ prereqs:
       List::MoreUtils:
       Locale::Currency::Format:
       Mojolicious::Plugin::RenderFile:
+      Mojolicious::Plugin::AdditionalValidationChecks:
       Hash::Merge::Simple:
       Text::CSV_XS:
-      Test::Most:
-      Test::Deep:
-      Test::NoWarnings:
       CHI:
       EV:
       Spreadsheet::WriteExcel:
       WWW::Telegram::BotAPI:
+  test:
+    requires:
+      Test::Most:
+      Test::Deep:
+      Test::NoWarnings:
+      Test::Mojo::Session:

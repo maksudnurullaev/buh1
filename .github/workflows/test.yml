@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    name: Perl ${{ matrix.perl }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        perl: ['5.36', '5.38']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Perl ${{ matrix.perl }}
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+
+      - name: Cache Perl modules
+        uses: actions/cache@v4
+        with:
+          path: ~/perl5
+          key: perl-${{ matrix.perl }}-${{ hashFiles('cpanfile') }}
+          restore-keys: perl-${{ matrix.perl }}-
+
+      - name: Install system libraries
+        run: sudo apt-get install -y libev-dev
+
+      - name: Install Perl dependencies
+        run: cpanm --notest --installdeps .
+
+      - name: Run tests
+        run: prove -I lib -r t/
