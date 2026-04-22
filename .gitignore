@@ -5,3 +5,6 @@ db/guides
 db/dump
 db/archives
 db/main.db
+cpm
+cpm.*
+.*

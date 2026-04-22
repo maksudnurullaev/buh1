@@ -33,14 +33,15 @@ sub startup {
     $self->plugin('RenderFile');
     $self->plugin('AdditionalValidationChecks');
 
-    #SECRETs
-    $self->app->secrets( [ 'Nkjlkj344!!!#4jkj;l', 'Hl53gfsgd;-l=rtw45@#' ] );
+    #SECRETs - set BUH1_SECRETS env var (comma-separated) to override defaults
+    my @secrets = $ENV{BUH1_SECRETS}
+      ? split( /,/, $ENV{BUH1_SECRETS} )
+      : ( 'Nkjlkj344!!!#4jkj;l', 'Hl53gfsgd;-l=rtw45@#' );
+    $self->app->secrets( \@secrets );
 
-    # production or development
-    # $self->app->mode('production');
-    $self->app->mode('development');
+    # production or development - set MOJO_MODE env var to override
+    $self->app->mode( $ENV{MOJO_MODE} || 'development' );
 
-    # $self->app->mode('production');
     # ... just for hypnotoad
     $self->app->config( hypnotoad => { listen => ['http://*:3000'] } );
     #

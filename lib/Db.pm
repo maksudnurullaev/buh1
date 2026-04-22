@@ -101,8 +101,8 @@ package Db;
         my ( $new_name, $id ) = @_;
         if ( $new_name && $id ) {
             my $dbh = $self->get_db_connection() || return;
-            return $dbh->do(
-                "UPDATE objects SET name = '$new_name' WHERE id = '$id' ;");
+            my $sth = $dbh->prepare("UPDATE objects SET name=? WHERE id=?;");
+            return $sth->execute( $new_name, $id );
         }
         return;
     }
@@ -118,8 +118,8 @@ package Db;
             }
 
             my $dbh = $self->get_db_connection() || return;
-            return $dbh->do(
-                "UPDATE objects SET id = '$idnew' WHERE id = '$idold' ;");
+            my $sth = $dbh->prepare("UPDATE objects SET id=? WHERE id=?;");
+            return $sth->execute( $idnew, $idold );
         }
         warn "change_id:error NEW or OLD id not defined!";
         return;
@@ -135,7 +135,8 @@ package Db;
                          # remove from parent's children scope
             $self->parent_remove_child( $child->{PARENT}, $id );
         }
-        return $dbh->do("DELETE FROM objects WHERE id = '$id' ;");
+        my $sth = $dbh->prepare("DELETE FROM objects WHERE id=?;");
+        return $sth->execute($id);
     }
 
     sub update {
@@ -369,12 +370,14 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
         if ($filter_value) {
             $self->{mojo}->stash( filter => $filter_value ) if $filter_value;
+            my $dbh           = $self->get_db_connection() || return;
+            my $quoted_filter = $dbh->quote( '%' . $filter_value . '%' );
             if ($filter_prefix) {
                 $filter_where =
-" $filter_prefix AND value LIKE '%$filter_value%' escape '\\' ";
+                  " $filter_prefix AND value LIKE $quoted_filter ESCAPE '\\' ";
             }
             else {
-                $filter_where = " value LIKE '%$filter_value%' escape '\\' ";
+                $filter_where = " value LIKE $quoted_filter ESCAPE '\\' ";
             }
             $result = $self->get_counts(
                 { name => [$name], add_where => $filter_where } );
@@ -449,8 +452,9 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
         my $users = $self->get_objects(
             {
-                name      => ['user'],
-                add_where => " field='email' AND value='$email' "
+                name  => ['user'],
+                field => ['email'],
+                value => [$email]
             }
         );
         my @ids   = keys %{$users};
@@ -468,9 +472,9 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $user_id = $ids[0];
         $users = $self->get_objects(
             {
-                name      => ['user'],
-                field     => [ 'email', 'password', 'extended_right' ],
-                add_where => " name='user' AND id='$user_id' "
+                name  => ['user'],
+                id    => [$user_id],
+                field => [ 'email', 'password', 'extended_right' ],
             }
         );
         return (undef)
@@ -538,9 +542,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         return if ( !$name || !$id1 || !$id2 );
         ( $id1, $id2 ) = ( $id2, $id1 ) if $id1 gt $id2;  # impotant test & swap
         my $dbh = $self->get_db_connection() || return;
-        return $dbh->do(
-"DELETE FROM objects WHERE name='_$name' AND id='$id1' AND field='$id2';"
-        );
+        my $sth = $dbh->prepare("DELETE FROM objects WHERE name=? AND id=? AND field=?;");
+        return $sth->execute( "_$name", $id1, $id2 );
     }
 
     # -= links betweeen two objects =-
@@ -663,12 +666,9 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my ( $self, $id1, $id2 ) = @_;
         return if ( !$id1 || !$id2 );
         my $dbh = $self->get_db_connection() || return;
-        $dbh->do(
-"DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id1' AND value = '$id2' ;"
-        );
-        return $dbh->do(
-"DELETE FROM objects WHERE name='$LINK_OBJECT_NAME' AND id = '$id2' AND value = '$id1' ;"
-        );
+        my $sth = $dbh->prepare("DELETE FROM objects WHERE name=? AND id=? AND value=?;");
+        $sth->execute( $LINK_OBJECT_NAME, $id1, $id2 );
+        return $sth->execute( $LINK_OBJECT_NAME, $id2, $id1 );
     }
 
     # -= parent & child functionality =-
@@ -703,7 +703,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
         if ( !$parent->{CHILDREN} ) {    # no more children
             $self->get_from_sql(
-"delete from objects where id = '$parent_id' and field = 'CHILDREN' ; "
+                "DELETE FROM objects WHERE id=? AND field='CHILDREN';",
+                $parent_id
             );
         }
         else {
@@ -721,7 +722,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $parent_id = $child->{PARENT};
         $self->parent_remove_child( $parent_id, $id );
         $self->get_from_sql(
-            "delete from objects where id = '$id' and field = 'PARENT' ; ");
+            "DELETE FROM objects WHERE id=? AND field='PARENT';", $id );
     }
 
     sub parent_add_child {
@@ -788,9 +789,10 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
     sub get_object_name_by_id {
         my ( $self, $id ) = @_;
-        my $sql =
-" SELECT name FROM objects WHERE id = '$id' AND name NOT LIKE '\\_%' ESCAPE '\\'  LIMIT 1 ; ";
-        my $sth = $self->get_from_sql($sql);
+        my $sth = $self->get_from_sql(
+            "SELECT name FROM objects WHERE id=? AND name NOT LIKE '\\_%' ESCAPE '\\' LIMIT 1;",
+            $id
+        );
         my $name;
         $sth->bind_col( 1, \$name );
         return ($name) if $sth->fetch;
@@ -799,8 +801,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
     sub get_rows_by_id {
         my ( $self, $id ) = @_;
-        my $sql = " SELECT * FROM objects WHERE id = '$id' ; ";
-        return $self->get_from_sql($sql);
+        return $self->get_from_sql( "SELECT * FROM objects WHERE id=?;", $id );
     }
 
     sub get_filtered_objects2 {
@@ -830,11 +831,10 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $temp_hash = {};
 
         # 1. Look in parent objects
-        my $sql =
-            "SELECT id,value FROM objects WHERE name = '"
-          . $params->{'object_name'}
-          . "' AND field NOT IN ('creator','counting_field') ;";
-        my $sth = $self->get_from_sql($sql);
+        my $sth = $self->get_from_sql(
+            "SELECT id,value FROM objects WHERE name=? AND field NOT IN ('creator','counting_field');",
+            $params->{'object_name'}
+        );
         for my $id ( @{ $sth->fetchall_arrayref() } ) {
             if ( $id->[1] =~ /$params->{filter_value}/i ) {
                 $temp_hash->{ $id->[0] } = { name => $params->{object_name} };
@@ -842,12 +842,14 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         }
 
         # 2. Look in child objects
+        my $dbh = $self->get_db_connection() || return ( keys %{$temp_hash} );
         my $child_names = join ',',
-          map { qq/'$_'/ } @{ $params->{child_names} };
+          map { $dbh->quote($_) } @{ $params->{child_names} };
         return ( keys %{$temp_hash} ) if !$child_names;
-        $sql =
-" SELECT c.id cid, p.value pid, c.name name,  c.value value FROM objects c "
-          . " JOIN objects p ON p.name = '_link_' AND p.field = '$params->{object_name}' AND c.id = p.id "
+        my $quoted_object_name = $dbh->quote( $params->{object_name} );
+        my $sql =
+" SELECT c.id cid, p.value pid, c.name name, c.value value FROM objects c "
+          . " JOIN objects p ON p.name = '_link_' AND p.field = $quoted_object_name AND c.id = p.id "
           . " WHERE c.name IN($child_names) AND c.field != 'creator' ;";
         $sth = $self->get_from_sql($sql);
         for my $id ( @{ $sth->fetchall_arrayref() } ) {

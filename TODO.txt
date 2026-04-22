@@ -31,4 +31,8 @@
 select count(*) as cnt, name, id, field from objects group by name, id, field HAVING COUNT(*)>1 and name <> '_link_'; 
 17.     Add test for linked values for Db.pm package
 18.     Add to archive also company's static files
-19.     Fix clients archive restore 
+19.     Fix clients archive restore
+20.     (DONE) Fix SQL injection risk - some queries use string interpolation instead of prepared statements (parameterized queries)
+21.     (DONE) Fix app mode - Buh1.pm has mode set to 'development' even in production; make it configurable via environment variable
+22.     (DONE) Fix hardcoded session secrets in Buh1.pm - move to config file or environment variable
+23.     (DONE) Review MOJO_MAX_MESSAGE_SIZE=1GB set in script/buh1 - reduce to a safe limit to prevent DoS via large uploads
