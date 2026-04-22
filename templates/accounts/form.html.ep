@@ -7,8 +7,8 @@
   % my @languages = ('rus','eng','uzb');
   % for my $language (@languages) {
   <tr>
-   <td class='tar'><u><%= uc $language %></u></td>
-   <td><%= text_area $language => (stash $language) , class => stash ($language . '_class') %></td>
+   <td class='tar'><label for="<%= $language %>"><u><%= uc $language %></u></label></td>
+   <td><%= text_area $language => (stash $language), id => $language, class => stash ($language . '_class') %></td>
   </tr>
   % }
 % if ( stash 'types') {

@@ -41,7 +41,7 @@
      %= tag 'a', href => '/guides/page', ml('Cancel')
     % if( $action eq 'edit' ){
      | 
-     %= tag 'a', href => "/$controller/del/$payload", ml('Delete')
+     %= tag 'a', href => "/$controller/del/$payload", 'data-confirm' => ml('Delete this item?'), ml('Delete')
     % }
    </td>
   </tr>

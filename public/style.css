@@ -5,24 +5,50 @@ body {
   background-color: white;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /*
  * section id's
  */
 #headerSection {
-  margin: 2px 2% 0 2%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2%;
   border-bottom: 1px solid #ddd;
-  display: block;
-  padding: 0;
+  flex-shrink: 0;
 }
 
 #bodySection {
-  clear: both;
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+}
+
+#sidebarSection {
+  width: 210px;
+  min-width: 210px;
+  flex-shrink: 0;
+  padding: 4px 5px 4px 4px;
+  border-right: 1px solid #cccccc;
+  align-self: stretch;
+}
+
+#mainSection {
+  flex: 1;
+  min-width: 0;
+  padding: 0 5px 10px 10px;
+}
+
+#sidebarOverlay {
+  display: none;
 }
 
 #footerSection {
-  clear: both;
+  flex-shrink: 0;
   margin: 0 2%;
   border-top: 1px solid #ddd;
   text-align: center;
@@ -191,6 +217,55 @@ p {}
 img {}
 
 /*
+ * Header logo / login
+ */
+.logo-link img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.login-status {
+  margin-left: auto;
+  text-align: right;
+  font-size: 90%;
+}
+
+/* hamburger button — hidden on desktop */
+.hamburger {
+  display: none;
+  background: none;
+  border: 1px solid #999;
+  border-radius: 3px;
+  font-size: 1.4em;
+  line-height: 1;
+  padding: 3px 7px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/*
+ * Active navigation link
+ */
+a.nav-current {
+  font-weight: bold;
+  color: #003080;
+  text-decoration: underline;
+}
+
+/*
+ * Breadcrumb navigation
+ */
+nav.breadcrumbs {
+  font-size: 85%;
+  color: #666;
+  margin-bottom: 6px;
+  padding: 3px 0;
+  border-bottom: 1px dashed #ddd;
+}
+nav.breadcrumbs a { color: #555; }
+
+/*
  * Specific use classes
  */
 div.login_status {
@@ -321,6 +396,7 @@ input[name^="access"] {
 
 input {
   width: 190px;
+  max-width: 100%;
 }
 
 textarea {
@@ -430,4 +506,130 @@ ul, #myTreeViewUL {
 
 .active {
   display: block;
+}
+
+/* ============================================================
+ * Sticky table headers
+ * ============================================================ */
+table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 2;
+}
+.styled thead th {
+  background-color: #009879;
+}
+
+/* ============================================================
+ * Field-level validation feedback
+ * ============================================================ */
+.field-hint {
+  display: block;
+  font-size: 80%;
+  color: #a00;
+  margin-top: 2px;
+}
+
+/* ============================================================
+ * Responsive layout — mobile breakpoint at 768 px
+ * ============================================================ */
+@media (max-width: 768px) {
+  /* Show hamburger button */
+  .hamburger {
+    display: block;
+  }
+
+  /* Sidebar becomes an off-canvas drawer */
+  #sidebarSection {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 80%;
+    max-width: 280px;
+    z-index: 100;
+    background: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    transform: translateX(-110%);
+    transition: transform 0.3s ease;
+    border-right: none;
+    padding: 12px;
+  }
+  #sidebarSection.open {
+    transform: translateX(0);
+  }
+
+  /* Semi-transparent overlay behind open sidebar */
+  #sidebarOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  #sidebarOverlay.active {
+    display: block;
+  }
+
+  /* Main content takes full width */
+  #mainSection {
+    width: 100%;
+    padding: 0 8px 10px 8px;
+  }
+
+  /* Constrain form inputs on small screens */
+  input, textarea, select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Stack form table rows */
+  table.colortable, table.colortable tbody,
+  table.colortable tr, table.colortable td {
+    display: block;
+    width: 100%;
+  }
+  table.colortable td.tar {
+    text-align: left;
+    padding-top: 6px;
+  }
+}
+
+/* ============================================================
+ * Print stylesheet
+ * ============================================================ */
+@media print {
+  #sidebarSection,
+  #sidebarOverlay,
+  #headerSection .hamburger,
+  #headerSection .login-status,
+  .hamburger,
+  div.toolbar,
+  nav.breadcrumbs {
+    display: none !important;
+  }
+
+  #headerSection {
+    border-bottom: 1px solid #000;
+  }
+
+  #bodySection {
+    display: block;
+  }
+
+  #mainSection {
+    width: 100%;
+    padding: 0;
+  }
+
+  #footerSection {
+    border-top: 1px solid #000;
+  }
+
+  a[href]::after {
+    content: none;
+  }
 }

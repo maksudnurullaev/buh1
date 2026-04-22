@@ -1,96 +1,158 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <title>Buga.Uz v0.1b</title>
-  <link rel="stylesheet" type="text/css" href="/style.css" />
-  % my $debug_mode = 0 ;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= stash('page_title') ? stash('page_title') . ' — Buh1' : 'Buh1' %></title>
+  <meta name="description" content="<%= stash('page_description') || 'Buh1 accounting application' %>" />
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="stylesheet" href="/style.css" />
+  % my $debug_mode = 0;
 </head>
-
 <body>
-  %= include 'debug/access' if $debug_mode ;
-  <div id="headerSection">
-    <a href="https://buga.uz"><img src="/logo.png" alt="Buga.Uz" align="left" border="0" /></a>
-    <div class="login_status">
-      %= include 'login_bar' ;
+  %= include 'debug/access' if $debug_mode;
+  <header id="headerSection">
+    <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebarSection">&#9776;</button>
+    <a href="/" class="logo-link"><img src="/logo.png" alt="Buh1" /></a>
+    <div class="login-status">
+      %= include 'login_bar';
       &nbsp;&nbsp;|||&nbsp;&nbsp;
       <%= languages_bar %>
       % if( who_is_local 'reader' ) {
-       <br /><br />
-       <span><small><u><%= session->{'company name'} %></u></small></span>
-       <sup><%=  ml session->{'company access'} %></sup>   
-      % } 
+        <br /><br />
+        <span><small><u><%= session->{'company name'} %></u></small></span>
+        <sup>&nbsp;<%= ml session->{'company access'} %></sup>
+      % }
     </div>
-  </div>
+  </header>
+
+  <div id="sidebarOverlay"></div>
   <div id="bodySection">
-    <table border="0" cellspacing="0">
-      <tbody>
-        <tr>
-          <td class="navleft" valign="top" width="20%">
-            <ul id="leftnav">
-              <li><%= ml 'Home' %>
-               <ul><li><a href="/"><%= ml 'About us' %></a></li></ul>
-               % if( who_is_global('editor') ) {
-                <ul><li><a href="/feedbacks/list"><%= ml 'Feedbacks' %></a></li></ul>
-               % } else {
-                <ul><li><a href="/feedbacks/add"><%= ml 'Feedback' %></a></li></ul>
-               % }
-              </li>
-              % if( who_is_global 'user' ){
-               <li><%= ml 'Cabinet' %>
-                <ul><li><a href="/user/password"><%= ml 'Password' %></a></li></ul>
-               </li>
-              % }              
-              <li><%= ml 'Guides' %>
-               <ul><li><a href="/accounts/list"><%= ml 'Chart of Accounts' %></a></li></ul>
-               <ul><li><a href="/operations/list"><%= ml 'Business transactions' %></a></li></ul>
-               <ul><li><a href="/templates/list"><%= ml 'Templates' %></a></li></ul>
-               <ul><li><a href="/guides/page"><%= ml 'Guides' %></a></li></ul>
-               <ul><li><a href="/calculations/page"><%= ml 'Calculations' %></a></li></ul>
-              </li>
-              % if( who_is_global('user') && !who_is_global('editor') ) {
-               <li><%= ml 'Companies' %>
-                <ul><li><a href="/desktop/company"><%= ml 'Select' %></a></li></ul>
-               </li>
+    <aside id="sidebarSection" aria-label="Main navigation">
+      <nav>
+        % my $cur = $self->req->url->path->to_string();
+        % my $ac  = sub { my $p = shift; ($cur =~ m{^\Q$p\E(/|$)}) ? 'nav-current' : '' };
+        <ul id="leftnav">
+          <li><%= ml 'Home' %>
+            <ul><li><a href="/" class="<%= $cur eq '/' ? 'nav-current' : '' %>"><%= ml 'About us' %></a></li></ul>
+            % if( who_is_global('editor') ) {
+              <ul><li><a href="/feedbacks/list" class="<%= $ac->('/feedbacks') %>"><%= ml 'Feedbacks' %></a></li></ul>
+            % } else {
+              <ul><li><a href="/feedbacks/add" class="<%= $ac->('/feedbacks') %>"><%= ml 'Feedback' %></a></li></ul>
+            % }
+          </li>
+          % if( who_is_global 'user' ){
+            <li><%= ml 'Cabinet' %>
+              <ul><li><a href="/user/password" class="<%= $ac->('/user') %>"><%= ml 'Password' %></a></li></ul>
+            </li>
+          % }
+          <li><%= ml 'Guides' %>
+            <ul><li><a href="/accounts/list" class="<%= $ac->('/accounts') %>"><%= ml 'Chart of Accounts' %></a></li></ul>
+            <ul><li><a href="/operations/list" class="<%= $ac->('/operations') %>"><%= ml 'Business transactions' %></a></li></ul>
+            <ul><li><a href="/templates/list" class="<%= $ac->('/templates') %>"><%= ml 'Templates' %></a></li></ul>
+            <ul><li><a href="/guides/page" class="<%= $ac->('/guides') %>"><%= ml 'Guides' %></a></li></ul>
+            <ul><li><a href="/calculations/page" class="<%= $ac->('/calculations') %>"><%= ml 'Calculations' %></a></li></ul>
+          </li>
+          % if( who_is_global('user') && !who_is_global('editor') ) {
+            <li><%= ml 'Companies' %>
+              <ul><li><a href="/desktop/company" class="<%= $ac->('/desktop') %>"><%= ml 'Select' %></a></li></ul>
+            </li>
+          % }
+          % if( session->{'company name'} ) {
+            <li><u><%= session->{'company name'} %></u>
+              <ul><li><a href="/documents/list" class="<%= $ac->('/documents') %>"><%= ml 'Documents' %></a></li></ul>
+              <ul><li><a href="/tbalance/page" class="<%= $ac->('/tbalance') %>"><%= ml 'Trial balance' %></a></li></ul>
+              <ul><li><a href="/catalog/list" class="<%= $ac->('/catalog') %>"><%= ml 'Catalog' %></a></li></ul>
+              <ul><li><a href="/warehouse/list" class="<%= $ac->('/warehouse') %>"><%= ml 'Warehouse' %></a></li></ul>
+              % if( who_is_local 'writer' ){
+                <ul><li><a href="/backup/list" class="<%= $ac->('/backup') %>"><%= ml 'Backup/Restore' %></a></li></ul>
               % }
-              % if( session->{'company name'} ) {
-               <li><u><%= session->{'company name'} %></u><!-- ml 'General ledger' %-->
-                <ul><li><a href="/documents/list"><%= ml 'Documents' %></a></li></ul>
-                <ul><li><a href="/tbalance/page"><%= ml 'Trial balance' %></a></li></ul>
-                <ul><li><a href="/catalog/list"><%= ml 'Catalog' %></a></li></ul>
-                <ul><li><a href="/warehouse/list"><%= ml 'Warehouse' %></a></li></ul>
-                % if( who_is_local 'writer' ){
-                    <ul><li><a href="/backup/list"><%= ml 'Backup/Restore' %></a></li></ul>
-                % }
-               </li>
-              % }  
-              % if( who_is_global 'admin' ) {
-               <li><%= ml 'Administration' %>
-                 <ul><li><a href="/users/list"><%= ml 'Users' %></a></li></ul>
-                 <ul><li><a href="/companies/list"><%= ml 'Companies' %></a></li></ul>
-                 <ul><li><a href="/database/adb"><%= ml 'Database' %></a></li></ul>
-                 <ul><li><a href="/imports/lex"><%= ml 'Import reference books' %></a></li></ul>
-               </li>
-              % }                            
-            </ul>
-          </td>
-          <td class="body" valign="top" width="80%">
-            %= content ;
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </li>
+          % }
+          % if( who_is_global 'admin' ) {
+            <li><%= ml 'Administration' %>
+              <ul><li><a href="/users/list" class="<%= $ac->('/users') %>"><%= ml 'Users' %></a></li></ul>
+              <ul><li><a href="/companies/list" class="<%= $ac->('/companies') %>"><%= ml 'Companies' %></a></li></ul>
+              <ul><li><a href="/database/adb" class="<%= $ac->('/database') %>"><%= ml 'Database' %></a></li></ul>
+              <ul><li><a href="/imports/lex" class="<%= $ac->('/imports') %>"><%= ml 'Import reference books' %></a></li></ul>
+            </li>
+          % }
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="mainSection">
+      % if( my $bc = stash('breadcrumbs') ) {
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          % for my $crumb ( @{$bc} ) {
+            <a href="<%= $crumb->{url} %>"><%= $crumb->{label} %></a>&nbsp;&rsaquo;&nbsp;
+          % }
+        </nav>
+      % }
+      %= content;
+    </main>
   </div>
-  <div id="footerSection">
-   %= include 'footer' ;
-  </div>
-  %#= t pre => dumper(stash('user'))
-  %#= t pre => dumper(stash)
-  %#= t pre => dumper(stash('users'))
-  %#= t pre => dumper(stash('companies'))
-  %#= t pre => dumper(session)
-  %#= include 'debug/access'
+
+  <footer id="footerSection">
+    %= include 'footer';
+  </footer>
+
+  <script>
+  (function () {
+    // --- Hamburger sidebar toggle ---
+    var btn  = document.getElementById('hamburger');
+    var side = document.getElementById('sidebarSection');
+    var ovl  = document.getElementById('sidebarOverlay');
+    function openSide()  { side.classList.add('open');    ovl.classList.add('active');    btn.setAttribute('aria-expanded', 'true');  }
+    function closeSide() { side.classList.remove('open'); ovl.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+    if (btn) btn.addEventListener('click', function () { side.classList.contains('open') ? closeSide() : openSide(); });
+    if (ovl) ovl.addEventListener('click', closeSide);
+
+    // --- Auto-dismiss success alerts after 3 s ---
+    setTimeout(function () {
+      [].forEach.call(document.querySelectorAll('.alert.success'), function (el) {
+        el.style.transition = 'opacity .5s';
+        el.style.opacity    = '0';
+        setTimeout(function () { el.style.display = 'none'; }, 500);
+      });
+    }, 3000);
+
+    // --- Confirm dialogs via data-confirm on any clickable element ---
+    document.addEventListener('click', function (e) {
+      var el = e.target && e.target.closest ? e.target.closest('[data-confirm]') : null;
+      if (el && !confirm(el.getAttribute('data-confirm'))) e.preventDefault();
+    }, true);
+
+    // --- Sortable table columns (add class="sortable" to any <table>) ---
+    [].forEach.call(document.querySelectorAll('table.sortable thead th'), function (th) {
+      th.style.cursor = 'pointer';
+      th.title = 'Click to sort';
+    });
+    document.addEventListener('click', function (e) {
+      var th = e.target && e.target.closest ? e.target.closest('table.sortable thead th') : null;
+      if (!th) return;
+      var table = th.closest('table');
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      var idx = [].indexOf.call(th.parentNode.children, th);
+      var asc = th.getAttribute('data-sort-dir') !== 'asc';
+      [].forEach.call(table.querySelectorAll('thead th'), function (h) {
+        h.removeAttribute('data-sort-dir');
+        h.textContent = h.textContent.replace(/ [▲▼]$/, '');
+      });
+      th.setAttribute('data-sort-dir', asc ? 'asc' : 'desc');
+      th.textContent += asc ? ' ▲' : ' ▼';
+      var rows = [].slice.call(tbody.querySelectorAll('tr'));
+      rows.sort(function (a, b) {
+        var av = a.cells[idx] ? a.cells[idx].textContent.trim() : '';
+        var bv = b.cells[idx] ? b.cells[idx].textContent.trim() : '';
+        var n  = parseFloat(av) - parseFloat(bv);
+        if (!isNaN(n)) return asc ? n : -n;
+        return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+      rows.forEach(function (r) { tbody.appendChild(r); });
+    });
+  })();
+  </script>
 </body>
 </html>

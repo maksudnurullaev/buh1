@@ -1,18 +1,18 @@
- % my @pagesizes = (5,10,20,40,100);
+ % my @pagesizes = (5, 10, 20, 40, 100);
 
- % my $path = $self->req->url->path->to_string() ;
- % my $pagesize = session("$path/pagesize") || 5 ;
- % my $pages = session("$path/pages") || 1 ;
- % my $page = session("$path/page") || 1 ;
+ % my $path     = $self->req->url->path->to_string();
+ % my $pagesize = session("$path/pagesize") || 5;
+ % my $pages    = session("$path/pages")    || 1;
+ % my $page     = session("$path/page")     || 1;
 
-<div>
+<nav aria-label="Pagination" aria-live="polite">
   <p>
     <%= ml 'Page size' %>:
     % for my $ps ( @pagesizes ) {
-      % if ( $ps == $pagesize) {
+      % if ( $ps == $pagesize ) {
         <strong><u><%= $ps %></u></strong>
       % } else {
-        %= tag 'a', href => "/filter/pagesize/$ps?path=$path", $ps
+        %= tag 'a', href => "/filter/pagesize/$ps?path=$path", 'aria-label' => "Set page size to $ps", $ps
       % }
     % }
     % if ( $pages > 1 ) {
@@ -20,11 +20,11 @@
       <%= ml 'Pages' %>:
       % for my $p (1 .. $pages) {
         % if ( $p == $page ) {
-          <strong><u><%= $page %></u></strong>
+          <strong aria-current="page"><u><%= $page %></u></strong>
         % } else {
-          %= tag 'a', href => "/filter/page/$p?path=$path", $p
-        % } 
+          %= tag 'a', href => "/filter/page/$p?path=$path", 'aria-label' => "Go to page $p", $p
+        % }
       % }
     % }
   </p>
-</div>
+</nav>

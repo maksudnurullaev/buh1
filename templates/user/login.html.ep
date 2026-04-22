@@ -15,11 +15,11 @@
    %= form_for '/user/login' => (method => 'POST') => begin
    %= csrf_field
    <table class='colortable'>
-    <tr><td class='tar'><u><%= ml 'Name' %></u></td>
-     <td><%= text_field email => id => 'email' %></td>
+    <tr><td class='tar'><label for="email"><u><%= ml 'Name' %></u></label></td>
+     <td><%= text_field email => id => 'email', required => 'required', autocomplete => 'email' %></td>
     </tr>
-    <tr><td class='tar'><u><%= ml 'Password' %></u></td>
-     <td><%= password_field password => id => 'password' %></td>
+    <tr><td class='tar'><label for="password"><u><%= ml 'Password' %></u></label></td>
+     <td><%= password_field password => id => 'password', required => 'required', autocomplete => 'current-password' %></td>
     </tr>
     <tr><td>&nbsp;</td>
      <td>

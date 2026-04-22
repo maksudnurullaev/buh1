@@ -1,10 +1,9 @@
-<div>
- % my $path = $self->req->url->path->to_string() ;
- %= form_for filter => (action => "/filter/set?path=$path", method => 'POST' ) => begin
+<div aria-label="Filter" role="search">
+ % my $path = $self->req->url->path->to_string();
+ %= form_for filter => (action => "/filter/set?path=$path", method => 'POST') => begin
  %= csrf_field
-  %= text_field filter => session("$path/filter") ;
-  %= submit_button ml 'Filter' ;
-  %= tag 'a', href => "/filter/reset?path=$path",  ml("Reset")  if session("$path/filter");
- % end 
+  %= text_field filter => session("$path/filter"), 'aria-label' => ml('Filter'), placeholder => ml('Filter');
+  %= submit_button ml 'Filter';
+  %= tag 'a', href => "/filter/reset?path=$path", ml("Reset") if session("$path/filter");
+ % end
 </div>
-

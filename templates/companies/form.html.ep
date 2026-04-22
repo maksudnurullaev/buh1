@@ -6,23 +6,19 @@
  %= csrf_field
  <table class='colortable'>
   <tr>
-   <td class='tar'><u><%= ml 'Name' %></u></td>
-   <td><%= text_field name => $company->{name} , class => stash 'name_class' %></td>
+   <td class='tar'><label for="name"><u><%= ml 'Name' %></u></label></td>
+   <td><%= text_field name => $company->{name}, id => 'name', class => stash('name_class'), required => 'required' %></td>
   </tr>
   <tr>
-   <td class='tar'> 
-    %= ml 'Description' 
-   </td>
-   <td> 
-    %= text_area description => $company->{description}, class => (stash 'description_class') 
-   </td>
+   <td class='tar'><label for="description"><%= ml 'Description' %></label></td>
+   <td><%= text_area description => $company->{description}, id => 'description', class => (stash 'description_class') %></td>
   </tr>
   <tr><td>&nbsp;</td>
    <td>
     % if( stash 'edit_mode') {
      %= submit_button ml('Save')
      |  
-     %= tag 'a', href => "/companies/del/$payload", ml('Delete')
+     %= tag 'a', href => "/companies/del/$payload", 'data-confirm' => ml('Delete this item?'), ml('Delete')
     % } else {
      %= submit_button ml('Add')
     % }

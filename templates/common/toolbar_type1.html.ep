@@ -3,7 +3,7 @@
 % my $editor = ( who_is_global('editor') || who_is_local('writer') ) ;
 <div class="toolbar">
  % if ( $editor && !stash('CHILDREN') && !$files_count && !$calcs_count ){
-  <%= tag 'a', href => "/$controller/del/$payload", ml("Delete") %> 
+  <%= tag 'a', href => "/$controller/del/$payload", 'data-confirm' => ml('Delete this item?'), ml("Delete") %>
  % } else {
    %= ml('Delete') ;
  % }

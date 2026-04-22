@@ -5,34 +5,35 @@
 
 <p>
 %= include 'filter'   , filter4    => 'documents';
-%= include 'paginator', paginator4 => 'documents' if $count ; 
+%= include 'paginator', paginator4 => 'documents' if $count;
 </p><p>
 % if( $count ) {
- <table border="1">
-   <tr>   
+ <table class="styled sortable">
+   <thead>
+   <tr>
     <th><%= ml 'document number' %></th>
-    <th><%= ml 'currency amount' %></th>
     <th><%= ml 'date' %></th>
+    <th><%= ml 'currency amount' %></th>
     <th><%= ml 'details' %></th>
    </tr>
-  
+   </thead>
+   <tbody>
   % for my $id( reverse sort keys %{$documents} ) {
-   <tr>   
+   <tr>
     % my $doc_num    = $documents->{$id}{'document number'};
     % my $account_id = $documents->{$id}{account};
     <td><%= tag 'a', href => "/documents/update/$account_id?docid=$id", $doc_num %></td>
-    <td class="tar"><%= currency_format $documents->{$id}{'currency amount'} %></td>
     <td><%= $documents->{$id}{'date'} %></td>
+    <td class="tar"><%= currency_format $documents->{$id}{'currency amount'} %></td>
     <td><strong><%= ml ("Document " . $documents->{$id}{type}) %>:</strong> <%= $documents->{$id}{'details'} %></td>
    </tr>
   % }
+  </tbody>
  </table>
 % } else {
  %= ml 'No data!'
 % }
 </p><p>
-%= include 'paginator', paginator4 => 'documents' if $count ; 
+%= include 'paginator', paginator4 => 'documents' if $count;
 %= include 'filter'   , filter4    => 'documents';
 </p>
-
-%#= t pre => dumper(session)

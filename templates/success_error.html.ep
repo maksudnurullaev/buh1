@@ -1,12 +1,15 @@
-% if( stash('success') || param('success') ) { 
- <div class='alert success noaccess'>Ok</div>
-% } 
-% if( stash('error') || param('error') ) { 
- <div class='alert error noaccess'><%= uc ml 'Error!' %></div>
-% } 
-% if( my $_message = stash('error_message') ) { 
- <div class='alert error noaccess'><%= uc $_message %></div>
-% } 
-% if( stash('noaccess') || param('noaccess') ) { 
- <div class='alert error noaccess'><%= ml 'No access' %>!</div>
-% } 
+% if( stash('success') || param('success') ) {
+  <div class='alert success'>
+    <%= stash('success_message') ? stash('success_message') : ml('Saved successfully') %>
+  </div>
+% }
+% if( stash('error') || param('error') ) {
+  <div class='alert error'>
+    <%= stash('error_message') ? uc(stash('error_message')) : uc(ml('Error!')) %>
+  </div>
+% } elsif( my $_message = stash('error_message') ) {
+  <div class='alert error'><%= uc $_message %></div>
+% }
+% if( stash('noaccess') || param('noaccess') ) {
+  <div class='alert error noaccess'><%= ml 'No access' %>!</div>
+% }

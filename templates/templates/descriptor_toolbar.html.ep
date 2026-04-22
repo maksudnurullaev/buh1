@@ -7,7 +7,7 @@
     <%= ml('Edit') %> |
   % }
   % if ( !stash('CHILDREN') && !$files_count ){
-   <%= tag 'a', href => "/$controller/del/$payload", ml("Delete") %> | 
+   <%= tag 'a', href => "/$controller/del/$payload", 'data-confirm' => ml('Delete this item?'), ml("Delete") %> |
   % } else {
    % if ( stash('action') eq 'del' ){
     <%= ml('Delete') %> |

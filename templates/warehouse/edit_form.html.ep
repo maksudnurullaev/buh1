@@ -6,12 +6,12 @@
  %= hidden_field counting_parent => stash('object.counting_parent') if stash('object.counting_parent') ;
  <table class='colortable'>
   <tr>
-   <td class='tar'><%= ml 'Description' %>:</td>
+   <td class='tar'><label for="description"><%= ml 'Description' %>:</label></td>
    <td>
     % if( $_is_writer ){
-     %= text_area description => (stash 'object.description'), class => (stash 'description_class') 
+     %= text_area description => (stash 'object.description'), id => 'description', class => (stash 'description_class')
     % } else {
-     %= text_area description => (stash 'object.description'), disabled => 'disabled' 
+     %= text_area description => (stash 'object.description'), id => 'description', disabled => 'disabled'
     % }
    </td>
   </tr>

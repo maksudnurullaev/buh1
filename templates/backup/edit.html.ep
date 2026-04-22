@@ -57,5 +57,5 @@
    <td>
    </td>
    <td class='tar'>
-    %= tag 'a', href => "/backup/del/$payload", ml('Delete')
+    %= tag 'a', href => "/backup/del/$payload", 'data-confirm' => ml('Delete this archive?'), ml('Delete')
    </td>
