@@ -4,7 +4,7 @@
   % for my $file (reverse sort keys %{$archives}){
     <li>
       <%= tag 'a', href => "/backup/edit/$file", $file %>
-      <ul><li><%= t strong => ml('Size') %>: <%= substr(currency_format($archives->{$file}{size}),0,-4) %> bytes</li>
+      <ul><li><%= t strong => ml('Size') %>: <%= format_bytes($archives->{$file}{size}) %> bytes</li>
         % if( $archives->{$file}{desc} ){
           <li><%= t strong => ml('Description') %>: <%= $archives->{$file}{desc} %></li>
         % }

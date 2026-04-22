@@ -20,7 +20,7 @@
     %= ml 'Size' 
    </td>
    <td>
-    %= substr(currency_format(stash 'archive_size'),0,-4);
+    %= format_bytes(stash 'archive_size');
     bytes
    </td>
   </tr> 

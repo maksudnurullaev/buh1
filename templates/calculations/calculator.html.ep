@@ -14,5 +14,13 @@
 % } else {
  <h2><%= ml 'Calculations' %></h2>
  %= include "calculations/toolbar" if !$_read_only ;
- %= include "calculations/list", _pid => $_pid, _return_path => $_return_path, _read_only => $_read_only ;   
+ % use Utils::Calculations;
+ % my $_calcs = $_pid
+ %     ? Utils::Calculations::get_local_calcs($self, $_pid)
+ %     : Utils::Calculations::get_global_calcs($self);
+ % my $_calc_results = {};
+ % for my $key (keys %{$_calcs}) {
+ %     $_calc_results->{$key} = $_pid ? cdb_calculate($key) : db_calculate($key);
+ % }
+ %= include "calculations/list", _pid => $_pid, _return_path => $_return_path, _read_only => $_read_only, _calcs => $_calcs, _calc_results => $_calc_results;
 % }

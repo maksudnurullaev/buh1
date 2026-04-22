@@ -8,8 +8,8 @@
 %= csrf_field
 % my $has_counting_fields = 0;
 %  for my $key (sort keys %{$links}) {
-%   if( $links->{$key} eq 'warehouse object tag' ) {    
-%    my $object = cdb_get_objects({ id => [$key] });
+%   if( $links->{$key} eq 'warehouse object tag' ) {
+%    my $object = stash('tag_objects');
      <tr>
       <td class="tar">
        % if( param('tagid') && param('tagid') eq $key ){

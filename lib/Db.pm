@@ -45,8 +45,11 @@ package Db;
 
     sub get_db_connection {
         my $self = shift;
-        return $self->{dbh}
-          if exists( $self->{dbh} ) && defined( $self->{dbh} );
+        if ( exists( $self->{dbh} ) && defined( $self->{dbh} ) ) {
+            return $self->{dbh} if $self->{dbh}{Active};
+            warn "Db: connection inactive, reconnecting to " . $self->{'file'};
+            delete $self->{dbh};
+        }
         if ( $DB_CURRENT_TYPE == $DB_SQLite_TYPE ) {
             my $dbi_connection_string = "dbi:SQLite:dbname=" . $self->{'file'};
             my $dbh = DBI->connect( $dbi_connection_string, undef, undef,

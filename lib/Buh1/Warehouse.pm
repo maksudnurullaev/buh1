@@ -92,7 +92,15 @@ sub edit{
     if( my $tagid = $self->param('tagid') ){
         Utils::Db::cdb_deploy($self,$tagid,'tag');
     }
-    my($parent,$childs,$caclulated_counting) 
+
+    # Pre-load all tag objects to avoid N+1 queries in the tags template
+    my $links = $self->stash('object._link_') // {};
+    my @tag_ids = grep { ($links->{$_} // '') eq 'warehouse object tag' } keys %$links;
+    $self->stash( tag_objects => @tag_ids
+        ? $self->cdb_get_objects({ id => \@tag_ids })
+        : {} );
+
+    my($parent,$childs,$caclulated_counting)
         = Utils::Warehouse::calculated_counting($self,$id);
     $self->stash(calculated_counting => $caclulated_counting);
 };

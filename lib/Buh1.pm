@@ -64,7 +64,11 @@ sub startup {
         }
     );
 
-    my $r = $self->routes;
+    $self->_setup_routes( $self->routes );
+}
+
+sub _setup_routes {
+    my ( $self, $r ) = @_;
 
     # General route
     ## Initial
@@ -238,7 +242,7 @@ sub startup {
     $r->any('/catalog/calculations/*payload')
       ->to( controller => 'catalog', action => 'calculations' );
 
-    # Wirehouse
+    # Warehouse
     $r->get('/warehouse/list')
       ->to( controller => 'warehouse', action => 'list' );
     $r->any('/warehouse/add')->methods( 'GET', 'POST' )
@@ -290,7 +294,6 @@ sub startup {
         $r->any( "/$tbot_token/*payload" => { payload => 'Hello' } )
           ->to( controller => 'TBot', action => 'hello' );
     }
-
 }
 
 1;
