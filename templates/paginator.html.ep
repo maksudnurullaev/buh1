@@ -5,26 +5,33 @@
  % my $pages    = session("$path/pages")    || 1;
  % my $page     = session("$path/page")     || 1;
 
-<nav aria-label="Pagination" aria-live="polite">
-  <p>
-    <%= ml 'Page size' %>:
+<div class="d-flex align-items-center flex-wrap gap-3 my-2" aria-live="polite">
+  <div class="d-flex align-items-center gap-1">
+    <span class="text-muted small me-1"><%= ml 'Page size' %>:</span>
     % for my $ps ( @pagesizes ) {
       % if ( $ps == $pagesize ) {
-        <strong><u><%= $ps %></u></strong>
+        <span class="badge text-bg-secondary"><%= $ps %></span>
       % } else {
-        %= tag 'a', href => "/filter/pagesize/$ps?path=$path", 'aria-label' => "Set page size to $ps", $ps
+        <a class="btn btn-sm btn-outline-secondary py-0 px-2"
+           href="/filter/pagesize/<%= $ps %>?path=<%= $path %>"
+           aria-label="<%= "Set page size to $ps" %>"><%= $ps %></a>
       % }
     % }
-    % if ( $pages > 1 ) {
-      <br />
-      <%= ml 'Pages' %>:
-      % for my $p (1 .. $pages) {
-        % if ( $p == $page ) {
-          <strong aria-current="page"><u><%= $page %></u></strong>
-        % } else {
-          %= tag 'a', href => "/filter/page/$p?path=$path", 'aria-label' => "Go to page $p", $p
+  </div>
+  % if ( $pages > 1 ) {
+    <nav aria-label="Pagination">
+      <ul class="pagination pagination-sm mb-0">
+        % for my $p (1 .. $pages) {
+          <li class="page-item <%= $p == $page ? 'active' : '' %>">
+            % if ( $p == $page ) {
+              <span class="page-link" aria-current="page"><%= $p %></span>
+            % } else {
+              <a class="page-link" href="/filter/page/<%= $p %>?path=<%= $path %>"
+                 aria-label="<%= "Go to page $p" %>"><%= $p %></a>
+            % }
+          </li>
         % }
-      % }
-    % }
-  </p>
-</nav>
+      </ul>
+    </nav>
+  % }
+</div>

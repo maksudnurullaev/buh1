@@ -1,39 +1,39 @@
 % layout 'default';
-<h2><%= ml 'Documents' %></h2>
+<h2 class="mb-3"><%= ml 'Documents' %></h2>
 % my $documents = stash 'documents';
 % my $count     = scalar(keys %{$documents});
 
-<p>
 %= include 'filter'   , filter4    => 'documents';
 %= include 'paginator', paginator4 => 'documents' if $count;
-</p><p>
+
 % if( $count ) {
- <table class="styled sortable">
-   <thead>
-   <tr>
-    <th><%= ml 'document number' %></th>
-    <th><%= ml 'date' %></th>
-    <th><%= ml 'currency amount' %></th>
-    <th><%= ml 'details' %></th>
-   </tr>
-   </thead>
-   <tbody>
-  % for my $id( reverse sort keys %{$documents} ) {
-   <tr>
-    % my $doc_num    = $documents->{$id}{'document number'};
-    % my $account_id = $documents->{$id}{account};
-    <td><%= tag 'a', href => "/documents/update/$account_id?docid=$id", $doc_num %></td>
-    <td><%= $documents->{$id}{'date'} %></td>
-    <td class="tar"><%= currency_format $documents->{$id}{'currency amount'} %></td>
-    <td><strong><%= ml ("Document " . $documents->{$id}{type}) %>:</strong> <%= $documents->{$id}{'details'} %></td>
-   </tr>
-  % }
-  </tbody>
- </table>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-sm align-middle sortable">
+      <thead class="table-dark">
+        <tr>
+          <th><%= ml 'document number' %></th>
+          <th><%= ml 'date' %></th>
+          <th class="text-end"><%= ml 'currency amount' %></th>
+          <th><%= ml 'details' %></th>
+        </tr>
+      </thead>
+      <tbody>
+        % for my $id( reverse sort keys %{$documents} ) {
+          <tr>
+            % my $doc_num    = $documents->{$id}{'document number'};
+            % my $account_id = $documents->{$id}{account};
+            <td><a href="/documents/update/<%= $account_id %>?docid=<%= $id %>"><%= $doc_num %></a></td>
+            <td><%= $documents->{$id}{'date'} %></td>
+            <td class="text-end"><%= currency_format $documents->{$id}{'currency amount'} %></td>
+            <td><span class="fw-semibold"><%= ml ("Document " . $documents->{$id}{type}) %>:</span> <%= $documents->{$id}{'details'} %></td>
+          </tr>
+        % }
+      </tbody>
+    </table>
+  </div>
 % } else {
- %= ml 'No data!'
+  <p class="text-muted"><em><%= ml 'No data!' %></em></p>
 % }
-</p><p>
+
 %= include 'paginator', paginator4 => 'documents' if $count;
 %= include 'filter'   , filter4    => 'documents';
-</p>

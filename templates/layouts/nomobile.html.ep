@@ -6,124 +6,243 @@
   <title><%= stash('page_title') ? stash('page_title') . ' — Buh1' : 'Buh1' %></title>
   <meta name="description" content="<%= stash('page_description') || 'Buh1 accounting application' %>" />
   <link rel="icon" type="image/png" href="/logo.png" />
+  <!-- Bootstrap 5.3.8 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons 1.11.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Project overrides -->
   <link rel="stylesheet" href="/style.css" />
   % my $debug_mode = 0;
 </head>
-<body>
+<body class="bg-light">
   %= include 'debug/access' if $debug_mode;
-  <header id="headerSection">
-    <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebarSection">&#9776;</button>
-    <a href="/" class="logo-link"><img src="/logo.png" alt="Buh1" /></a>
-    <div class="login-status">
+
+  <!-- ===== Top navbar ===== -->
+  <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm px-3 py-0" style="height:52px;">
+    <div class="d-flex align-items-center gap-2 h-100">
+      <!-- Sidebar toggle — only visible on mobile -->
+      <button class="navbar-toggler border-0 d-md-none p-1" type="button"
+              data-bs-toggle="offcanvas" data-bs-target="#sidebarSection"
+              aria-controls="sidebarSection" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand d-flex align-items-center gap-2 py-0 m-0" href="/">
+        <img src="/logo.png" alt="Buh1" height="30" />
+        <span class="fw-semibold fs-6">Buh1</span>
+      </a>
+    </div>
+    <div class="ms-auto d-flex align-items-center gap-2 text-white-50 small">
       %= include 'login_bar';
-      &nbsp;&nbsp;|||&nbsp;&nbsp;
+      <span class="text-secondary">|</span>
       <%= languages_bar %>
       % if( who_is_local 'reader' ) {
-        <br /><br />
-        <span><small><u><%= session->{'company name'} %></u></small></span>
-        <sup>&nbsp;<%= ml session->{'company access'} %></sup>
+        <span class="vr mx-1 opacity-25"></span>
+        <span class="text-info fst-italic text-truncate" style="max-width:180px;"
+              title="<%= session->{'company name'} %>"><%= session->{'company name'} %></span>
+        <sup class="text-secondary"><%= ml session->{'company access'} %></sup>
       % }
     </div>
-  </header>
+  </nav>
 
-  <div id="sidebarOverlay"></div>
-  <div id="bodySection">
-    <aside id="sidebarSection" aria-label="Main navigation">
-      <nav>
-        % my $cur = $self->req->url->path->to_string();
-        % my $ac  = sub { my $p = shift; ($cur =~ m{^\Q$p\E(/|$)}) ? 'nav-current' : '' };
-        <ul id="leftnav">
-          <li><%= ml 'Home' %>
-            <ul><li><a href="/" class="<%= $cur eq '/' ? 'nav-current' : '' %>"><%= ml 'About us' %></a></li></ul>
+  <!-- ===== Body row: sidebar + main ===== -->
+  <div class="d-flex" style="min-height:calc(100vh - 52px);">
+
+    <!-- Sidebar: offcanvas on mobile, static column on md+ -->
+    <div class="offcanvas-md offcanvas-start bg-dark flex-shrink-0 border-0"
+         tabindex="-1" id="sidebarSection" style="width:230px;">
+      <!-- Offcanvas header (mobile only) -->
+      <div class="offcanvas-header border-bottom border-secondary py-2">
+        <a class="navbar-brand text-white m-0" href="/">
+          <img src="/logo.png" alt="Buh1" height="24" class="me-2" />Buh1
+        </a>
+        <button type="button" class="btn-close btn-close-white"
+                data-bs-dismiss="offcanvas" data-bs-target="#sidebarSection"
+                aria-label="Close"></button>
+      </div>
+      <!-- Nav links -->
+      <div class="offcanvas-body p-0 d-flex flex-column overflow-y-auto">
+        <nav class="pt-1 pb-3">
+          % my $cur = $self->req->url->path->to_string();
+          % my $ac  = sub { my $p = shift; ($cur =~ m{^\Q$p\E(/|$)}) ? 'active' : '' };
+
+          <div class="sidebar-section-label"><%= ml 'Home' %></div>
+          <ul class="nav flex-column mb-1">
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $cur eq '/' ? 'active' : '' %>" href="/">
+                <i class="bi bi-info-circle me-2"></i><%= ml 'About us' %>
+              </a>
+            </li>
             % if( who_is_global('editor') ) {
-              <ul><li><a href="/feedbacks/list" class="<%= $ac->('/feedbacks') %>"><%= ml 'Feedbacks' %></a></li></ul>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/feedbacks') %>" href="/feedbacks/list">
+                  <i class="bi bi-chat-left-text me-2"></i><%= ml 'Feedbacks' %>
+                </a>
+              </li>
             % } else {
-              <ul><li><a href="/feedbacks/add" class="<%= $ac->('/feedbacks') %>"><%= ml 'Feedback' %></a></li></ul>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/feedbacks') %>" href="/feedbacks/add">
+                  <i class="bi bi-chat-left-text me-2"></i><%= ml 'Feedback' %>
+                </a>
+              </li>
             % }
-          </li>
-          % if( who_is_global 'user' ){
-            <li><%= ml 'Cabinet' %>
-              <ul><li><a href="/user/password" class="<%= $ac->('/user') %>"><%= ml 'Password' %></a></li></ul>
-            </li>
-          % }
-          <li><%= ml 'Guides' %>
-            <ul><li><a href="/accounts/list" class="<%= $ac->('/accounts') %>"><%= ml 'Chart of Accounts' %></a></li></ul>
-            <ul><li><a href="/operations/list" class="<%= $ac->('/operations') %>"><%= ml 'Business transactions' %></a></li></ul>
-            <ul><li><a href="/templates/list" class="<%= $ac->('/templates') %>"><%= ml 'Templates' %></a></li></ul>
-            <ul><li><a href="/guides/page" class="<%= $ac->('/guides') %>"><%= ml 'Guides' %></a></li></ul>
-            <ul><li><a href="/calculations/page" class="<%= $ac->('/calculations') %>"><%= ml 'Calculations' %></a></li></ul>
-          </li>
-          % if( who_is_global('user') && !who_is_global('editor') ) {
-            <li><%= ml 'Companies' %>
-              <ul><li><a href="/desktop/company" class="<%= $ac->('/desktop') %>"><%= ml 'Select' %></a></li></ul>
-            </li>
-          % }
-          % if( session->{'company name'} ) {
-            <li><u><%= session->{'company name'} %></u>
-              <ul><li><a href="/documents/list" class="<%= $ac->('/documents') %>"><%= ml 'Documents' %></a></li></ul>
-              <ul><li><a href="/tbalance/page" class="<%= $ac->('/tbalance') %>"><%= ml 'Trial balance' %></a></li></ul>
-              <ul><li><a href="/catalog/list" class="<%= $ac->('/catalog') %>"><%= ml 'Catalog' %></a></li></ul>
-              <ul><li><a href="/warehouse/list" class="<%= $ac->('/warehouse') %>"><%= ml 'Warehouse' %></a></li></ul>
-              % if( who_is_local 'writer' ){
-                <ul><li><a href="/backup/list" class="<%= $ac->('/backup') %>"><%= ml 'Backup/Restore' %></a></li></ul>
-              % }
-            </li>
-          % }
-          % if( who_is_global 'admin' ) {
-            <li><%= ml 'Administration' %>
-              <ul><li><a href="/users/list" class="<%= $ac->('/users') %>"><%= ml 'Users' %></a></li></ul>
-              <ul><li><a href="/companies/list" class="<%= $ac->('/companies') %>"><%= ml 'Companies' %></a></li></ul>
-              <ul><li><a href="/database/adb" class="<%= $ac->('/database') %>"><%= ml 'Database' %></a></li></ul>
-              <ul><li><a href="/imports/lex" class="<%= $ac->('/imports') %>"><%= ml 'Import reference books' %></a></li></ul>
-            </li>
-          % }
-        </ul>
-      </nav>
-    </aside>
+          </ul>
 
-    <main id="mainSection">
-      % if( my $bc = stash('breadcrumbs') ) {
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
-          % for my $crumb ( @{$bc} ) {
-            <a href="<%= $crumb->{url} %>"><%= $crumb->{label} %></a>&nbsp;&rsaquo;&nbsp;
+          % if( who_is_global 'user' ){
+            <div class="sidebar-section-label"><%= ml 'Cabinet' %></div>
+            <ul class="nav flex-column mb-1">
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/user') %>" href="/user/password">
+                  <i class="bi bi-person me-2"></i><%= ml 'Password' %>
+                </a>
+              </li>
+            </ul>
           % }
+
+          <div class="sidebar-section-label"><%= ml 'Guides' %></div>
+          <ul class="nav flex-column mb-1">
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $ac->('/accounts') %>" href="/accounts/list">
+                <i class="bi bi-list-ol me-2"></i><%= ml 'Chart of Accounts' %>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $ac->('/operations') %>" href="/operations/list">
+                <i class="bi bi-arrow-left-right me-2"></i><%= ml 'Business transactions' %>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $ac->('/templates') %>" href="/templates/list">
+                <i class="bi bi-file-earmark-text me-2"></i><%= ml 'Templates' %>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $ac->('/guides') %>" href="/guides/page">
+                <i class="bi bi-journal-text me-2"></i><%= ml 'Guides' %>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link sidebar-link <%= $ac->('/calculations') %>" href="/calculations/page">
+                <i class="bi bi-calculator me-2"></i><%= ml 'Calculations' %>
+              </a>
+            </li>
+          </ul>
+
+          % if( who_is_global('user') && !who_is_global('editor') ) {
+            <div class="sidebar-section-label"><%= ml 'Companies' %></div>
+            <ul class="nav flex-column mb-1">
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/desktop') %>" href="/desktop/company">
+                  <i class="bi bi-building me-2"></i><%= ml 'Select' %>
+                </a>
+              </li>
+            </ul>
+          % }
+
+          % if( session->{'company name'} ) {
+            <div class="sidebar-section-label text-info text-truncate"
+                 title="<%= session->{'company name'} %>">
+              <i class="bi bi-briefcase me-1"></i><%= session->{'company name'} %>
+            </div>
+            <ul class="nav flex-column mb-1">
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/documents') %>" href="/documents/list">
+                  <i class="bi bi-file-text me-2"></i><%= ml 'Documents' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/tbalance') %>" href="/tbalance/page">
+                  <i class="bi bi-table me-2"></i><%= ml 'Trial balance' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/catalog') %>" href="/catalog/list">
+                  <i class="bi bi-grid me-2"></i><%= ml 'Catalog' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/warehouse') %>" href="/warehouse/list">
+                  <i class="bi bi-box-seam me-2"></i><%= ml 'Warehouse' %>
+                </a>
+              </li>
+              % if( who_is_local 'writer' ){
+                <li class="nav-item">
+                  <a class="nav-link sidebar-link <%= $ac->('/backup') %>" href="/backup/list">
+                    <i class="bi bi-cloud-arrow-up me-2"></i><%= ml 'Backup/Restore' %>
+                  </a>
+                </li>
+              % }
+            </ul>
+          % }
+
+          % if( who_is_global 'admin' ) {
+            <div class="sidebar-section-label"><%= ml 'Administration' %></div>
+            <ul class="nav flex-column mb-1">
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/users') %>" href="/users/list">
+                  <i class="bi bi-people me-2"></i><%= ml 'Users' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/companies') %>" href="/companies/list">
+                  <i class="bi bi-building me-2"></i><%= ml 'Companies' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/database') %>" href="/database/adb">
+                  <i class="bi bi-database me-2"></i><%= ml 'Database' %>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link sidebar-link <%= $ac->('/imports') %>" href="/imports/lex">
+                  <i class="bi bi-upload me-2"></i><%= ml 'Import reference books' %>
+                </a>
+              </li>
+            </ul>
+          % }
+        </nav>
+      </div>
+    </div><!-- /sidebar -->
+
+    <!-- Main content -->
+    <main class="flex-grow-1 p-3 p-lg-4 overflow-auto" style="min-width:0;">
+      % if( my $bc = stash('breadcrumbs') ) {
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb">
+            % for my $crumb ( @{$bc} ) {
+              <li class="breadcrumb-item">
+                <a href="<%= $crumb->{url} %>"><%= $crumb->{label} %></a>
+              </li>
+            % }
+          </ol>
         </nav>
       % }
       %= content;
     </main>
-  </div>
 
-  <footer id="footerSection">
+  </div><!-- /body row -->
+
+  <footer class="border-top py-2 text-center text-muted small bg-white">
     %= include 'footer';
   </footer>
 
+  <!-- Bootstrap JS bundle (Popper included) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   (function () {
-    // --- Hamburger sidebar toggle ---
-    var btn  = document.getElementById('hamburger');
-    var side = document.getElementById('sidebarSection');
-    var ovl  = document.getElementById('sidebarOverlay');
-    function openSide()  { side.classList.add('open');    ovl.classList.add('active');    btn.setAttribute('aria-expanded', 'true');  }
-    function closeSide() { side.classList.remove('open'); ovl.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
-    if (btn) btn.addEventListener('click', function () { side.classList.contains('open') ? closeSide() : openSide(); });
-    if (ovl) ovl.addEventListener('click', closeSide);
-
-    // --- Auto-dismiss success alerts after 3 s ---
+    // Auto-dismiss success alerts after 3 s
     setTimeout(function () {
-      [].forEach.call(document.querySelectorAll('.alert.success'), function (el) {
-        el.style.transition = 'opacity .5s';
-        el.style.opacity    = '0';
-        setTimeout(function () { el.style.display = 'none'; }, 500);
+      [].forEach.call(document.querySelectorAll('.alert.alert-success'), function (el) {
+        if (typeof bootstrap !== 'undefined') bootstrap.Alert.getOrCreateInstance(el).close();
       });
     }, 3000);
 
-    // --- Confirm dialogs via data-confirm on any clickable element ---
+    // Confirm dialogs via data-confirm on links / buttons
     document.addEventListener('click', function (e) {
       var el = e.target && e.target.closest ? e.target.closest('[data-confirm]') : null;
       if (el && !confirm(el.getAttribute('data-confirm'))) e.preventDefault();
     }, true);
 
-    // --- Sortable table columns (add class="sortable" to any <table>) ---
+    // Sortable table columns (add class="sortable" to any <table>)
     [].forEach.call(document.querySelectorAll('table.sortable thead th'), function (th) {
       th.style.cursor = 'pointer';
       th.title = 'Click to sort';

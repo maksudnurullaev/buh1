@@ -1,635 +1,208 @@
-body {
-  font-size: 95%;
-  font-family: Arial, Geneva, Helvetica, sans-serif;
-  color: black;
-  background-color: white;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+/* ============================================================
+ * Buh1 — project-specific overrides
+ * Loaded after Bootstrap 5.  Only rules Bootstrap does not
+ * cover, or intentional overrides, belong here.
+ * ============================================================ */
+
+/* ---- Global: keep legacy no-bullet <ul> behaviour ----------- */
+ul { list-style-type: none; }
+
+/* ---- Sidebar ------------------------------------------------- */
+.sidebar-section-label {
+  padding: 10px 16px 2px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: #6c757d;
 }
 
-/*
- * section id's
- */
-#headerSection {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 2%;
-  border-bottom: 1px solid #ddd;
-  flex-shrink: 0;
+.sidebar-link {
+  font-size: .875rem;
+  padding: 5px 16px;
+  color: rgba(255,255,255,.6);
+  border-radius: 6px;
+  margin: 1px 8px;
+  transition: background .15s, color .15s;
+}
+.sidebar-link:hover:not(.active) {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.9);
+}
+.sidebar-link.active {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  font-weight: 600;
 }
 
-#bodySection {
-  display: flex;
-  flex: 1;
-  align-items: flex-start;
+/* Sticky sidebar on desktop */
+@media (min-width: 768px) {
+  #sidebarSection {
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+  }
 }
 
-#sidebarSection {
-  width: 210px;
-  min-width: 210px;
-  flex-shrink: 0;
-  padding: 4px 5px 4px 4px;
-  border-right: 1px solid #cccccc;
-  align-self: stretch;
+/* ---- Legacy table-based forms (colortable) ------------------- */
+table.colortable {
+  background-color: #f8f9fa;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
 }
-
-#mainSection {
-  flex: 1;
-  min-width: 0;
-  padding: 0 5px 10px 10px;
+table.colortable td,
+table.colortable th {
+  padding: 5px 10px;
+  vertical-align: top;
 }
-
-#sidebarOverlay {
-  display: none;
-}
-
-#footerSection {
-  flex-shrink: 0;
-  margin: 0 2%;
-  border-top: 1px solid #ddd;
-  text-align: center;
-  padding: .5em;
-}
-
-/*
- * menu
- */
-menu {
-  margin-left: 1em;
-  padding-left: 1em;
-  white-space: nowrap;
-}
-
-/*
- * table
- */
-
-table.colortable,
-tr.details {
-  background-color: #dddddd;
-}
-
-/*
- * h2
- */
-h2 {
-  font-size: 130%;
-  font-weight: bold;
-}
-
-/*
- * h3
- */
-h3 {
-  font-size: 110%;
-  font-weight: bold;
-}
-
-div.section h3 {
-  padding: .5em 1em;
-  border-left: 1px solid blue;
-  border-bottom: 1px solid blue;
-}
-
-h3 span.small {
-  padding: 0 1em;
-  font-size: 70%;
-  font-style: italic;
-}
-
-/*
- * h4
- */
-h4 {
-  font-size: 100%;
-  font-weight: bold;
-}
-
-/*
- * td
- */
-td.bigq {
-  color: orange;
-  font-size: 24pt;
-  text-align: center;
-}
-
-td.q {
-  border: 1px solid orange;
-}
-
-td.biga {
-  color: #1010e0;
-  font-size: 24pt;
-  text-align: center;
-}
-
-td.a {
-  border: 1px solid #1010e0;
-}
-
-/*
- * li
- */
-li.oneline {
-  display: inline;
-  list-style-type: none;
-}
-
-/*
- * a
- */
-a {
-  color: blue;
-}
-
-/* css styling from Mary Woodcock-Kroble to provide
- * better navigation menus
- * 28th January 2006
- */
-
-ul#leftnav,
-ul#rightnav {
-  margin: 2px 5px;
-  padding: 2px;
-  font-size: 85%;
-  font-weight: bold;
-  list-style-type: none;
-}
-
-ul#leftnav li,
-ul#rightnav li {
-  margin: 2px;
-  padding: 0px 0px 10px;
-}
-
-ul#leftnav ul,
-ul#rightnav ul {
-  margin: 2px 5px 2px 25px;
-  padding: 5px 0px 0px;
-  font-size: 100%;
-  font-weight: normal;
-  list-style: disc outside none;
-}
-
-ul#leftnav li,
-ul#rightnav li {
-  margin: 2px;
-  padding: 0px 0px 10px;
-}
-
-ul#leftnav li li,
-ul#rightnav li li {
-  margin: 0px;
-  padding: 0px;
-}
-
-ul#rightnav {
-  padding-left: 10px;
-}
-
-ul#leftnav ul ul,
-ul#rightnav ul ul {
-  margin: 2px 5px 2px 10px;
-  padding: 0px 0px 0px;
-  font-weight: normal;
-  list-style: none outside none;
-}
-
-/*
- * p
- */
-p {}
-
-#footerSection p {
-  font-size: 80%;
-  margin: 0;
-  padding: 0;
-}
-
-/*
- * img
- */
-img {}
-
-/*
- * Header logo / login
- */
-.logo-link img {
-  height: 36px;
-  width: auto;
-  display: block;
-}
-
-.login-status {
-  margin-left: auto;
+table.colortable td.tar {
   text-align: right;
-  font-size: 90%;
+  white-space: nowrap;
+  padding-top: 11px;
+  color: #495057;
+  font-size: .9rem;
 }
 
-/* hamburger button — hidden on desktop */
-.hamburger {
-  display: none;
-  background: none;
-  border: 1px solid #999;
-  border-radius: 3px;
-  font-size: 1.4em;
-  line-height: 1;
-  padding: 3px 7px;
+/* Give colortable inputs a Bootstrap form-control appearance */
+table.colortable input:not([type=radio]):not([type=checkbox]):not([type=submit]):not([type=button]):not([type=hidden]):not([name^="access"]),
+table.colortable textarea,
+table.colortable select {
+  display: block;
+  width: 100%;
+  padding: .375rem .75rem;
+  font-size: .9rem;
+  color: #212529;
+  background: #fff;
+  border: 1px solid #ced4da;
+  border-radius: .375rem;
+  transition: border-color .15s, box-shadow .15s;
+}
+table.colortable input:focus,
+table.colortable textarea:focus,
+table.colortable select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+  outline: 0;
+}
+table.colortable input.error,
+table.colortable textarea.error,
+table.colortable select.error {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+/* Submit buttons in colortable */
+table.colortable input[type=submit] {
+  display: inline-block;
+  width: auto;
+  padding: .375rem .75rem;
+  font-size: .9rem;
+  font-weight: 400;
+  color: #fff;
+  background-color: #0d6efd;
+  border: 1px solid #0d6efd;
+  border-radius: .375rem;
   cursor: pointer;
-  flex-shrink: 0;
+  transition: background-color .15s, border-color .15s;
+}
+table.colortable input[type=submit]:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
 }
 
-/*
- * Active navigation link
- */
-a.nav-current {
-  font-weight: bold;
-  color: #003080;
-  text-decoration: underline;
+/* ---- Field-level validation hint ----------------------------- */
+.field-hint {
+  display: block;
+  font-size: .8em;
+  color: #dc3545;
+  margin-top: 3px;
 }
 
-/*
- * Breadcrumb navigation
- */
-nav.breadcrumbs {
-  font-size: 85%;
-  color: #666;
-  margin-bottom: 6px;
-  padding: 3px 0;
-  border-bottom: 1px dashed #ddd;
+/* ---- Toolbar ------------------------------------------------- */
+div.toolbar, div.form.toolbar {
+  padding: 6px 10px;
+  margin-bottom: 12px;
+  border-top: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 0 0 .375rem .375rem;
 }
-nav.breadcrumbs a { color: #555; }
-
-/*
- * Specific use classes
- */
-div.login_status {
-  float: right;
-  margin: 0;
-  border: 0;
-  vertical-align: middle;
+div.toolbar a, div.form.toolbar a {
+  font-size: .9rem;
 }
 
-/*
- * Generic classes
- */
-.menuheader {
-  font-weight: bold;
-}
+/* ---- Alerts -------------------------------------------------- */
+/* Legacy .alert.success / .alert.error kept for templates that
+   still use the old CSS classes directly.                        */
+div.alert.success { background: #d1e7dd; color: #0f5132; border-left: 4px solid #198754; }
+div.alert.error   { background: #f8d7da; color: #842029; border-left: 4px solid #dc3545; }
 
-.floatLeft {
-  float: left;
-}
+/* ---- Utility classes ----------------------------------------- */
+.tar         { text-align: right; vertical-align: top; }
+.smallitalic { font-size: 9pt; font-style: italic; }
+.smallplain  { font-size: 8pt; margin-left: 20px; }
+.noborder    { border: 0; margin: 0; }
+.nobgcolor   { background-color: #fff; }
+.floatLeft   { float: left; }
+.floatRight  { float: right; }
+.section-content { padding: 0 1em; }
 
-.floatRight {
-  float: right;
-}
-
-.noborder {
-  border: 0;
-  margin: 0;
-}
-
-.navleft {
-  padding-right: 5px;
-  border: 1px solid #cccccc;
-  border-width: 0px 1px 0px 0px;
-}
-
-.navright {
-  padding-left: 5px;
-  border: 1px solid #cccccc;
-  border-width: 0px 0px 0px 1px;
-}
-
-.body {
-  padding: 0 5px 10px 10px;
-}
-
-.section-content {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-.footer {
-  text-align: center;
-  font-size: 80%;
-}
+td.bigq { color: orange;   font-size: 24pt; text-align: center; }
+td.q    { border: 1px solid orange; }
+td.biga { color: #1010e0;  font-size: 24pt; text-align: center; }
+td.a    { border: 1px solid #1010e0; }
+li.oneline { display: inline; list-style-type: none; }
 
 .note {
   margin: 1em;
   padding: 1em;
   border: 2px solid gray;
 }
-
 .source {
-  margin: 0em 1em 0em 1em;
-  padding: 0em 1em 0em 1em;
-  border: 2px solid #bbbbbb;
+  margin: 0 1em;
+  padding: 0 1em;
+  border: 2px solid #bbb;
   white-space: pre;
 }
+ul.nostyle li   { list-style: none; padding-left: 10px; }
+input[name^="access"] { width: 15px !important; }
+textarea.extended { width: 500px; height: 200px; }
+fieldset { margin-bottom: 5px; }
 
-.smallitalic {
-  font-size: 9pt;
-  font-style: italic;
+/* ---- Sticky table headers (offset for sticky navbar) --------- */
+table thead th {
+  position: sticky;
+  top: 52px;
+  z-index: 2;
+  background-color: #fff;
 }
+table.table-dark thead th  { background-color: #212529; }
 
-.smallplain {
-  font-size: 8pt;
-  margin-left: 20px;
-}
-
-.section {
-  font-size: 90%;
-  margin-left: 5%;
-}
-
-.tar {
-  text-align: right;
-  vertical-align: top;
-}
-
-.bordered {
-  border: 1px solid black;
-}
-
-;
-
-div.alert {
-  padding: 5px 5px 5px 5px;
-  margin: 5px 0px 5px 0px;
-}
-
-div.form {
-  padding: 1px 0px 1px 0px;
-}
-
-div.toolbar {
-  margin-bottom: 3px;
-  border-top: 1px solid #ddd;
-}
-
-.error, .field-with-error {
-  background: goldenrod;
-}
-
-div.error {
-  text-align: center;
-}
-
-.success {
-  background-color: darkseagreen;
-}
-
-div.success {
-  text-align: center;
-}
-
-input[name^="access"] {
-  width: 15px;
-}
-
-input {
-  width: 190px;
-  max-width: 100%;
-}
-
-textarea {
-  width: 300px;
-  height: 50px;
-}
-
-textarea.extended {
-  width: 500px;
-  height: 200px;
-}
-
-.nobgcolor {
-  background-color: white;
-}
-
-ul.nostyle li {
-  list-style: none;
-  padding-left: 10px;
-}
-
-table.styled {
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.styled thead tr {
-  background-color: #009879;
-  color: #ffffff;
-  text-align: left;
-}
-
-.styled th,
-.styled td {
-    padding: 12px 15px;
-}
-
-.styled tbody tr {
-  border-bottom: 1px solid #dddddd;
-}
-
-.styled tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
-}
-
-.styled tbody tr:last-of-type {
-  border-bottom: 2px solid #009879;
-}
-
-.styled tbody tr.active-row {
-  font-weight: bold;
-  color: #009879;
-}
-
-.styled input[type=checkbox] {
-  width: fit-content;
-}
-
-.styled input[type=radio] {
-  width: fit-content;
-}
-
-fieldset {
-  margin-bottom: 5px;
-}
-
-/*
-* Treeview - https://www.w3schools.com/howto/howto_js_treeview.asp
-*/
-ul, #myTreeViewUL {
-  list-style-type: none;
-}
-
-#myTreeViewUL {
-  margin: 0;
-  padding: 0;
-}
-
+/* ---- Treeview ------------------------------------------------ */
+#myTreeViewUL { margin: 0; padding: 0; }
 .caret {
   cursor: pointer;
-  -webkit-user-select: none; /* Safari 3.1+ */
-  -moz-user-select: none; /* Firefox 2+ */
-  -ms-user-select: none; /* IE 10+ */
+  -webkit-user-select: none;
   user-select: none;
 }
-
 .caret::before {
   content: "\25B6";
-  color: black;
   display: inline-block;
   margin-right: 6px;
 }
+.caret-down::before { transform: rotate(90deg); }
+.nested { display: none; }
+/* Bootstrap uses .active for nav; scope treeview .active separately */
+#myTreeViewUL .active { display: block; }
 
-.caret-down::before {
-  -ms-transform: rotate(90deg); /* IE 9 */
-  -webkit-transform: rotate(90deg); /* Safari */'
-  transform: rotate(90deg);  
-}
-
-.nested {
-  display: none;
-}
-
-.active {
-  display: block;
-}
-
-/* ============================================================
- * Sticky table headers
- * ============================================================ */
-table thead th {
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-  z-index: 2;
-}
-.styled thead th {
-  background-color: #009879;
-}
-
-/* ============================================================
- * Field-level validation feedback
- * ============================================================ */
-.field-hint {
-  display: block;
-  font-size: 80%;
-  color: #a00;
-  margin-top: 2px;
-}
-
-/* ============================================================
- * Responsive layout — mobile breakpoint at 768 px
- * ============================================================ */
-@media (max-width: 768px) {
-  /* Show hamburger button */
-  .hamburger {
-    display: block;
-  }
-
-  /* Sidebar becomes an off-canvas drawer */
-  #sidebarSection {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 80%;
-    max-width: 280px;
-    z-index: 100;
-    background: #fff;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-    transform: translateX(-110%);
-    transition: transform 0.3s ease;
-    border-right: none;
-    padding: 12px;
-  }
-  #sidebarSection.open {
-    transform: translateX(0);
-  }
-
-  /* Semi-transparent overlay behind open sidebar */
-  #sidebarOverlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 99;
-    background: rgba(0, 0, 0, 0.4);
-  }
-  #sidebarOverlay.active {
-    display: block;
-  }
-
-  /* Main content takes full width */
-  #mainSection {
-    width: 100%;
-    padding: 0 8px 10px 8px;
-  }
-
-  /* Constrain form inputs on small screens */
-  input, textarea, select {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  /* Stack form table rows */
-  table.colortable, table.colortable tbody,
-  table.colortable tr, table.colortable td {
-    display: block;
-    width: 100%;
-  }
-  table.colortable td.tar {
-    text-align: left;
-    padding-top: 6px;
-  }
-}
-
-/* ============================================================
- * Print stylesheet
- * ============================================================ */
+/* ---- Print --------------------------------------------------- */
 @media print {
   #sidebarSection,
-  #sidebarOverlay,
-  #headerSection .hamburger,
-  #headerSection .login-status,
-  .hamburger,
-  div.toolbar,
-  nav.breadcrumbs {
+  nav.navbar,
+  .navbar-toggler,
+  div.toolbar {
     display: none !important;
   }
-
-  #headerSection {
-    border-bottom: 1px solid #000;
-  }
-
-  #bodySection {
-    display: block;
-  }
-
-  #mainSection {
-    width: 100%;
-    padding: 0;
-  }
-
-  #footerSection {
-    border-top: 1px solid #000;
-  }
-
-  a[href]::after {
-    content: none;
-  }
+  main { padding: 0 !important; }
+  table thead th { top: 0; }
 }

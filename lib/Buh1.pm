@@ -55,7 +55,7 @@ sub startup {
               if $ENV{TBOT_TOKEN}
               && index( $c->req->url->path->to_string, "/$ENV{TBOT_TOKEN}/" )
               == 0;
-            unless ( $c->is_valid_csrf_token ) {
+            if ( $c->validation->csrf_protect->has_error('csrf_token') ) {
                 $c->render(
                     text   => 'Forbidden: invalid CSRF token',
                     status => 403

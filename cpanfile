@@ -13,6 +13,8 @@ requires 'CHI';
 requires 'EV';
 requires 'Spreadsheet::WriteExcel';
 requires 'WWW::Telegram::BotAPI';
+requires 'Net::SSLeay';
+requires 'IO::Socket::SSL', '2.009';
 
 on test => sub {
     requires 'Test::Most';

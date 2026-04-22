@@ -1,9 +1,13 @@
-<div aria-label="Filter" role="search">
- % my $path = $self->req->url->path->to_string();
- %= form_for filter => (action => "/filter/set?path=$path", method => 'POST') => begin
- %= csrf_field
-  %= text_field filter => session("$path/filter"), 'aria-label' => ml('Filter'), placeholder => ml('Filter');
-  %= submit_button ml 'Filter';
-  %= tag 'a', href => "/filter/reset?path=$path", ml("Reset") if session("$path/filter");
- % end
+% my $path = $self->req->url->path->to_string();
+%= form_for filter => (action => "/filter/set?path=$path", method => 'POST') => begin
+%= csrf_field
+<div class="d-flex align-items-center gap-2 my-2" role="search">
+  <div class="input-group input-group-sm" style="max-width:320px;">
+    %= text_field filter => session("$path/filter"), class => 'form-control', placeholder => ml('Filter'), 'aria-label' => ml('Filter')
+    %= submit_button ml('Filter'), class => 'btn btn-outline-secondary'
+  </div>
+  % if( session("$path/filter") ) {
+    %= tag 'a', href => "/filter/reset?path=$path", class => 'btn btn-sm btn-outline-danger', ml('Reset')
+  % }
 </div>
+% end

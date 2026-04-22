@@ -1,15 +1,25 @@
 % if( stash('success') || param('success') ) {
-  <div class='alert success'>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
     <%= stash('success_message') ? stash('success_message') : ml('Saved successfully') %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 % }
 % if( stash('error') || param('error') ) {
-  <div class='alert error'>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
     <%= stash('error_message') ? uc(stash('error_message')) : uc(ml('Error!')) %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 % } elsif( my $_message = stash('error_message') ) {
-  <div class='alert error'><%= uc $_message %></div>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <%= uc $_message %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 % }
 % if( stash('noaccess') || param('noaccess') ) {
-  <div class='alert error noaccess'><%= ml 'No access' %>!</div>
+  <div class="alert alert-danger" role="alert">
+    <i class="bi bi-lock-fill me-2"></i><%= ml 'No access' %>!
+  </div>
 % }
