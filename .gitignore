@@ -7,4 +7,12 @@ db/archives
 db/main.db
 cpm
 cpm.*
+# Ignore all hidden files
 .*
+# Ignore the following files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+IMPROVE.md
