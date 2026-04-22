@@ -1,6 +1,7 @@
 <div class="form">
  % my $path = "/accounts/edit/$payload";
  %= form_for $path => (method => 'POST') => begin
+ %= csrf_field
  %= hidden_field object_name => stash('object_name')
  <table class='colortable'>
   % my @languages = ('rus','eng','uzb');

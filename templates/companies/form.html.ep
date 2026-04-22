@@ -3,6 +3,7 @@
  % my $company = stash('company');
  % my $path = stash('edit_mode') ? "/companies/edit/$payload" : '/companies/add';
  %= form_for $path => (method => 'POST') => begin
+ %= csrf_field
  <table class='colortable'>
   <tr>
    <td class='tar'><u><%= ml 'Name' %></u></td>

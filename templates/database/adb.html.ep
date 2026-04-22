@@ -1,6 +1,8 @@
 % layout 'default';
 
 %= form_for '/database/adb' => (method => 'POST') => begin
+
+%= csrf_field
  <h2><%= ml 'Database' %></h2>
  %= include 'database/_actions_header';
  <fieldset>

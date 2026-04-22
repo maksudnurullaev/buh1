@@ -5,6 +5,7 @@
    % my $counting = stash('object.counting_direction') ;
    <tr><td class="tar"><u><%= ml 'Name' %></u> :</td><td align="center"><%= $counting ? "($counting)" : "(O)" %></td><td><u><%= ml 'Value' %></u></td></tr>
 %= form_for "/$controller/update_counting_field/$payload" =>(method => 'POST') => begin
+%= csrf_field
 % my $has_counting_fields = 0;
 %  for my $key (sort keys %{$links}) {
 %   if( $links->{$key} eq 'warehouse object tag' ) {    

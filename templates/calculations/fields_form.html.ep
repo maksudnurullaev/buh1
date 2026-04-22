@@ -1,5 +1,6 @@
 % my $post_path = $_read_only ? $_success_path : '/calculations/update_fields' ;
 %= form_for $post_path => (method => 'POST') => begin
+%= csrf_field
  %= include 'calculations/form_hidden_fields' ;
  % my $field_index = 1 ;
  % while( stash("calc.f_description_$field_index") ){

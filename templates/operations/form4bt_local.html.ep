@@ -10,6 +10,7 @@
  % my $path = "/documents/update/$payload?bt=$bt&post=preliminary";
  % $path = "/documents/update_document_header/$payload?bt=$bt&docid=$docid" if $docid ;
  %= form_for $path => (method => 'POST') => begin
+ %= csrf_field
  %= hidden_field account => $payload;
  %= include 'operations/account_list', parameters => { title => 'debet', data => $debets, form => $company } if $skd ;
  %= include 'operations/account_list', parameters => { title => 'credit', data => $credits, form => $company } if $skc ;

@@ -4,6 +4,7 @@
  % my $path = '/guides/add';
  % $path = "/guides/edit/$payload" if $action ne 'add' ; 
  %= form_for $path => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= csrf_field
   <tr>
    <td class="tar">
     %= ml 'Number' ;

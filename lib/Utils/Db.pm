@@ -190,7 +190,7 @@ sub get_root{
     my $resource_root = $db->get_root_parents($sql_where) ;
     my $result = {};
     for my $pid (keys %{$resource_root}){
-        $result->{ $pid } = $db->get_parent_childs($pid,['description','CHILDREN']) ;
+        $result->{ $pid } = $db->get_parent_childs($pid,['description']) ;
     }
     return( $result );
 };

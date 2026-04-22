@@ -1,6 +1,7 @@
 % my $post_path = $_add ? '/calculations/add' : '/calculations/edit' ;
 % $post_path = '/_read_only' if $_read_only ;
 %= form_for $post_path => (method => 'POST') => begin
+%= csrf_field
  %= include 'calculations/form_hidden_fields' ;
  <tr>
   <td class='tar'> 

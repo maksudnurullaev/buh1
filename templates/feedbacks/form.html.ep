@@ -1,5 +1,6 @@
 <div>
  %= form_for '/feedbacks/add' => (method => 'POST') => begin
+ %= csrf_field
  <table class='colortable'>
   % my $user = session->{'user email'};
   % if( !$user ) {

@@ -15,6 +15,8 @@
 
 %= form_for $path => (method => 'POST') => begin
 
+%= csrf_field
+
   %= hidden_field object_name => 'document';
   %= hidden_field account => $account->{id};
   %= hidden_field bt => $bt->{id};
@@ -110,6 +112,7 @@
   <p>
     % my $path = "/documents/update/$account->{id}?bt=$bt->{id}&post=preliminary";
     %= form_for $path => (method => 'POST') => begin
+    %= csrf_field
       %= hidden_field account => $account->{id};
       %= hidden_field debet    => $debet->{id};
       %= hidden_field credit   => $credit->{id};

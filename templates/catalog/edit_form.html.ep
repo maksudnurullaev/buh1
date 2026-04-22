@@ -1,5 +1,6 @@
 <div class="form">
  %= form_for "/$controller/$action/$payload" => (method => 'POST') => begin
+ %= csrf_field
  %= hidden_field oname => $controller ;
  %= hidden_field id    => $payload if $payload ;
  <table class='colortable'>

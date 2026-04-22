@@ -11,6 +11,7 @@
 % if( who_is_global('editor') ){
 <div class="form">
  %= form_for "/operations/add/$payload" => (method => 'POST') => begin
+ %= csrf_field
  %= hidden_field object_name => 'business transaction'
  %= hidden_field account     => $payload
  <table class='colortable'>

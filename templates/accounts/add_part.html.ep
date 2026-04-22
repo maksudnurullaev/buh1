@@ -24,6 +24,7 @@
 <div class="form">
  % my $path = $parent_id ? "/accounts/add_part/$parent_id" : "/accounts/add_part";
  %= form_for $path => (method => 'POST') => begin
+ %= csrf_field
  <table class='colortable'>
   %= hidden_field 'object_name' => stash('object_name');
   <tr>

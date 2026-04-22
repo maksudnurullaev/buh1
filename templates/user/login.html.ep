@@ -13,6 +13,7 @@
   % } 
   <div>
    %= form_for '/user/login' => (method => 'POST') => begin
+   %= csrf_field
    <table class='colortable'>
     <tr><td class='tar'><u><%= ml 'Name' %></u></td>
      <td><%= text_field email => id => 'email' %></td>

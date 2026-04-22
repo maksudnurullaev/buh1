@@ -325,12 +325,12 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
                 }
             }
         }
-        if ( exists $parameters->{add_where} ) {
+        if ( exists $parameters->{_raw_sql} ) {
             if ($result) {
-                $result .= " AND $parameters->{add_where} ";
+                $result .= " AND $parameters->{_raw_sql} ";
             }
             else {
-                $result .= " WHERE $parameters->{add_where} ";
+                $result .= " $parameters->{_raw_sql} ";
             }
         }
         return ($result);
@@ -380,7 +380,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
                 $filter_where = " value LIKE $quoted_filter ESCAPE '\\' ";
             }
             $result = $self->get_counts(
-                { name => [$name], add_where => $filter_where } );
+                { name => [$name], _raw_sql => $filter_where } );
         }
         else {
             $result =
@@ -400,7 +400,7 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
             $result = $self->get_objects(
                 {
                     name      => [$name],
-                    add_where => $filter_where,
+                    _raw_sql => $filter_where,
                     limit     => $limit
                 }
             );
@@ -692,24 +692,9 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
 
     sub parent_remove_child {
         my ( $self, $parent_id, $id ) = @_;
-        my $scope = $self->get_objects(
-            { id => [$parent_id], field => [ 'creator', 'CHILDREN' ] } );
-        my $parent = $scope->{$parent_id};
-        $parent->{CHILDREN} =~ s/$id//g;
-        $parent->{CHILDREN} =~ s/,{2,}/,/g;
-        $parent->{CHILDREN} =~ s/,$//g;
-        $parent->{CHILDREN} =~ s/^,//g;
-        $parent->{CHILDREN} =~ s/^,$//g;
-
-        if ( !$parent->{CHILDREN} ) {    # no more children
-            $self->get_from_sql(
-                "DELETE FROM objects WHERE id=? AND field='CHILDREN';",
-                $parent_id
-            );
-        }
-        else {
-            $self->update($parent);
-        }
+        # Remove the PARENT back-reference from the child; tree is queried dynamically
+        $self->get_from_sql(
+            "DELETE FROM objects WHERE id=? AND field='PARENT';", $id );
     }
 
     sub child_make_root {
@@ -726,17 +711,8 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
     }
 
     sub parent_add_child {
-        my ( $self, $parent_id, $id ) = @_;
-        my $scope = $self->get_objects(
-            { id => [$parent_id], field => [ 'creator', 'CHILDREN' ] } );
-        my $parent = $scope->{$parent_id};
-        if ( exists( $parent->{CHILDREN} ) ) {
-            $parent->{CHILDREN} .= ",$id";
-        }
-        else {
-            $parent->{CHILDREN} = $id;
-        }
-        $self->update($parent);
+        # No-op: child already carries PARENT field set by child_set_parent/update.
+        # Children are discovered dynamically by querying PARENT field.
     }
 
     sub get_root_parents {
@@ -774,14 +750,16 @@ qq{ UPDATE objects SET value = ? WHERE name = ? AND id = ? AND field = ?; }
         my $scope =
           $self->get_objects( { id => [$parent_id], field => $fields } );
         my $parent = $scope->{$parent_id};
-        if ( exists( $parent->{CHILDREN} ) ) {
-            my @childs = split /,/, $parent->{CHILDREN};
-            for my $id (@childs) {
-                next if !$id;
-                $parent->{CHILDREN} = {}
-                  if ref( $parent->{CHILDREN} ) ne 'HASH';
-                $parent->{CHILDREN}{$id} =
-                  $self->get_parent_childs( $id, $fields );
+        return $parent unless $parent;
+
+        # Find children by querying for objects whose PARENT field points here
+        my $children = $self->get_objects(
+            { field => ['PARENT'], value => [$parent_id] } );
+        if ($children) {
+            $parent->{CHILDREN} = {};
+            for my $child_id ( keys %{$children} ) {
+                $parent->{CHILDREN}{$child_id} =
+                  $self->get_parent_childs( $child_id, $fields );
             }
         }
         return ($parent);

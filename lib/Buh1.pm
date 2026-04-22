@@ -44,7 +44,26 @@ sub startup {
 
     # ... just for hypnotoad
     $self->app->config( hypnotoad => { listen => ['http://*:3000'] } );
-    #
+
+    # CSRF protection for all non-GET requests
+    $self->hook(
+        before_dispatch => sub {
+            my $c = shift;
+            return if $c->req->method eq 'GET';
+            # Telegram webhook authenticates via secret token in the URL itself
+            return
+              if $ENV{TBOT_TOKEN}
+              && index( $c->req->url->path->to_string, "/$ENV{TBOT_TOKEN}/" )
+              == 0;
+            unless ( $c->is_valid_csrf_token ) {
+                $c->render(
+                    text   => 'Forbidden: invalid CSRF token',
+                    status => 403
+                );
+            }
+        }
+    );
+
     my $r = $self->routes;
 
     # General route

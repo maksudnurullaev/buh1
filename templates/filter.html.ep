@@ -1,6 +1,7 @@
 <div>
  % my $path = $self->req->url->path->to_string() ;
  %= form_for filter => (action => "/filter/set?path=$path", method => 'POST' ) => begin
+ %= csrf_field
   %= text_field filter => session("$path/filter") ;
   %= submit_button ml 'Filter' ;
   %= tag 'a', href => "/filter/reset?path=$path",  ml("Reset")  if session("$path/filter");

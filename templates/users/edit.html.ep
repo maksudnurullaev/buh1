@@ -6,6 +6,8 @@
 %= include 'success_error';
 
 %= form_for $_path => (method => 'POST') => begin
+
+%= csrf_field
    <h1><%= ml 'User' %></h1>
    <table class='colortable'>
       <tr>

@@ -12,6 +12,7 @@
   <fieldset>
     %= t 'legend', 'SQL';
     %= form_for "/database/view/$payload" => (method => 'POST') => begin
+    %= csrf_field
       <table class="styled">
         <thead><tr>
           % for my $_tcn (@{$_table_column_names}) {

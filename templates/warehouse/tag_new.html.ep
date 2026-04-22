@@ -1,4 +1,5 @@
  %= form_for "/$controller/add_tag/$payload" => (method => 'POST') => begin
+ %= csrf_field
  <tr><td colspan="3"><%= ml 'New property' %>:</td></tr>
  <tr><td><u><%= ml 'Name' %></u></td><td colspan="2"><u><%= ml 'Value' %></u></td></tr>
  <tr>

@@ -3,6 +3,7 @@
 % my $path = '/tbalance/page';
 % my $is_valid_tbalance = stash('tbalance') && scalar(keys(%{stash('tbalance')})) ;
 %= form_for $path => (method => 'POST') => begin
+%= csrf_field
  <table class='colortable'>
   <tr><td class='tar'><%= ml 'Start'%> <%= ml 'Date(yyyy.mm.dd)' %></td>
     <td><%= date_field 'start_date' => get_date('%Y-%m-01'), class => (stash 'start_date_class') %></td>

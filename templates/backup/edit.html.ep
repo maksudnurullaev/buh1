@@ -5,6 +5,7 @@
 <div class="toolbar">
  % my $fileid = param 'fileid' ;
  %= form_for "/backup/update_desc/$payload"  => ( method => 'POST') => begin
+ %= csrf_field
  <table class='colortable'>
   <tr>
    <td class='tar'> 
@@ -31,6 +32,7 @@
  % end
  <tr style="background: white;"><td>&nbsp;</td><td>&nbsp;</td></tr> 
  %= form_for "/backup/update/$payload" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= csrf_field
   <tr>
    <td class='tar'> 
     %= ml 'Upload' 

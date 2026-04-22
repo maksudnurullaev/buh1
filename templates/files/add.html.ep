@@ -1,5 +1,6 @@
 <div class="toolbar">
  %= form_for "/files/add/$_pid?prefix=$controller" => (enctype => 'multipart/form-data') => ( method => 'POST') => begin
+ %= csrf_field
  %= hidden_field path => $_return_path ;
  %= hidden_field pid => $_pid ;
  <table class='colortable'>

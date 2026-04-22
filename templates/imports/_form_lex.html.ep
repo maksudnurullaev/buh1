@@ -1,5 +1,7 @@
 
 %= form_for '/imports/lex' => (method => 'POST') => begin
+
+%= csrf_field
 <fieldset>
   <legend>
     <%= ml 'Definitions' %>:

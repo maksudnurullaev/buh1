@@ -10,6 +10,7 @@
   % my $user_access = $company_users_hash->{$user_mail}{access};
   % my $user_id     = $company_users_hash->{$user_mail}{id};
   %= form_for "/companies/change_access/$payload" => (method => 'POST') => begin
+  %= csrf_field
    %= submit_button ml('Save') ;
    % my $temp = [];
    % for my $access (@accesses){
@@ -26,6 +27,7 @@
  % }
  <hr />
   %= form_for "/companies/remove_user/$payload" => (method => 'POST') => begin
+  %= csrf_field
    %= submit_button ml('Delete')
    %= select_field user => $company_users 
   % end
@@ -35,6 +37,7 @@
 % if( @{$non_company_users} ) {
  <hr />
  %= form_for "/companies/add_user/$payload" => (method => 'POST') => begin
+ %= csrf_field
   %= submit_button ml('Add')
   %= select_field user => $non_company_users 
  % end

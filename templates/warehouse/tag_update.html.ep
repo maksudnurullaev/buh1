@@ -1,4 +1,5 @@
 %= form_for "/$controller/update_tag/$payload" => (method => 'POST') => begin
+%= csrf_field
 %= hidden_field tagid => param('tagid') ;
  <tr><th colspan="3"><%= ml 'Update' %></th></tr>
  <tr><td><u><%= ml 'Name' %></u></td><td colspan="2"><u><%= ml 'Value' %></u></td></tr>
