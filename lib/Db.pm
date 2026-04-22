@@ -55,7 +55,7 @@ package Db;
                 warn $DBI::errstr;
                 return (undef);
             }
-            $dbh->do("PRAGMA synchronous = OFF");
+            $dbh->do("PRAGMA synchronous = NORMAL");
             $self->{dbh} = $dbh;
             return ($dbh);
         }

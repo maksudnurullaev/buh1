@@ -61,6 +61,11 @@ sub get_admin_password{
     return($salt);
 };
 
+sub is_default_admin_password {
+    my $self = shift;
+    return salted_password( 'admin', get_admin_password($self) );
+}
+
 sub login{
     my($self,$email,$password) = @_;
     $email = lc $email; # email string should be case insensative!!!

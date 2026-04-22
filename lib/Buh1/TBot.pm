@@ -4,9 +4,17 @@ use Mojo::Base 'Mojolicious::Controller';
 use Data::Dumper;
 
 use WWW::Telegram::BotAPI;
-my $tBotApi = WWW::Telegram::BotAPI->new (
-    token => '6938590791:AAFOQjRSBR1hJ9cTK4nrdY-a4jBl_J-wwtw'
-);
+
+my $tBotApi;
+sub _bot_api {
+    return $tBotApi if $tBotApi;
+    my $token = $ENV{TBOT_TOKEN} or do {
+        warn "TBot: TBOT_TOKEN env var not set, bot disabled";
+        return undef;
+    };
+    $tBotApi = WWW::Telegram::BotAPI->new( token => $token );
+    return $tBotApi;
+}
 
 sub match_all_positions {
     my ($regex, $string) = @_;
@@ -48,7 +56,8 @@ sub hello {
     if($self->req->method eq 'POST' && $self->req->json && $self->req->json->{message} && $self->req->json->{message}{text}){
 	#warn "Message from BOT: " . $self->req->json->{message}{text};
         #match_all_positions('#(\d{7})', $self->req->json->{message}{text});
-        $tBotApi->sendMessage ({
+        my $api = _bot_api() or return $self->render(text => 'Bot not configured');
+        $api->sendMessage ({
             chat_id      => $self->req->json->{message}{chat}{id},
             link_preview_options => { is_disabled => \1 }, 
             text => $self->req->json->{message}{text},

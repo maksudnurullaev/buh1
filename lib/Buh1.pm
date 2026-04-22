@@ -266,10 +266,11 @@ sub startup {
     $r->get('/browser/mobile/*payload')
       ->to( controller => 'browser', action => 'mobile' );
 
-    # for my telegram bot - temporary
-    $r->any( '/6938590791:AAFOQjRSBR1hJ9cTK4nrdY-a4jBl_J-wwtw/*payload' =>
-          { payload => 'Hello' } )
-      ->to( controller => 'TBot', action => 'hello' );
+    # Telegram bot webhook - set TBOT_TOKEN env var to enable
+    if ( my $tbot_token = $ENV{TBOT_TOKEN} ) {
+        $r->any( "/$tbot_token/*payload" => { payload => 'Hello' } )
+          ->to( controller => 'TBot', action => 'hello' );
+    }
 
 }
 

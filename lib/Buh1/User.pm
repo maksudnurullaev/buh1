@@ -12,14 +12,19 @@ sub login{
         my $password = Utils::trim $self->param('password');
         if ( !$password || $password =~ /[^\x00-\xFF]/ ) { $error_found = 1; $self->stash(password_class => "error")};
         if (!$error_found){
-            if ( my $user = Auth::login($self, $email, $password) ){ 
+            if ( my $user = Auth::login($self, $email, $password) ){
                 $self->session->{'user email'} = $email;
                 if( $email =~ /^admin$/i ){
                     $self->session->{'user id'} = 'admin';
+                    if ( Auth::is_default_admin_password($self) ) {
+                        $self->session->{'force_password_change'} = 1;
+                        $self->redirect_to('/user/password');
+                        return;
+                    }
                 } else {
                     $self->session->{'user id'} = $user->{id};
                 }
-                $self->redirect_to('/'); 
+                $self->redirect_to('/');
                 return;
             } else { $error_found = 1; }
         }
@@ -37,6 +42,7 @@ sub logout{
 sub password{
     my $self = shift;
     return if !Utils::User::authorized2password($self) ;
+    $self->stash( force_change => $self->session->{'force_password_change'} );
 
     my $email = Utils::User::current($self);
     my $method = $self->req->method;
@@ -69,6 +75,7 @@ sub password{
         # FINAL ACTION - change password if no errors
         if( !$error_found ){
             if(Auth::set_password($self,$email,$password1)){
+                delete $self->session->{'force_password_change'};
                 $self->stash(success => 1);
             } else {
                 $error_found = 1;
