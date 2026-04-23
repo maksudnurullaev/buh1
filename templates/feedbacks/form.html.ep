@@ -12,6 +12,12 @@
      <%= text_field 'contact', class => stash 'contact_class' %><br />
     </td>
    </tr>
+   <tr><td class='tar'><u><%= ml 'Verification' %></u></td>
+    <td>
+     <img src="<%= stash('captcha_img') %>" alt="captcha" class="captcha-img d-block mb-1">
+     <%= number_field 'captcha', class => stash('captcha_class'), min => 0, max => 99, style => 'width:5em' %>
+    </td>
+   </tr>
   % }
   <tr><td class='tar'><u><%= ml 'Message' %></u></td>
    <td><%= text_area message => (stash 'message'), class => (stash 'message_class') %></td>

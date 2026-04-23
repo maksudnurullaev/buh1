@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Auth;
 use Utils;
 use Utils::Filter;
+use MIME::Base64 qw(encode_base64);
 
 my $OBJECT_NAME         = 'feedback';
 my $OBJECT_NAMES        = 'feedbacks';
@@ -55,6 +56,22 @@ sub restore{
     $self->redirect_to("/$OBJECT_NAMES/deleted");
 };
 
+sub _set_captcha {
+    my $self = shift;
+    return if Utils::User::current($self);    # skip for logged-in users
+    my ( $a, $b ) = ( int( rand(9) ) + 1, int( rand(9) ) + 1 );
+    $self->session->{captcha_a} = $a;
+    $self->session->{captcha_b} = $b;
+
+    # Encode the question as an SVG data URI so the numbers are never
+    # visible as plain text in the HTML source.
+    my $svg = qq{<svg xmlns="http://www.w3.org/2000/svg" width="130" height="34">}
+            . qq{<rect width="130" height="34" fill="#f8f9fa" rx="4" stroke="#dee2e6"/>}
+            . qq{<text x="10" y="24" font-family="monospace" font-size="20" fill="#212529">$a + $b = ?</text>}
+            . qq{</svg>};
+    $self->stash( captcha_img => 'data:image/svg+xml;base64,' . encode_base64( $svg, '' ) );
+}
+
 sub validate{
     my $self = shift;
     my $user = Utils::User::current($self);
@@ -66,12 +83,24 @@ sub validate{
             Utils::trim($self->param('contact')) );
         $data->{user}    = $self->param('user')    if $user;
         $data->{contact} = $self->param('contact') if $contact;
-    }
-    $data->{message} = Utils::trim $self->param('message');
 
-    if( !$data->{message} ){ 
-       $data->{error} = 1; 
-       $self->stash(message_class => "error"); 
+        # Captcha validation for guests
+        my $expected  = ( $self->session->{captcha_a} || 0 )
+                      + ( $self->session->{captcha_b} || 0 );
+        my $submitted = Utils::trim( $self->param('captcha') ) // '';
+        if ( !$expected || $submitted !~ /^\d+$/ || int($submitted) != $expected ) {
+            $data->{error} = 1;
+            $self->stash( captcha_class => 'error' );
+        }
+    }
+    # Invalidate the used captcha so it cannot be replayed
+    delete $self->session->{captcha_a};
+    delete $self->session->{captcha_b};
+
+    $data->{message} = Utils::trim $self->param('message');
+    if( !$data->{message} ){
+       $data->{error} = 1;
+       $self->stash(message_class => "error");
     }
 
     return($data);
@@ -123,6 +152,8 @@ sub add{
             $self->stash(error => 1);
         }
     }
+    # Generate a fresh captcha for every form render (GET and failed POST)
+    _set_captcha($self) unless $self->stash('success');
     $self->render();
 };
 

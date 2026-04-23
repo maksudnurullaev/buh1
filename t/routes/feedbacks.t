@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 use Test::More;
 use Test::Mojo::Session;
 use Auth;
+use MIME::Base64 qw(decode_base64);
 
 # Feedback controller: public submission, admin-only list.
 
@@ -29,28 +30,53 @@ $t->get_ok('/feedbacks/add')
 $t->post_ok('/feedbacks/add', form => { message => 'test' })
   ->status_is(403, 'POST without CSRF token is forbidden');
 
-# --- POST with empty message shows error -------------------------------------
+# Helper: decode the base64 SVG captcha image and compute the expected answer.
+sub captcha_answer {
+    my $img = shift->tx->res->dom->at('img.captcha-img') or return undef;
+    my ($b64) = ( $img->attr('src') // '' ) =~ /base64,(.+)$/;
+    my $svg = decode_base64( $b64 // '' );
+    my ($a, $b) = $svg =~ /(\d+)\s*\+\s*(\d+)/;
+    return defined $a ? $a + $b : undef;
+}
+
+# --- POST with wrong captcha shows error -------------------------------------
 
 $t->get_ok('/feedbacks/add');
 my $csrf = $t->tx->res->dom->at('input[name="csrf_token"]')->attr('value');
 
 $t->post_ok('/feedbacks/add', form => {
     csrf_token => $csrf,
+    message    => 'Test message',
+    captcha    => 9999,            # deliberately wrong
+})->status_is(200, 'Wrong captcha re-renders the form');
+
+$t->element_exists('form', 'Form is re-rendered on captcha error');
+
+# --- POST with empty message shows error -------------------------------------
+
+$t->get_ok('/feedbacks/add');
+$csrf = $t->tx->res->dom->at('input[name="csrf_token"]')->attr('value');
+my $answer = captcha_answer($t);
+
+$t->post_ok('/feedbacks/add', form => {
+    csrf_token => $csrf,
     message    => '',
+    captcha    => $answer,
 })->status_is(200, 'Empty message re-renders the form');
 
-# Stash error=1 is set; check that the page still shows the form (not a crash)
 $t->element_exists('form', 'Form is re-rendered on validation error');
 
 # --- Valid feedback submission succeeds --------------------------------------
 
 $t->get_ok('/feedbacks/add');
-$csrf = $t->tx->res->dom->at('input[name="csrf_token"]')->attr('value');
+$csrf   = $t->tx->res->dom->at('input[name="csrf_token"]')->attr('value');
+$answer = captcha_answer($t);
 
 $t->post_ok('/feedbacks/add', form => {
     csrf_token => $csrf,
     message    => 'Test feedback from automated test suite',
     user       => 'test-runner',
+    captcha    => $answer,
 })->status_is(200, 'Valid feedback submission returns 200');
 
 # success=1 stash renders the success alert

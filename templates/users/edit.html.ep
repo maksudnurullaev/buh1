@@ -46,9 +46,9 @@
          %= include 'users/extended_rights' if $user_id;
       <tr><td>&nbsp;</td>
          <td>
-            % if ($_user) {
+            % if ($user_id) {
                %= submit_button ml( ('Save') )
-               |  
+               |
                %= tag 'a', href => "/users/del/$user_id", 'data-confirm' => ml('Delete this user?'), ml('Delete')
             % } else {
                %= submit_button ml('Add')
