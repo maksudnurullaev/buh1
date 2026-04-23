@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title><%= stash('page_title') ? stash('page_title') . ' — Buh1' : 'Buh1' %></title>
   <meta name="description" content="<%= stash('page_description') || 'Buh1 accounting application' %>" />
-  <link rel="icon" type="image/png" href="/logo.png" />
   <!-- Bootstrap 5.3.8 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Bootstrap Icons 1.11.3 -->
