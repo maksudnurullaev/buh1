@@ -1,7 +1,7 @@
 % layout 'default';
 <h2><%= ml 'Guides' %></h2>
 %= include 'guides/toolbar' ;
-% $guides = stash('guides') ;
+% my $guides = stash('guides') ;
 % if( $guides ){
  <ul>
   % for my $key (sort keys %{$guides}) {

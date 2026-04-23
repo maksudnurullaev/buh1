@@ -37,7 +37,7 @@ sub get_list{
     my $path   = get_guides_path($self);
     if( ! -d $path ){
         system "mkdir -p '$path/'" ;
-        return ;
+        return {};
     }
     
     my $dir;
