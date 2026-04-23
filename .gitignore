@@ -1,10 +1,11 @@
-# Clients data files
+# Database files and folders — keep only the clients .gitkeep placeholder
+db/*.db
+db/*.tar.gz
+db/guides/
+db/dump/
+db/archives/
 db/clients/**
-db/main
-db/guides
-db/dump
-db/archives
-db/main.db
+!db/clients/.gitkeep
 cpm
 cpm.*
 # Ignore all hidden files except project config
