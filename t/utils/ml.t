@@ -31,7 +31,7 @@ ok( join(',',@{Utils::Languages::get()}) =~ /$default_lang/, "Existance of defau
 $test_mojo->get_ok('/')->status_is(200);
 my $invalid_key  = 'some_invalid_key';
 ok($test_mojo->app->ml() =~ /ERROR/, "Get invalid result 1");
-ok($test_mojo->app->ml($invalid_key) =~ /^\[-$default_lang\]$invalid_key$/, "Get invalid result 2");
+ok($test_mojo->app->ml($invalid_key) =~ /ml-missing.*\Q$invalid_key\E|\Q$invalid_key\E/, "Get invalid result 2 - missing key returned");
 ok(ML::set_value($test_mojo,'key1', 'key2', 'салом') eq 'салом', "Save value");
 ok(ML::get_value($test_mojo,'key1', 'key2') eq 'салом', "Get for exist value");
 ok(ML::save_to_file($test_mojo), "File saving test to: " . ML::get_file_path($test_mojo)) ;

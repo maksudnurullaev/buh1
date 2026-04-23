@@ -195,6 +195,14 @@ table.table-dark thead th  { background-color: #212529; }
 /* Bootstrap uses .active for nav; scope treeview .active separately */
 #myTreeViewUL .active { display: block; }
 
+/* ---- I18N translation markers (development mode only) -------- */
+/* .ml-missing  : key has no translation in any language          */
+/* .ml-fallback : key was found in a different language           */
+/* .ml-error    : helper called with bad arguments                */
+.ml-missing  { text-decoration: underline wavy orange;       cursor: help; }
+.ml-fallback { text-decoration: underline dotted #6c757d;    cursor: help; }
+.ml-error    { color: #dc3545; font-style: italic; }
+
 /* ---- Print --------------------------------------------------- */
 @media print {
   #sidebarSection,
