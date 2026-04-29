@@ -1,5 +1,5 @@
 # Database files and folders — keep only the clients .gitkeep placeholder
-# db/
+db/**
 # Ignore all hidden files except project config
 .*
 !.gitignore
