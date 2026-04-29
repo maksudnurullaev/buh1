@@ -1,13 +1,5 @@
 # Database files and folders — keep only the clients .gitkeep placeholder
-db/*.db
-db/*.tar.gz
-db/guides/
-db/dump/
-db/archives/
-db/clients/**
-!db/clients/.gitkeep
-cpm
-cpm.*
+# db/
 # Ignore all hidden files except project config
 .*
 !.gitignore
