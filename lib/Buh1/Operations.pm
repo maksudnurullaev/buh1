@@ -145,8 +145,10 @@ sub edit{
         Utils::Accounts::get_account_by_numeric_id($self,$bt->{$bt_id}{credit})
         );
     Utils::Languages::generate_name($self,$debets);
+    Utils::Accounts::enrich_with_type($self,$debets);
     $self->stash( debets  => $debets );
     Utils::Languages::generate_name($self,$credits);
+    Utils::Accounts::enrich_with_type($self,$credits);
     $self->stash( credits => $credits );
 };
 

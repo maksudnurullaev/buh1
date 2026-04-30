@@ -1,7 +1,8 @@
 % if( $account ){
  <p>
- % for my $account_id (keys %{$account}){   
-  %= tag 'a', href => "/operations/account/$payload", $account->{$account_id}{name} 
+ % for my $account_id (keys %{$account}){
+  % my $atype = $account->{$account_id}{type};
+  <% if ($atype) { %><abbr title="<%= ml "account type $atype" %>">(<%= uc $atype %>)</abbr> <% } %><%= tag 'a', href => "/operations/account/$payload", $account->{$account_id}{name} %>
   <sup>
   %= tag 'a', href => "/accounts/edit/$account_id", ml('Chart of Accounts') 
   </sup>

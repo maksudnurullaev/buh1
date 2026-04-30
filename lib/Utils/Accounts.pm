@@ -198,6 +198,19 @@ sub get_account_by_numeric_id{
     return $db->get_objects({ id => $id_selection });
 };
 
+sub enrich_with_type {
+    my ($self, $subcontos) = @_;
+    return if !$subcontos;
+    my $db = Db->new($self);
+    for my $id (keys %{$subcontos}) {
+        my $parents = $db->get_links($id, $ACCOUNT, ['type']);
+        next if !$parents;
+        my $pid = (keys %{$parents})[0];
+        $subcontos->{$id}{type} = $parents->{$pid}{type}
+            if $pid && exists $parents->{$pid}{type};
+    }
+}
+
 sub get_type{
     my $type_local = shift;
     return(undef) if !$type_local;

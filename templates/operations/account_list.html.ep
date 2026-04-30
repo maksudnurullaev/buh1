@@ -8,7 +8,8 @@
 <h4><%= uc($title) %></h4>
 % my $bt = param 'bt';
 % for my $id ( sort keys %{$bts} ){
- % my $name   = $bts->{$id}{name};   
+ % my $name   = $bts->{$id}{name};
+ % my $type   = $bts->{$id}{type};
  % my $lid = "$title $id";
  % if( $form ) {
   % if( !$bts_set ){
@@ -22,7 +23,7 @@
    %= radio_button $title => $id, style => 'width:auto;', id=>$lid;
   % }
  % }
- <label for='<%= $lid %>'><%= $name %></label>
+ <label for='<%= $lid %>'><% if ($type) { %><abbr title="<%= ml "account type $type" %>">(<%= uc $type %>)</abbr> <% } %><%= $name %></label>
  <sup><%= tag 'a', href => "/accounts/edit/$id", ml('Chart of Accounts') %></sup>
  <br />
 % }
