@@ -16,6 +16,34 @@ package Utils::Files;
     use Utils;
     use Data::Dumper;
 
+    sub authorized2read {
+        my $self   = shift;
+        my $prefix = $self->param('prefix') || $self->stash('controller');
+        return (1) if $prefix && $prefix =~ /templates/i;    # admin part - public reference
+        if ( !$self->who_is( 'local', 'reader' ) ) {
+            $self->redirect_to('/user/login?warning=access');
+            return (0);
+        }
+        return (1);
+    }
+
+    sub authorized2modify {
+        my $self   = shift;
+        my $prefix = $self->param('prefix') || $self->stash('controller');
+        if ( $prefix && $prefix =~ /templates/i ) {           # admin part
+            if ( !$self->who_is_global('editor') ) {
+                $self->redirect_to('/user/login?warning=access');
+                return (0);
+            }
+            return (1);
+        }
+        if ( !$self->who_is( 'local', 'writer' ) ) {
+            $self->redirect_to('/user/login?warning=access');
+            return (0);
+        }
+        return (1);
+    }
+
     sub validate_file {
         my $self   = shift;
         my $fileid = $self->param('fileid');

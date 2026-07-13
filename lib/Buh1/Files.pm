@@ -16,6 +16,8 @@ use Data::Dumper ;
 
 sub download{
     my $self       = shift;
+    return if !Utils::Files::authorized2read($self);
+
     my $id         = $self->param('payload');
     my $fileid     = $self->param('fileid');
     my $path       = Utils::Files::get_path($self,$id);
@@ -26,19 +28,31 @@ sub download{
 };
 
 sub update_desc{
-    Utils::Files::update_desc(shift);
+    my $self = shift;
+    return if !Utils::Files::authorized2modify($self);
+
+    Utils::Files::update_desc($self);
 };
 
 sub update_file{
-    Utils::Files::update_file(shift);
+    my $self = shift;
+    return if !Utils::Files::authorized2modify($self);
+
+    Utils::Files::update_file($self);
 };
 
 sub add{
-    Utils::Files::add(shift);
+    my $self = shift;
+    return if !Utils::Files::authorized2modify($self);
+
+    Utils::Files::add($self);
 };
 
 sub delete{
-    Utils::Files::delete(shift);
+    my $self = shift;
+    return if !Utils::Files::authorized2modify($self);
+
+    Utils::Files::delete($self);
 };
 
 
