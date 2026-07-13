@@ -6,8 +6,10 @@ use Auth;
 
 # Access control: unauthenticated users are redirected; admin can access all.
 #
-# Note: /companies/list, /companies/add and similar routes without explicit
-# who_is() guards are intentionally omitted here — they are covered by public.t.
+# Note: /companies/add, /companies/edit/*, /companies/del/*, /companies/restore/*,
+# /companies/add_user/*, /companies/remove_user/*, /companies/change_access/* are
+# covered separately in companies.t, since they need a company fixture to
+# exercise meaningfully.
 
 my $t = Test::Mojo::Session->new('Buh1');
 
@@ -27,6 +29,8 @@ my @admin_routes = qw(
     /users/deleted
     /database/adb
     /database/counts
+    /companies/list
+    /companies/deleted
 );
 
 my @editor_routes = qw(

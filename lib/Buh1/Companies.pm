@@ -10,11 +10,15 @@ package Buh1::Companies;
 
     sub list {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         _select_objects( $self, $OBJECT_NAME, '' );
     }
 
     sub deleted {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         _select_objects( $self, $DELETED_OBJECT_NAME, '/companies/deleted' );
     }
 
@@ -55,6 +59,8 @@ package Buh1::Companies;
 
     sub restore {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $id   = $self->param('payload');
         if ($id) {
             my $db = Db->new($self);
@@ -86,6 +92,8 @@ package Buh1::Companies;
 
     sub del {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $id   = $self->param('payload');
         if ($id) {
             my $db = Db->new($self);
@@ -99,6 +107,8 @@ package Buh1::Companies;
 
     sub remove_user {
         my $self    = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $id      = $self->param('payload');
         my $user_id = $self->param('user');
         my $db      = Db->new($self);
@@ -109,6 +119,8 @@ package Buh1::Companies;
 
     sub add_user {
         my $self    = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $id      = $self->param('payload');
         my $user_id = $self->param('user');
         my $db      = Db->new($self);
@@ -119,6 +131,7 @@ package Buh1::Companies;
 
     sub change_access {
         my $self        = shift;
+        return if !$self->who_is( 'global', 'admin' );
 
         my $id          = $self->param('payload');
         my $user_id     = $self->param('user_id');
@@ -133,7 +146,7 @@ package Buh1::Companies;
 
     sub edit {
         my $self = shift;
-        return if !$self->who_is('global','user');
+        return if !$self->who_is('global','admin');
 
         $self->stash( edit_mode => 1 );
         my $id = $self->param('payload');
@@ -195,6 +208,7 @@ package Buh1::Companies;
 
     sub add {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
 
         if ( $self->req->method =~ /POST/ ) {
 
