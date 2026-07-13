@@ -44,7 +44,7 @@ sub get_list{
     opendir($dir, $path);
     my $result = {};
     while (my $fileid = readdir($dir)) {
-        next if ($fileid =~ m/^\./) || ($fileid =~ /desc$/);
+        next if ($fileid =~ m/^\./) || ($fileid =~ /desc$/) || ( -d "$path/$fileid" );
         $result->{ $fileid } = {};
         $result->{ $fileid }{file_name} = get_file_content("$path/$fileid" . '.name') ;
         $result->{ $fileid }{desc} = get_file_content("$path/$fileid" . '.desc') ;
@@ -124,6 +124,7 @@ sub decode_guide_content{
     return(undef) if ! defined($guide_number) ;
     my $guide_file_path = Utils::Guides::get_guides_path($self, $guide_number);
     my $content = Utils::Guides::get_file_content($guide_file_path) ;
+    return(0) if !defined($content);
     my @rows = split /^/, $content ;
     return(0) if(scalar(@rows) <= 2);
     my $splitter;
@@ -188,7 +189,7 @@ sub get_file_content{
     my $file_path = shift;
     return(undef) if !$file_path ;
     my($fh,$content) = (undef,undef);
-    if( -e $file_path ){
+    if( -f $file_path ){
         if( open(my $fh, "< :encoding(UTF-8)", $file_path) ){
             $content = do { local $/; <$fh> }; 
             warn "Cannot close $file_path: $!" if !close($fh) ;
