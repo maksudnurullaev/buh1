@@ -137,6 +137,8 @@ package Buh1::Users;
 
     sub del {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $id   = $self->param('payload');
         if ($id) {
             my $db = Db->new($self);
@@ -150,6 +152,8 @@ package Buh1::Users;
 
     sub remove_company {
         my $self    = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         my $user_id = $self->param('payload');
         my $id      = $self->param('company');
         if ( my ($db) = Db->new($self) ) {
@@ -214,6 +218,8 @@ package Buh1::Users;
 
     sub add {
         my $self = shift;
+        return if !$self->who_is( 'global', 'admin' );
+
         $self->stash( user_id => undef );
         my $method = $self->req->method;
         if ( $method =~ /POST/ ) {
