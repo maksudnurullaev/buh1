@@ -112,6 +112,8 @@ sub edit{
 
     my ($method,$data) = ($self->req->method,undef);
     if ( $method =~ /POST/ ){
+        return if !Utils::Accounts::authorized2modify( $self );
+
         $data = Utils::Operations::validate( $self );
         if( !exists($data->{error}) ){
             $data->{id} = $bt_id;
